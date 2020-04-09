@@ -1,0 +1,77 @@
+<div id="add-entry-container-background" class="container-background hide" onkeydown="keyDownOnNewEntryContainer(event);">
+    <div class="container">
+        <div style="background: rgb(200, 200, 255); height: 30px;">
+            <div style="float: right; margin-right: 10px; margin-top: 5px;">
+                <svg height="20" width="20" style="cursor: pointer;" onclick="hideNewEntryInterface();">
+                    <image height="20" width="20" xlink:href="{{ url_for('static', filename='images/close.svg') }}"/>
+                </svg>
+            </div>
+        </div>
+        <div class="container-contents">
+            <h1>Add new entry</h1>
+            <p>Question:</p>
+            <div id="new-entry-question-div">
+                <div class="input-box">
+                    <input id="new-entry-question" autocomplete="off" oninput="changeNewEntryQuestion();">
+                </div>
+                <span id="message-new-entry-already-exists" class="hide" style="color: rgb(100, 0, 0); font-weight: bold;">Question already exists.</span>
+                <span id="message-new-entry-empty-question" class="hide" style="color: rgb(100, 0, 0); font-weight: bold;">Must provide the entry a question.</span>
+                <span id="message-new-entry-long-question" class="hide" style="color: rgb(100, 0, 0); font-weight: bold;">Question must be no more than 80 characters.</span>
+            </div>
+            <p>Answer:</p>
+            <div id="new-entry-answer-div">
+                <div class="input-box">
+                    <input id="new-entry-answer" autocomplete="off" oninput="changeNewEntryAnswer();">
+                </div>
+                <span id="message-new-entry-empty-answer" class="hide" style="color: rgb(100, 0, 0); font-weight: bold;">Must provide the entry an answer.</span>
+                <span id="message-new-entry-long-answer" class="hide" style="color: rgb(100, 0, 0); font-weight: bold;">Answer must be no more than 80 characters.</span>
+            </div>
+            <p>More answers:</p>
+            <div id="add-entry-answers-table-container" style="overflow-x: auto; overflow-y: hidden">
+                <table id="add-entry-answers-table" class="selectable-table">
+                    <tbody class="main-rows main-rows-alt">
+                        <tr>
+                            <td>
+                                <input id="new-entry-add-answer" placeholder="Add another" style="padding: 5px;" autocomplete="off" onkeypress="newEntryHitEnterAnotherAnswer(event);">
+                            </td>
+                            <td id="add-answer"><button class="add-row" onclick="newEntryAddRow();">➡</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p>Search sheets:</p>
+            <div class="input-box">
+                <input id="new-entry-search-sheets" autocomplete="off" class="search" placeholder="Search" oninput="newEntrySearchSheets();">
+                <div class="magnifying-glass">🔍</div>
+            </div>
+            <div id="add-entry-entries-table-container" style="overflow-x: auto; overflow-y: hidden">
+                <table id="add-entry-entries-table">
+                    <tbody class="header-row">
+                        <tr>
+                            <th>Sheet</th>
+                            <th>% Complete</th>
+                            <th># Entries</th>
+                        </tr>
+                    </tbody>
+                    <tbody id="add-entry-sheet-table-rows" class="main-rows">
+                        {% for sheet, entries, completed in sheets %}
+                            <tr onclick="clickNewEntrySheet(this);" style="cursor: pointer;">
+                                <td>{{ sheet }}</td>
+                                <td>{{ entries }}</td>
+                                <td>{{ completed }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tbody id="new-entry-sheet-table-hidden-rows" class="hidden-rows"></tbody>
+                    <tbody>
+                        <tr id="new-entry-sheet-load-more-row" style="visibility: {{ 'visible' if load_more_sheets else 'collapse' }} ; cursor: pointer;" onClick="newEntryLoadMoreSheets()">
+                            <td colspan=4 class="center-full-row">Load more...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <button id="save-new-entry" class="button button-disabled">Save</button>
+            <button class="button" onclick="hideNewEntryInterface();">Back</button>
+        </div>
+    </div>
+</div>

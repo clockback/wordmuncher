@@ -1,0 +1,108 @@
+<html>
+    <head>
+        <title>ProKartuli</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/general.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/languages/desktop.css') }}" media="(min-width: 800px)">
+        <script type="text/javascript" src="{{ url_for('static', filename='js/select_translator.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/customize/customize.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/customize/new_sheet.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/customize/edit_sheet.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/customize/new_entry.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/customize/edit_entry.js') }}"></script>
+    </head>
+
+    <body>
+        {% include 'components/topbar.html' %}
+        <div id="main">
+            <div style="margin-left: 5px;">
+                <div>
+                    <h1>Create</h1>
+                    <div class="input-box">
+                        <input autocomplete="off" id="search-all" name="sheet query" oninput="searchAll()"/>
+                        <div class="magnifying-glass">🔍</div>
+                    </div>
+                </div>
+                <div class="column">
+                    <h2>Sheets</h2>
+                    <div id="sheet-table-container" tabindex="-1" style="overflow-x: auto; overflow-y: hidden">
+                        <table id="sheets-table">
+                            <tbody class="header-row">
+                                <tr>
+                                    <th>Sheet</th>
+                                    <th>% Complete</th>
+                                    <th># Entries</th>
+                                </tr>
+                            </tbody>
+                            <tbody class="main-rows" id="sheet-table-rows">
+                                {% for sheet, entries, completed in sheets %}
+                                    <tr onclick="clickSheet(this);" style="cursor: pointer;">
+                                        <td>{{ sheet }}</td>
+                                        <td>{{ entries }}</td>
+                                        <td>{{ completed }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tbody>
+                                <tr id="sheet-load-more-row" style="visibility: {{ 'visible' if load_more_sheets else 'collapse' }} ; cursor: pointer;" onClick="loadMoreSheets()">
+                                    <td colspan=3 class="center-full-row">Load more...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                        <button id="new-sheet" class="button" onclick="showNewSheetInterface();">Add</button>
+                        <button id="edit-sheet" class="button button-disabled">Edit</button>
+                        <button id="delete-sheet" class="button button-disabled">Delete</button>
+                    </div>
+                </div>
+                <div class="column">
+                    <h2>Entries</h2>
+                    <div id="entries-table-container" tabindex="-1" style="overflow-x: auto; overflow-y: hidden">
+                        <table id="entries-table">
+                            <tbody class="header-row">
+                                <tr>
+                                    <th>Question</th>
+                                    <th>Answer</th>
+                                    <th># Mentions</th>
+                                    <th>Stars</th>
+                                </tr>
+                            </tbody>
+                            <tbody class="main-rows" id="entry-table-rows">
+                                {% for question, answer, mentions, stars in entries %}
+                                    <tr onclick="clickEntry(this);" style="cursor: pointer;">
+                                        <td>{{ question }}</td>
+                                        <td>{{ answer }}</td>
+                                        <td>{{ mentions }}</td>
+                                        <td>{{ stars }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tbody>
+                                <tr id="entry-load-more-row" style="visibility: {{ 'visible' if load_more_entries else 'collapse' }} ; cursor: pointer;" onClick="loadMoreEntries()">
+                                    <td colspan=4 class="center-full-row">Load more...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                        <button id="new-entry" class="button" onclick="showNewEntryInterface();">Add</button>
+                        <button id="edit-entry" class="button button-disabled">Edit</button>
+                        <button id="delete-entry" class="button button-disabled">Delete</button>
+                    </div>
+                </div>
+                <div style="clear: both;">
+                    <p>
+                        <button id="back" class="button" onclick="window.location.href = '/';">Back</button>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <footer>
+            <div style="margin-top: 10px; margin-bottom: 10px;">Copyright © 2020 – Elliot Paton-Simpson</div>
+        </footer>
+        {% include 'components/new_sheet.html' %}
+        {% include 'components/edit_sheet.html' %}
+        {% include 'components/new_entry.html' %}
+        {% include 'components/edit_entry.html' %}
+    </body>
+</html>

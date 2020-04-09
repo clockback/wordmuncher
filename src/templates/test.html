@@ -1,0 +1,50 @@
+<html>
+    <head>
+        <title>ProKartuli</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/general.css') }}">    
+        <script type="text/javascript" src="{{ url_for('static', filename='js/sheet_search.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/select_translator.js') }}"></script>
+    </head>
+
+    <body style="margin: 0px; padding: 0px;">
+        {% include 'components/topbar.html' %}
+        <div id="main">
+            <div style="margin-left: 5px;">
+                <p>Select your sheet you would like to test:</p>
+                <div class="input-box">
+                    <input id="search-sheet-entry" type="text" name="sheet query" value="{{ current_search }}" onkeypress="returnSearchSheets(event)"/>
+                    <div class="magnifying-glass">🔍</div>
+                </div>
+                <div id="sheet-table-container" style="overflow-x: auto; overflow-y: hidden">
+                    <table id="sheets-table">
+                        <tbody class="header-row">
+                            <tr>
+                                <th>Name</th>
+                                <th>% Complete</th>
+                            </tr>
+                        </tbody>
+                        <tbody class="main-rows" id="sheet-table-rows">
+                            {% for sheet, completed in sheets %}
+                                <tr>
+                                    <td>{{ sheet }}</td>
+                                    <td>{{ completed }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tbody>
+                            <tr id="load-more-row" style="visibility: {{ 'visible' if load_more else 'collapse' }} ; cursor: pointer;" onClick="loadMoreSheets()">
+                                <td colspan=2 class="center-full-row">Load more...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="margin-top: 10px;">
+                    <button class="button" onclick="window.location.href = '/';">Back</button>
+                </div>
+            </div>
+        </div>
+        <footer>
+            <div style="margin-top: 10px; margin-bottom: 10px;">Copyright © 2020 – Elliot Paton-Simpson</div>
+        </footer>
+    </body>
+</html>

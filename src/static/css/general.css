@@ -1,0 +1,320 @@
+h1, h2, p, th, td, div {
+    font-family: "Palatino";
+}
+
+p {
+    font-size: 18px;
+}
+
+body {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+button.button {
+    border: none;
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    font-family: Palatino;
+    white-space: nowrap;
+    border-radius: 2px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+button.add-row,button.trash-can {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 22px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+button.button:hover:not(.button-disabled) {
+    background: rgb(210, 0, 0) !important;
+}
+
+button.button.button-disabled {
+    cursor: not-allowed;
+}
+
+button.button:not(.button-disabled):not(:hover) {
+    background: red;
+}
+
+button.button:not(.button-disabled) {
+    cursor: pointer;
+}
+
+button.button.button-disabled {
+    background: pink;
+}
+
+div.sidebar {
+    width: 100%;
+    position: fixed;
+    height: 50px;
+    top: 0;
+    left: 0;
+    background: rgb(50, 50, 50);
+    z-index: 3;
+}
+
+.sidebar-left {
+    float: left;
+    margin-left: 5px;
+    width: 40px;
+    height: 40px;
+    margin-top: 2.5px;
+    float: left;
+}
+
+.sidebar-center {
+    display: block;
+    margin: 0 auto;
+    white-space: nowrap;
+    text-align: center;
+    height: 50px;
+    width: 130px;
+}
+
+.sidebar-center-button {
+    line-height: 50px;
+    border: none;
+    color: white;
+    background-color: rgb(50, 50, 50);
+    width: 130px;
+    font-size: 23px;
+    font-family: "Palatino";
+}
+
+.sidebar-center-button:hover {
+    background: rgb(30, 30, 30);
+    font-size: 25;
+}
+
+.sidebar-center > .sidebar-center-drop {
+    visibility: collapse;
+}
+
+.sidebar-center:hover > .sidebar-center-drop {
+    visibility: visible;
+}
+
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+table {
+    border-collapse: collapse;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 17px;
+}
+
+.selectable-table tr:not(:last-child) {
+    cursor: pointer;
+}
+
+th, td {
+    text-align: left;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+tbody.header-row > tr:not(.selected-row) {
+    background: rgb(240, 240, 240);
+}
+
+tbody.main-rows:not(.main-rows-alt) > tr:nth-child(even):not(.selected-row) {
+    background: rgb(240, 240, 240);
+}
+
+tbody.main-rows:not(.main-rows-alt) > tr:nth-child(odd):not(.selected-row) {
+    background: rgb(248, 248, 248);
+}
+
+tbody.main-rows.main-rows-alt > tr:nth-child(odd):not(.selected-row) {
+    background: rgb(240, 240, 240);
+}
+
+tbody.main-rows.main-rows-alt > tr:nth-child(even):not(.selected-row) {
+    background: rgb(248, 248, 248);
+}
+
+tbody.main-rows>tr.selected-row {
+    background: lightgreen;
+}
+
+tbody.hidden-rows {
+    visibility: collapse;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:visited {
+    color: white;
+}
+
+/*the container must be positioned relative:*/
+.custom-select {
+    position: relative;
+    font-family: Arial;
+}
+
+.custom-select select {
+    display: none; /*hide original SELECT element:*/
+}
+
+.select-selected {
+    background-color: rgb(100, 100, 100);
+    z-index: 2;
+}
+
+/*style the arrow inside the select element:*/
+.select-selected:after {
+    position: absolute;
+    content: "";
+    top: 14px;
+    right: 10px;
+    width: 0;
+    height: 0;
+    border: 6px solid transparent;
+    border-color: #fff transparent transparent transparent;
+}
+
+/*point the arrow upwards when the select box is open (active):*/
+.select-selected.select-arrow-active:after {
+    border-color: transparent transparent #fff transparent;
+    top: 7px;
+}
+
+/*style the items (options), including the selected item:*/
+.select-items div,.select-selected {
+    color: white;
+    padding: 8px 16px;
+    border: 1px solid transparent;
+    border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
+    cursor: pointer;
+    user-select: none;
+}
+
+/*style items (options):*/
+.select-items {
+    position: absolute;
+    background-color: rgb(100, 100, 100);
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 99;
+}
+
+/*hide the items when the select box is closed:*/
+.select-hide {
+    display: none;
+}
+
+.select-items div:hover, .same-as-selected {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.container-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(100, 100, 100, 0.8);
+    z-index: 100;
+    visibility: visible;
+}
+
+.container {
+    position: absolute;
+    left: 40px;
+    right: 40px;
+    top: 40px;
+    bottom: 40px;
+    background: white;
+    margin: 0 auto;
+    display: block;
+    border-radius: 3px;
+}
+
+.container-contents {
+    position: absolute;
+    overflow-y: auto;
+    margin-left: 10px;
+    left: 0px;
+    right: 0px;
+    top: 30px;
+    bottom: 0px;
+    white-space: nowrap;
+}
+
+.input-box {
+    border: 1px grey solid;
+    padding: 5px;
+    border-radius: 5px;
+    display: inline-block;
+    background: white;
+}
+
+.input-box>input {
+    font-size: 20px;
+    font-family: Palatino;
+    border: none;
+    overflow: hidden;
+}
+
+:not(.input-box)>input {
+    border: none;
+    font-family: Palatino;
+}
+
+.magnifying-glass {
+    float: right;
+    margin-left: 5px;
+    font-size: 20px;
+    font-family: Palatino;
+    cursor: pointer;
+}
+
+.hide {
+    display: none;
+}
+
+div#main {
+    top: 50px;
+    bottom: 50px;
+    overflow-y: auto;
+    position: fixed;
+    width: 100%;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background: lightgrey;
+    left: 0;
+    padding-left: 10px;
+    height: 50px;
+}
+
+td.center-full-row {
+    text-align: center;
+    font-weight: bold;
+}

@@ -1,0 +1,25 @@
+<!doctype html>
+<html style="height: 100%;">
+    <head>
+        <title>ProKartuli</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/general.css') }}">
+        <script type="text/javascript" src="{{ url_for('static', filename='js/select_translator.js') }}"></script>
+    </head>
+
+    <body>
+        {% include 'components/topbar.html' %}
+        <div id="main">
+            <div style="top: 0; width: 100%;">
+                <h1 style="text-align: center;">ProKartuli</h1>
+                <h2 style="text-align: center;">A Language-Learning Tool</h2>
+            </div>
+            <div class style="text-align: center;">
+                <button class="button" onclick="window.location.href = '/test'">Test</button>
+                <button class="button" onclick="window.location.href = '/customize'">Customize</button>
+            </div>
+        </div>
+        <footer>
+            <div style="margin-top: 10px; margin-bottom: 10px;">Copyright © 2020 – Elliot Paton-Simpson</div>
+        </footer>
+    </body>
+</html>

@@ -1,0 +1,38 @@
+<div class="sidebar">
+    <div id="sidebar-left" class="sidebar-left">
+        <a id="sidebar-left-home" href="/">
+            <svg height="40" width="40">
+                <image height="40" width="40" xlink:href="{{ url_for('static', filename='images/home.svg') }}"/>
+            </svg>
+        </a>
+    </div>
+    <div id="sidebar-center" class="sidebar-center">
+        <button id="sidebar-center-translator" class="sidebar-center-button" onclick="window.location.reload();" style="cursor: pointer;">
+            {% if topbar|length > 0 %}
+                {{ topbar[0][2] }}
+                <span style="font-weight: bold;">→</span>
+                {{ topbar[0][5] }}
+            {% else %}
+                Start!
+            {% endif %}
+        </button>
+        {% if topbar|length > 0 %}
+        <div class="sidebar-center-drop">
+            {% for translator in topbar[1:] %}
+                <div>
+                    <button class="sidebar-center-button" onclick="selectTranslator({{ translator[0] }}, {{ translator[3] }});" style="cursor: pointer;">
+                        {{ translator[2] }}
+                        <span style="font-weight: bold;">→</span>
+                        {{ translator[5] }}
+                    </button>
+                </div>
+            {% endfor %}
+            <div>
+                <button class="sidebar-center-button" onclick="window.location = '/languages';" style="cursor: pointer;">
+                    More
+                </button>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
