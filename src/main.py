@@ -1,6 +1,8 @@
 from src.application import app
 # noinspection PyUnresolvedReferences
-from src.modules.pages import mainpage, languages, test, customize
+import src.modules.misc
+# noinspection PyUnresolvedReferences
+from src.modules.pages import mainpage, languages, test, customize, test_sheet
 from logging import getLogger, ERROR
 
 
@@ -13,4 +15,4 @@ max_sheets = 5
 
 
 if __name__ == '__main__':
-    app.run('localhost', 5000, debug=True)
+    app.run('prokartuli', debug=True)

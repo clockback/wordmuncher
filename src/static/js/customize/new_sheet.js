@@ -95,8 +95,7 @@ function changeNewSheetName() {
 
     // Points the request at the appropriate command.
     request.open(
-      "GET",
-      "/customize/sheet_already_exists?name=" + encodeURIComponent(name), true
+      "GET", "/sheet_already_exists?name=" + encodeURIComponent(name), true
     );
 
     // Sends the request off.

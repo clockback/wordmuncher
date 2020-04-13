@@ -1,0 +1,35 @@
+<!doctype html>
+<html style="height: 100%;">
+    <head>
+        <title>ProKartuli</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/general.css') }}">
+        <script type="text/javascript" src="{{ url_for('static', filename='js/test/test_sheet.js') }}"></script>
+    </head>
+
+    <body>
+        {% include 'components/testbar.html' %}
+        <div id="main" tabindex="-1">
+            <div class="test-area">
+                <div>
+                    <h1 id="sheet-name">{{ sheet_name }}</h1>
+                    {% for i in range(5) %}{% include 'components/star.html' %}{% endfor %}
+                    <p id="question-text"></p>
+                    <div class="answer-area">
+                        <div class="textarea-container">
+                            <textarea id="answer-box" autocomplete="off" placeholder="Type your answer" onkeypress="hitEnterAnswerBox(this, event);" oninput="typeAnswerBox(this, event);"></textarea>
+                        </div>
+                        <div>
+                            <button id="go-button" class="button button-disabled" style="float: right;">Check</button>
+                            <div class="bar-chart-container">
+                                <div class="bar-chart" style="width: 100%;"></div>
+                                <div class="bar-chart-figure">100% complete</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="hide-screen" class="container-background container-background-opaque"></div>
+        </div>
+        <div id="try-again" class="alert" style="top: 0px; visibility: visible;">Check your spelling.</div>
+    </body>
+</html>

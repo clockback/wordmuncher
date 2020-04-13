@@ -1,0 +1,22 @@
+<div id="pre-test-sheet-container-background" class="container-background container-background-transparent hide" onkeydown="keyDownOnTestSheetContainer(event);">
+    <div class="container">
+        <div style="background: rgb(200, 200, 255); height: 30px;">
+            <div style="float: right; margin-right: 10px; margin-top: 5px;">
+                <svg height="20" width="20" style="cursor: pointer;" onclick="hideTestSheetInterface();">
+                    <image height="20" width="20" xlink:href="{{ url_for('static', filename='images/close.svg') }}"/>
+                </svg>
+            </div>
+        </div>
+        <div class="container-contents">
+            <h1>Title</h1>
+            <div class="bar-chart-container">
+                <div class="bar-chart" style="width: 0%;"></div>
+                <div class="bar-chart-figure">0% complete</div>
+            </div>
+            <div style="margin-top: 10px;">
+                <button id="go-button-container" class="button" onclick="goTestSheet();">Go!</button>
+                <button id="back-button-container" class="button" onclick="hideTestSheetInterface();">Back</button>
+            </div>
+        </div>
+    </div>
+</div>

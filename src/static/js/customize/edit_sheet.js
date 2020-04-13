@@ -140,7 +140,7 @@ function changeEditSheetName() {
     // Points the request at the appropriate command.
     request.open(
       "GET",
-      "/customize/sheet_already_exists?name=" + encodeURIComponent(name)
+      "/sheet_already_exists?name=" + encodeURIComponent(name)
       + "&prior=" + encodeURIComponent(prior), true
     );
 

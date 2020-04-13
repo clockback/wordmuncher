@@ -3,6 +3,10 @@ from pathlib import Path
 from typing import List, Optional
 
 
+# Contains settings
+max_rows = 5
+
+
 def get_connection() -> sql.Connection:
     """Connects to the local database and constructs the required
     tables.

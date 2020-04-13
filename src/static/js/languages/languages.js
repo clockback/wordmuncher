@@ -1,4 +1,30 @@
 window.addEventListener('load', function() {
+  // Finds the two translate buttons once the page has loaded.
+  var items, i;
+  items = document.querySelectorAll(
+    "#translate_from .select-items>div,#translate_to .select-items>div"
+  );
+  for (i = 0; i < items.length; i++) {
+
+    // Binds the selectLanguage function to them both.
+    items[i].addEventListener("click", selectLanguage);
+  }
+});
+
+function selectLanguage() {
+  if (document.querySelectorAll(
+    "#translate_from .same-as-selected,#translate_to .same-as-selected"
+  ).length == 2)
+  {
+    saveButton = document.querySelector("#save_button>button");
+    saveButton.classList.remove("button-disabled");
+    saveButton.setAttribute(
+      "onclick", "this.parentNode.parentNode.submit()"
+    );
+  }
+}
+
+window.addEventListener('load', function() {
   var selectDiv, i, j, selectElement, selectedOption, hiddenOptions,
     hiddenOption;
 
@@ -8,7 +34,7 @@ window.addEventListener('load', function() {
     selectElement = selectDiv[i].getElementsByTagName("select")[0];
 
     // For each element, create a new DIV that will act as the selected item:
-    selectedOption = document.createElement("DIV");
+    selectedOption = document.createElement("div");
     selectedOption.setAttribute("class", "select-selected");
     selectedOption.innerHTML = selectElement.options[
       selectElement.selectedIndex
@@ -16,13 +42,13 @@ window.addEventListener('load', function() {
     selectDiv[i].appendChild(selectedOption);
 
     // For each element, create a new DIV that will contain the option list:
-    hiddenOptions = document.createElement("DIV");
+    hiddenOptions = document.createElement("div");
     hiddenOptions.setAttribute("class", "select-items select-hide");
     for (j = 1; j < selectElement.length; j++) {
 
       /* For each option in the original select element, create a new DIV that
       will act as an option item: */
-      hiddenOption = document.createElement("DIV");
+      hiddenOption = document.createElement("div");
       hiddenOption.innerHTML = selectElement.options[j].innerHTML;
       hiddenOption.addEventListener("click", function(e) {
 
@@ -62,6 +88,7 @@ window.addEventListener('load', function() {
       this.classList.toggle("select-arrow-active");
     });
   }
+
   function closeAllSelect(element) {
     /* A function that will close all select boxes in the document, except the
     current select box: */

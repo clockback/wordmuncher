@@ -19,15 +19,12 @@ button.button {
     font-family: Palatino;
     white-space: nowrap;
     border-radius: 2px;
-    padding-left: 20px;
-    padding-right: 20px;
-    padding-top: 6px;
-    padding-bottom: 6px;
+    padding: 6px 20px;
     margin-top: 10px;
     margin-bottom: 10px;
 }
 
-button.add-row,button.trash-can {
+.add-row,.trash-can {
     border: none;
     background: none;
     cursor: pointer;
@@ -56,7 +53,7 @@ button.button.button-disabled {
     background: pink;
 }
 
-div.sidebar {
+.sidebar {
     width: 100%;
     position: fixed;
     height: 50px;
@@ -236,9 +233,15 @@ a:visited {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(100, 100, 100, 0.8);
     z-index: 100;
-    visibility: visible;
+}
+
+.container-background-transparent {
+    background-color: rgba(100, 100, 100, 0.8);
+}
+
+.container-background-opaque {
+    background-color: white;
 }
 
 .container {
@@ -257,10 +260,10 @@ a:visited {
     position: absolute;
     overflow-y: auto;
     margin-left: 10px;
-    left: 0px;
-    right: 0px;
+    left: 0;
+    right: 0;
     top: 30px;
-    bottom: 0px;
+    bottom: 0;
     white-space: nowrap;
 }
 
@@ -316,5 +319,149 @@ footer {
 
 td.center-full-row {
     text-align: center;
+    font-weight: bold;
+}
+
+.bar-chart-container {
+    position: relative;
+    margin-left: 5px;
+    height: 1.5em;
+    display: inline-block;
+    width: 200px;
+    border-radius: 10px;
+    background-color: rgb(230, 230, 230);
+    overflow: hidden;
+}
+
+.bar-chart {
+    position: absolute;
+    background-color: rgb(0, 255, 0);
+    height: 1.5em;
+    border-radius: 10px;
+}
+
+.bar-chart-figure {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+}
+
+textarea {
+    background-color: transparent;
+    border: none;
+    overflow: none;
+    outline: none;
+    box-shadow: none;
+    resize: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    font-family: Palatino;
+    font-size: 20px;
+    text-align: left;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+}
+
+div.textarea-container {
+    background: rgb(230, 230, 230);
+    max-height: 200px;
+    height: 150px;
+    border-radius: 5px;
+    border: solid;
+    border-width: 2px;
+    padding: 5px;
+}
+
+.alert {
+    position: absolute;
+    font-weight: bold;
+    font-size: 18px;
+    width: 100%;
+    text-align: center;
+    background: rgba(100, 100, 100, 0.5);
+    padding-bottom: 3px;
+}
+
+div.test-area {
+    max-width: 700px;
+    max-height: 600px;
+    overflow-y: auto;
+    margin: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+
+div.test-area:first-child {
+    text-align: center;
+    max-width: 700px;
+    margin: auto;
+    padding: 5px;
+}
+
+div.test-area h1 {
+    text-align: center;
+    font-size: 40px;
+}
+
+div.answer-area {
+    max-width: 600px;
+    margin: auto;
+}
+
+#question-text {
+    font-weight: bold;
+    font-size: 25px;
+    margin: 10px;
+}
+
+div.answer-area div.bar-chart-container {
+    float: right;
+    margin-top: 17.5px;
+    margin-right: 10px;
+}
+
+#testbar {
+    width: 100%;
+    position: fixed;
+    height: 50px;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: rgb(100, 0, 0);
+    z-index: 150;
+}
+
+#testbar-left {
+    position: absolute;
+    height: 50px;
+}
+
+#testbar-left>button {
+    margin: auto;
+    border: none;
+    color: white;
+    background: rgb(100, 0, 0);
+    font-size: 25px;
+    font-family: Palatino;
+    height: 50px;
+    padding: 0 20px;
+}
+
+#testbar-center {
+    display: flex;
+    margin: auto;
+    height: 50px;
+}
+
+#testbar-center-text {
+    margin: auto;
+    font-size: 25px;
+    color: white;
     font-weight: bold;
 }
