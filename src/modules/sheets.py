@@ -5,7 +5,10 @@ from ..application import app
 from .sql_handler import escape, get_connection, max_rows
 
 
-def get_sheets(searches: Optional[Set[str]] = None, offset: int = 0) -> List:
+def get_sheets(
+        searches: Optional[Set[str]] = None, offset: int = 0,
+        populated_only: bool = False
+) -> List:
     conn = get_connection()
 
     # Constructs the part of the query that filters the searches.
@@ -14,24 +17,33 @@ def get_sheets(searches: Optional[Set[str]] = None, offset: int = 0) -> List:
         for _search in searches
     ) if searches else ""
 
+    populated_join = (
+        "INNER JOIN mentions ON mentions.sheet = all_sheets.sheet"
+        if populated_only else ""
+    )
+    populated_group = "GROUP BY all_sheets.sheet" if populated_only else ""
+
     return list(conn.execute(
         f"""
         SELECT
             name,
             IFNULL(CAST(
-                100 * CAST(SUM(completed) AS FLOAT)
-                    / (SUM(completed) + SUM(needed - so_far != 0))
-                AS INT
+                100 * CAST(SUM(points) + COUNT(completed) AS FLOAT) / (
+                    SUM(points) + COUNT(completed)
+                        + SUM(needed - so_far != 0)
+                ) AS INT
             ), 0) AS score,
             COUNT(entries.entry) AS no_entries
             FROM (
-                SELECT sheet, name FROM sheets AS all_sheets
+                SELECT all_sheets.sheet, name FROM sheets AS all_sheets
+                {populated_join}
                 WHERE all_sheets.translator = (
                     SELECT translator FROM translators
                     ORDER BY last_used DESC
                     LIMIT 1
                 )
                 {search_queries}
+                {populated_group}
                 ORDER BY LOWER(all_sheets.name)
                 LIMIT {max_rows + 1} OFFSET ?
             ) AS sheets

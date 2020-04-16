@@ -8,7 +8,7 @@ from src.modules.sql_handler import get_connection, get_recent_translations
 
 @app.route('/test')
 def test():
-    sheets = get_sheets()
+    sheets = get_sheets(populated_only=True)
     load_more = len(sheets) > max_rows
 
     conn = get_connection()
