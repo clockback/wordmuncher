@@ -5,7 +5,7 @@ from setuptools import setup
 
 
 package_name = 'prokartuli'
-filename = 'prokartuli/__init__.py'
+filename = 'prokartuli/main.py'
 
 
 def get_version():
