@@ -42,8 +42,8 @@ setup(
     packages=[
         'prokartuli',
         'prokartuli.src',
-        'prokartuli.modules',
-        'prokartuli.modules.pages'
+        'prokartuli.src.modules',
+        'prokartuli.src.modules.pages'
     ],
     include_package_data=True,
     entry_points={
