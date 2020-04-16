@@ -2,7 +2,9 @@ from src.application import app
 # noinspection PyUnresolvedReferences
 import src.modules.misc
 # noinspection PyUnresolvedReferences
-from src.modules.pages import mainpage, languages, test, customize, test_sheet
+from src.modules.pages import (
+    customize, languages, mainpage, results, test, test_sheet
+)
 from logging import getLogger, ERROR
 
 

@@ -4,15 +4,24 @@
         <title>ProKartuli</title>
         <link rel="stylesheet" href="{{ url_for('static', filename='css/general.css') }}">
         <script type="text/javascript" src="{{ url_for('static', filename='js/test/test_sheet.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/stars.js') }}"></script>
     </head>
 
     <body>
         {% include 'components/testbar.html' %}
-        <div id="main" tabindex="-1">
+        <audio id="correct-sound">
+          <source src="/static/audio/correct.mp3" type="audio/mpeg">
+          Your browser does not support the audio element.
+        </audio>
+        <audio id="wrong-sound">
+          <source src="/static/audio/wrong.mp3" type="audio/mpeg">
+          Your browser does not support the audio element.
+        </audio>
+        <div class="entire-test-area" tabindex="-1">
             <div class="test-area">
                 <div>
                     <h1 id="sheet-name">{{ sheet_name }}</h1>
-                    {% for i in range(5) %}{% include 'components/star.html' %}{% endfor %}
+                    <div id="stars-container" style="height: 23px;"></div>
                     <p id="question-text"></p>
                     <div class="answer-area">
                         <div class="textarea-container">
@@ -30,6 +39,7 @@
             </div>
             <div id="hide-screen" class="container-background container-background-opaque"></div>
         </div>
-        <div id="try-again" class="alert" style="top: 0px; visibility: visible;">Check your spelling.</div>
+        <div id="try-again" class="alert" style="top: 20px; visibility: visible;">Check your spelling.</div>
+        {% include 'components/wrong_answer.html' %}
     </body>
 </html>

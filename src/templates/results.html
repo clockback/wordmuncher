@@ -1,0 +1,47 @@
+<html>
+    <head>
+        <title>ProKartuli</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/general.css') }}">
+        <script type="text/javascript" src="{{ url_for('static', filename='js/select_translator.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/results/results.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/stars.js') }}"></script>
+    </head>
+
+    <body style="margin: 0px; padding: 0px;">
+        {% include 'components/topbar.html' %}
+        <div id="main">
+            <div style="margin-left: 5px;">
+                <p>
+                    Score:
+                    <span id="final-score" style="font-weight: bold; font-size: 25px;"></span>
+                </p>
+                <table>
+                    <tbody class="header-row">
+                        <tr>
+                            <th>
+                                Question
+                            </th>
+                            <th>
+                                # Correct
+                            </th>
+                            <th>
+                                # Incorrect
+                            </th>
+                            <th>
+                                Stars
+                            </th>
+                        </tr>
+                    </tbody>
+                    <tbody id="results-table">
+                    </tbody>
+                </table>
+                <div style="margin-top: 10px;">
+                    <button id="finish-button" class="button" onclick="window.location.href = '/test';">Finish</button>
+                </div>
+            </div>
+        </div>
+        <footer>
+            <div style="margin-top: 10px; margin-bottom: 10px;">Copyright © 2020 – Elliot Paton-Simpson</div>
+        </footer>
+    </body>
+</html>

@@ -11,7 +11,7 @@ body {
     margin-right: 0;
 }
 
-button.button {
+.button {
     border: none;
     color: white;
     font-size: 20px;
@@ -33,24 +33,33 @@ button.button {
     padding-right: 10px;
 }
 
-button.button:hover:not(.button-disabled) {
+.button:hover:not(.button-disabled) {
     background: rgb(210, 0, 0) !important;
 }
 
-button.button.button-disabled {
+.button.button-disabled {
     cursor: not-allowed;
 }
 
-button.button:not(.button-disabled):not(:hover) {
+.button:not(.button-disabled):not(:hover) {
     background: red;
 }
 
-button.button:not(.button-disabled) {
+.button:not(.button-disabled) {
     cursor: pointer;
 }
 
-button.button.button-disabled {
+.button.button-disabled {
     background: pink;
+}
+
+button:focus {
+    outline: 1px dotted grey;
+    outline-offset: -1px;
+}
+
+button::-moz-focus-inner {
+  border: 0;
 }
 
 .sidebar {
@@ -233,7 +242,7 @@ a:visited {
     left: 0;
     right: 0;
     bottom: 0;
-    z-index: 100;
+    z-index: 300;
 }
 
 .container-background-transparent {
@@ -254,6 +263,7 @@ a:visited {
     margin: 0 auto;
     display: block;
     border-radius: 3px;
+    overflow: hidden;
 }
 
 .container-contents {
@@ -264,7 +274,6 @@ a:visited {
     right: 0;
     top: 30px;
     bottom: 0;
-    white-space: nowrap;
 }
 
 .input-box {
@@ -299,7 +308,7 @@ a:visited {
     display: none;
 }
 
-div#main {
+#main {
     top: 50px;
     bottom: 50px;
     overflow-y: auto;
@@ -324,7 +333,7 @@ td.center-full-row {
 
 .bar-chart-container {
     position: relative;
-    margin-left: 5px;
+    margin: 0 0 5px 5px;
     height: 1.5em;
     display: inline-block;
     width: 200px;
@@ -385,10 +394,9 @@ div.textarea-container {
     padding-bottom: 3px;
 }
 
-div.test-area {
+.test-area {
     max-width: 700px;
     max-height: 600px;
-    overflow-y: auto;
     margin: auto;
     position: absolute;
     top: 0;
@@ -397,19 +405,19 @@ div.test-area {
     right: 0;
 }
 
-div.test-area:first-child {
+.test-area:first-child {
     text-align: center;
     max-width: 700px;
     margin: auto;
     padding: 5px;
 }
 
-div.test-area h1 {
+.test-area h1 {
     text-align: center;
     font-size: 40px;
 }
 
-div.answer-area {
+.answer-area {
     max-width: 600px;
     margin: auto;
 }
@@ -420,7 +428,7 @@ div.answer-area {
     margin: 10px;
 }
 
-div.answer-area div.bar-chart-container {
+.answer-area .bar-chart-container {
     float: right;
     margin-top: 17.5px;
     margin-right: 10px;
@@ -438,25 +446,32 @@ div.answer-area div.bar-chart-container {
 }
 
 #testbar-left {
-    position: absolute;
     height: 50px;
+    display: block;
 }
 
 #testbar-left>button {
     margin: auto;
-    border: none;
-    color: white;
-    background: rgb(100, 0, 0);
-    font-size: 25px;
-    font-family: Palatino;
-    height: 50px;
     padding: 0 20px;
+    top: 50%;
+    height: 100%;
+    cursor: pointer;
+    border: none;
+    position: absolute;
+    -ms-transform: translate(0%, -50%);
+    transform: translate(0%, -50%);
+    background: none;
 }
 
 #testbar-center {
+    position: absolute;
     display: flex;
     margin: auto;
     height: 50px;
+    top: 0px;
+    left: 50%;
+    -ms-transform: translate(-50%, 0%);
+    transform: translate(-50%, 0%);
 }
 
 #testbar-center-text {
@@ -464,4 +479,24 @@ div.answer-area div.bar-chart-container {
     font-size: 25px;
     color: white;
     font-weight: bold;
+}
+
+.entire-test-area {
+    top: 50px;
+    bottom: 0;
+    overflow-y: auto;
+    position: absolute;
+    width: 100%;
+}
+
+.completed-colour {
+    background-color: rgb(100, 255, 100)
+}
+
+.incomplete-colour {
+    background-color: rgb(200, 200, 100)
+}
+
+.failed-colour {
+    background-color: rgb(255, 100, 100)
 }

@@ -3,13 +3,34 @@ from typing import Dict, Tuple
 
 from ...application import app
 from ..sheets import get_sheets, max_rows
-from src.modules.sql_handler import get_recent_translations
+from src.modules.sql_handler import get_connection, get_recent_translations
 
 
 @app.route('/test')
 def test():
     sheets = get_sheets()
     load_more = len(sheets) > max_rows
+
+    conn = get_connection()
+
+    # Refreshes all of the entries.
+    conn.execute(
+        """
+        UPDATE entries SET points = points + 1, completed = NULL,
+            so_far = 0
+        WHERE completed IS NOT NULL AND
+            (datetime('now') > datetime(completed, '+1 day')
+                and points = 0)
+            OR (datetime('now') > datetime(completed, '+7 day')
+                and points = 1)
+            OR (datetime('now') > datetime(completed, '+1 month')
+                and points = 2)
+            OR (datetime('now') > datetime(completed, '+3 month')
+                and points = 3)
+        """
+    )
+    conn.commit()
+
     return render_template(
         "test.html", sheets=sheets[:max_rows], load_more=load_more,
         current_search=request.form.get("sheet query", ""),

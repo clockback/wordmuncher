@@ -1,0 +1,33 @@
+<div id="wrong-answer-box" class="container-background container-background-transparent hide" onkeydown="keyDownOnWrongAnswerContainer(event);">
+    <div class="container">
+        <div style="background: rgb(200, 200, 255); height: 30px;">
+            <div onclick="clickNextButton();" style="float: right; margin-right: 10px; margin-top: 5px;">
+                <svg height="20" width="20" style="cursor: pointer;" onclick="hideEditEntryInterface();">
+                    <image height="20" width="20" xlink:href="{{ url_for('static', filename='images/close.svg') }}"/>
+                </svg>
+            </div>
+        </div>
+        <div class="container-contents">
+            <p>Question:</p>
+            <div id="failed-question" style="font-size: 27px; font-weight: bold;"></div>
+            <p>Your answer:</p>
+            <div id="wrong-answer" style="padding: 0 1em; display: inline-block; background: rgb(255, 200, 200); color: rgb(100, 0, 0); font-size: 27px; font-weight: bold;"></div>
+            <p>Correct answer:</p>
+            <div id="right-answer" style="padding: 0 1em; display: inline-block; background: rgb(200, 255, 200); color: rgb(0, 100, 0); font-size: 27px; font-weight: bold;"></div>
+            <div>
+                <button id="next-button" class="button" onclick="clickNextButton();">Next</button>
+                <button id="add-to-answers-button" onclick="addToAnswers();" class="button">Add to answers</button>
+            </div>
+            <p id="other-answers-header">Other answers:</p>
+            <div id="answers-table-container" style="overflow-x: auto; overflow-y: hidden">
+                <table id="answers-table" class="table">
+                    <tbody class="main-rows main-rows-alt">
+                        <tr onmouseenter="hoverAnswer(this);" onmouseleave="noHoverAnswer(this);">
+                            <td>a</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

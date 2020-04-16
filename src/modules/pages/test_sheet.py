@@ -1,5 +1,6 @@
 from difflib import SequenceMatcher
 from flask import abort, render_template, request
+import json
 
 from ...application import app
 from ..sql_handler import get_connection
@@ -30,8 +31,12 @@ def test_sheet(sheet_name: str):
 def get_question():
     conn = get_connection()
 
+    previous = list(filter(bool, json.loads(
+        request.args.get("previous", "[]")
+    )))
+
     question, points, needed, so_far = conn.execute(
-        """
+        f"""
         SELECT question, points, needed, so_far FROM sheets
         INNER JOIN mentions ON mentions.sheet = sheets.sheet
         INNER JOIN entries ON mentions.entry = entries.entry
@@ -41,9 +46,22 @@ def get_question():
             SELECT MAX(last_used) FROM translators
         )
         AND name = ?
-        LIMIT 1
+        ORDER BY
+        {
+            "CASE " + " ".join(
+                f"WHEN question = ? THEN {i}" for i, _ in
+                enumerate(previous, 1)
+            ) + " ELSE 0 END, "
+            if previous else ""
+        }
+        CASE
+            WHEN (needed > 2 OR so_far = 1) THEN 0
+            WHEN (so_far = 0) THEN 1
+            ELSE 2 END,
+        RANDOM()
+        LIMIT 1;
         """,
-        (request.args['sheet'],)
+        (request.args['sheet'], *previous)
     ).fetchone()
 
     return {
@@ -61,10 +79,11 @@ def check_answer():
     sheet = request.args["sheet"]
     question = request.args["question"]
     answer = request.args["answer"]
+    already = int(request.args["already_attempted"])
 
-    possible_solutions = [x[0] for x in conn.execute(
+    possible_solutions = conn.execute(
         """
-        SELECT solutions.text FROM sheets
+        SELECT displayed, solutions.text FROM sheets
         INNER JOIN translators
             ON sheets.translator = translators.translator
         INNER JOIN mentions ON mentions.sheet = sheets.sheet
@@ -76,24 +95,38 @@ def check_answer():
         AND sheets.name = ?
         AND question = ?
         """, (sheet, question)
-    ).fetchall()]
+    ).fetchall()
 
-    if answer in possible_solutions:
+    if answer in map(lambda x: x[1], possible_solutions):
         return {
             "correct": True,
             "close": True,
+            "closest": None,
+            "others": []
         }, 200
 
-    for possible_solution in possible_solutions:
-        if SequenceMatcher(None, answer, possible_solution).ratio() >= 0.9:
+    best, best_ratio = None, 0
+
+    for _, possible_solution in possible_solutions:
+        result = SequenceMatcher(None, answer, possible_solution).ratio()
+        if result >= 0.9 and not already:
             return {
                 "correct": False,
-                "close": True
-            }
+                "close": True,
+                "closest": None,
+                "others": []
+            }, 200
+        elif result > best_ratio and result > 0.6:
+            best, best_ratio = possible_solution, result
+
+    if not best:
+        best = next(filter(lambda x: x[0], possible_solutions))[1]
 
     return {
         "correct": False,
-        "close": False
+        "close": False,
+        "closest": best,
+        "others": [x[1] for x in possible_solutions if x[1] != best]
     }, 200
 
 
@@ -141,3 +174,97 @@ def correct_answer():
         "so_far": so_far
     }, 200
 
+
+@app.route('/test_sheet/incorrect_answer')
+def incorrect_answer():
+    conn = get_connection()
+
+    sheet = request.args["sheet"]
+    question = request.args["question"]
+
+    entry, needed = conn.execute(
+        """
+        SELECT entries.entry, needed FROM sheets
+        INNER JOIN mentions ON sheets.sheet = mentions.sheet
+        INNER JOIN entries ON entries.entry = mentions.entry
+        WHERE sheets.name = ?
+        AND question = ?;
+        """, (sheet, question)
+    ).fetchone()
+
+    conn.execute(
+        """
+        UPDATE entries
+            SET needed = ?, so_far = 0, completed = NULL
+        WHERE entry = ?;
+        """, (min((needed + 1, 10)), entry)
+    )
+
+    conn.commit()
+
+    return {}, 200
+
+
+@app.route('/test_sheet/remove_answer')
+def remove_answer():
+    conn = get_connection()
+
+    sheet_name = request.args["sheet"]
+    question = request.args["question"]
+    answer = request.args["answer"]
+
+    solution = conn.execute(
+        """
+        SELECT solution FROM sheets
+        INNER JOIN translators
+            ON translators.translator = sheets.translator
+        INNER JOIN mentions ON mentions.sheet = sheets.sheet
+        INNER JOIN entries ON mentions.entry = entries.entry
+        INNER JOIN solutions ON entries.entry = solutions.entry
+        WHERE last_used = (
+            SELECT MAX(last_used) FROM translators
+        )
+        AND name = ?
+        AND question = ?
+        AND solutions.text = ?
+        """, (sheet_name, question, answer)
+    ).fetchone()[0]
+
+    conn.execute("DELETE FROM solutions WHERE solution = ?", (solution,))
+    conn.commit()
+
+    return {}, 204
+
+
+@app.route('/test_sheet/add_answer')
+def add_answer():
+    conn = get_connection()
+
+    sheet_name = request.args["sheet"]
+    question = request.args["question"]
+    answer = request.args["answer"]
+
+    entry = conn.execute(
+        """
+        SELECT entries.entry FROM entries
+        INNER JOIN translators
+            ON translators.translator = entries.translator
+        INNER JOIN mentions ON mentions.entry = entries.entry
+        INNER JOIN sheets ON mentions.sheet = sheets.sheet
+        WHERE last_used = (
+            SELECT MAX(last_used) FROM translators
+        )
+        AND sheets.name = ?
+        AND question = ?
+        """, (sheet_name, question)
+    ).fetchone()[0]
+
+    conn.execute(
+        """
+        INSERT INTO solutions (entry, text, displayed) VALUES
+            (?, ?, 0);
+        """, (entry, answer)
+    )
+    conn.commit()
+
+    return {}, 204
