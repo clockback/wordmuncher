@@ -5,7 +5,7 @@ from setuptools import setup
 
 
 package_name = 'prokartuli'
-filename = 'prokartuli/src/main.py'
+filename = 'src/main.py'
 
 
 def get_version():
@@ -37,7 +37,7 @@ setup(
     author='clockback',
     author_email='elliot@p-s.co.nz',
     description='Prokartuli',
-    url='https://github.com/clockback/outbreak',
+    url='https://github.com/clockback/prokartuli',
     long_description=get_long_description(),
     packages=[package_name, 'bin'],
     include_package_data=True,
