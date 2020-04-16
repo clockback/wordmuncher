@@ -45,6 +45,14 @@ setup(
         'prokartuli.src.modules',
         'prokartuli.src.modules.pages'
     ],
+    package_data=[
+        '*.js',
+        '*.mp3',
+        '*.css',
+        '*.png',
+        '*.svg',
+        '*.html'
+    ],
     include_package_data=True,
     entry_points={
         'console_scripts': [
