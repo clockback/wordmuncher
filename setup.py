@@ -5,7 +5,7 @@ from setuptools import setup
 
 
 package_name = 'prokartuli'
-filename = 'src/main.py'
+filename = 'prokartuli/main.py'
 
 
 def get_version():
@@ -39,11 +39,11 @@ setup(
     description='Prokartuli',
     url='https://github.com/clockback/prokartuli',
     long_description=get_long_description(),
-    packages=['src'],
+    packages=['prokartuli'],
     include_package_data=True,
     entry_points={
         'console_scripts': [
-            'prokartuli = src.main:main'
+            'prokartuli = prokartuli.main:main'
         ]
     },
     license='License :: OSI Approved :: MIT License',

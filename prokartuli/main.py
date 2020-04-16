@@ -1,10 +1,10 @@
 __version__ = '0.1.0'
 
-from src.application import app
+from prokartuli.application import app
 # noinspection PyUnresolvedReferences
-import src.modules.misc
+import prokartuli.modules.misc
 # noinspection PyUnresolvedReferences
-from src.modules.pages import (
+from prokartuli.modules.pages import (
     customize, languages, mainpage, results, test, test_sheet
 )
 from logging import getLogger, ERROR
