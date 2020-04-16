@@ -1,2 +1,1 @@
-recursive-include templates *.html
-recursive static *.js *.mp3 *.css *.png *.svg
+recursive-include src *.js *.mp3 *.css *.png *.svg *.html
