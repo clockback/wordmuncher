@@ -4,7 +4,7 @@ from prokartuli.application import app
 # noinspection PyUnresolvedReferences
 import prokartuli.modules.misc
 # noinspection PyUnresolvedReferences
-from prokartuli.modules.pages import (
+from .modules.pages import (
     customize, languages, mainpage, results, test, test_sheet
 )
 from logging import getLogger, ERROR
