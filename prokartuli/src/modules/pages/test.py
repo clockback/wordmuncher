@@ -3,7 +3,7 @@ from typing import Dict, Tuple
 
 from ...application import app
 from ..sheets import get_sheets, max_rows
-from prokartuli.modules.sql_handler import (
+from ..sql_handler import (
     get_connection, get_recent_translations
 )
 
