@@ -39,7 +39,7 @@ setup(
     description='Prokartuli',
     url='https://github.com/clockback/prokartuli',
     long_description=get_long_description(),
-    packages=[package_name, 'src'],
+    packages=['src'],
     include_package_data=True,
     entry_points={
         'console_scripts': [
