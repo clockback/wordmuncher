@@ -1,6 +1,6 @@
 __version__ = '0.1.0'
 
-from prokartuli.application import app
+from .application import app
 # noinspection PyUnresolvedReferences
 import prokartuli.modules.misc
 # noinspection PyUnresolvedReferences
