@@ -1,1 +1,12 @@
-recursive-include src *.js *.mp3 *.css *.png *.svg *.html
+include src/static/audio/*.mp3
+include src/static/css/*.css
+include src/static/css/languages/*.css
+include src/static/images/*.png
+include src/static/images/*.svg
+include src/static/js/*.js
+include src/static/customize/*.js
+include src/static/languages/*.js
+include src/static/results/*.js
+include src/static/test/*.js
+include src/templates/*.html
+include src/templates/components/*.html
