@@ -1,3 +1,5 @@
+__version__ = '0.1.0'
+
 from src.application import app
 # noinspection PyUnresolvedReferences
 import src.modules.misc
@@ -16,5 +18,9 @@ log.setLevel(ERROR)
 max_sheets = 5
 
 
-if __name__ == '__main__':
+def main():
     app.run('prokartuli', debug=True)
+
+
+if __name__ == '__main__':
+    main()

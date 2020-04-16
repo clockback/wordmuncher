@@ -43,7 +43,7 @@ setup(
     include_package_data=True,
     entry_points={
         'console_scripts': [
-            'prokartuli = src.main'
+            'prokartuli = src.main:main'
         ]
     },
     license='License :: OSI Approved :: MIT License',
