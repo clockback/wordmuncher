@@ -1,0 +1,1 @@
+recursive-include examples *.js *.mp3 *.css *.png *.svg *.html
