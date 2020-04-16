@@ -1,1 +1,4 @@
 recursive-include prokartuli *.js *.mp3 *.css *.png *.svg *.html
+include MANIFEST.in
+include README.md
+include gpl-3.0.md

@@ -23,7 +23,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 # Installation
 
-You will need Python3.6 (or a later version). There are no other packages required to install. It is batteries included.
+You will need Python3.6 (or a later version) to run ProKartuli.
 
 To install ProKartuli on Linux, use the following command:
 ```
