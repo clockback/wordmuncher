@@ -15,7 +15,7 @@ max_sheets = 5
 
 
 def main():
-    serve(app, host='0.0.0.0', port=8080)
+    serve(app, host='0.0.0.0', port=8080, threads=6)
 
 
 if __name__ == '__main__':

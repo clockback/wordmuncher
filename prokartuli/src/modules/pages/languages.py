@@ -40,7 +40,7 @@ def languages():
         conn.commit()
         return redirect('/', code=302)
     else:
-        ls = conn.execute("SELECT language, name, flag FROM languages")
+        ls = conn.execute("SELECT language, name, flag FROM languages;")
         return render_template(
             "languages.html",
             topbar=get_recent_translations(conn),

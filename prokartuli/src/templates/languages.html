@@ -1,4 +1,4 @@
-<html>
+<html onclick="closeAllSelect();">
     <head>
         <title>ProKartuli</title>
         <link rel="stylesheet" href="{{ url_for('static', filename='css/general.css') }}">
@@ -9,10 +9,8 @@
     <body>
         {% include 'components/topbar.html' %}
         <div id="main">
-            <form style="height: 300px; margin-left: 5px;" method="POST">
-                <div style="margin-bottom: 10px;">
-                    <p>Translate from:</p>
-                </div>
+            <div style="height: 300px; margin-left: 5px;">
+                <p>Translate from:</p>
                 <div style="display: inline-block; width: 300px;">
                     <div id="translate_from" class="custom-select">
                         <select autocomplete="off" name="translate_from">
@@ -25,9 +23,7 @@
                         </select>
                     </div>
                 </div>
-                <div>
-                    <p>Translate to:</p>
-                </div>
+                <p>Translate to:</p>
                 <div style="display: inline-block; width: 300px;">
                     <div id="translate_to" class="custom-select">
                         <select autocomplete="off" name="translate_to">
@@ -40,11 +36,10 @@
                         </select>
                     </div>
                 </div>
-                <div id="save_button" style="margin-top: 10px;">
-                    <button class="button button-disabled">Save</button>
+                <div id="save_button">
+                    <button style="margin-top: 10px;" class="button button-disabled">Save</button>
                 </div>
-
-            </form>
+            </div>
         </div>
         <footer>
             <div style="margin-top: 10px; margin-bottom: 10px;">Copyright © 2020 – Elliot Paton-Simpson</div>
