@@ -1,9 +1,9 @@
 from flask import render_template, request
 from typing import Dict, Tuple
 
-from ...application import app
-from ..sheets import get_sheets, max_rows
-from ..sql_handler import (
+from prokartuli.src.application import app
+from prokartuli.src.modules.sheets import get_sheets, max_rows
+from prokartuli.src.modules.sql_handler import (
     get_connection, get_recent_translations
 )
 

@@ -2,8 +2,8 @@ from difflib import SequenceMatcher
 from flask import abort, render_template, request
 import json
 
-from ...application import app
-from ..sql_handler import get_connection
+from prokartuli.src.application import app
+from prokartuli.src.modules.sql_handler import get_connection
 
 
 @app.route('/test/<path:sheet_name>')

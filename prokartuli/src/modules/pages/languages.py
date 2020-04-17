@@ -4,8 +4,10 @@ from typing import Tuple
 from flask import redirect, render_template, request
 
 
-from ...application import app
-from ..sql_handler import get_connection, get_recent_translations
+from prokartuli.src.application import app
+from prokartuli.src.modules.sql_handler import (
+    get_connection, get_recent_translations
+)
 
 
 @app.route('/languages', methods=['POST', 'GET'])
