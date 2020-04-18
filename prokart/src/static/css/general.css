@@ -1,3 +1,13 @@
+:root {
+    --base-color: #36486B;
+    --hover-color: #4040A1;
+    --disabled-color: #B4B4FF;
+    --odd-row: #FEFBD8;
+    --light-container: #FEFBD8;
+    --even-row: #FFFFE8;
+    --select-row: #618685
+}
+
 h1, h2, p, th, td, div {
     font-family: "Palatino";
 }
@@ -34,7 +44,7 @@ body {
 }
 
 .button:hover:not(.button-disabled) {
-    background: rgb(210, 0, 0) !important;
+    background: var(--hover-color) !important;
 }
 
 .button.button-disabled {
@@ -42,7 +52,7 @@ body {
 }
 
 .button:not(.button-disabled):not(:hover) {
-    background: red;
+    background: var(--base-color);
 }
 
 .button:not(.button-disabled) {
@@ -50,7 +60,7 @@ body {
 }
 
 .button.button-disabled {
-    background: pink;
+    background: var(--disabled-color);
 }
 
 button:focus {
@@ -68,7 +78,7 @@ button::-moz-focus-inner {
     height: 50px;
     top: 0;
     left: 0;
-    background: rgb(50, 50, 70);
+    background: var(--base-color);
     z-index: 3;
 }
 
@@ -101,14 +111,17 @@ button::-moz-focus-inner {
     line-height: 50px;
     border: none;
     color: white;
-    background-color: rgb(50, 50, 70);
     width: 130px;
     font-size: 23px;
     font-family: "Palatino";
 }
 
+.sidebar-center-button:not(:hover) {
+    background-color: var(--base-color);
+}
+
 .sidebar-center-button:hover {
-    background: rgb(30, 30, 30);
+    background-color: var(--hover-color);
     font-size: 25;
 }
 
@@ -146,27 +159,28 @@ th, td {
 }
 
 tbody.header-row > tr:not(.selected-row) {
-    background: rgb(240, 240, 240);
+    background: var(--odd-row);
 }
 
 tbody.main-rows:not(.main-rows-alt) > tr:nth-child(even):not(.selected-row) {
-    background: rgb(240, 240, 240);
+    background: var(--odd-row);
 }
 
 tbody.main-rows:not(.main-rows-alt) > tr:nth-child(odd):not(.selected-row) {
-    background: rgb(248, 248, 248);
+    background: var(--even-row);
 }
 
 tbody.main-rows.main-rows-alt > tr:nth-child(odd):not(.selected-row) {
-    background: rgb(240, 240, 240);
+    background: var(--odd-row);
 }
 
 tbody.main-rows.main-rows-alt > tr:nth-child(even):not(.selected-row) {
-    background: rgb(248, 248, 248);
+    background: var(--even-row);
 }
 
 tbody.main-rows>tr.selected-row {
-    background: lightgreen;
+    background: var(--select-row);
+    color: white;
 }
 
 tbody.hidden-rows {
@@ -192,7 +206,7 @@ a:visited {
 }
 
 .select-selected {
-    background-color: rgb(100, 100, 100);
+    background-color: var(--base-color);
     z-index: 2;
 }
 
@@ -227,7 +241,7 @@ a:visited {
 /*style items (options):*/
 .select-items {
     position: absolute;
-    background-color: rgb(100, 100, 100);
+    background-color: var(--base-color);
     top: 100%;
     left: 0;
     right: 0;
@@ -327,7 +341,7 @@ footer {
     position: fixed;
     bottom: 0;
     width: 100%;
-    background: rgb(50, 50, 70);
+    background: var(--base-color);
     left: 0;
     padding-left: 10px;
     height: 50px;
@@ -453,7 +467,7 @@ div.textarea-container {
     top: 0;
     left: 0;
     right: 0;
-    background: rgb(100, 0, 0);
+    background: var(--base-color);
     z-index: 150;
 }
 
@@ -551,4 +565,16 @@ div.textarea-container {
 
 .flag-button-selected {
     background-color: blue;
+}
+
+.title-bar {
+    background: var(--base-color);
+    height: 30px;
+}
+
+.boxed-area {
+    background: var(--light-container);
+    display: inline-block;
+    padding: 10px;
+    margin-right: 5px;
 }
