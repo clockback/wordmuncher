@@ -12,10 +12,6 @@ from prokart.src.modules.pages import (
 from prokart.src.modules.sql_handler import get_connection
 
 
-# Contains settings
-max_sheets = 5
-
-
 def main():
     get_connection(check=True)
     try:
