@@ -32,6 +32,4 @@ def summary_table():
 
     return_entries = {answer: scores for (answer, *scores) in entries}
 
-    print(return_entries)
-
     return {"entries": return_entries}, 200
