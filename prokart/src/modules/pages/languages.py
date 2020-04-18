@@ -54,7 +54,12 @@ def update_translator():
 def languages():
     conn = get_connection()
 
-    ls = conn.execute("SELECT language, name, flag FROM languages;")
+    ls = conn.execute(
+        """
+        SELECT language, name, flags.text FROM languages
+        INNER JOIN flags ON flags.flag = languages.flag;
+        """
+    )
     return render_template(
         "languages.html",
         topbar=get_recent_translations(conn),
@@ -103,10 +108,14 @@ def add_language():
     name = request.args["name"]
     flag = request.args["flag"]
 
+    (flag_s,) = conn.execute(
+        "SELECT flag FROM flags WHERE text = ?;", (flag,)
+    ).fetchone()
+
     conn.execute(
         """
         INSERT INTO languages (name, flag) VALUES (?, ?);
-        """, (name, flag)
+        """, (name, flag_s)
     )
     conn.commit()
 

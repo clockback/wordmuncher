@@ -317,7 +317,9 @@ def create_db(file: str) -> sql.Connection:
         CREATE TABLE IF NOT EXISTS languages (
             language INTEGER PRIMARY KEY AUTOINCREMENT,
             name VARCHAR (40) NOT NULL,
-            flag CHAR (2),
+            flag INTEGER NOT NULL
+                REFERENCES flags (flag)
+                    ON DELETE CASCADE,
             CONSTRAINT one_name UNIQUE (name)
         );
         """
@@ -421,15 +423,19 @@ def get_recent_translations(
 
     return conn.execute(
         """
-        SELECT from_l, l1.name, l1.flag, to_l, l2.name, l2.flag FROM (
+        SELECT from_l, l1.name, f1.text, to_l, l2.name, f2.text FROM (
             SELECT from_l, to_l FROM translators
             ORDER BY last_used DESC
             LIMIT 3
         )
-        INNER JOIN languages as l1
+        INNER JOIN languages AS l1
             ON l1.language = from_l
-        INNER JOIN languages as l2
+        INNER JOIN languages AS l2
             ON l2.language = to_l
+        INNER JOIN flags AS f1
+            ON l1.flag = f1.flag
+        INNER JOIN flags AS f2
+            ON l2.flag = f2.flag
         """
     ).fetchall()
 
