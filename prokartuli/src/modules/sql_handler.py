@@ -28,6 +28,7 @@ def create_db(file: str) -> sql.Connection:
     :rtype: sql.Connection
     """
     conn = sql.connect(file)
+
     # Allows foreign keys to be used.
     conn.execute("PRAGMA foreign_keys = ON;")
 

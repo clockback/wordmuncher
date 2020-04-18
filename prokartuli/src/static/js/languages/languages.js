@@ -155,6 +155,10 @@ function expandFlags(element) {
         newButton.setAttribute("dataToggle", "tooltip");
         newButton.title = country;
         newButton.innerHTML = flag;
+        if (flag == element.innerHTML)
+        {
+          newButton.style.display = "none";
+        }
         hiddenFlags.appendChild(newButton);
       }
       hiddenLanguages.style.display = null;
@@ -165,14 +169,6 @@ function expandFlags(element) {
   }
   else
   {
-    for (var i = 0; i < allCollapseFlags.length; i ++)
-    {
-      if (allCollapseFlags[i].innerHTML == element.innerHTML)
-      {
-        allCollapseFlags[i].style.display = "none";
-      }
-    }
-
     hiddenLanguages.style.display = null;
   }
 }
