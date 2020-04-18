@@ -97,3 +97,12 @@ def add_language():
     conn.commit()
 
     return "", 204
+
+
+@app.route('/languages/get_flags')
+def get_flags():
+    conn = get_connection()
+
+    flags = conn.execute("SELECT text, country FROM flags;").fetchall()
+
+    return {"flags": flags}, 200

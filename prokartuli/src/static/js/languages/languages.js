@@ -109,19 +109,53 @@ function saveTranslator() {
 
 function expandFlags(element) {
   var allCollapseFlags = document.getElementsByClassName("flag-button");
-  for (var i = 0; i < allCollapseFlags.length; i ++)
-  {
-    if (allCollapseFlags[i].innerHTML == element.innerHTML)
-    {
-      allCollapseFlags[i].style.display = "none";
-    }
-  }
-
   var hiddenLanguages = document.getElementById("hidden-flags");
-  hiddenLanguages.style.display = null;
   element.classList.add("flag-drop-down");
   element.onclick = function () {
     condenseFlags(this);
+  };
+
+  if (allCollapseFlags.length == 0)
+  {
+    var request = new XMLHttpRequest();
+
+    request.onload = function () {
+      returnJSON = JSON.parse(request.responseText);
+      sheets = returnJSON["flags"];
+      var hiddenFlags = document.getElementById("hidden-flags");
+
+      for (var i = 0; i < sheets.length; i ++)
+      {
+        var flag = sheets[i][0];
+        var country = sheets[i][1];
+
+        var newButton = document.createElement("button");
+        newButton.classList.add("flag-button");
+        newButton.onclick = function () {
+          selectFlag(this);
+        };
+        newButton.setAttribute("dataToggle", "tooltip");
+        newButton.title = country;
+        newButton.innerHTML = flag;
+        hiddenFlags.appendChild(newButton);
+      }
+      hiddenLanguages.style.display = null;
+    };
+
+    request.open("GET", "/languages/get_flags");
+    request.send();
+  }
+  else
+  {
+    for (var i = 0; i < allCollapseFlags.length; i ++)
+    {
+      if (allCollapseFlags[i].innerHTML == element.innerHTML)
+      {
+        allCollapseFlags[i].style.display = "none";
+      }
+    }
+
+    hiddenLanguages.style.display = null;
   }
 }
 
