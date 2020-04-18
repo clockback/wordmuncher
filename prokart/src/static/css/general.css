@@ -81,6 +81,13 @@ button::-moz-focus-inner {
     float: left;
 }
 
+.sidebar-left>button {
+    margin-top: 2px;
+    border: none;
+    cursor: pointer;
+    background: none;
+}
+
 .sidebar-center {
     display: block;
     margin: 0 auto;

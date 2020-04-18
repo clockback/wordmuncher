@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="40mm"
+   height="40mm"
+   viewBox="0 0 40 40"
+   version="1.1"
+   id="svg8"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   sodipodi:docname="logo.svg"
+   inkscape:export-filename="/home/elliot/pyprojects/prokart/prokart/src/static/images/logo.png"
+   inkscape:export-xdpi="190.49933"
+   inkscape:export-ydpi="190.49933">
+  <defs
+     id="defs2">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient839">
+      <stop
+         style="stop-color:#ff0000;stop-opacity:1"
+         offset="0"
+         id="stop835" />
+      <stop
+         style="stop-color:#ffa000;stop-opacity:1"
+         offset="1"
+         id="stop837" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient839"
+       id="linearGradient890"
+       x1="404.46497"
+       y1="227.03935"
+       x2="438.97403"
+       y2="260.27338"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.26458333,0,0,0.26458333,-92.141145,210.381)" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="2"
+     inkscape:cx="15.014985"
+     inkscape:cy="25.313973"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1853"
+     inkscape:window-height="1025"
+     inkscape:window-x="67"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-257)">
+    <path
+       style="fill:url(#linearGradient890);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.28614962;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 6.577893,256.99986 C 2.933644,256.99986 0,259.9335 0,263.57775 v 26.84384 C 0,294.06584 2.933644,297 6.577893,297 h 1.048515 v -35.08623 c 1.779439,-0.35834 3.663582,-0.60907 5.652368,-0.75241 1.988785,-0.14334 3.732958,-0.21497 5.233273,-0.21497 5.408101,0 9.560134,0.98554 12.456085,2.95641 2.895952,1.93502 4.343922,5.12397 4.343922,9.56737 0,4.47923 -1.465271,7.72242 -4.396113,9.72912 -2.930845,1.97086 -7.117998,2.95589 -12.560991,2.95589 H 15.790767 V 297 h 17.630965 c 3.644246,0 6.578409,-2.93416 6.578409,-6.57841 v -26.84384 c 0,-3.64425 -2.934163,-6.57789 -6.578409,-6.57789 z m 12.457636,11.09544 c -0.593145,0 -1.186071,0.0179 -1.779219,0.0537 -0.558255,0.0358 -1.046851,0.0717 -1.465543,0.10749 v 10.75025 h 2.564185 c 2.826168,0 4.954609,-0.39453 6.38514,-1.18288 1.43053,-0.78834 2.146122,-2.25745 2.146122,-4.40748 0,-1.03918 -0.191876,-1.89936 -0.575675,-2.5802 -0.348911,-0.68085 -0.872627,-1.21814 -1.570447,-1.61231 -0.66293,-0.43 -1.48285,-0.71656 -2.4598,-0.85989 -0.976947,-0.17917 -2.058469,-0.26872 -3.244763,-0.26872 z"
+       id="rect870"
+       inkscape:connector-curvature="0" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot917"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       transform="matrix(0.26458333,0,0,0.26458333,0.46772169,8.1383572)"><flowRegion
+         id="flowRegion919"><rect
+           id="rect921"
+           width="254.912"
+           height="97.934288"
+           x="339.7648"
+           y="259.8494" /></flowRegion><flowPara
+         id="flowPara923"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:85.33333588px;font-family:Ubuntu;-inkscape-font-specification:Ubuntu">rokart</flowPara></flowRoot>  </g>
+</svg>
