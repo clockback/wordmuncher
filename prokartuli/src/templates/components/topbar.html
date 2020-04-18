@@ -7,7 +7,7 @@
         </a>
     </div>
     <div id="sidebar-center" class="sidebar-center">
-        <button id="sidebar-center-translator" class="sidebar-center-button" onclick="window.location.reload();" style="cursor: pointer;">
+        <button id="sidebar-center-translator" class="sidebar-center-button" onclick="clickTopButton(this);" style="cursor: pointer;">
             {% if topbar|length > 0 %}
                 {{ topbar[0][2] }}
                 <span style="font-weight: bold;">→</span>

@@ -20,3 +20,14 @@ function selectTranslator(from_l, to_l) {
   // Sends the request off.
   request.send();
 }
+
+function clickTopButton(element) {
+  if (element.innerHTML = "Start!")
+  {
+    window.location.href = "/languages";
+  }
+  else
+  {
+    window.location.reload();
+  }
+}

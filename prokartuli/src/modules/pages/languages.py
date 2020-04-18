@@ -10,42 +10,56 @@ from prokartuli.src.modules.sql_handler import (
 )
 
 
-@app.route('/languages', methods=['POST', 'GET'])
+@app.route('/languages/update_translator')
+def update_translator():
+    conn = get_connection()
+
+    (from_l,) = conn.execute(
+        """
+        SELECT language FROM languages WHERE name = ?;
+        """, (request.args['from'],)
+    ).fetchone()
+
+    (to_l,) = conn.execute(
+        """
+        SELECT language FROM languages WHERE name = ?;
+        """, (request.args['to'],)
+    ).fetchone()
+
+    conn.execute(
+        f"""
+        INSERT INTO translators
+            (from_l, to_l)
+        SELECT ?, ?
+        WHERE NOT EXISTS (
+            SELECT 1 FROM translators
+            WHERE from_l = ?
+                AND to_l = ?
+        )
+        """, (from_l, to_l, from_l, to_l)
+    )
+    conn.execute(
+        """
+        UPDATE translators
+        SET last_used = datetime('now')
+        WHERE from_l = ?
+            AND to_l = ?;
+        """, (from_l, to_l)
+    )
+    conn.commit()
+    return "", 204
+
+
+@app.route('/languages')
 def languages():
     conn = get_connection()
 
-    if request.method == 'POST':
-        from_l = request.form['translate_from']
-        to_l = request.form['translate_to']
-        conn.execute(
-            f"""
-            INSERT INTO translators
-                (from_l, to_l)
-            SELECT ?, ?
-            WHERE NOT EXISTS (
-                SELECT 1 FROM translators
-                WHERE from_l = ?
-                    AND to_l = ?
-            )
-            """, (from_l, to_l, from_l, to_l)
-         )
-        conn.execute(
-            """
-            UPDATE translators
-            SET last_used = datetime('now')
-            WHERE from_l = ?
-                AND to_l = ?;
-            """, (from_l, to_l)
-        )
-        conn.commit()
-        return redirect('/', code=302)
-    else:
-        ls = conn.execute("SELECT language, name, flag FROM languages;")
-        return render_template(
-            "languages.html",
-            topbar=get_recent_translations(conn),
-            languages=list(enumerate(ls, 1))
-        )
+    ls = conn.execute("SELECT language, name, flag FROM languages;")
+    return render_template(
+        "languages.html",
+        topbar=get_recent_translations(conn),
+        languages=list(enumerate(ls, 1))
+    )
 
 
 @app.route('/languages/set')

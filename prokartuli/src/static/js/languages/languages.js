@@ -104,7 +104,25 @@ function populateSelectBoxes() {
 }
 
 function saveTranslator() {
-  window.location.href = "/";
+  var request = new XMLHttpRequest();
+
+  var translateFrom = document.querySelector(
+    "#translate_from>.select-selected"
+  ).innerHTML.trim().slice(5);
+  var translateTo = document.querySelector(
+    "#translate_to>.select-selected"
+  ).innerHTML.trim().slice(5);
+
+  request.onload = function () {
+    window.location.href = "/";
+  };
+
+  request.open(
+    "GET", "/languages/update_translator?from="
+    + encodeURIComponent(translateFrom) + "&to="
+    + encodeURIComponent(translateTo)
+  );
+  request.send();
 }
 
 function expandFlags(element) {
