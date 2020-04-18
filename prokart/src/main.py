@@ -18,7 +18,10 @@ max_sheets = 5
 
 def main():
     get_connection(check=True)
-    serve(app, host='0.0.0.0', port=8080, threads=6)
+    try:
+        serve(app, host='0.0.0.0', port=8080, threads=6)
+    except OSError:
+        raise OSError("Application already running at 0.0.0.0:8000")
 
 
 if __name__ == '__main__':
