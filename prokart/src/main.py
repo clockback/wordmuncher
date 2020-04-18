@@ -13,7 +13,7 @@ from prokart.src.modules.pages import (
 )
 from prokart.src.modules.sql_handler import get_connection
 
-webbrowser.open("https://0.0.0.0:8080")
+webbrowser.open("http://0.0.0.0:8080")
 
 
 def main():
