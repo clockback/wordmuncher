@@ -6,12 +6,12 @@ from typing import Dict, List, Optional, Set, Tuple
 from flask import render_template, redirect, request, url_for
 
 
-from prokartuli.src.application import app
-from prokartuli.src.modules.sql_handler import (
+from prokart.src.application import app
+from prokart.src.modules.sql_handler import (
     escape, get_connection, get_recent_translations, last_insert_rowid,
     max_rows
 )
-from prokartuli.src.modules.sheets import get_sheets
+from prokart.src.modules.sheets import get_sheets
 
 
 def get_entries(searches: Optional[Set[str]] = None, offset: int = 0) -> List:

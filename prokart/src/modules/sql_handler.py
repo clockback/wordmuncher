@@ -15,8 +15,8 @@ def get_connection(check: bool = False) -> sql.Connection:
     :rtype: sql.Connection
     """
     home = Path.home()
-    path = Path(home, ".prokartuli")
-    if len(list(home.glob(".prokartuli"))) == 0:
+    path = Path(home, ".prokart")
+    if len(list(home.glob(".prokart"))) == 0:
         path.mkdir(parents=True, exist_ok=True)
     db_file = str(Path(path, "vocab.db"))
     return create_db(db_file) if check else sql.connect(db_file)

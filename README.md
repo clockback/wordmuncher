@@ -1,7 +1,7 @@
-# ProKartuli
+# Prokart
 
 ## About
-ProKartuli is an open-source web-application to help you create and
+Prokart is an open-source web-application to help you create and
 learn with vocabulary sheets.
 
 ## License
@@ -23,9 +23,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 # Installation
 
-You will need Python3.6 (or a later version) to run ProKartuli.
+You will need Python3.6 (or a later version), pip and git to run
+Prokart.
 
-To install ProKartuli on Linux, use the following command:
+To install Prokart on Linux, use the following command:
 ```
-$ pip3 install git+https://github.com/clockback/prokartuli
+$ pip3 install git+https://github.com/clockback/prokart
 ```

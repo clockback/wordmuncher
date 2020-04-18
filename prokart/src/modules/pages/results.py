@@ -1,8 +1,8 @@
 from flask import render_template, request
 import json
 
-from prokartuli.src.application import app
-from prokartuli.src.modules.sql_handler import (
+from prokart.src.application import app
+from prokart.src.modules.sql_handler import (
     get_recent_translations, get_connection
 )
 

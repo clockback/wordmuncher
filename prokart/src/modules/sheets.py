@@ -1,8 +1,8 @@
 from typing import List, Optional, Set
 from flask import request
 
-from prokartuli.src.application import app
-from prokartuli.src.modules.sql_handler import escape, get_connection, max_rows
+from prokart.src.application import app
+from prokart.src.modules.sql_handler import escape, get_connection, max_rows
 
 
 def get_sheets(

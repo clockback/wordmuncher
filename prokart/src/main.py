@@ -2,14 +2,14 @@ __version__ = '0.1.0'
 
 from waitress import serve
 
-from prokartuli.src.application import app
+from prokart.src.application import app
 # noinspection PyUnresolvedReferences
-from prokartuli.src.modules import misc
+from prokart.src.modules import misc
 # noinspection PyUnresolvedReferences
-from prokartuli.src.modules.pages import (
+from prokart.src.modules.pages import (
     customize, languages, mainpage, results, test, test_sheet
 )
-from prokartuli.src.modules.sql_handler import get_connection
+from prokart.src.modules.sql_handler import get_connection
 
 
 # Contains settings

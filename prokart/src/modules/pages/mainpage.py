@@ -1,8 +1,8 @@
 from flask import render_template
 
 
-from prokartuli.src.application import app
-from prokartuli.src.modules.sql_handler import get_recent_translations
+from prokart.src.application import app
+from prokart.src.modules.sql_handler import get_recent_translations
 
 
 @app.route('/')

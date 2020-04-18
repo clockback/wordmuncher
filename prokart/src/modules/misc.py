@@ -1,7 +1,7 @@
 from flask import render_template
 from werkzeug.exceptions import NotFound
 
-from prokartuli.src.application import app
+from prokart.src.application import app
 
 
 @app.errorhandler(404)

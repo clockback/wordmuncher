@@ -4,8 +4,8 @@
 from setuptools import setup
 
 
-package_name = 'prokartuli'
-filename = 'prokartuli/src/main.py'
+package_name = 'prokart'
+filename = 'prokart/src/main.py'
 
 
 def get_version():
@@ -36,19 +36,19 @@ setup(
     install_requires=get_requirements(),
     author='clockback',
     author_email='elliot@p-s.co.nz',
-    description='Prokartuli',
-    url='https://github.com/clockback/prokartuli',
+    description='Prokart',
+    url='https://github.com/clockback/prokart',
     long_description=get_long_description(),
     packages=[
-        'prokartuli',
-        'prokartuli.src',
-        'prokartuli.src.modules',
-        'prokartuli.src.modules.pages'
+        'prokart',
+        'prokart.src',
+        'prokart.src.modules',
+        'prokart.src.modules.pages'
     ],
     include_package_data=True,
     entry_points={
         'console_scripts': [
-            'prokartuli = prokartuli.src.main:main'
+            'prokart = prokart.src.main:main'
         ]
     },
     license='License :: OSI Approved :: MIT License',
