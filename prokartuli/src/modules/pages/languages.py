@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Dict, Tuple
 
 
 from flask import redirect, render_template, request
@@ -49,10 +49,8 @@ def languages():
 
 
 @app.route('/languages/set')
-def set_languages() -> Tuple:
-    """Changes the languages selection.
-    :return: None
-    """
+def set_languages() -> Tuple[str, int]:
+    """Changes the languages selection."""
     conn = get_connection()
     from_l = request.args['from']
     to_l = request.args['to']
@@ -66,3 +64,36 @@ def set_languages() -> Tuple:
     )
     conn.commit()
     return '', 204
+
+
+@app.route('/languages/check_language')
+def check_languages() -> Tuple[Dict[str, bool], int]:
+    """Returns whether or not the user has already made a language with
+    the provided name.
+    """
+    conn = get_connection()
+    name = request.args['name']
+    found = bool(conn.execute(
+        """
+        SELECT 1 FROM languages
+        WHERE name = ?
+        """, (name,)
+    ).fetchone())
+    return {"found": found}, 200
+
+
+@app.route('/languages/add_language')
+def add_language():
+    conn = get_connection()
+
+    name = request.args["name"]
+    flag = request.args["flag"]
+
+    conn.execute(
+        """
+        INSERT INTO languages (name, flag) VALUES (?, ?);
+        """, (name, flag)
+    )
+    conn.commit()
+
+    return "", 204

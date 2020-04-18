@@ -61,7 +61,7 @@ function updateSelectBox(event) {
     "#translate_from .same-as-selected,#translate_to .same-as-selected"
   ).length == 2)
   {
-    saveButton = document.getElementsById("save_button");
+    saveButton = document.getElementById("save-button");
     saveButton.classList.remove("button-disabled");
     saveButton.onclick = saveTranslator;
   }
@@ -105,6 +105,101 @@ function populateSelectBoxes() {
 
 function saveTranslator() {
   window.location.href = "/";
+}
+
+function expandFlags(element) {
+  var allCollapseFlags = document.getElementsByClassName("flag-button");
+  for (var i = 0; i < allCollapseFlags.length; i ++)
+  {
+    if (allCollapseFlags[i].innerHTML == element.innerHTML)
+    {
+      allCollapseFlags[i].style.display = "none";
+    }
+  }
+
+  var hiddenLanguages = document.getElementById("hidden-flags");
+  hiddenLanguages.style.display = null;
+  element.classList.add("flag-drop-down");
+  element.onclick = function () {
+    condenseFlags(this);
+  }
+}
+
+function condenseFlags(element) {
+  var hiddenLanguages = document.getElementById("hidden-flags");
+  hiddenLanguages.style.display = "none";
+  element.classList.remove("flag-drop-down");
+  element.onclick = function () {
+    expandFlags(this);
+  }
+}
+
+function selectFlag(element) {
+  var allCollapseFlags = document.getElementsByClassName("flag-button");
+  for (var i = 0; i < allCollapseFlags.length; i ++)
+  {
+    allCollapseFlags[i].style.display = null;
+  }
+  element.style.display = "none";
+  var flagButton = document.getElementById("choose-flag");
+  flagButton.innerHTML = element.innerHTML;
+  condenseFlags(flagButton);
+  flagButton.focus();
+}
+
+function changeLanguageName() {
+  var languageName = document.getElementById("language-name").value;
+  var addButton = document.getElementById("add-button");
+
+  if (languageName && languageName.length <= 40)
+  {
+    var request = new XMLHttpRequest();
+
+    request.onload = function () {
+      var returnJSON = JSON.parse(request.responseText);
+      if (returnJSON["found"])
+      {
+        addButton.classList.add("button-disabled");
+        addButton.onclick = null;
+      }
+      else
+      {
+        addButton.classList.remove("button-disabled");
+        addButton.onclick = saveLanguage;
+      }
+    };
+
+    request.open(
+      "GET", "/languages/check_language?name=" + encodeURIComponent(languageName)
+    );
+
+    request.send();
+  }
+  else
+  {
+    addButton.classList.add("button-disabled");
+    addButton.onclick = null;
+  }
+}
+
+function saveLanguage() {
+  var addButton = document.getElementById("add-button");
+  addButton.onclick = null;
+  addButton.classList.add("button-disabled");
+  var languageName = document.getElementById("language-name").value;
+  var flagText = document.getElementById("choose-flag").innerHTML;
+  var request = new XMLHttpRequest();
+
+  request.onload = function () {
+    window.location.reload(true);
+  }
+
+  request.open(
+    "GET", "/languages/add_language?name=" + encodeURIComponent(languageName)
+    + "&flag=" + encodeURIComponent(flagText)
+  );
+
+  request.send();
 }
 
 window.addEventListener('load', populateSelectBoxes);

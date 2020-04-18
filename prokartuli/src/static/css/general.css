@@ -500,3 +500,42 @@ div.textarea-container {
 .failed-colour {
     background-color: rgb(255, 100, 100)
 }
+
+.flag-drop {
+    border: none;
+    font-size: 33px;
+    padding-right: 25px;
+    cursor: pointer;
+}
+
+.flag-drop:hover {
+    background-color: white;
+}
+
+.flag-drop:not(.flag-drop-down):after {
+    content: "";
+    border: 6px solid transparent;
+    border-color: transparent transparent #000 transparent;
+    position: absolute;
+    top: 10px;
+    right: 5px;
+}
+
+.flag-drop.flag-drop-down:after {
+    content: "";
+    border: 6px solid transparent;
+    border-color: #000 transparent transparent transparent;
+    position: absolute;
+    top: 16px;
+    right: 5px;
+}
+
+.flag-button {
+    border: none;
+    font-size: 33px;
+    cursor: pointer;
+}
+
+.flag-button-selected {
+    background-color: blue;
+}
