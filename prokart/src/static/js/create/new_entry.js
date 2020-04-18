@@ -121,7 +121,7 @@ function changeNewEntryQuestion() {
 
     // Points the request at the appropriate command.
     request.open(
-      "GET", "/customize/entry_already_exists?question="
+      "GET", "/create/entry_already_exists?question="
       + encodeURIComponent(question), true
     );
 
@@ -299,7 +299,7 @@ function saveNewEntry()
 
   // Points the request at the appropriate command.
   request.open(
-    "GET", "/customize/new_entry?question="
+    "GET", "/create/new_entry?question="
     + encodeURIComponent(question) + "&answer="
     + encodeURIComponent(answer) + "&moreAnswers="
     + encodeURIComponent(moreAnswersString) + "&sheets="
@@ -399,7 +399,7 @@ function newEntryLoadMoreSheets(numberAlready) {
 
   // Points the request at the appropriate command.
   request.open(
-    "GET", "/customize/load_more_sheets?already=" + numberAlready
+    "GET", "/create/load_more_sheets?already=" + numberAlready
     + "&query=" + encodeURIComponent(query), true
   );
 
@@ -468,7 +468,7 @@ function newEntrySearchSheets()
 
   // Points the request at the appropriate command.
   request.open(
-    "GET", "/customize/search?query=" + encodeURIComponent(query)
+    "GET", "/create/search?query=" + encodeURIComponent(query)
     + "&sheets=1&entries=0", true
   );
 

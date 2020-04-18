@@ -86,7 +86,7 @@ function searchAll() {
 
   // Points the request at the appropriate command.
   request.open(
-    "GET", "/customize/search?query=" + encodeURIComponent(query)
+    "GET", "/create/search?query=" + encodeURIComponent(query)
     + "&sheets=1&entries=1", true
   );
 
@@ -137,7 +137,7 @@ function loadMoreSheets(numberAlready) {
 
   // Points the request at the appropriate command.
   request.open(
-    "GET", "/customize/load_more_sheets?already=" + numberAlready
+    "GET", "/create/load_more_sheets?already=" + numberAlready
     + "&query=" + encodeURIComponent(query), true
   );
 
@@ -188,7 +188,7 @@ function loadMoreEntries(numberAlready) {
 
   // Points the request at the appropriate command.
   request.open(
-    "GET", "/customize/load_more_entries?already=" + numberAlready
+    "GET", "/create/load_more_entries?already=" + numberAlready
     + "&query=" + encodeURIComponent(query), true
   );
 
@@ -315,7 +315,7 @@ function deleteSheet() {
 
   // Points the request at the appropriate command.
   request.open(
-    "GET", "/customize/delete_sheet?sheet=" + encodeURIComponent(nameToDelete),
+    "GET", "/create/delete_sheet?sheet=" + encodeURIComponent(nameToDelete),
     true
   );
 
@@ -371,7 +371,7 @@ function deleteEntry() {
 
   // Points the request at the appropriate command.
   request.open(
-    "GET", "/customize/delete_entry?entry=" + encodeURIComponent(nameToDelete),
+    "GET", "/create/delete_entry?entry=" + encodeURIComponent(nameToDelete),
     true
   );
 

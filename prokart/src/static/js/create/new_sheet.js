@@ -136,7 +136,7 @@ function saveNewSheet() {
 
   // Points the request at the appropriate command.
   request.open(
-    "GET", "/customize/new_sheet?name=" + encodeURIComponent(sheetName)
+    "GET", "/create/new_sheet?name=" + encodeURIComponent(sheetName)
     + "&entries=" + encodeURIComponent(childEntriesString), true
   );
 
@@ -241,7 +241,7 @@ function newSheetLoadMoreEntries(numberAlready) {
 
   // Points the request at the appropriate command.
   request.open(
-    "GET", "/customize/load_more_entries?already=" + numberAlready
+    "GET", "/create/load_more_entries?already=" + numberAlready
     + "&query=" + encodeURIComponent(query), true
   );
 
@@ -310,7 +310,7 @@ function newSheetSearchEntries()
 
   // Points the request at the appropriate command.
   request.open(
-    "GET", "/customize/search?query=" + encodeURIComponent(query)
+    "GET", "/create/search?query=" + encodeURIComponent(query)
     + "&sheets=0&entries=1", true
   );
 

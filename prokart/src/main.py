@@ -1,5 +1,7 @@
 __version__ = '0.1.0'
 
+import webbrowser
+
 from waitress import serve
 
 from prokart.src.application import app
@@ -7,9 +9,11 @@ from prokart.src.application import app
 from prokart.src.modules import misc
 # noinspection PyUnresolvedReferences
 from prokart.src.modules.pages import (
-    customize, languages, mainpage, results, test, test_sheet
+    create, languages, mainpage, results, test, test_sheet
 )
 from prokart.src.modules.sql_handler import get_connection
+
+webbrowser.open("0.0.0.0:8080")
 
 
 def main():

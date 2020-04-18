@@ -59,7 +59,7 @@ function showEditSheetInterface(name) {
 
   // Points the request at the appropriate command.
   request.open(
-    "GET", "/customize/extant_entries?sheet=" + encodeURIComponent(name), true
+    "GET", "/create/extant_entries?sheet=" + encodeURIComponent(name), true
   );
 
   // Sends the request off.
@@ -184,7 +184,7 @@ function saveEditSheet() {
 
   // Points the request at the appropriate command.
   request.open(
-    "GET", "/customize/edit_sheet?name=" + encodeURIComponent(sheetName)
+    "GET", "/create/edit_sheet?name=" + encodeURIComponent(sheetName)
     + "&prior=" + encodeURIComponent(prior)
     + "&entries=" + encodeURIComponent(childEntriesString), true
   );
@@ -290,7 +290,7 @@ function editSheetLoadMoreEntries(numberAlready) {
 
   // Points the request at the appropriate command.
   request.open(
-    "GET", "/customize/load_more_entries?already=" + numberAlready
+    "GET", "/create/load_more_entries?already=" + numberAlready
     + "&query=" + encodeURIComponent(query), true
   );
 
@@ -359,7 +359,7 @@ function editSheetSearchEntries()
 
   // Points the request at the appropriate command.
   request.open(
-    "GET", "/customize/search?query=" + encodeURIComponent(query)
+    "GET", "/create/search?query=" + encodeURIComponent(query)
     + "&sheets=0&entries=1", true
   );
 

@@ -56,8 +56,8 @@ def get_entries(searches: Optional[Set[str]] = None, offset: int = 0) -> List:
     ))
 
 
-@app.route('/customize')
-def customize():
+@app.route('/create')
+def create():
     conn = get_connection()
 
     if not any(conn.execute("SELECT 1 FROM translators")):
@@ -67,7 +67,7 @@ def customize():
     entries = get_entries()
 
     return render_template(
-        "customize.html",
+        "create.html",
         sheets=sheets[:max_rows],
         entries=entries[:max_rows],
         topbar=get_recent_translations(),
@@ -76,7 +76,7 @@ def customize():
     )
 
 
-@app.route('/customize/load_more_sheets')
+@app.route('/create/load_more_sheets')
 def load_more_sheets() -> Tuple[Dict[str, str], int]:
     offset = int(request.args['already'])
     searches = request.args["query"].split(' ')
@@ -88,7 +88,7 @@ def load_more_sheets() -> Tuple[Dict[str, str], int]:
     }, 200
 
 
-@app.route('/customize/load_more_entries')
+@app.route('/create/load_more_entries')
 def load_more_entries() -> Tuple[Dict[str, str], int]:
     offset = int(request.args['already'])
     searches = request.args["query"].split(' ')
@@ -99,7 +99,7 @@ def load_more_entries() -> Tuple[Dict[str, str], int]:
     }, 200
 
 
-@app.route('/customize/search')
+@app.route('/create/search')
 def search_sheets_and_entries():
     queries = set(request.args["query"].split(' '))
 
@@ -123,7 +123,7 @@ def search_sheets_and_entries():
     }, 200
 
 
-@app.route('/customize/entry_already_exists')
+@app.route('/create/entry_already_exists')
 def entry_already_exists():
     conn = get_connection()
     already_there = bool(conn.execute(
@@ -142,7 +142,7 @@ def entry_already_exists():
     return {'already_there': already_there}, 200
 
 
-@app.route('/customize/new_sheet')
+@app.route('/create/new_sheet')
 def new_sheet():
     conn = get_connection()
 
@@ -214,7 +214,7 @@ def new_sheet():
     return {'already_there': False}, 200
 
 
-@app.route('/customize/edit_sheet')
+@app.route('/create/edit_sheet')
 def edit_sheet():
     conn = get_connection()
 
@@ -320,7 +320,7 @@ def edit_sheet():
     return {'already_there': False}, 200
 
 
-@app.route('/customize/delete_sheet')
+@app.route('/create/delete_sheet')
 def delete_sheet() -> Tuple[Dict, int]:
     conn = get_connection()
     name = request.args['sheet']
@@ -355,7 +355,7 @@ def delete_sheet() -> Tuple[Dict, int]:
     return {"entries": entries}, 200
 
 
-@app.route('/customize/delete_entry')
+@app.route('/create/delete_entry')
 def delete_entry():
     conn = get_connection()
     question = request.args['entry']
@@ -390,7 +390,7 @@ def delete_entry():
     return {"sheets": sheets}, 200
 
 
-@app.route('/customize/new_entry')
+@app.route('/create/new_entry')
 def new_entry():
     conn = get_connection()
 
@@ -475,7 +475,7 @@ def new_entry():
     return {"already_there": False}, 200
 
 
-@app.route('/customize/extant_entries')
+@app.route('/create/extant_entries')
 def extant_entries():
     conn = get_connection()
 
@@ -501,7 +501,7 @@ def extant_entries():
     return {"entries": entries}, 200
 
 
-@app.route('/customize/load_existing_entry')
+@app.route('/create/load_existing_entry')
 def load_existing_entry():
     conn = get_connection()
 
@@ -544,7 +544,7 @@ def load_existing_entry():
     return {"answers": answers, "sheets": sheets}, 200
 
 
-@app.route('/customize/edit_entry')
+@app.route('/create/edit_entry')
 def edit_entry():
     conn = get_connection()
 
