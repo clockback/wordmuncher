@@ -22,7 +22,7 @@ function selectTranslator(from_l, to_l) {
 }
 
 function clickTopButton(element) {
-  if (element.innerHTML = "Start!")
+  if (element.innerHTML == "Start!")
   {
     window.location.href = "/languages";
   }

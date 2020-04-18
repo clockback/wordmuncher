@@ -1,4 +1,4 @@
-from flask import render_template, request
+from flask import render_template, redirect, request, url_for
 from typing import Dict, Tuple
 
 from prokartuli.src.application import app
@@ -10,10 +10,13 @@ from prokartuli.src.modules.sql_handler import (
 
 @app.route('/test')
 def test():
+    conn = get_connection()
+
+    if not any(conn.execute("SELECT 1 FROM translators")):
+        return redirect(url_for("languages"))
+
     sheets = get_sheets(populated_only=True)
     load_more = len(sheets) > max_rows
-
-    conn = get_connection()
 
     # Refreshes all of the entries.
     conn.execute(

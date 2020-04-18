@@ -3,7 +3,7 @@ import json
 from typing import Dict, List, Optional, Set, Tuple
 
 
-from flask import render_template, request
+from flask import render_template, redirect, request, url_for
 
 
 from prokartuli.src.application import app
@@ -58,6 +58,11 @@ def get_entries(searches: Optional[Set[str]] = None, offset: int = 0) -> List:
 
 @app.route('/customize')
 def customize():
+    conn = get_connection()
+
+    if not any(conn.execute("SELECT 1 FROM translators")):
+        return redirect(url_for("languages"))
+
     sheets = get_sheets()
     entries = get_entries()
 

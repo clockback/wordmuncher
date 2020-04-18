@@ -1,7 +1,7 @@
 from typing import Dict, Tuple
 
 
-from flask import redirect, render_template, request
+from flask import redirect, render_template, request, url_for
 
 
 from prokartuli.src.application import app
