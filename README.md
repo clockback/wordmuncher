@@ -1,4 +1,5 @@
-# Prokart
+
+![](prokart/src/static/images/logo-full.svg "Logo")
 
 ## About
 Prokart is an open-source web-application to help you create and
