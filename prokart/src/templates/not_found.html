@@ -1,0 +1,27 @@
+<!doctype html>
+<html style="height: 100%;">
+    <head>
+        <title>Prokart</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/general.css') }}">
+        <link rel="icon" href="{{ url_for('static', filename='images/logo.svg') }}">
+        <script type="text/javascript" src="{{ url_for('static', filename='js/select_translator.js') }}"></script>
+    </head>
+
+    <body>
+        {% include 'components/topbar.html' %}
+        <div id="main">
+            <div style="top: 0; width: 100%; text-align: center;">
+                <img style="width: 216.448px; height: 80px; margin-top: 40px;" src="{{ url_for('static', filename='images/logo-full.svg') }}"/>
+            </div>
+            <p style="text-align: center;">
+                Whoops! We could not find the page you were looking for!
+            </p>
+            <div style="text-align: center;">
+                <button class="button" onclick="window.location.href = '/';">Back</button>
+            </div>
+        </div>
+        <footer>
+            <div>Copyright © 2020 – Elliot Paton-Simpson</div>
+        </footer>
+    </body>
+</html>

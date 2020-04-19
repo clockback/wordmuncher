@@ -5,6 +5,9 @@ from prokart.src.application import app
 
 
 @app.errorhandler(404)
-def protocol_404(e: NotFound):
-    # TODO: return render_template("404.html"), 404
-    return e.get_body(), 404
+def protocol_404(_: NotFound):
+    """
+    :param NotFound _: The exception and corresponding HTML.
+    :return: The 404 page.
+    """
+    return render_template("not_found.html"), 404
