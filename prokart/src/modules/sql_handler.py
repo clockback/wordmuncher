@@ -108,7 +108,6 @@ def create_db(file: str) -> sql.Connection:
             ('🇨🇲', 'Cameroon'),
             ('🇨🇳', 'China'),
             ('🇨🇴', 'Colombia'),
-            ('🇨🇵', 'Clipperton Island'),
             ('🇨🇷', 'Costa Rica'),
             ('🇨🇺', 'Cuba'),
             ('🇨🇻', 'Cape Verde'),
