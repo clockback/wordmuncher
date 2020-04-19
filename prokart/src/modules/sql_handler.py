@@ -1,10 +1,7 @@
+# Builtins
 import sqlite3 as sql
 from pathlib import Path
 from typing import List, Optional
-
-
-# Contains settings
-max_rows = 5
 
 
 def get_connection(check: bool = False) -> sql.Connection:
@@ -14,11 +11,17 @@ def get_connection(check: bool = False) -> sql.Connection:
     :return: A connection to the database.
     :rtype: sql.Connection
     """
+    # Finds the path to the .prokart folder.
     home = Path.home()
     path = Path(home, ".prokart")
+    db_file = str(Path(path, "vocab.db"))
+
+    # If the folder for prokart does not yet exist, creates it.
     if len(list(home.glob(".prokart"))) == 0:
         path.mkdir(parents=True, exist_ok=True)
-    db_file = str(Path(path, "vocab.db"))
+
+    # Returns a connection to the database. Will also set up the
+    # database if required.
     return create_db(db_file) if check else sql.connect(db_file)
 
 
@@ -27,6 +30,7 @@ def create_db(file: str) -> sql.Connection:
     :return: A connection to the database.
     :rtype: sql.Connection
     """
+    # Connect to the database.
     conn = sql.connect(file)
 
     # Allows foreign keys to be used.
@@ -416,7 +420,11 @@ def get_recent_translations(
 ) -> List[str]:
     """Finds the most recent translations for displaying at the top
     of a page.
-    :return: List[str]
+    :param Optional[sql.Connection] conn: A connection to the database.
+        If one is not provided, connects itself.
+    :return: A list of the three most recently used translator rows,
+        with each row containing the
+    :rtype: List[str]
     """
     if not conn:
         conn = get_connection()

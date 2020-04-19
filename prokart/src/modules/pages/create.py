@@ -6,10 +6,9 @@ from typing import Dict, List, Optional, Set, Tuple
 from flask import render_template, redirect, request, url_for
 
 
-from prokart.src.application import app
+from prokart.src.application import app, max_rows
 from prokart.src.modules.sql_handler import (
-    escape, get_connection, get_recent_translations, last_insert_rowid,
-    max_rows
+    escape, get_connection, get_recent_translations, last_insert_rowid
 )
 from prokart.src.modules.sheets import get_sheets
 

@@ -1,8 +1,8 @@
 from flask import render_template, redirect, request, url_for
 from typing import Dict, Tuple
 
-from prokart.src.application import app
-from prokart.src.modules.sheets import get_sheets, max_rows
+from prokart.src.application import app, max_rows
+from prokart.src.modules.sheets import get_sheets
 from prokart.src.modules.sql_handler import (
     get_connection, get_recent_translations
 )
