@@ -87,10 +87,12 @@ def test_search() -> Tuple[
 
 
 @app.route('/test/load_more_sheets')
-def test_load_more_sheets() -> Tuple[Dict[str, str], int]:
+def test_load_more_sheets() -> Tuple[
+    Dict[str, List[Tuple[str, int, int]]], int
+]:
     """Loads more sheets to be displayed.
     :return: The additional sheets and information.
-    :rtype: Tuple[Dict[str, str], int]
+    :rtype: Tuple[Dict[str, List[Tuple[str, int, int]]], int]
     """
     # Finds the number of sheets already present.
     offset = int(request.args['already'])

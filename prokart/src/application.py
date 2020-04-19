@@ -1,8 +1,9 @@
+# Installed packages
 from flask import Flask
 
 
 # The application itself.
-app = Flask(__name__)
+app: Flask = Flask(__name__)
 
 # Settings
-max_rows = 5
+max_rows: int = 5

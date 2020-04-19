@@ -20,7 +20,7 @@ def results() -> Tuple[str, int]:
     """
     return render_template(
         "results.html", topbar=get_recent_translations()
-    ), 204
+    ), 200
 
 
 @app.route('/results/summary_table')

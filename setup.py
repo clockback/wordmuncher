@@ -1,14 +1,22 @@
 #!/usr/bin/env python
 # coding=utf-8
 
+# Builtins
+from typing import List
+
+# Installed packages
 from setuptools import setup
 
 
-package_name = 'prokart'
-filename = 'prokart/src/main.py'
+package_name: str = 'prokart'
+filename: str = 'prokart/src/main.py'
 
 
-def get_version():
+def get_version() -> str:
+    """Finds the version number of Prokart.
+    :return: The version number.
+    :rtype: str
+    """
     import ast
 
     with open(filename) as input_file:
@@ -17,7 +25,11 @@ def get_version():
                 return ast.parse(line).body[0].value.s
 
 
-def get_long_description():
+def get_long_description() -> str:
+    """Returns the description of the program in full.
+    :return: The full description from the README file.
+    :rtype: str
+    """
     try:
         with open('README.md', 'r') as f:
             return f.read()
@@ -25,7 +37,11 @@ def get_long_description():
         return ''
 
 
-def get_requirements():
+def get_requirements() -> List[str]:
+    """Finds the list of requirements.
+    :return: The list of requirements.
+    :rtype: List[str]
+    """
     with open('requirements.txt', 'r') as f:
         return f.read().splitlines()
 
