@@ -168,7 +168,6 @@ def search_sheets_and_entries() -> Tuple[Dict[str, Union[
         List[Tuple[str, str, int, int]]
     ]], int]
     """
-
     # Finds the different search queries to use.
     queries = set(request.args["query"].split(' '))
 
