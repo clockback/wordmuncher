@@ -1,6 +1,11 @@
-from flask import render_template, request
+# Builtins
 import json
+from typing import Dict, Tuple
 
+# Installed packages
+from flask import render_template, request
+
+# Local imports
 from prokart.src.application import app
 from prokart.src.modules.sql_handler import (
     get_recent_translations, get_connection
@@ -8,16 +13,30 @@ from prokart.src.modules.sql_handler import (
 
 
 @app.route('/results')
-def results():
-    return render_template("results.html", topbar=get_recent_translations())
+def results() -> Tuple[str, int]:
+    """Returns the page for the results area.
+    :return: The results area page.
+    :type: Tuple[str, int]
+    """
+    return render_template(
+        "results.html", topbar=get_recent_translations()
+    ), 204
 
 
 @app.route('/results/summary_table')
-def summary_table():
+def summary_table() -> Tuple[Dict[str, Dict[str, Tuple[int, int, int]]], int]:
+    """Returns the results from a test to be viewed.
+    :return: The entries to be displayed in the table, along with the
+        corresponding results.
+    :rtype: Tuple[Dict[str, Dict[str, Tuple[int, int, int]]], int]
+    """
+    # Establishes a connection.
     conn = get_connection()
 
+    # Finds the list of questions to be investigated.
     questions = json.loads(request.args["questions"])
 
+    # Finds the scores that correspond to the questions.
     entries = conn.execute(
         f"""
         SELECT question, so_far, needed, points FROM entries
@@ -30,6 +49,8 @@ def summary_table():
         """, questions
     ).fetchall()
 
-    return_entries = {answer: scores for (answer, *scores) in entries}
+    # Create a dictionary mapping questions to scores.
+    return_entries = {question: scores for (question, *scores) in entries}
 
+    # Return the result.
     return {"entries": return_entries}, 200
