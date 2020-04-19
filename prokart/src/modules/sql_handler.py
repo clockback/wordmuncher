@@ -1,7 +1,7 @@
 # Builtins
 import sqlite3 as sql
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 
 def get_connection(check: bool = False) -> sql.Connection:
@@ -27,6 +27,7 @@ def get_connection(check: bool = False) -> sql.Connection:
 
 def create_db(file: str) -> sql.Connection:
     """Structures the database.
+    :param str file: The path to the database to be created.
     :return: A connection to the database.
     :rtype: sql.Connection
     """
@@ -416,18 +417,21 @@ def create_db(file: str) -> sql.Connection:
 
 def get_recent_translations(
         conn: Optional[sql.Connection] = None
-) -> List[str]:
+) -> List[Tuple[int, str, str, int, str, str]]:
     """Finds the most recent translations for displaying at the top
     of a page.
     :param Optional[sql.Connection] conn: A connection to the database.
         If one is not provided, connects itself.
     :return: A list of the three most recently used translator rows,
-        with each row containing the
-    :rtype: List[str]
+        with each row containing the serials, names, and flags of each
+        of the constituent languages.
+    :rtype: List[Tuple[int, str, str, int, str, str]]
     """
+    # Establishes a connection if one does not already exist.
     if not conn:
         conn = get_connection()
 
+    # Returns the results.
     return conn.execute(
         """
         SELECT from_l, l1.name, f1.text, to_l, l2.name, f2.text FROM (
@@ -447,23 +451,6 @@ def get_recent_translations(
     ).fetchall()
 
 
-def check_sheet_exists(conn: sql.Connection, name: str) -> bool:
-    """Checks whether or not a sheet with the provided name exists.
-    :param sql.Connection conn: A connection to the SQLite database.
-    :param str name: The name of the sheet for which to check.
-    :return: Whether the sheet exists.
-    :rtype: bool
-    """
-    return print(conn.execute(
-        """
-        SELECT * FROM sheets
-        INNER JOIN translators
-            ON translators.translator = sheets.translator
-        WHERE sheets.name = ?
-        """, (name,)
-    ).fetchall()) is None
-
-
 def last_insert_rowid(conn: sql.Connection) -> int:
     """Finds the last row ID to be inserted into a table.
     :param sql.Connection conn: A connection to the SQLite database.
@@ -477,6 +464,7 @@ def escape(string: str) -> str:
     """Modifies the string so that it is appropriate for SQLITE
     LIKE comparisons.
     :param str string: The search term.
+    :return: The string to be used in a SQLITE query.
     :rtype: str
-    :return: The string to be used in a SQLITE query."""
+    """
     return string.translate(str.maketrans({'_': ' _', '%': ' %'}))
