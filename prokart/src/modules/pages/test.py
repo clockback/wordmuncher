@@ -3,7 +3,7 @@ from flask import render_template, redirect, request, url_for
 from typing import Dict, List, Tuple, Union
 
 # Local imports
-from prokart.src.application import app, max_rows
+from prokart.src.application import app
 from prokart.src.modules.sheets import get_sheets
 from prokart.src.modules.sql_handler import (
     get_connection, get_recent_translations
@@ -29,7 +29,7 @@ def test() -> Tuple[str, int]:
 
     # Finds whether or not there are more sheets than immediately
     # viewable.
-    load_more = len(sheets) > max_rows
+    load_more = len(sheets) > app.config["MAX_ROWS"]
 
     # Refreshes all of the entries' scoring.
     conn.execute(
@@ -53,10 +53,11 @@ def test() -> Tuple[str, int]:
 
     # Renders and returns the page.
     return render_template(
-        "test.html", sheets=sheets[:max_rows], load_more=load_more,
+        "test.html", sheets=sheets[:app.config["MAX_ROWS"]],
+        load_more=load_more,
         current_search=request.form.get("sheet query", ""),
         topbar=get_recent_translations()
-    ), 204
+    ), 200
 
 
 @app.route('/test/search')
@@ -77,11 +78,11 @@ def test_search() -> Tuple[
     sheets = get_sheets(queries)
 
     # Determines whether or not there are more sheets to be displayed.
-    more_sheets = len(sheets) > max_rows
+    more_sheets = len(sheets) > app.config["MAX_ROWS"]
 
     # Returns the results.
     return {
-        'sheets': sheets[:max_rows],
+        'sheets': sheets[:app.config["MAX_ROWS"]],
         'more_sheets': more_sheets,
     }, 200
 
@@ -105,6 +106,6 @@ def test_load_more_sheets() -> Tuple[
 
     # Returns the result.
     return {
-        'more_sheets': len(sheets) > max_rows,
-        'sheets': sheets[:max_rows]
+        'more_sheets': len(sheets) > app.config["MAX_ROWS"],
+        'sheets': sheets[:app.config["MAX_ROWS"]]
     }, 200

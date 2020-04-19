@@ -7,7 +7,7 @@ from typing import Dict, List, Optional, Set, Tuple, Union
 from flask import render_template, redirect, request, url_for
 
 # Local imports
-from prokart.src.application import app, max_rows
+from prokart.src.application import app
 from prokart.src.modules.sql_handler import (
     escape, get_connection, get_recent_translations, last_insert_rowid
 )
@@ -64,7 +64,7 @@ def get_entries(
                 )
                 {search_queries}
                 ORDER BY LOWER(all_entries.question)
-                LIMIT {max_rows + 1} OFFSET ?
+                LIMIT {app.config["MAX_ROWS"] + 1} OFFSET ?
             ) AS entries
         LEFT JOIN mentions ON mentions.entry = entries.entry
         GROUP BY entries.entry
@@ -94,11 +94,11 @@ def create() -> Tuple[str, int]:
     # Renders and returns the page.
     return render_template(
         "create.html",
-        sheets=sheets[:max_rows],
-        entries=entries[:max_rows],
+        sheets=sheets[:app.config["MAX_ROWS"]],
+        entries=entries[:app.config["MAX_ROWS"]],
         topbar=get_recent_translations(),
-        load_more_sheets=len(sheets) > max_rows,
-        load_more_entries=len(entries) > max_rows
+        load_more_sheets=len(sheets) > app.config["MAX_ROWS"],
+        load_more_entries=len(entries) > app.config["MAX_ROWS"]
     ), 200
 
 
@@ -124,8 +124,8 @@ def load_more_sheets() -> Tuple[Dict[str, Union[
 
     # Returns the sheets and whether or not more sheets remain.
     return {
-        'sheets': sheets[:max_rows],
-        'more_sheets': len(sheets) > max_rows
+        'sheets': sheets[:app.config["MAX_ROWS"]],
+        'more_sheets': len(sheets) > app.config["MAX_ROWS"]
     }, 200
 
 
@@ -151,8 +151,8 @@ def load_more_entries() -> Tuple[Dict[str, Union[
 
     # Returns the entries and whether or not more entries remain.
     return {
-        'more_entries': len(entries) > max_rows,
-        'entries': entries[:max_rows]
+        'more_entries': len(entries) > app.config["MAX_ROWS"],
+        'entries': entries[:app.config["MAX_ROWS"]]
     }, 200
 
 
@@ -175,7 +175,7 @@ def search_sheets_and_entries() -> Tuple[Dict[str, Union[
     # there are more.
     if request.args["sheets"]:
         sheets = get_sheets(queries)
-        more_sheets = len(sheets) > max_rows
+        more_sheets = len(sheets) > app.config["MAX_ROWS"]
     else:
         sheets, more_sheets = [], False
 
@@ -183,14 +183,14 @@ def search_sheets_and_entries() -> Tuple[Dict[str, Union[
     # not there are more.
     if request.args["entries"]:
         entries = get_entries(queries)
-        more_entries = len(entries) > max_rows
+        more_entries = len(entries) > app.config["MAX_ROWS"]
     else:
         entries, more_entries = [], False
 
     # Returns the results.
     return {
-        'sheets': sheets[:max_rows],
-        'entries': entries[:max_rows],
+        'sheets': sheets[:app.config["MAX_ROWS"]],
+        'entries': entries[:app.config["MAX_ROWS"]],
         'more_sheets': more_sheets,
         'more_entries': more_entries
     }, 200

@@ -147,19 +147,27 @@ function expandFlags(element) {
         var flag = sheets[i][0];
         var country = sheets[i][1];
 
+        var newButtonDiv = document.createElement("div");
+        newButtonDiv.style.display = "inline-block";
+        newButtonDiv.classList.add("tooltip");
+
         var newButton = document.createElement("button");
+        newButtonDiv.appendChild(newButton);
         newButton.classList.add("flag-button");
         newButton.onclick = function () {
           selectFlag(this);
         };
-        newButton.setAttribute("dataToggle", "tooltip");
-        newButton.title = country;
         newButton.innerHTML = flag;
         if (flag == element.innerHTML)
         {
           newButton.style.display = "none";
         }
-        hiddenFlags.appendChild(newButton);
+        hiddenFlags.appendChild(newButtonDiv);
+
+        var tooltip = document.createElement("span");
+        tooltip.classList.add("tooltip-text");
+        tooltip.innerHTML = country;
+        newButtonDiv.appendChild(tooltip);
       }
       hiddenLanguages.style.display = null;
     };

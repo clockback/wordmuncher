@@ -15,4 +15,4 @@ def main() -> Tuple[str, int]:
     :return: The main menu page.
     :rtype: Tuple[str, int]
     """
-    return render_template("main.html", topbar=get_recent_translations()), 204
+    return render_template("main.html", topbar=get_recent_translations()), 200

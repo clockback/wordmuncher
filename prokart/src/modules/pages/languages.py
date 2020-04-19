@@ -186,7 +186,9 @@ def get_flags() -> Tuple[Dict[str, List[Tuple[str, str]]], int]:
     conn = get_connection()
 
     # Finds all of the flags and countries.
-    flags = conn.execute("SELECT text, country FROM flags;").fetchall()
+    flags = conn.execute(
+        "SELECT text, country FROM flags ORDER BY country;"
+    ).fetchall()
 
     # Returns the result.
     return {"flags": flags}, 200

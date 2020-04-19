@@ -5,7 +5,8 @@
     --odd-row: #FEFBD8;
     --light-container: #FEFBD8;
     --even-row: #FFFFE8;
-    --select-row: #618685
+    --select-row: #618685;
+    --tooltip-color: #555;
 }
 
 h1, h2, p, th, td, div {
@@ -577,4 +578,42 @@ div.textarea-container {
     display: inline-block;
     padding: 10px;
     margin-right: 5px;
+}
+
+.tooltip {
+    position: relative;
+
+}
+
+.tooltip .tooltip-text {
+  visibility: hidden;
+  width: 120px;
+  background-color: var(--tooltip-color);
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -60px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltip .tooltip-text::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+
+.tooltip:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
 }

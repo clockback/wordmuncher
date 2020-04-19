@@ -5,7 +5,7 @@ from typing import Dict, List, Optional, Set, Tuple
 from flask import request
 
 # Local imports
-from prokart.src.application import app, max_rows
+from prokart.src.application import app
 from prokart.src.modules.sql_handler import escape, get_connection
 
 
@@ -65,7 +65,7 @@ def get_sheets(
                 {search_queries}
                 {populated_group}
                 ORDER BY LOWER(all_sheets.name)
-                LIMIT {max_rows + 1} OFFSET ?
+                LIMIT {app.config["MAX_ROWS"] + 1} OFFSET ?
             ) AS sheets
         LEFT JOIN mentions ON mentions.sheet = sheets.sheet
         LEFT JOIN entries ON mentions.entry = entries.entry
