@@ -337,6 +337,7 @@ function deleteEntry() {
     var returnJSON = JSON.parse(request.responseText);
 
     document.getElementById("edit-entry").classList.add("button-disabled");
+    var deleteButton = document.getElementById("delete-entry");
     deleteButton.classList.add("button-disabled");
     deleteButton.onclick = "";
     rowToDelete.parentNode.removeChild(rowToDelete);

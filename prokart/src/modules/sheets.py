@@ -16,15 +16,15 @@ def get_sheets(
     """Finds the top sheets.
     :param Optional[Set[str]] searches: The different string
         combinations that must occur in the sheet names.
-    :param int offset: How many entries given the query have been
+    :param int offset: How many sheets given the query have been
         returned already.
     :param bool populated_only: Whether or not to only consider sheets
         that have entries associated with them.
-    :rtype: List[Tuple[str, int, int]]
     :return: Each of the different sheets with the following values:
         * Name
         * Percentage complete
         * The number of entries
+    :rtype: List[Tuple[str, int, int]]
     """
     # Establishes a connection.
     conn = get_connection()

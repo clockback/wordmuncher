@@ -25,9 +25,14 @@ def main() -> None:
     the server.
     :return: None
     """
+    # Makes sure that the database is constructed.
     get_connection(check=True)
+
+    # Attempts to host the application.
     try:
         serve(app, host='0.0.0.0', port=8080, threads=6)
+
+    # Raises a helpful error if the port is already occupied.
     except OSError:
         raise OSError("Application already running at 0.0.0.0:8000")
 
