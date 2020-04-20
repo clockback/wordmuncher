@@ -3,26 +3,35 @@ import sqlite3 as sql
 from pathlib import Path
 from typing import List, Optional, Tuple
 
+# Local imports
+from prokart.src.application import app
 
-def get_connection(check: bool = False) -> sql.Connection:
+
+def get_connection() -> sql.Connection:
     """Connects to the local database and constructs the required
     tables.
-    :param bool check: Whether or not to construct the database.
     :return: A connection to the database.
     :rtype: sql.Connection
     """
-    # Finds the path to the .prokart folder.
-    home = Path.home()
-    path = Path(home, ".prokart")
-    db_file = str(Path(path, "vocab.db"))
+    # References a database outside of the .prokart folder if explicitly
+    # given.
+    if app.config["PATH"]:
+        path = app.config["PATH"]
 
-    # If the folder for prokart does not yet exist, creates it.
-    if len(list(home.glob(".prokart"))) == 0:
-        path.mkdir(parents=True, exist_ok=True)
+    # Finds the path to the .prokart folder if none explicitly given.
+    else:
+        home = Path.home()
+        path = Path(home, ".prokart")
+
+        # If the folder for prokart does not yet exist, creates it.
+        if len(list(home.glob(".prokart"))) == 0:
+            path.mkdir(parents=True, exist_ok=True)
+
+    db_file = str(Path(path, app.config["DATABASE"]))
 
     # Returns a connection to the database. Will also set up the
     # database if required.
-    return create_db(db_file) if check else sql.connect(db_file)
+    return create_db(db_file)
 
 
 def create_db(file: str) -> sql.Connection:
@@ -33,6 +42,13 @@ def create_db(file: str) -> sql.Connection:
     """
     # Connect to the database.
     conn = sql.connect(file)
+
+    # Stops if there is already 8 tables in the database, including
+    # sqlite_sequence as the eighth.
+    if conn.execute(
+            "SELECT COUNT() FROM sqlite_master WHERE type = 'table';"
+    ).fetchone()[0] == 8:
+        return conn
 
     # Allows foreign keys to be used.
     conn.execute("PRAGMA foreign_keys = ON;")
