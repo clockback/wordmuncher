@@ -43,15 +43,15 @@ def create_db(file: str) -> sql.Connection:
     # Connect to the database.
     conn = sql.connect(file)
 
+    # Allows foreign keys to be used.
+    conn.execute("PRAGMA foreign_keys = ON;")
+
     # Stops if there is already 8 tables in the database, including
     # sqlite_sequence as the eighth.
     if conn.execute(
             "SELECT COUNT() FROM sqlite_master WHERE type = 'table';"
     ).fetchone()[0] == 8:
         return conn
-
-    # Allows foreign keys to be used.
-    conn.execute("PRAGMA foreign_keys = ON;")
 
     # Creates the flags table.
     conn.execute(
@@ -423,6 +423,7 @@ def create_db(file: str) -> sql.Connection:
         );
         """
     )
+
     # Refreshes the connection. This prevents certain errors.
     conn.commit()
     conn.close()
