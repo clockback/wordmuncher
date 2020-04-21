@@ -30,7 +30,7 @@ class TestCreate(BasicTests):
         self.type_entry_id("new-sheet-search-entries", question)
 
         # Clicks on the desired entry.
-        self.select_row("add-sheet-entries-table", "Question", question)
+        self.toggle_row("add-sheet-entries-table", "Question", question)
 
         # Saves the new sheet.
         self.click_button_id("save-new-sheet")
@@ -69,7 +69,7 @@ class TestCreate(BasicTests):
         self.type_entry_id("search-all", sheet_1)
 
         # Clicks on the desired sheet.
-        self.select_row("sheets-table", "Sheet", sheet_1)
+        self.toggle_row("sheets-table", "Sheet", sheet_1)
 
         # Clicks on the edit button.
         self.click_button_id("edit-sheet")
@@ -84,7 +84,7 @@ class TestCreate(BasicTests):
         self.deselect_all_rows("edit-sheet-entries-table")
 
         # Selects entries for the sheet.
-        self.select_rows("edit-sheet-entries-table", "Question", questions)
+        self.toggle_rows("edit-sheet-entries-table", "Question", questions)
 
         # Saves the edited sheet.
         self.click_button_id("save-edit-sheet")
@@ -122,7 +122,7 @@ class TestCreate(BasicTests):
         self.type_entry_id("search-all", name)
 
         # Clicks on the desired sheet.
-        self.select_row("sheets-table", "Sheet", name)
+        self.toggle_row("sheets-table", "Sheet", name)
 
         # Clicks on the delete button.
         self.click_button_id("delete-sheet")
@@ -142,4 +142,51 @@ class TestCreate(BasicTests):
         self.type_entry_id("search-all", name)
 
         # Again verifies row is deleted.
+        self.check_no_row("sheets-table", "Sheet", name)
+
+    def test_004_create_empty_sheet(self) -> None:
+        """Checks that a sheet edited to have no mentions does not
+        appear in the test list.
+        :return: None
+        """
+        # We wish to empty the following sheet.
+        name = "Sheet to be emptied"
+
+        # The question to be removed from the sheet.
+        question = "Entry in sheet to be emptied"
+
+        # Opens the browser.
+        self.go_to("/create")
+
+        # Searches for the sheet to be emptied.
+        self.type_entry_id("search-all", name)
+
+        # Clicks on the desired sheet.
+        self.toggle_row("sheets-table", "Sheet", name)
+
+        # Clicks on the edit button.
+        self.click_button_id("edit-sheet")
+
+        # Searches for the entry to be removed from the sheet.
+        self.type_entry_id("edit-sheet-search-entries", name)
+
+        # Selects the entry to be removed from the sheet.
+        self.toggle_row("edit-sheet-entries-table", "Question", question)
+
+        # Saves the edited sheet.
+        self.click_button_id("save-edit-sheet")
+
+        # Goes to the home page.
+        self.click_button_id("sidebar-left-home")
+
+        # Goes to the home page.
+        self.click_button_id("sidebar-left-home")
+
+        # Goes to the test page.
+        self.click_button_id("test-button")
+
+        # Searches for the affected sheet.
+        self.type_entry_id("search-sheets", name)
+
+        # Verifies no row exists.
         self.check_no_row("sheets-table", "Sheet", name)

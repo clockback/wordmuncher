@@ -75,7 +75,7 @@ def test_search() -> Tuple[
     queries = set(request.args["query"].split(' '))
 
     # Finds the sheets to be searched.
-    sheets = get_sheets(queries)
+    sheets = get_sheets(queries, populated_only=True)
 
     # Determines whether or not there are more sheets to be displayed.
     more_sheets = len(sheets) > app.config["MAX_ROWS"]
@@ -102,7 +102,7 @@ def test_load_more_sheets() -> Tuple[
     queries = set(request.args["query"].split(' '))
 
     # Finds the sheets to be displayed.
-    sheets = get_sheets(searches=queries, offset=offset)
+    sheets = get_sheets(searches=queries, offset=offset, populated_only=True)
 
     # Returns the result.
     return {

@@ -168,7 +168,24 @@ class BasicTests(unittest.TestCase):
             raise ValueError(f"Button #{query} has no click event.")
 
         # Clicks the button.
+        self.driver.execute_script(
+            "arguments[0].scrollIntoView({block: 'end', inline:"
+            "'nearest', behavior: 'smooth'});", button
+        )
+
+        # Waits for scrolling to complete.
+        sleep(0.5)
+
+        # Clicks on the button.
         button.click()
+
+    def click_home_button(self) -> None:
+        """Clicks on the home button and waits until the home page
+        loads.
+        :return: None
+        """
+        # Clicks on the button.
+        self.driver.find_element_by_id("sidebar-left-home").click()
 
     def deselect_all_rows(self, table_id: str) -> None:
         """Deselects all rows already selected.
@@ -184,12 +201,16 @@ class BasicTests(unittest.TestCase):
         for row in rows:
             row: FirefoxWebElement
             if "selected" in row.get_attribute("class"):
-
+                # Scrolls to the row.
                 self.driver.execute_script(
                     "arguments[0].scrollIntoView({block: 'center', inline:"
                     "'nearest', behavior: 'smooth'});", row
                 )
+
+                # Waits for scrolling to complete.
                 sleep(0.5)
+
+                # Clicks on the row.
                 row.find_element_by_tag_name("td").click()
 
     def go_to(
@@ -244,8 +265,8 @@ class BasicTests(unittest.TestCase):
             # Allows browser to register change.
             sleep(0.05)
 
-    def select_row(self, table_id: str, column_name: str, value: str) -> None:
-        """Clicks on the row in a table given its column value
+    def toggle_row(self, table_id: str, column_name: str, value: str) -> None:
+        """Toggles the row in a table given its column value
         corresponds to a particular value.
         :param str table_id: The id of the table.
         :param str column_name: The string value of the column to
@@ -253,12 +274,12 @@ class BasicTests(unittest.TestCase):
         :param str value: The string value of the row to be selected.
         :return: None
         """
-        self.select_rows(table_id, column_name, [value])
+        self.toggle_rows(table_id, column_name, [value])
 
-    def select_rows(
+    def toggle_rows(
             self, table_id: str, column_name: str, values: List[str]
     ) -> None:
-        """Clicks on the rows in a table given its column value
+        """Toggles the rows in a table given its column value
         corresponds to particular values.
         :param str table_id: The id of the table.
         :param str column_name: The string value of the column to
