@@ -53,6 +53,68 @@ class BasicTests(unittest.TestCase):
         """
         os.remove(Path("/tmp", "test.db"))
 
+    def allot_additional_answers(self, answers: List[str]) -> None:
+        """Makes sure that the answers in the additional answers table.
+        :param List[str] answers: The list of answers to be in the
+            table.
+        :return: None
+        """
+        # Finds the two possible dialog boxes which might be affected.
+        add_entry_table = self.driver.find_element_by_id(
+            "add-entry-container-background"
+        )
+        edit_entry_table = self.driver.find_element_by_id(
+            "edit-entry-container-background"
+        )
+
+        # Finds out which of the dialog boxes is visible.
+        add_visible = add_entry_table.is_displayed()
+        edit_visible = edit_entry_table.is_displayed()
+
+        # Ensures that one and only one dialog box is visible.
+        self.assertIsNot(
+            add_visible, edit_visible,
+            "One and only one dialog box should be open."
+        )
+
+        # Finds which table to modify based upon what is visible.
+        spec = "new" if add_visible else "edit"
+
+        # Finds the table for the additional answers.
+        table = self.driver.find_element_by_id(f"{spec}-entry-answers-table")
+
+        # Finds the different extant answers.
+        table_rows = table.find_elements_by_css_selector("tr:not(:last-child)")
+
+        # Iterates over each extant table row.
+        for row in table_rows:
+            # Finds the two cells in the row.
+            additional_answer, delete = row.find_elements_by_tag_name("td")
+
+            # If the additional answer is not supposed to be there, uses
+            # the delete button in the row to remove it.
+            if additional_answer.text not in answers:
+                delete.find_element_by_tag_name("button").click()
+
+            # If the additional answer was requested as an argument,
+            # Does not edit the answer later on.
+            else:
+                answers.remove(additional_answer.text)
+
+        # Stops if there are no answers to add.
+        if not answers:
+            return
+
+        # Adds each of the answers.
+        for answer in answers:
+            # Types in the answer to be added.
+            self.type_entry_id(f"{spec}-entry-add-answer", answer)
+
+            # Clicks on the arrow to add the answer.
+            self.driver.find_element_by_css_selector(
+                "#new-entry-add-answer-button>button"
+            ).click()
+
     def check_button_enabled(self, button_id: str) -> None:
         """Ensures that a button with a given id is enabled.
         :param str button_id: The id of the button.

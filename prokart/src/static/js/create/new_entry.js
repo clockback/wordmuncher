@@ -28,7 +28,7 @@ function hideNewEntryInterface() {
   document.getElementById('new-entry-add-answer').value = "";
 
   var moreAnswers = document.querySelectorAll(
-    "#add-entry-answers-table>tbody>tr:not(:last-child)"
+    "#new-entry-answers-table>tbody>tr:not(:last-child)"
   );
   for (var i = 0; i < moreAnswers.length; i ++)
   {
@@ -178,7 +178,7 @@ function changeNewEntryAnswer() {
 
 function newEntryAddRow() {
   var newAnswerInput = document.querySelector(
-    "#add-entry-answers-table>tbody>tr:last-child>td>input"
+    "#new-entry-answers-table>tbody>tr:last-child>td>input"
   );
   var newAnswer = newAnswerInput.value;
 
@@ -192,7 +192,7 @@ function newEntryAddRow() {
 
   var mainAnswerInput = document.getElementById("new-entry-answer");
   var moreAnswersCells = document.querySelectorAll(
-    "#add-entry-answers-table>tbody>tr:not(:last-child)>td:first-child"
+    "#new-entry-answers-table>tbody>tr:not(:last-child)>td:first-child"
   );
 
   if (mainAnswerInput.value == newAnswer)
@@ -230,9 +230,9 @@ function newEntryAddRow() {
   newRow.appendChild(newRightColumn);
   newRow.appendChild(newRightColumn);
 
-  document.querySelector("#add-entry-answers-table>tbody").insertBefore(
+  document.querySelector("#new-entry-answers-table>tbody").insertBefore(
     newRow, document.querySelector(
-      "#add-entry-answers-table>tbody>tr:last-child"
+      "#new-entry-answers-table>tbody>tr:last-child"
     )
   );
   newAnswerInput.focus();
@@ -271,7 +271,7 @@ function saveNewEntry()
   var question = document.getElementById("new-entry-question").value;
   var answer = document.getElementById("new-entry-answer").value;
   var moreAnswersCells = document.querySelectorAll(
-    "#add-entry-answers-table>tbody>tr:not(:last-child)>td:first-child"
+    "#new-entry-answers-table>tbody>tr:not(:last-child)>td:first-child"
   );
   var moreAnswers = [];
   for (var i = 0; i < moreAnswersCells.length; i ++)

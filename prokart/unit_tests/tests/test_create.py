@@ -8,7 +8,7 @@ class TestCreate(BasicTests):
     and edited.
     """
     def test_001_create_new_sheet(self) -> None:
-        """Checks that a new entry can be created.
+        """Checks that a new sheet can be created.
         :return: None
         """
         # Chooses to create a sheet with the name "A new sheet".
@@ -364,3 +364,57 @@ class TestCreate(BasicTests):
 
         # Ensures that the save button is disabled.
         self.check_button_disabled("save-edit-sheet")
+
+    def test_011_create_new_entry(self) -> None:
+        """Checks that a new entry can be created.
+        :return: None
+        """
+        # Chooses to create an entry with the question "A new entry".
+        question = "A new entry"
+
+        # We wish to give the following primary answer to the entry.
+        answer = "test"
+
+        # We wish to put the entry in the following sheet.
+        sheet = "Sheet without entry"
+
+        # We wish to also give the following answers.
+        others = ["test 1", "test 2"]
+
+        # Opens the browser.
+        self.go_to('/create')
+
+        # Clicks the new entry button.
+        self.click_button_id("new-entry")
+
+        # Types in the question for the new entry
+        self.type_entry_id("new-entry-question", question)
+
+        # Types in the question for the new entry
+        self.type_entry_id("new-entry-answer", answer)
+
+        # Changes the additional answers.
+        self.allot_additional_answers(others)
+
+        # Searches for the desired entry.
+        self.type_entry_id("new-entry-search-sheets", sheet)
+
+        # Clicks on the desired entry.
+        self.toggle_row("add-entry-entries-table", "Sheet", sheet)
+
+        # Saves the new entry.
+        self.click_button_id("save-new-entry")
+
+        # Searches for the newly made entry.
+        self.type_entry_id("search-all", question)
+
+        # Verifies that the entry has been inserted into the table.
+        self.check_row("entries-table", {
+            "Question": question, "# Mentions": 1
+        })
+
+        # Searches for the affected made sheet.
+        self.type_entry_id("search-all", sheet)
+
+        # Verifies that the sheet has received the sheet.
+        self.check_row("sheets-table", {"Sheet": sheet, "# Entries": 1})
