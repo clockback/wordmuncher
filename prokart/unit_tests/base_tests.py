@@ -53,6 +53,57 @@ class BasicTests(unittest.TestCase):
         """
         os.remove(Path("/tmp", "test.db"))
 
+    def check_button_enabled(self, button_id: str) -> None:
+        """Ensures that a button with a given id is enabled.
+        :param str button_id: The id of the button.
+        :return: None
+        """
+        # Finds the button.
+        button = self.driver.find_element_by_id(button_id)
+
+        # Ensures that the button appears enabled.
+        self.assertNotIn(
+            "button-disabled", button.get_attribute("class"),
+            f"Button #{button_id} is disabled."
+        )
+
+        # Attempts to obtain the string for the bound event.
+        try:
+            self.driver.execute_script(
+                f"document.getElementById('{button_id}').onclick.toString();"
+            )
+
+        # If no string can be obtained, there the button is not bound to
+        # an event, and should raise an error.
+        except JavascriptException:
+            raise ValueError(f"Button #{button_id} has no click event.")
+
+    def check_button_disabled(self, button_id: str) -> None:
+        """Ensures that a button with a given id is disabled.
+        :param str button_id: The id of the button.
+        :return: None
+        """
+        # Finds the button.
+        button = self.driver.find_element_by_id(button_id)
+
+        # Ensures that the button appears disabled.
+        self.assertIn(
+            "button-disabled", button.get_attribute("class"),
+            f"Button #{button_id} is enabled."
+        )
+
+        # Attempts to obtain the string for the bound event.
+        try:
+            self.driver.execute_script(
+                f"document.getElementById('{button_id}').onclick.toString();"
+            )
+            raise Exception("Button is bound to an event.")
+
+        # If no string can be obtained, there the button is not bound to
+        # an event, and should raise an error.
+        except JavascriptException:
+            return
+
     def check_no_row(self, table_id: str, column: str, value: str) -> None:
         """Ensures that a row with the provided cell does not exist in a
         table.
@@ -136,6 +187,24 @@ class BasicTests(unittest.TestCase):
                 return
 
         raise ValueError(f"No rows match combination: {cells}")
+
+    def check_visibility(self, element_id: str, visible: bool = True) -> None:
+        """Checks that an element is visible.
+        :param str element_id: The id of the element to check.
+        :param bool visible: Whether or not it should be visible.
+        :return: None
+        """
+        # Finds the element.
+        element = self.driver.find_element_by_id(element_id)
+
+        # Finds the visibility of the element.
+        e_visible = element.is_displayed()
+
+        # Makes sure the element is (or is not) visible as requested.
+        self.assertIs(
+            visible, e_visible, f"Element #{element_id} is supposed to be "
+            f"{'' if visible else 'in'}visible."
+        )
 
     def click_button_id(self, query: str) -> None:
         """Clicks on a button.

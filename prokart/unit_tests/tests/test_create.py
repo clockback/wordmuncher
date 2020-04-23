@@ -190,3 +190,177 @@ class TestCreate(BasicTests):
 
         # Verifies no row exists.
         self.check_no_row("sheets-table", "Sheet", name)
+
+    def test_005_create_new_sheet_no_name(self) -> None:
+        """Checks that a sheet cannot be created without a name.
+        :return: None
+        """
+        # Opens the browser.
+        self.go_to("/create")
+
+        # Clicks on the new sheet button.
+        self.click_button_id("new-sheet")
+
+        # Ensures that the save button is disabled.
+        self.check_button_disabled("save-new-sheet")
+
+        # Writes a placeholder sheet name to refresh the page.
+        self.type_entry_id("new-sheet-name", " ")
+
+        # Ensures there is no message that appears falsely.
+        self.check_visibility("message-new-sheet-empty-name", False)
+
+        # Wipes the sheet name.
+        self.type_entry_id("new-sheet-name", "")
+
+        # Ensures that the save button is disabled.
+        self.check_button_disabled("save-new-sheet")
+
+        # Ensures that a message is alerting the user to the problem.
+        self.check_visibility("message-new-sheet-empty-name", True)
+
+    def test_006_create_new_sheet_copy_name(self) -> None:
+        """Checks that a sheet cannot be created with the same name as
+        another sheet.
+        :return: None
+        """
+        # We wish to copy the following name.
+        name = "Sheet with name to copy"
+
+        # Opens the browser.
+        self.go_to("/create")
+
+        # Clicks on the new sheet button.
+        self.click_button_id("new-sheet")
+
+        # Ensures that the save button is disabled.
+        self.check_button_disabled("save-new-sheet")
+
+        # Writes a placeholder sheet name to refresh the page.
+        self.type_entry_id("new-sheet-name", name)
+
+        # Ensures that a message is alerting the user to the problem.
+        self.check_visibility("message-new-sheet-already-exists", True)
+
+        # Ensures that the save button is disabled.
+        self.check_button_disabled("save-new-sheet")
+
+    def test_007_create_new_sheet_long_name(self) -> None:
+        """Checks that a sheet cannot be created with a very long name.
+        :return: None
+        """
+        # We wish to copy the following name.
+        name = f"Really {'really ' * 10}long name"
+
+        # Opens the browser.
+        self.go_to("/create")
+
+        # Clicks on the new sheet button.
+        self.click_button_id("new-sheet")
+
+        # Ensures that the save button is disabled.
+        self.check_button_disabled("save-new-sheet")
+
+        # Writes a placeholder sheet name to refresh the page.
+        self.type_entry_id("new-sheet-name", name)
+
+        # Ensures that a message is alerting the user to the problem.
+        self.check_visibility("message-new-sheet-long-name", True)
+
+        # Ensures that the save button is disabled.
+        self.check_button_disabled("save-new-sheet")
+
+    def test_008_create_edit_sheet_no_name(self) -> None:
+        """Checks that a sheet cannot have its name removed.
+        :return: None
+        """
+        # We wish to try editing the following sheet.
+        name = "Sheet no editing allowed"
+
+        # Opens the browser.
+        self.go_to("/create")
+
+        # Searches for the sheet
+        self.type_entry_id("search-all", name)
+
+        # Selects the sheet.
+        self.toggle_row("sheets-table", "Sheet", name)
+
+        # Clicks on the edit sheet button.
+        self.click_button_id("edit-sheet")
+
+        # Ensures that the save button is disabled.
+        self.check_button_enabled("save-edit-sheet")
+
+        # Wipes the sheet name.
+        self.type_entry_id("edit-sheet-name", "")
+
+        # Ensures that the save button is disabled.
+        self.check_button_disabled("save-edit-sheet")
+
+        # Ensures that a message is alerting the user to the problem.
+        self.check_visibility("message-edit-sheet-empty-name", True)
+
+    def test_009_create_edit_sheet_copy_name(self) -> None:
+        """Checks that a sheet cannot be created with the same name as
+        another sheet.
+        :return: None
+        """
+        # We wish to try editing the following sheet.
+        sheet_1 = "Sheet no editing allowed"
+
+        # We wish to copy the following name.
+        sheet_2 = "Sheet with name to copy"
+
+        # Opens the browser.
+        self.go_to("/create")
+
+        # Searches for the sheet
+        self.type_entry_id("search-all", sheet_1)
+
+        # Selects the sheet.
+        self.toggle_row("sheets-table", "Sheet", sheet_1)
+
+        # Clicks on the new sheet button.
+        self.click_button_id("edit-sheet")
+
+        # Writes a placeholder sheet name to refresh the page.
+        self.type_entry_id("edit-sheet-name", sheet_2)
+
+        # Ensures that a message is alerting the user to the problem.
+        self.check_visibility("message-edit-sheet-already-exists", True)
+
+        # Ensures that the save button is disabled.
+        self.check_button_disabled("save-edit-sheet")
+
+    def test_010_create_edit_sheet_long_name(self) -> None:
+        """Checks that a sheet cannot be edited to have a very long
+        name.
+        :return: None
+        """
+        # We wish to try editing the following sheet.
+        sheet_1 = f"Sheet no editing allowed"
+
+        # We wish to copy the following name.
+        sheet_2 = f"Really {'really ' * 10}long name"
+
+        # Opens the browser.
+        self.go_to("/create")
+
+        # Searches for the sheet
+        self.type_entry_id("search-all", sheet_1)
+
+        # Selects the sheet.
+        self.toggle_row("sheets-table", "Sheet", sheet_1)
+
+        # Clicks on the edit sheet button.
+        self.click_button_id("edit-sheet")
+
+        # Tries replacing the name with something very long.
+        self.type_entry_id("edit-sheet-name", sheet_2)
+
+        # Ensures that a message is alerting the user to the problem.
+        self.check_visibility("message-edit-sheet-long-name", True)
+
+        # Ensures that the save button is disabled.
+        self.check_button_disabled("save-edit-sheet")
