@@ -112,7 +112,7 @@ class BasicTests(unittest.TestCase):
 
             # Clicks on the arrow to add the answer.
             self.driver.find_element_by_css_selector(
-                "#new-entry-add-answer-button>button"
+                f"#{spec}-entry-add-answer-button>button"
             ).click()
 
     def check_button_enabled(self, button_id: str) -> None:
@@ -334,8 +334,8 @@ class BasicTests(unittest.TestCase):
             if "selected" in row.get_attribute("class"):
                 # Scrolls to the row.
                 self.driver.execute_script(
-                    "arguments[0].scrollIntoView({block: 'center', inline:"
-                    "'nearest', behavior: 'smooth'});", row
+                    "arguments[0].scrollIntoView({block: 'end', inline:"
+                    "'nearest', behavior: 'smooth'});", row.find_element_by_tag_name("td")
                 )
 
                 # Waits for scrolling to complete.

@@ -50,7 +50,7 @@ class TestCreate(BasicTests):
         })
 
     def test_002_create_edit_sheet(self) -> None:
-        """Checks that an entry can be edited.
+        """Checks that an sheet can be edited.
         :return: None
         """
         # We wish to edit the following sheet.
@@ -106,7 +106,7 @@ class TestCreate(BasicTests):
             })
 
     def test_003_create_delete_sheet(self) -> None:
-        """Checks that an entry can be deleted.
+        """Checks that a sheet can be deleted.
         :return: None
         """
         # We wish to delete the following sheet.
@@ -418,3 +418,102 @@ class TestCreate(BasicTests):
 
         # Verifies that the sheet has received the sheet.
         self.check_row("sheets-table", {"Sheet": sheet, "# Entries": 1})
+
+    def test_012_create_edit_entry(self) -> None:
+        """Checks that an entry can be edited.
+        :return: None
+        """
+        # We wish to edit the entry with the following question.
+        entry_1 = "Entry to edit"
+
+        # We wish to change its question to the following.
+        entry_2 = "Entry has been edited"
+
+        # We wish to also give the following answers.
+        others = ["c", "d", "e"]
+
+        # We wish to add the entry to the following sheets.
+        sheets = ["Give me edit entry 1", "Give me edit entry 2"]
+
+        # Opens the browser.
+        self.go_to('/create')
+
+        # Searches for the affected entry.
+        self.type_entry_id("search-all", entry_1)
+
+        # Clicks on the desired entry.
+        self.toggle_row("entries-table", "Question", entry_1)
+
+        # Clicks on the edit button.
+        self.click_button_id("edit-entry")
+
+        # Changes the question of the entry.
+        self.type_entry_id("edit-entry-question", entry_2)
+
+        # Changes the additional answers.
+        self.allot_additional_answers(others)
+
+        # Loads all the rows in the sheets table.
+        self.load_all_rows("edit-entry-sheets-table")
+
+        # Deselects all selected entries in the table.
+        self.deselect_all_rows("edit-entry-sheets-table")
+
+        # Selects sheets for the entry.
+        self.toggle_rows("edit-entry-sheets-table", "Sheet", sheets)
+
+        # Saves the edited sheet.
+        self.click_button_id("save-edit-entry")
+
+        # Searches for the edited entry.
+        self.type_entry_id("search-all", entry_2)
+
+        # Verifies that the entry has been inserted into the table.
+        self.check_row("entries-table", {"Question": entry_2, "# Mentions": 2})
+
+        # Checks each of the sheets.
+        for sheet in sheets:
+            # Searches for the affected sheet.
+            self.type_entry_id("search-all", sheet)
+
+            # Verifies that the sheet now contains the edited entry.
+            self.check_row("sheets-table", {
+                "Sheet": sheet, "# Entries": 1
+            })
+
+    def test_013_create_delete_entry(self) -> None:
+        """Checks that a entry can be deleted.
+        :return: None
+        """
+        # We wish to delete the following entry.
+        question = "Entry to delete"
+
+        # The entry we wish to delete contains the following entry.
+        sheet = "Sheet with entry to be deleted"
+
+        # Opens the browser.
+        self.go_to("/create")
+
+        # Searches for the entry to be deleted.
+        self.type_entry_id("search-all", question)
+
+        # Clicks on the desired entry.
+        self.toggle_row("entries-table", "Question", question)
+
+        # Clicks on the entry button.
+        self.click_button_id("delete-entry")
+
+        # Verifies row is deleted.
+        self.check_no_row("entries-table", "Question", question)
+
+        # Searches for the affected sheet.
+        self.type_entry_id("search-all", sheet)
+
+        # Verifies that the entry is no longer in the sheet.
+        self.check_row("sheets-table", {"Sheet": sheet, "# Entries": 0})
+
+        # Searches for the deleted entry.
+        self.type_entry_id("search-all", question)
+
+        # Again verifies row is deleted.
+        self.check_no_row("entries-table", "Question", question)
