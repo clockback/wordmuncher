@@ -14,7 +14,9 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.firefox.webelement import FirefoxWebElement
-from selenium.common.exceptions import TimeoutException, JavascriptException
+from selenium.common.exceptions import (
+    JavascriptException, StaleElementReferenceException, TimeoutException
+)
 
 
 class BasicTests(unittest.TestCase):
@@ -53,11 +55,31 @@ class BasicTests(unittest.TestCase):
         """
         os.remove(Path("/tmp", "test.db"))
 
-    def allot_additional_answers(self, answers: List[str]) -> None:
-        """Makes sure that the answers in the additional answers table.
-        :param List[str] answers: The list of answers to be in the
-            table.
-        :return: None
+    def _get_answer_row(self, answer: str, spec: str) -> FirefoxWebElement:
+        """Returns the element for the row with the required answer.
+        :param str answer: The answer to be found.
+        :param str spec: Either 'new' or 'edit' depending on which
+            dialog box is open.
+        :return: FirefoxWebElement
+        """
+        # Finds the answers table.
+        rows = self.driver.find_elements_by_css_selector(
+            f"#{spec}-entry-answers-table tr"
+        )
+
+        # Finds the row with the required answer.
+        for row in rows:
+            if row.find_element_by_tag_name("td").text == answer:
+                return row
+
+        # Raises an error if the answer was not in the table.
+        else:
+            raise ValueError(f"Cannot find answer '{answer}' in table.")
+
+    def _get_entry_dialog_status(self) -> str:
+        """Finds out which entry dialog box is open.
+        :return: Either 'new' or 'edit'.
+        :rtype: str
         """
         # Finds the two possible dialog boxes which might be affected.
         add_entry_table = self.driver.find_element_by_id(
@@ -78,7 +100,16 @@ class BasicTests(unittest.TestCase):
         )
 
         # Finds which table to modify based upon what is visible.
-        spec = "new" if add_visible else "edit"
+        return "new" if add_visible else "edit"
+
+    def allot_additional_answers(self, answers: List[str]) -> None:
+        """Makes sure that the answers in the additional answers table.
+        :param List[str] answers: The list of answers to be in the
+            table.
+        :return: None
+        """
+        # Finds which table to modify based upon what is visible.
+        spec = self._get_entry_dialog_status()
 
         # Finds the table for the additional answers.
         table = self.driver.find_element_by_id(f"{spec}-entry-answers-table")
@@ -335,7 +366,8 @@ class BasicTests(unittest.TestCase):
                 # Scrolls to the row.
                 self.driver.execute_script(
                     "arguments[0].scrollIntoView({block: 'end', inline:"
-                    "'nearest', behavior: 'smooth'});", row.find_element_by_tag_name("td")
+                    "'nearest', behavior: 'smooth'});",
+                    row.find_element_by_tag_name("td")
                 )
 
                 # Waits for scrolling to complete.
@@ -395,6 +427,77 @@ class BasicTests(unittest.TestCase):
 
             # Allows browser to register change.
             sleep(0.05)
+
+    def remove_answer(self, answer: str ) -> None:
+        """Removes the answer from the answers table.
+        :param str answer: The answer to be removed.
+        :return: None
+        """
+        # Finds which table to modify based upon what is visible.
+        spec = self._get_entry_dialog_status()
+
+        # Finds the answers table.
+        row = self._get_answer_row(answer, spec)
+
+        # Clicks on the delete button for the row.
+        row.find_element_by_tag_name("button").click()
+
+        # Ensures that the row was successfully deleted.
+        try:
+            self.assertIsNone(
+                row.get_attribute("innerHTML"),
+                "Row should have been deleted but was not."
+            )
+        except StaleElementReferenceException:
+            pass
+
+    def swap_answer(self, answer: str) -> None:
+        """Clicks on the answer row specified, such that the selected
+        answer is promoted while the main answer, if it exists, is
+        demoted down to the table.
+        :param str answer: The answer to be promoted.
+        :return: None
+        """
+        # Finds which table to modify based upon what is visible.
+        spec = self._get_entry_dialog_status()
+
+        # Finds the answer entry.
+        answer_entry = self.driver.find_element_by_id(f"{spec}-entry-answer")
+
+        # Finds the text currently assigned to the primary answer.
+        before_primary = answer_entry.get_attribute("value")
+
+        # Finds the answers table.
+        row = self._get_answer_row(answer, spec)
+
+        # Clicks on the row to make is swap.
+        row.find_element_by_tag_name("td").click()
+
+        # Checks that the new promoted answer is correct.
+        self.assertEqual(
+            answer_entry.get_attribute("value"), answer,
+            f"Answer '{answer}' was not successfully promoted."
+        )
+
+        # If the row should be deleted, checks this happened
+        # successfully.
+        if not before_primary:
+            try:
+                self.assertIsNone(
+                    row.get_attribute("innerHTML"),
+                    "Row should have been deleted but was not."
+                )
+            except StaleElementReferenceException:
+                pass
+
+        # Otherwise, checks that the row now contains the previous
+        # primary answer.
+        else:
+            self.assertEqual(
+                row.find_element_by_tag_name("td").text, before_primary,
+                "Row should now contain previous primary answer "
+                f"'{before_primary}'."
+            )
 
     def toggle_row(self, table_id: str, column_name: str, value: str) -> None:
         """Toggles the row in a table given its column value

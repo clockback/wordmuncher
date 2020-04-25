@@ -671,3 +671,44 @@ class TestCreate(BasicTests):
 
         # Ensures that a message is alerting the user to the problem.
         self.check_visibility("message-new-entry-long-answer", True)
+
+    def test_019_create_new_entry_shuffle_answers(self) -> None:
+        """Checks that when creating a new entry, the answers table
+        can be manipulated appropriately.
+        :return: None
+        """
+        # We wish to give the new entry the following question.
+        question = "Entry with answers to shuffle"
+
+        # We wish originally to use the following answers.
+        answers = ["a1", "a2", "a3", "a4"]
+
+        # We wish to swap the following answer first.
+        swap_1 = answers[1]
+
+        # We wish to swap the following answer first.
+        swap_2 = answers[2]
+
+        # Opens the browser.
+        self.go_to("/create")
+
+        # Clicks on the new entry button.
+        self.click_button_id("new-entry")
+
+        # Writes the entry question to be copied.
+        self.type_entry_id("new-entry-question", question)
+
+        # Populates the answers table.
+        self.allot_additional_answers(answers)
+
+        # Ensures that the save button is disabled.
+        self.check_button_disabled("save-new-entry")
+
+        # Swaps the first answer.
+        self.swap_answer(swap_1)
+
+        # Swaps the second answer.
+        self.swap_answer(swap_2)
+
+        # Deletes the first answer.
+        self.remove_answer(swap_1)
