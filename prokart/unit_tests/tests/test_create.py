@@ -236,7 +236,7 @@ class TestCreate(BasicTests):
         # Ensures that the save button is disabled.
         self.check_button_disabled("save-new-sheet")
 
-        # Writes a placeholder sheet name to refresh the page.
+        # Writes the sheet name to be copied.
         self.type_entry_id("new-sheet-name", name)
 
         # Ensures that a message is alerting the user to the problem.
@@ -517,3 +517,157 @@ class TestCreate(BasicTests):
 
         # Again verifies row is deleted.
         self.check_no_row("entries-table", "Question", question)
+
+    def test_014_create_new_entry_no_question(self) -> None:
+        """Checks that an entry cannot be created without a question.
+        :return: None
+        """
+        # Opens the browser.
+        self.go_to("/create")
+
+        # Clicks on the new entry button.
+        self.click_button_id("new-entry")
+
+        # Ensures that the save button is disabled.
+        self.check_button_disabled("save-new-entry")
+
+        # Writes a placeholder entry question to refresh the page.
+        self.type_entry_id("new-entry-question", "test")
+
+        # Writes a placeholder entry answer to refresh the page.
+        self.type_entry_id("new-entry-answer", "test")
+
+        # Ensures there is no message that appears falsely.
+        self.check_visibility("message-new-entry-empty-question", False)
+
+        # Wipes the entry question.
+        self.type_entry_id("new-entry-question", "")
+
+        # Ensures that the save button is disabled.
+        self.check_button_disabled("save-new-entry")
+
+        # Ensures that a message is alerting the user to the problem.
+        self.check_visibility("message-new-entry-empty-question", True)
+
+    def test_015_create_new_entry_copy_question(self) -> None:
+        """Checks that an entry cannot be created with the same question
+        as another entry.
+        :return: None
+        """
+        # We wish to give the new entry the following question.
+        question = "Entry with question to copy"
+
+        # Opens the browser.
+        self.go_to("/create")
+
+        # Clicks on the new entry button.
+        self.click_button_id("new-entry")
+
+        # Ensures that the save button is disabled.
+        self.check_button_disabled("save-new-entry")
+
+        # Writes a placeholder entry answer to refresh the page.
+        self.type_entry_id("new-entry-answer", "test")
+
+        # Writes the entry question to be copied.
+        self.type_entry_id("new-entry-question", question)
+
+        # Ensures that the save button is disabled.
+        self.check_button_disabled("save-new-entry")
+
+        # Ensures that a message is alerting the user to the problem.
+        self.check_visibility("message-new-entry-already-exists", True)
+
+    def test_016_create_new_entry_long_question(self) -> None:
+        """Checks that an entry cannot be created with a very long
+        question.
+        :return: None
+        """
+        # We wish to give our entry the following question.
+        question = f"Really {'really ' * 10}long question"
+
+        # Opens the browser.
+        self.go_to("/create")
+
+        # Clicks on the new entry button.
+        self.click_button_id("new-entry")
+
+        # Ensures that the save button is disabled.
+        self.check_button_disabled("save-new-entry")
+
+        # Writes a placeholder entry answer to refresh the page.
+        self.type_entry_id("new-entry-answer", "test")
+
+        # Writes the entry question to be copied.
+        self.type_entry_id("new-entry-question", question)
+
+        # Ensures that the save button is disabled.
+        self.check_button_disabled("save-new-entry")
+
+        # Ensures that a message is alerting the user to the problem.
+        self.check_visibility("message-new-entry-long-question", True)
+
+    def test_017_create_new_entry_no_answer(self) -> None:
+        """Checks that an entry cannot be created without an answer.
+        :return: None
+        """
+        # We wish to give the new entry the following question.
+        question = "No answer"
+
+        # Opens the browser.
+        self.go_to("/create")
+
+        # Clicks on the new entry button.
+        self.click_button_id("new-entry")
+
+        # Ensures that the save button is disabled.
+        self.check_button_disabled("save-new-entry")
+
+        # Writes the entry question.
+        self.type_entry_id("new-entry-question", question)
+
+        # Writes a placeholder entry answer to refresh the page.
+        self.type_entry_id("new-entry-answer", " ")
+
+        # Ensures there is no message that appears falsely.
+        self.check_visibility("message-new-entry-empty-answer", False)
+
+        # Wipes the entry answer.
+        self.type_entry_id("new-entry-answer", "")
+
+        # Ensures that the save button is disabled.
+        self.check_button_disabled("save-new-entry")
+
+        # Ensures that a message is alerting the user to the problem.
+        self.check_visibility("message-new-entry-empty-answer", True)
+
+    def test_018_create_new_entry_long_answer(self) -> None:
+        """Checks that an entry cannot be created with a long answer.
+        :return: None
+        """
+        # We wish to give the new entry the following question.
+        question = "Long answer"
+
+        # We wish to give our entry the following answer.
+        answer = f"Really {'really ' * 10}long answer"
+
+        # Opens the browser.
+        self.go_to("/create")
+
+        # Clicks on the new entry button.
+        self.click_button_id("new-entry")
+
+        # Ensures that the save button is disabled.
+        self.check_button_disabled("save-new-entry")
+
+        # Writes the entry question.
+        self.type_entry_id("new-entry-question", question)
+
+        # Writes a placeholder entry answer to refresh the page.
+        self.type_entry_id("new-entry-answer", answer)
+
+        # Ensures that the save button is disabled.
+        self.check_button_disabled("save-new-entry")
+
+        # Ensures that a message is alerting the user to the problem.
+        self.check_visibility("message-new-entry-long-answer", True)

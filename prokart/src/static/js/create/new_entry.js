@@ -101,7 +101,7 @@ function changeNewEntryQuestion() {
       if (result)
       {
         saveButton.classList.add("button-disabled");
-        saveButton.removeAttribute("onclick");
+        saveButton.onclick = "";
         messageNewEntryExists.classList.remove("hide");
       }
       // The question does not already exist.
@@ -156,7 +156,7 @@ function changeNewEntryAnswer() {
       messageNewEntryLong.classList.remove("hide");
     }
     saveButton.classList.add("button-disabled");
-    saveButton.removeAttribute("onclick");
+    saveButton.onclick = "";
   }
   else
   {

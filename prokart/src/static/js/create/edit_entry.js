@@ -167,7 +167,7 @@ function changeEditEntryQuestion() {
       messageEditEntryLong.classList.remove("hide");
     }
     saveButton.classList.add("button-disabled");
-    saveButton.removeAttribute("onclick");
+    saveButton.onclick = "";
     messageEditEntryExists.classList.add("hide");
   }
   else
@@ -181,7 +181,7 @@ function changeEditEntryQuestion() {
       if (result)
       {
         saveButton.classList.add("button-disabled");
-        saveButton.removeAttribute("onclick");
+        saveButton.onclick = "";
         messageEditEntryExists.classList.remove("hide");
       }
       // The question does not already exist.
@@ -236,7 +236,7 @@ function changeEditEntryAnswer() {
       messageEditEntryLong.classList.remove("hide");
     }
     saveButton.classList.add("button-disabled");
-    saveButton.removeAttribute("onclick");
+    saveButton.onclick = "";
   }
   else
   {
