@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 import shutil
 from time import sleep
-from typing import Dict, List
+from typing import Callable, Dict, List
 import unittest
 
 # Installed packages
@@ -55,6 +55,14 @@ class BasicTests(unittest.TestCase):
         """
         os.remove(Path("/tmp", "test.db"))
 
+    @property
+    def get_id(self) -> Callable[[str], FirefoxWebElement]:
+        """Returns the driver's method for finding elements by their id.
+        :return: The method for finding elements by their id.
+        :rtype: Callable[[str], FirefoxWebElement]
+        """
+        return self.driver.find_element_by_id
+
     def _get_answer_row(self, answer: str, spec: str) -> FirefoxWebElement:
         """Returns the element for the row with the required answer.
         :param str answer: The answer to be found.
@@ -82,12 +90,8 @@ class BasicTests(unittest.TestCase):
         :rtype: str
         """
         # Finds the two possible dialog boxes which might be affected.
-        add_entry_table = self.driver.find_element_by_id(
-            "add-entry-container-background"
-        )
-        edit_entry_table = self.driver.find_element_by_id(
-            "edit-entry-container-background"
-        )
+        add_entry_table = self.get_id("add-entry-container-background")
+        edit_entry_table = self.get_id("edit-entry-container-background")
 
         # Finds out which of the dialog boxes is visible.
         add_visible = add_entry_table.is_displayed()
@@ -112,7 +116,7 @@ class BasicTests(unittest.TestCase):
         spec = self._get_entry_dialog_status()
 
         # Finds the table for the additional answers.
-        table = self.driver.find_element_by_id(f"{spec}-entry-answers-table")
+        table = self.get_id(f"{spec}-entry-answers-table")
 
         # Finds the different extant answers.
         table_rows = table.find_elements_by_css_selector("tr:not(:last-child)")
@@ -152,7 +156,7 @@ class BasicTests(unittest.TestCase):
         :return: None
         """
         # Finds the button.
-        button = self.driver.find_element_by_id(button_id)
+        button = self.get_id(button_id)
 
         # Ensures that the button appears enabled.
         self.assertNotIn(
@@ -177,7 +181,7 @@ class BasicTests(unittest.TestCase):
         :return: None
         """
         # Finds the button.
-        button = self.driver.find_element_by_id(button_id)
+        button = self.get_id(button_id)
 
         # Ensures that the button appears disabled.
         self.assertIn(
@@ -206,7 +210,7 @@ class BasicTests(unittest.TestCase):
         :return: None
         """
         # Finds the table with the expected id.
-        table = self.driver.find_element_by_id(table_id)
+        table = self.get_id(table_id)
 
         # Finds the constituent parts of the table.
         columns, main_rows, *_ = table.find_elements_by_tag_name("tbody")
@@ -245,7 +249,7 @@ class BasicTests(unittest.TestCase):
         :return: None
         """
         # Finds the table with the expected id.
-        table = self.driver.find_element_by_id(table_id)
+        table = self.get_id(table_id)
 
         # Finds the constituent parts of the table.
         columns, main_rows, *_ = table.find_elements_by_tag_name("tbody")
@@ -288,7 +292,7 @@ class BasicTests(unittest.TestCase):
         :return: None
         """
         # Finds the element.
-        element = self.driver.find_element_by_id(element_id)
+        element = self.get_id(element_id)
 
         # Finds the visibility of the element.
         e_visible = element.is_displayed()
@@ -305,7 +309,7 @@ class BasicTests(unittest.TestCase):
         :return: None
         """
         # Finds the button.
-        button = self.driver.find_element_by_id(query)
+        button = self.get_id(query)
 
         # Verifies that it is indeed a button.
         self.assertEqual(
@@ -347,7 +351,7 @@ class BasicTests(unittest.TestCase):
         :return: None
         """
         # Clicks on the button.
-        self.driver.find_element_by_id("sidebar-left-home").click()
+        self.get_id("sidebar-left-home").click()
 
     def deselect_all_rows(self, table_id: str) -> None:
         """Deselects all rows already selected.
@@ -428,7 +432,7 @@ class BasicTests(unittest.TestCase):
             # Allows browser to register change.
             sleep(0.05)
 
-    def remove_answer(self, answer: str ) -> None:
+    def remove_answer(self, answer: str) -> None:
         """Removes the answer from the answers table.
         :param str answer: The answer to be removed.
         :return: None
@@ -462,7 +466,7 @@ class BasicTests(unittest.TestCase):
         spec = self._get_entry_dialog_status()
 
         # Finds the answer entry.
-        answer_entry = self.driver.find_element_by_id(f"{spec}-entry-answer")
+        answer_entry = self.get_id(f"{spec}-entry-answer")
 
         # Finds the text currently assigned to the primary answer.
         before_primary = answer_entry.get_attribute("value")
@@ -523,7 +527,7 @@ class BasicTests(unittest.TestCase):
         :return: None
         """
         # Finds the table with the expected id.
-        table = self.driver.find_element_by_id(table_id)
+        table = self.get_id(table_id)
 
         # Finds the constituent parts of the table
         columns, main_rows, *_ = table.find_elements_by_tag_name("tbody")
@@ -568,7 +572,7 @@ class BasicTests(unittest.TestCase):
         :return: None
         """
         # Finds the entry.
-        entry = self.driver.find_element_by_id(query)
+        entry = self.get_id(query)
 
         # Clears everything in the entry.
         if entry.get_attribute("value"):
