@@ -127,6 +127,12 @@ class TestCreate(BasicTests):
         # Clicks on the delete button.
         self.click_button_id("delete-sheet")
 
+        # Checks that the edit button is disabled.
+        self.check_button_disabled("edit-sheet")
+
+        # Checks that the delete button is disabled.
+        self.check_button_disabled("delete-sheet")
+
         # Verifies row is deleted.
         self.check_no_row("sheets-table", "Sheet", name)
 
@@ -502,6 +508,12 @@ class TestCreate(BasicTests):
 
         # Clicks on the entry button.
         self.click_button_id("delete-entry")
+
+        # Checks that the edit button is disabled.
+        self.check_button_disabled("edit-entry")
+
+        # Checks that the delete button is disabled.
+        self.check_button_disabled("delete-entry")
 
         # Verifies row is deleted.
         self.check_no_row("entries-table", "Question", question)
