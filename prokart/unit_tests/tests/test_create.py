@@ -712,3 +712,162 @@ class TestCreate(BasicTests):
 
         # Deletes the first answer.
         self.remove_answer(swap_1)
+
+    def test_020_create_edit_entry_no_question(self) -> None:
+        """Checks that an entry cannot have its question removed.
+        :return: None
+        """
+        # We wish to try editing the entry with the following question.
+        question = "Entry no editing allowed"
+
+        # Opens the browser.
+        self.go_to("/create")
+
+        # Searches for the affected entry.
+        self.type_entry_id("search-all", question)
+
+        # Clicks on the desired entry.
+        self.toggle_row("entries-table", "Question", question)
+
+        # Clicks on the new entry button.
+        self.click_button_id("edit-entry")
+
+        # Clears the question.
+        self.type_entry_id("edit-entry-question", "")
+
+        # Ensures that the save button is disabled.
+        self.check_button_disabled("save-edit-entry")
+
+        # Ensures that a message is alerting the user to the problem.
+        self.check_visibility("message-edit-entry-empty-question", True)
+
+    def test_021_create_edit_entry_copy_question(self) -> None:
+        """Checks that an entry have its question made to be the same as
+        another entry.
+        :return: None
+        """
+        # We wish to try editing the entry with the following question.
+        entry_1 = "Entry no editing allowed"
+
+        # We wish to copy the following question.
+        entry_2 = "Entry with question to copy"
+
+        # Opens the browser.
+        self.go_to("/create")
+
+        # Searches for the affected entry.
+        self.type_entry_id("search-all", entry_1)
+
+        # Clicks on the desired entry.
+        self.toggle_row("entries-table", "Question", entry_1)
+
+        # Clicks on the new entry button.
+        self.click_button_id("edit-entry")
+
+        # Writes a placeholder entry answer to refresh the page.
+        self.type_entry_id("edit-entry-answer", "test")
+
+        # Clears the question.
+        self.type_entry_id("edit-entry-question", entry_2)
+
+        # Ensures that the save button is disabled.
+        self.check_button_disabled("save-edit-entry")
+
+        # Ensures that a message is alerting the user to the problem.
+        self.check_visibility("message-edit-entry-already-exists", True)
+
+    def test_022_create_edit_entry_long_question(self) -> None:
+        """Checks that an entry cannot be edited to have a very long
+        question.
+        :return: None
+        """
+        # We wish to try editing the entry with the following question.
+        entry_1 = "Entry no editing allowed"
+
+        # We wish to give our entry the following question.
+        entry_2 = f"Really {'really ' * 10}long question"
+
+        # Opens the browser.
+        self.go_to("/create")
+
+        # Searches for the affected entry.
+        self.type_entry_id("search-all", entry_1)
+
+        # Clicks on the desired entry.
+        self.toggle_row("entries-table", "Question", entry_1)
+
+        # Clicks on the new entry button.
+        self.click_button_id("edit-entry")
+
+        # Writes a placeholder entry answer to refresh the page.
+        self.type_entry_id("edit-entry-answer", "test")
+
+        # Writes the entry question to be copied.
+        self.type_entry_id("edit-entry-question", entry_2)
+
+        # Ensures that the save button is disabled.
+        self.check_button_disabled("save-edit-entry")
+
+        # Ensures that a message is alerting the user to the problem.
+        self.check_visibility("message-edit-entry-long-question", True)
+
+    def test_023_create_edit_entry_no_answer(self) -> None:
+        """Checks that an entry cannot have its answer removed.
+        :return: None
+        """
+        # We wish to remove the answer of the entry with the following
+        # question.
+        question = "Entry no editing allowed"
+
+        # Opens the browser.
+        self.go_to("/create")
+
+        # Searches for the affected entry.
+        self.type_entry_id("search-all", question)
+
+        # Clicks on the desired entry.
+        self.toggle_row("entries-table", "Question", question)
+
+        # Clicks on the edit entry button.
+        self.click_button_id("edit-entry")
+
+        # Writes a placeholder entry answer to refresh the page.
+        self.type_entry_id("edit-entry-answer", "")
+
+        # Ensures that the save button is disabled.
+        self.check_button_disabled("save-edit-entry")
+
+        # Ensures that a message is alerting the user to the problem.
+        self.check_visibility("message-edit-entry-empty-answer", True)
+
+    def test_024_create_edit_entry_long_answer(self) -> None:
+        """Checks that an entry cannot have its answer made very long.
+        :return: None
+        """
+        # We wish to extend the answer of the entry with the following
+        # question.
+        question = "Entry no editing allowed"
+
+        # We wish to give our entry the following answer.
+        answer = f"Really {'really ' * 10}long answer"
+
+        # Opens the browser.
+        self.go_to("/create")
+
+        # Searches for the affected entry.
+        self.type_entry_id("search-all", question)
+
+        # Clicks on the desired entry.
+        self.toggle_row("entries-table", "Question", question)
+
+        # Clicks on the edit entry button.
+        self.click_button_id("edit-entry")
+
+        # Writes a placeholder entry answer to refresh the page.
+        self.type_entry_id("edit-entry-answer", answer)
+
+        # Ensures that the save button is disabled.
+        self.check_button_disabled("save-edit-entry")
+
+        # Ensures that a message is alerting the user to the problem.
+        self.check_visibility("message-edit-entry-long-answer", True)
