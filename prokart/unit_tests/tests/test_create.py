@@ -678,7 +678,7 @@ class TestCreate(BasicTests):
         :return: None
         """
         # We wish to give the new entry the following question.
-        question = "Entry with answers to shuffle"
+        question = "New entry with answers to shuffle"
 
         # We wish originally to use the following answers.
         answers = ["a1", "a2", "a3", "a4"]
@@ -871,3 +871,47 @@ class TestCreate(BasicTests):
 
         # Ensures that a message is alerting the user to the problem.
         self.check_visibility("message-edit-entry-long-answer", True)
+
+    def test_025_create_edit_entry_shuffle_answers(self) -> None:
+        """Checks that when editing an entry, the answers table can be
+        manipulated appropriately.
+        :return: None
+        """
+        # We wish to give the new entry the following question.
+        question = "Entry with answers to shuffle"
+
+        # We wish originally to use the following answers.
+        answers = ["a1", "a2", "a3", "a4"]
+
+        # We wish to swap the following answer first.
+        swap_1 = answers[1]
+
+        # We wish to swap the following answer first.
+        swap_2 = answers[2]
+
+        # Opens the browser.
+        self.go_to("/create")
+
+        # Searches for the affected entry.
+        self.type_entry_id("search-all", question)
+
+        # Clicks on the desired entry.
+        self.toggle_row("entries-table", "Question", question)
+
+        # Clicks on the edit entry button.
+        self.click_button_id("edit-entry")
+
+        # Removes the answer.
+        self.type_entry_id("edit-entry-answer", "")
+
+        # Ensures that the save button is disabled.
+        self.check_button_disabled("save-edit-entry")
+
+        # Swaps the first answer.
+        self.swap_answer(swap_1)
+
+        # Swaps the second answer.
+        self.swap_answer(swap_2)
+
+        # Deletes the first answer.
+        self.remove_answer(swap_1)
