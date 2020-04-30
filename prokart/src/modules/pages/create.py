@@ -199,10 +199,20 @@ def search_sheets_and_entries() -> Tuple[Dict[str, Union[
 @app.route('/create/entry_already_exists')
 def entry_already_exists() -> Tuple[Dict[str, bool], int]:
     """Determines whether or not an entry with the given question
-        already exists.
+    already exists.
     :return: Whether or not it exists.
     :rtype: Tuple[Dict[str, bool], int]
     """
+    # Finds the name of the sheet to be found.
+    question = request.args['question']
+
+    # Finds the question of an entry to be ignored even if it exists.
+    prior = request.args.get('prior', None)
+
+    # If the name is the same as the one ignored, returns False.
+    if question == prior:
+        return {'already_there': False}, 200
+
     # Establishes a connection.
     conn = get_connection()
 
@@ -216,7 +226,7 @@ def entry_already_exists() -> Tuple[Dict[str, bool], int]:
             SELECT MAX(last_used) FROM translators
         )
         AND question = ?
-        """, (request.args['question'],)
+        """, (question,)
     ).fetchone())
 
     # Returns the result.

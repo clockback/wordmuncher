@@ -199,10 +199,13 @@ function changeEditEntryQuestion() {
       }
     }
 
+    var prior = document.getElementById("edit-entry-question").placeholder;
+
     // Points the request at the appropriate command.
     request.open(
       "GET", "/create/entry_already_exists?question="
-      + encodeURIComponent(question), true
+      + encodeURIComponent(question) + "&prior=" + encodeURIComponent(prior),
+      true
     );
 
     // Sends the request off.
