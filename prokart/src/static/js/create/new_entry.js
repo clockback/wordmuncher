@@ -26,16 +26,14 @@ function hideNewEntryInterface() {
   var moreAnswers = document.querySelectorAll(
     "#new-entry-answers-table>tbody>tr:not(:last-child)"
   );
-  for (var i = 0; i < moreAnswers.length; i ++)
-  {
+  for (var i = 0; i < moreAnswers.length; i ++) {
     moreAnswers[i].remove();
   }
 
   var warnings = document.querySelectorAll(
     "#new-entry-question-div>span,#new-entry-answer-div>span"
   );
-  for (var i = 0; i < warnings.length; i ++)
-  {
+  for (var i = 0; i < warnings.length; i ++) {
     warnings[i].classList.add("hide");
   }
 
@@ -46,8 +44,7 @@ function hideNewEntryInterface() {
 
 function keyDownOnNewEntryContainer(event) {
   // Checks that the escape key was pressed..
-  if (event.key == "Escape")
-  {
+  if (event.key == "Escape") {
     hideNewEntryInterface();
   }
 }
@@ -58,40 +55,33 @@ function changeNewEntryQuestion() {
   var messageNewEntryEmpty = getById("message-new-entry-empty-question");
   var messageNewEntryLong = getById("message-new-entry-long-question");
 
-  if (question == "" || question.length > 80)
-  {
-    if (question == "")
-    {
+  if (question == "" || question.length > 80) {
+    if (question == "") {
       messageNewEntryEmpty.classList.remove("hide");
       messageNewEntryLong.classList.add("hide");
     }
-    else
-    {
+    else {
       messageNewEntryEmpty.classList.add("hide");
       messageNewEntryLong.classList.remove("hide");
     }
     disableButtons(["save-new-entry"]);
     messageNewEntryExists.classList.add("hide");
   }
-  else
-  {
+  else {
     messageNewEntryEmpty.classList.add("hide");
     messageNewEntryLong.classList.add("hide");
     var request = new XMLHttpRequest();
 
     request.onload = function() {
       var result = JSON.parse(request.responseText)['already_there'];
-      if (result)
-      {
+      if (result) {
         disableButtons(["save-new-entry"]);
         messageNewEntryExists.classList.remove("hide");
       }
       // The question does not already exist.
-      else
-      {
+      else {
         var answerLength = getById('new-entry-answer').value.length;
-        if (0 < answerLength && answerLength <= 80)
-        {
+        if (0 < answerLength && answerLength <= 80) {
           enableButtons([["save-new-entry", saveNewEntry]]);
         }
         messageNewEntryExists.classList.add("hide");
@@ -157,16 +147,13 @@ function newEntryAddRow() {
     "#new-entry-answers-table>tbody>tr:not(:last-child)>td:first-child"
   );
 
-  if (mainAnswerInput.value == newAnswer)
-  {
+  if (mainAnswerInput.value == newAnswer) {
     return;
   }
 
-  for (var i = 0; i < moreAnswersCells.length; i ++)
-  {
+  for (var i = 0; i < moreAnswersCells.length; i ++) {
     var anotherAnswer = moreAnswersCells[i].innerHTML;
-    if (anotherAnswer == newAnswer)
-    {
+    if (anotherAnswer == newAnswer) {
       return;
     }
   }
@@ -205,8 +192,7 @@ function trashRow(button) {
 }
 
 function newEntryHitEnterAnotherAnswer(event) {
-  if (event.key == "Enter")
-  {
+  if (event.key == "Enter") {
     newEntryAddRow();
   }
 }
@@ -215,35 +201,30 @@ function newEntryPromoteAnswer(promoteCell) {
   var formerTopAnswerInput = getById("new-entry-answer");
   var formerTopAnswer = formerTopAnswerInput.value;
   formerTopAnswerInput.value = promoteCell.innerHTML;
-  if (formerTopAnswer == "")
-  {
+  if (formerTopAnswer == "") {
     promoteCell.parentNode.remove();
     getById("message-new-entry-empty-answer").classList.add("hide");
   }
-  else
-  {
+  else {
     promoteCell.innerHTML = formerTopAnswer;
   }
 }
 
-function saveNewEntry()
-{
+function saveNewEntry() {
   var question = getById("new-entry-question").value;
   var answer = getById("new-entry-answer").value;
   var moreAnswersCells = document.querySelectorAll(
     "#new-entry-answers-table>tbody>tr:not(:last-child)>td:first-child"
   );
   var moreAnswers = [];
-  for (var i = 0; i < moreAnswersCells.length; i ++)
-  {
+  for (var i = 0; i < moreAnswersCells.length; i ++) {
     moreAnswers.push(moreAnswersCells[i].innerHTML);
   }
   var moreAnswersString = JSON.stringify(moreAnswers);
 
   var hiddenRows = getById("new-entry-sheet-table-hidden-rows").children;
   var parentSheets = [];
-  for (var i = 0; i < hiddenRows.length; i ++)
-  {
+  for (var i = 0; i < hiddenRows.length; i ++) {
     parentSheets.push(hiddenRows[i].innerHTML);
   }
   var parentSheetsString = JSON.stringify(parentSheets);
@@ -269,20 +250,16 @@ function saveNewEntry()
 }
 
 function clickNewEntrySheet(entry) {
-  if (entry.classList.contains('selected-row'))
-  {
+  if (entry.classList.contains('selected-row')) {
     entry.classList.remove('selected-row');
     var checkRows = getById('new-entry-sheet-table-hidden-rows').children
-    for (var i = 0; i < checkRows.length; i ++)
-    {
-      if (checkRows[i].innerHTML == entry.firstChild.innerHTML)
-      {
+    for (var i = 0; i < checkRows.length; i ++) {
+      if (checkRows[i].innerHTML == entry.firstChild.innerHTML) {
         checkRows[i].remove();
       }
     }
   }
-  else
-  {
+  else {
     entry.classList.add('selected-row');
     var newRow = getById('new-entry-sheet-table-hidden-rows').insertRow(-1);
     newRow.innerHTML = entry.firstElementChild.innerHTML;
@@ -301,13 +278,10 @@ function newEntryLoadMoreSheets(numberAlready) {
       "new-entry-sheet-table-hidden-rows"
     ).children;
 
-    for (var i = 0; i < returnJSON['sheets'].length; i ++)
-    {
+    for (var i = 0; i < returnJSON['sheets'].length; i ++) {
       var foundHidden = false;
-      for (var j = 0; j < possibleMatches.length; j++)
-      {
-        if (possibleMatches[j].innerHTML == returnJSON["sheets"][i][0])
-        {
+      for (var j = 0; j < possibleMatches.length; j++) {
+        if (possibleMatches[j].innerHTML == returnJSON["sheets"][i][0]) {
           foundHidden = true;
           break;
         }
@@ -319,8 +293,7 @@ function newEntryLoadMoreSheets(numberAlready) {
         clickNewEntrySheet(this);
       }
 
-      for (var j = 0; j < 3; j ++)
-      {
+      for (var j = 0; j < 3; j ++) {
         var cell = document.createElement("td");
         cell.innerHTML = returnJSON["sheets"][i][j];
         newRow.appendChild(cell);
@@ -328,18 +301,15 @@ function newEntryLoadMoreSheets(numberAlready) {
 
       rowsElement.appendChild(newRow);
 
-      if (foundHidden)
-      {
+      if (foundHidden) {
         newRow.classList.add("selected-row");
       }
     }
     var loadMoreRow = getById('new-entry-sheet-load-more-row');
-    if (returnJSON['more_sheets'] == true)
-    {
+    if (returnJSON['more_sheets'] == true) {
         loadMoreRow.style.visibility = 'visible';
     }
-    else
-    {
+    else {
         loadMoreRow.style.visibility = 'collapse';
     }
   }
@@ -361,8 +331,7 @@ function newEntryLoadMoreSheets(numberAlready) {
   request.send();
 }
 
-function newEntrySearchSheets()
-{
+function newEntrySearchSheets() {
  // Prepares a request for the search function.
   var request = new XMLHttpRequest();
 
@@ -373,13 +342,10 @@ function newEntrySearchSheets()
     var possibleMatches = getById(
       "new-entry-sheet-table-hidden-rows"
     ).children;
-    for (var i = 0; i < returnJSON["sheets"].length; i ++)
-    {
+    for (var i = 0; i < returnJSON["sheets"].length; i ++) {
       var foundHidden = false;
-      for (var j = 0; j < possibleMatches.length; j++)
-      {
-        if (possibleMatches[j].innerHTML == returnJSON["sheets"][i][0])
-        {
+      for (var j = 0; j < possibleMatches.length; j++) {
+        if (possibleMatches[j].innerHTML == returnJSON["sheets"][i][0]) {
           foundHidden = true;
           break;
         }
@@ -391,8 +357,7 @@ function newEntrySearchSheets()
         clickNewEntrySheet(this);
       }
 
-      for (var j = 0; j < 3; j ++)
-      {
+      for (var j = 0; j < 3; j ++) {
         var cell = document.createElement("td");
         cell.innerHTML = returnJSON["sheets"][i][j];
         newRow.appendChild(cell);
@@ -400,19 +365,16 @@ function newEntrySearchSheets()
 
       rowsElement.appendChild(newRow);
 
-      if (foundHidden)
-      {
+      if (foundHidden) {
         newRow.classList.add("selected-row");
       }
     }
 
     var loadMoreRow = getById('new-entry-sheet-load-more-row');
-    if (returnJSON['more_sheets'] == true)
-    {
+    if (returnJSON['more_sheets'] == true) {
         loadMoreRow.style.visibility = 'visible';
     }
-    else
-    {
+    else {
         loadMoreRow.style.visibility = 'collapse';
     }
   }

@@ -4,21 +4,16 @@ function closeAllSelect(element) {
   var selectItems, selectedItems, i, arrNo = [];
   selectItems = document.getElementsByClassName("select-items");
   selectedItems = document.getElementsByClassName("select-selected");
-  for (i = 0; i < selectedItems.length; i++)
-  {
-    if (element == selectedItems[i])
-    {
+  for (i = 0; i < selectedItems.length; i++) {
+    if (element == selectedItems[i]) {
       arrNo.push(i)
     }
-    else
-    {
+    else {
       selectedItems[i].classList.remove("select-arrow-active");
     }
   }
-  for (i = 0; i < selectItems.length; i++)
-  {
-    if (arrNo.indexOf(i))
-    {
+  for (i = 0; i < selectItems.length; i++) {
+    if (arrNo.indexOf(i)) {
       selectItems[i].classList.add("select-hide");
     }
   }
@@ -70,8 +65,7 @@ function populateSelectBoxes() {
 
   // Look for any elements with the class "custom-select":
   selectDiv = document.getElementsByClassName("custom-select");
-  for (i = 0; i < selectDiv.length; i++)
-  {
+  for (i = 0; i < selectDiv.length; i++) {
     selectElement = selectDiv[i].getElementsByTagName("select")[0];
 
     // For each element, create a new DIV that will act as the selected item:
@@ -86,8 +80,7 @@ function populateSelectBoxes() {
     hiddenOptions = document.createElement("div");
     hiddenOptions.classList.add("select-items");
     hiddenOptions.classList.add("select-hide");
-    for (j = 1; j < selectElement.length; j++)
-    {
+    for (j = 1; j < selectElement.length; j++) {
       /* For each option in the original select element, create a new DIV that
       will act as an option item: */
       hiddenOption = document.createElement("div");
@@ -130,8 +123,7 @@ function expandFlags(element) {
     condenseFlags(this);
   };
 
-  if (allCollapseFlags.length == 0)
-  {
+  if (allCollapseFlags.length == 0) {
     var request = new XMLHttpRequest();
 
     request.onload = function () {
@@ -139,8 +131,7 @@ function expandFlags(element) {
       sheets = returnJSON["flags"];
       var hiddenFlags = getById("hidden-flags");
 
-      for (var i = 0; i < sheets.length; i ++)
-      {
+      for (var i = 0; i < sheets.length; i ++) {
         var flag = sheets[i][0];
         var country = sheets[i][1];
 
@@ -155,8 +146,7 @@ function expandFlags(element) {
           selectFlag(this);
         };
         newButton.innerHTML = flag;
-        if (flag == element.innerHTML)
-        {
+        if (flag == element.innerHTML) {
           newButton.style.display = "none";
         }
         hiddenFlags.appendChild(newButtonDiv);
@@ -172,8 +162,7 @@ function expandFlags(element) {
     request.open("GET", "/languages/get_flags");
     request.send();
   }
-  else
-  {
+  else {
     hiddenLanguages.style.display = null;
   }
 }
@@ -189,8 +178,7 @@ function condenseFlags(element) {
 
 function selectFlag(element) {
   var allCollapseFlags = document.getElementsByClassName("flag-button");
-  for (var i = 0; i < allCollapseFlags.length; i ++)
-  {
+  for (var i = 0; i < allCollapseFlags.length; i ++) {
     allCollapseFlags[i].style.display = null;
   }
   element.style.display = "none";
@@ -203,30 +191,27 @@ function selectFlag(element) {
 function changeLanguageName() {
   var languageName = getById("language-name").value;
 
-  if (languageName && languageName.length <= 40)
-  {
+  if (languageName && languageName.length <= 40) {
     var request = new XMLHttpRequest();
 
     request.onload = function () {
       var returnJSON = JSON.parse(request.responseText);
-      if (returnJSON["found"])
-      {
+      if (returnJSON["found"]) {
         disableButtons(["add-button"]);
       }
-      else
-      {
+      else {
         enableButtons([["add-button", saveLanguage]]);
       }
     };
 
     request.open(
-      "GET", "/languages/check_language?name=" + encodeURIComponent(languageName)
+      "GET", "/languages/check_language?name="
+      + encodeURIComponent(languageName)
     );
 
     request.send();
   }
-  else
-  {
+  else {
     disableButtons(["add-button"]);
   }
 }

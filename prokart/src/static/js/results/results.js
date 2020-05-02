@@ -10,16 +10,13 @@ function loadResults() {
   var cumulative_results = {};
   var questions = [];
 
-  for (var i = 0; i < results.length; i ++)
-  {
+  for (var i = 0; i < results.length; i ++) {
     var result = results[i];
-    if (result["correct"])
-    {
+    if (result["correct"]) {
       total_score ++;
     }
 
-    if (!(result["question"] in cumulative_results))
-    {
+    if (!(result["question"] in cumulative_results)) {
       questions.push(result["question"]);
       cumulative_results[result["question"]] = {true: 0, false: 0};
     }
@@ -43,21 +40,17 @@ function populateResultsTable(results, questions) {
 
     var entries = returnJSON["entries"];
 
-    for (var i = 0; i < questions.length; i ++)
-    {
+    for (var i = 0; i < questions.length; i ++) {
       var scores = entries[questions[i]];
 
       var newRow = document.createElement("tr");
-      if (scores[0] == 2 && scores[1] == 2)
-      {
+      if (scores[0] == 2 && scores[1] == 2) {
         newRow.classList.add("completed-colour");
       }
-      else if (scores[0] > 0)
-      {
+      else if (scores[0] > 0) {
         newRow.classList.add("incomplete-colour");
       }
-      else
-      {
+      else {
         newRow.classList.add("failed-colour");
       }
 

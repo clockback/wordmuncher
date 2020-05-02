@@ -4,6 +4,7 @@ function showEditLanguagesInterface(question) {
     "sidebar-center-translator"
   ]);
   getById('languages-container-background').classList.remove('hide');
+  getById('language-name').focus();
 }
 
 function hideLanguagesInterface() {
@@ -19,8 +20,7 @@ function hideLanguagesInterface() {
 
 function keyDownOnLanguagesContainer(event) {
   // Checks that the escape key was pressed..
-  if (event.key == "Escape")
-  {
+  if (event.key == "Escape") {
     hideLanguagesInterface();
   }
 }

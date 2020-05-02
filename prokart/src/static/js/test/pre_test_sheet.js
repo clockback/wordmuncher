@@ -13,12 +13,10 @@ function testSheet(row) {
   bar.children[0].style.width = percentage + "%";
   bar.children[1].innerHTML = percentage + "% complete";
 
-  if (percentage == 0)
-  {
+  if (percentage == 0) {
     bar.children[0].style.visibility = "hidden";
   }
-  else
-  {
+  else {
     bar.children[0].style.visibility = null;
   }
 
@@ -37,8 +35,7 @@ function hideTestSheetInterface(row) {
 
 function keyDownOnTestSheetContainer(event) {
   // Checks that the escape key was pressed..
-  if (event.key == "Escape")
-  {
+  if (event.key == "Escape") {
     hideTestSheetInterface();
   }
 }

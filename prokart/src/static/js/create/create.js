@@ -9,16 +9,14 @@ function searchAll() {
     var sheetTableRows = getById('sheet-table-rows');
     sheetTableRows.innerHTML = "";
 
-    for (var i = 0; i < returnJSON['sheets'].length; i ++)
-    {
+    for (var i = 0; i < returnJSON['sheets'].length; i ++) {
       var newRow = document.createElement("tr");
       newRow.style["cursor"] = "pointer";
       newRow.onclick = function () {
         clickSheet(this);
       };
 
-      for (var j = 0; j < 3; j ++)
-      {
+      for (var j = 0; j < 3; j ++) {
         var newCell = document.createElement("td");
         newCell.innerHTML = returnJSON['sheets'][i][j];
         newRow.appendChild(newCell);
@@ -29,16 +27,14 @@ function searchAll() {
     var entryTableRows = getById('entry-table-rows');
     entryTableRows.innerHTML = "";
 
-    for (var i = 0; i < returnJSON['entries'].length; i ++)
-    {
+    for (var i = 0; i < returnJSON['entries'].length; i ++) {
       var newRow = document.createElement("tr");
       newRow.style["cursor"] = "pointer";
       newRow.onclick = function () {
         clickEntry(this);
       };
 
-      for (var j = 0; j < 4; j ++)
-      {
+      for (var j = 0; j < 4; j ++) {
         var newCell = document.createElement("td");
         newCell.innerHTML = returnJSON['entries'][i][j];
         newRow.appendChild(newCell);
@@ -49,21 +45,17 @@ function searchAll() {
     var loadMoreSheetsBtn = getById('sheet-load-more-row');
     var loadMoreEntriesBtn = getById('entry-load-more-row');
 
-    if (returnJSON['more_sheets'] == true)
-    {
+    if (returnJSON['more_sheets'] == true) {
         loadMoreSheetsBtn.style.visibility = 'visible';
     }
-    else
-    {
+    else {
         loadMoreSheetsBtn.style.visibility = 'collapse';
     }
 
-    if (returnJSON['more_entries'] == true)
-    {
+    if (returnJSON['more_entries'] == true) {
         loadMoreEntriesBtn.style.visibility = 'visible';
     }
-    else
-    {
+    else {
         loadMoreEntriesBtn.style.visibility = 'collapse';
     }
 
@@ -94,16 +86,14 @@ function loadMoreSheets(numberAlready) {
     var returnJSON = JSON.parse(request.responseText);
     var rowsElement = getById('sheet-table-rows');
 
-    for (var i = 0; i < returnJSON["sheets"].length; i ++)
-    {
+    for (var i = 0; i < returnJSON["sheets"].length; i ++) {
       var newRow = document.createElement("tr");
       newRow.style["cursor"] = "pointer";
       newRow.onclick = function () {
         clickSheet(this);
       }
 
-      for (var j = 0; j < 3; j++)
-      {
+      for (var j = 0; j < 3; j++) {
         var cell = document.createElement("td");
         cell.innerHTML = returnJSON["sheets"][i][j];
         newRow.appendChild(cell);
@@ -111,12 +101,10 @@ function loadMoreSheets(numberAlready) {
       rowsElement.appendChild(newRow);
     }
     var loadMoreRow = getById('sheet-load-more-row');
-    if (returnJSON['more_sheets'] == true)
-    {
+    if (returnJSON['more_sheets'] == true) {
         loadMoreRow.style.visibility = 'visible';
     }
-    else
-    {
+    else {
         loadMoreRow.style.visibility = 'collapse';
     }
   }
@@ -145,16 +133,14 @@ function loadMoreEntries(numberAlready) {
     var returnJSON = JSON.parse(request.responseText);
     rowsElement = getById('entry-table-rows');
 
-    for (var i = 0; i < returnJSON['entries'].length; i ++)
-    {
+    for (var i = 0; i < returnJSON['entries'].length; i ++) {
       var newRow = document.createElement("tr");
       newRow.style["cursor"] = "pointer";
       newRow.onclick = function () {
         clickEntry(this);
       }
 
-      for (var j = 0; j < 4; j++)
-      {
+      for (var j = 0; j < 4; j++) {
         var cell = document.createElement("td");
         cell.innerHTML = returnJSON["entries"][i][j];
         newRow.appendChild(cell);
@@ -162,12 +148,10 @@ function loadMoreEntries(numberAlready) {
       rowsElement.appendChild(newRow);
     }
     var loadMoreRow = getById('entry-load-more-row');
-    if (returnJSON['more_entries'] == true)
-    {
+    if (returnJSON['more_entries'] == true) {
         loadMoreRow.style.visibility = 'visible';
     }
-    else
-    {
+    else {
         loadMoreRow.style.visibility = 'collapse';
     }
   }
@@ -191,17 +175,14 @@ function clickSheet(toSelect) {
   selectedRows = document.querySelectorAll("#sheet-table-rows>.selected-row");
 
   var found = false;
-  for (var i = 0; i < selectedRows.length; i++)
-  {
+  for (var i = 0; i < selectedRows.length; i++) {
     selectedRows[i].classList.remove("selected-row");
-    if (selectedRows[i] == toSelect)
-    {
+    if (selectedRows[i] == toSelect) {
       found = true;
     }
   }
 
-  if (!found)
-  {
+  if (!found) {
     toSelect.classList.add("selected-row");
 
     enableButtons([
@@ -211,8 +192,7 @@ function clickSheet(toSelect) {
       ["delete-sheet", deleteSheet]
     ]);
   }
-  else
-  {
+  else {
     disableButtons(["edit-sheet", "delete-sheet"]);
   }
 }
@@ -221,17 +201,14 @@ function clickEntry(toSelect) {
   selectedRows = document.querySelectorAll("#entry-table-rows>.selected-row");
 
   var found = false;
-  for (var i = 0; i < selectedRows.length; i++)
-  {
+  for (var i = 0; i < selectedRows.length; i++) {
     selectedRows[i].classList.remove("selected-row");
-    if (selectedRows[i] == toSelect)
-    {
+    if (selectedRows[i] == toSelect) {
       found = true;
     }
   }
 
-  if (!found)
-  {
+  if (!found) {
     toSelect.classList.add("selected-row");
 
     enableButtons([
@@ -241,8 +218,7 @@ function clickEntry(toSelect) {
       ["delete-entry", deleteEntry]
     ]);
   }
-  else
-  {
+  else {
     disableButtons(["edit-entry", "delete-entry"]);
   }
 }
@@ -265,8 +241,7 @@ function deleteSheet() {
 
     // Allows each of the rows to be clicked.
     var children = document.querySelectorAll("#sheet-table-rows>tr");
-    for (var i = 0; i < children.length; i++)
-    {
+    for (var i = 0; i < children.length; i++) {
       children[i].onclick = function () {
         clickSheet(this);
       };
@@ -274,12 +249,9 @@ function deleteSheet() {
 
     // Updates corresponding rows in entry table.
     var entryRows = document.querySelectorAll("#entry-table-rows>tr");
-    for (var i = 0; i < entryRows.length; i ++)
-    {
-      for (var j = 0; j < returnJSON["entries"].length; j ++)
-      {
-        if (returnJSON["entries"][j] == entryRows[i].children[0].innerHTML)
-        {
+    for (var i = 0; i < entryRows.length; i ++) {
+      for (var j = 0; j < returnJSON["entries"].length; j ++) {
+        if (returnJSON["entries"][j] == entryRows[i].children[0].innerHTML) {
           var noMentions = Number(entryRows[i].children[2].innerHTML) - 1;
           entryRows[i].children[2].innerHTML = noMentions.toString();
           break;
@@ -320,8 +292,7 @@ function deleteEntry() {
 
     // Allows each of the rows to be clicked.
     var children = document.querySelectorAll("#entry-table-rows>tr");
-    for (var i = 0; i < children.length; i++)
-    {
+    for (var i = 0; i < children.length; i++) {
       children[i].onclick = function () {
         clickEntry(this);
       };
@@ -329,12 +300,9 @@ function deleteEntry() {
 
     // Updates corresponding rows in entry table.
     var sheetRows = document.querySelectorAll("#sheet-table-rows>tr");
-    for (var i = 0; i < sheetRows.length; i ++)
-    {
-      for (var j = 0; j < returnJSON["sheets"].length; j ++)
-      {
-        if (returnJSON["sheets"][j] == sheetRows[i].children[0].innerHTML)
-        {
+    for (var i = 0; i < sheetRows.length; i ++) {
+      for (var j = 0; j < returnJSON["sheets"].length; j ++) {
+        if (returnJSON["sheets"][j] == sheetRows[i].children[0].innerHTML) {
           var noMentions = Number(sheetRows[i].children[2].innerHTML) - 1;
           sheetRows[i].children[2].innerHTML = noMentions.toString();
           break;

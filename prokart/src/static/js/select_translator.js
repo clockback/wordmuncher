@@ -4,12 +4,10 @@ function selectTranslator(from_l, to_l) {
 
   // Prepares to recreate the search result table.
   request.onload = function() {
-    if (document.location.href.endsWith('/languages'))
-    {
+    if (document.location.href.endsWith('/languages')) {
       document.location = '/';
     }
-    else
-    {
+    else {
       document.location.reload();
     }
   };
@@ -22,12 +20,10 @@ function selectTranslator(from_l, to_l) {
 }
 
 function clickTopButton(element) {
-  if (element.innerHTML.trim() == "Start!")
-  {
+  if (element.innerHTML.trim() == "Start!") {
     window.location.href = "/languages";
   }
-  else
-  {
+  else {
     window.location.reload();
   }
 }

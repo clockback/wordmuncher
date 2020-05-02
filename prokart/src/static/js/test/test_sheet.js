@@ -62,8 +62,7 @@ function onHoverAnswer(row, questionText) {
   var clearCells = document.querySelectorAll(
     "#answers-table td:not(:first-child)"
   );
-  for (var i = 0; i < clearCells.length; i ++)
-  {
+  for (var i = 0; i < clearCells.length; i ++) {
     clearCells[i].remove();
   }
 
@@ -79,8 +78,7 @@ function onHoverAnswer(row, questionText) {
 function deleteAnswer(row, questionText) {
   var answerText = row.querySelector("td:first-child").innerHTML;
   row.remove();
-  if (document.querySelectorAll("#answers-table tr").length == 0)
-  {
+  if (document.querySelectorAll("#answers-table tr").length == 0) {
     getById("other-answers-header").style.visibility = "hidden";
   }
 
@@ -123,8 +121,7 @@ function addToAnswers() {
 
 function keyDownOnWrongAnswerContainer(event) {
   // Checks that the escape key was pressed..
-  if (event.key == "Escape")
-  {
+  if (event.key == "Escape") {
     clickNextButton();
   }
 }
@@ -154,12 +151,10 @@ function clickNextButton() {
 }
 
 function abortTest() {
-  if (sessionStorage.one_ago)
-  {
+  if (sessionStorage.one_ago) {
     window.location.href = '/results';
   }
-  else
-  {
+  else {
     window.location.href = '/test'
   }
 }
@@ -173,8 +168,7 @@ function proceed(questionText) {
   var numbers = questionNumberPanel.innerHTML.split(' / ');
   var current = Number(numbers[0]);
   var final = Number(numbers[1]);
-  if (current == final)
-  {
+  if (current == final) {
     window.location.href = "/results";
     return;
   }
@@ -231,8 +225,7 @@ function proceed(questionText) {
 
 function noHoverAnswer(row) {
   var clearCells = row.querySelectorAll(":not(:first-child)");
-  for (var i = 0; i < clearCells.length; i ++)
-  {
+  for (var i = 0; i < clearCells.length; i ++) {
     clearCells[i].remove();
   }
 }
@@ -251,22 +244,18 @@ function tryAgain(button, textArea) {
       time ++;
 
       // Stops iterating if player has done something else.
-      if (sessionStorage.alreadyAttempted != 1)
-      {
+      if (sessionStorage.alreadyAttempted != 1) {
         pos = 20;
         tryAgainMessage.style.visibility = "hidden";
         clearInterval(showAlert);
       }
-      else if (time <= 30)
-      {
+      else if (time <= 30) {
         pos ++;
       }
-      else if (pos > 20 && time >= 200)
-      {
+      else if (pos > 20 && time >= 200) {
         pos --;
       }
-      else if (time >= 200 && pos <= 20)
-      {
+      else if (time >= 200 && pos <= 20) {
         tryAgainMessage.style.visibility = "hidden";
         clearInterval(showAlert);
       }
@@ -303,19 +292,16 @@ function correctAnswer(question) {
     var diff = endPercentage - startPercentage;
     var updatePercentage = setInterval(function () {
       time ++;
-      if (time < 100)
-      {
+      if (time < 100) {
         var weight = 1 / (1 + Math.exp(0.075 * (50 - time)));
       }
-      else
-      {
+      else {
         var weight = 1;
       }
       presentPercentage = Math.round(startPercentage + diff * weight) + "%";
       percentageBar.style.width = presentPercentage;
       percentageBarFigure.innerHTML = presentPercentage + " complete";
-      if (time == 100)
-      {
+      if (time == 100) {
         clearInterval(updatePercentage);
         proceed(questionText);
       }
@@ -349,17 +335,14 @@ function wrongAnswer(question, textArea, closest, others) {
   var otherAnswers = document.querySelector("#answers-table>.main-rows");
   otherAnswers.innerHTML = "";
 
-  if (others.length == 0)
-  {
+  if (others.length == 0) {
     getById("other-answers-header").style.visibility = "hidden";
   }
-  else
-  {
+  else {
     getById("other-answers-header").style.visibility = "visible";
   }
 
-  for (var i = 0; i < others.length; i ++)
-  {
+  for (var i = 0; i < others.length; i ++) {
     var newRow = document.createElement("tr");
     var answerCell = document.createElement("td");
     answerCell.innerHTML = others[i];
@@ -397,17 +380,14 @@ function go() {
     var returnJSON = JSON.parse(request.responseText);
 
     // If the answer was almost correct, but not enough.
-    if (returnJSON["correct"])
-    {
+    if (returnJSON["correct"]) {
       correctAnswer(question);
     }
-    else if (returnJSON["close"] && sessionStorage.alreadyAttempted == 0)
-    {
+    else if (returnJSON["close"] && sessionStorage.alreadyAttempted == 0) {
       tryAgain(button, textArea);
       return;
     }
-    else
-    {
+    else {
       wrongAnswer(
         question, textArea, returnJSON["closest"], returnJSON["others"]
       );
@@ -427,25 +407,21 @@ function go() {
 }
 
 function hitEnterAnswerBox(element, event) {
-  if (event.key == "Enter" && element.value != "")
-  {
+  if (event.key == "Enter" && element.value != "") {
     go();
   }
 }
 
 function typeAnswerBox(element, event) {
   // Prevents the enter key from being typed if empty.
-  if (event.data == null && element.value == "\n")
-  {
+  if (event.data == null && element.value == "\n") {
     element.value = "";
   }
 
-  if (element.value.length == 0)
-  {
+  if (element.value.length == 0) {
     disableButtons(["go-button"]);
   }
-  else
-  {
+  else {
     enableButtons([["go-button", go]]);
   }
 }

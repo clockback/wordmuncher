@@ -36,36 +36,30 @@ function changeNewSheetName() {
   var messageNewSheetEmpty = getById("message-new-sheet-empty-name");
   var messageNewSheetLong = getById("message-new-sheet-long-name");
 
-  if (name == "" || name.length > 80)
-  {
-    if (name == "")
-    {
+  if (name == "" || name.length > 80) {
+    if (name == "") {
       messageNewSheetEmpty.classList.remove("hide");
       messageNewSheetLong.classList.add("hide");
     }
-    else
-    {
+    else {
       messageNewSheetEmpty.classList.add("hide");
       messageNewSheetLong.classList.remove("hide");
     }
     disableButtons(["save-new-sheet"]);
     messageNewSheetExists.classList.add("hide");
   }
-  else
-  {
+  else {
     messageNewSheetEmpty.classList.add("hide");
     messageNewSheetLong.classList.add("hide");
     var request = new XMLHttpRequest();
 
     request.onload = function() {
       var result = JSON.parse(request.responseText)['already_there'];
-      if (result)
-      {
+      if (result) {
         disableButtons(["save-new-sheet"]);
         messageNewSheetExists.classList.remove("hide");
       }
-      else
-      {
+      else {
         enableButtons([["save-new-sheet", saveNewSheet]]);
         messageNewSheetExists.classList.add("hide");
       }
@@ -88,12 +82,10 @@ function saveNewSheet() {
   // Prepares to recreate the search result table.
   request.onload = function() {
     var already_there = JSON.parse(request.responseText)['already_there'];
-    if (already_there)
-    {
+    if (already_there) {
       alert("Sheet already made!");
     }
-    else
-    {
+    else {
       hideNewSheetInterface();
       searchAll();
     }
@@ -104,8 +96,7 @@ function saveNewSheet() {
 
   var hiddenRows = getById("new-sheet-entry-table-hidden-rows").children;
   var childEntries = [];
-  for (var i = 0; i < hiddenRows.length; i ++)
-  {
+  for (var i = 0; i < hiddenRows.length; i ++) {
     childEntries.push(hiddenRows[i].innerHTML);
   }
   var childEntriesString = JSON.stringify(childEntries);
@@ -122,27 +113,22 @@ function saveNewSheet() {
 
 function keyDownOnNewSheetContainer(event) {
   // Checks that the escape key was pressed..
-  if (event.key == "Escape")
-  {
+  if (event.key == "Escape") {
     hideNewSheetInterface();
   }
 }
 
 function clickNewSheetEntry(entry) {
-  if (entry.classList.contains('selected-row'))
-  {
+  if (entry.classList.contains('selected-row')) {
     entry.classList.remove('selected-row');
     var checkRows = getById('new-sheet-entry-table-hidden-rows').children
-    for (var i = 0; i < checkRows.length; i ++)
-    {
-      if (checkRows[i].innerHTML == entry.firstElementChild.innerHTML)
-      {
+    for (var i = 0; i < checkRows.length; i ++) {
+      if (checkRows[i].innerHTML == entry.firstElementChild.innerHTML) {
         checkRows[i].remove();
       }
     }
   }
-  else
-  {
+  else {
     entry.classList.add('selected-row');
     var newRow = getById('new-sheet-entry-table-hidden-rows').insertRow(-1);
     newRow.innerHTML = entry.firstElementChild.innerHTML;
@@ -161,13 +147,10 @@ function newSheetLoadMoreEntries(numberAlready) {
       "new-sheet-entry-table-hidden-rows"
     ).children;
 
-    for (var i = 0; i < returnJSON['entries'].length; i ++)
-    {
+    for (var i = 0; i < returnJSON['entries'].length; i ++) {
       var foundHidden = false;
-      for (var j = 0; j < possibleMatches.length; j++)
-      {
-        if (possibleMatches[j].innerHTML == returnJSON["entries"][i][0])
-        {
+      for (var j = 0; j < possibleMatches.length; j++) {
+        if (possibleMatches[j].innerHTML == returnJSON["entries"][i][0]) {
           foundHidden = true;
           break;
         }
@@ -179,8 +162,7 @@ function newSheetLoadMoreEntries(numberAlready) {
         clickNewSheetEntry(this);
       }
 
-      for (var j = 0; j < 4; j ++)
-      {
+      for (var j = 0; j < 4; j ++) {
         var cell = document.createElement("td");
         cell.innerHTML = returnJSON["entries"][i][j];
         newRow.appendChild(cell);
@@ -188,18 +170,15 @@ function newSheetLoadMoreEntries(numberAlready) {
 
       rowsElement.appendChild(newRow);
 
-      if (foundHidden)
-      {
+      if (foundHidden) {
         newRow.classList.add("selected-row");
       }
     }
     var loadMoreRow = getById('new-sheet-entry-load-more-row');
-    if (returnJSON['more_entries'] == true)
-    {
+    if (returnJSON['more_entries'] == true) {
         loadMoreRow.style.visibility = 'visible';
     }
-    else
-    {
+    else {
         loadMoreRow.style.visibility = 'collapse';
     }
   }
@@ -221,8 +200,7 @@ function newSheetLoadMoreEntries(numberAlready) {
   request.send();
 }
 
-function newSheetSearchEntries()
-{
+function newSheetSearchEntries() {
  // Prepares a request for the search function.
   var request = new XMLHttpRequest();
 
@@ -233,13 +211,10 @@ function newSheetSearchEntries()
     var possibleMatches = getById(
       "new-sheet-entry-table-hidden-rows"
     ).children;
-    for (var i = 0; i < returnJSON["entries"].length; i ++)
-    {
+    for (var i = 0; i < returnJSON["entries"].length; i ++) {
       var foundHidden = false;
-      for (var j = 0; j < possibleMatches.length; j++)
-      {
-        if (possibleMatches[j].innerHTML == returnJSON["entries"][i][0])
-        {
+      for (var j = 0; j < possibleMatches.length; j++) {
+        if (possibleMatches[j].innerHTML == returnJSON["entries"][i][0]) {
           foundHidden = true;
           break;
         }
@@ -251,8 +226,7 @@ function newSheetSearchEntries()
         clickNewSheetEntry(this);
       }
 
-      for (var j = 0; j < 4; j ++)
-      {
+      for (var j = 0; j < 4; j ++) {
         var cell = document.createElement("td");
         cell.innerHTML = returnJSON["entries"][i][j];
         newRow.appendChild(cell);
@@ -260,19 +234,16 @@ function newSheetSearchEntries()
 
       rowsElement.appendChild(newRow);
 
-      if (foundHidden)
-      {
+      if (foundHidden) {
         newRow.classList.add("selected-row");
       }
     }
 
     var loadMoreRow = getById('new-sheet-entry-load-more-row');
-    if (returnJSON['more_entries'] == true)
-    {
+    if (returnJSON['more_entries'] == true) {
         loadMoreRow.style.visibility = 'visible';
     }
-    else
-    {
+    else {
         loadMoreRow.style.visibility = 'collapse';
     }
   }

@@ -1,10 +1,8 @@
 function drawStars(starsContainer, noStars, clear = true) {
-  if (clear)
-  {
+  if (clear) {
     starsContainer.innerHTML = "";
   }
-  for (var i = 0; i < noStars; i ++)
-  {
+  for (var i = 0; i < noStars; i ++) {
     var starSVG = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     starSVG.style.marginLeft = "1px";
     starSVG.style.marginRight = "1px";

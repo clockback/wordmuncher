@@ -9,16 +9,14 @@ function searchSheets(numberAlready) {
     var sheetTableRows = getById('sheet-table-rows');
     sheetTableRows.innerHTML = "";
 
-    for (var i = 0; i < returnJSON['sheets'].length; i ++)
-    {
+    for (var i = 0; i < returnJSON['sheets'].length; i ++) {
       var newRow = document.createElement("tr");
       newRow.style["cursor"] = "pointer";
       newRow.onclick = function () {
         testSheet(this);
       };
 
-      for (var j = 0; j < 3; j ++)
-      {
+      for (var j = 0; j < 3; j ++) {
         var newCell = document.createElement("td");
         newCell.innerHTML = returnJSON['sheets'][i][j];
         newRow.appendChild(newCell);
@@ -27,12 +25,10 @@ function searchSheets(numberAlready) {
     }
 
     var loadMoreRow = getById('load-more-row');
-    if (returnJSON['more_sheets'] == true)
-    {
+    if (returnJSON['more_sheets'] == true) {
         loadMoreRow.style.visibility = 'visible';
     }
-    else
-    {
+    else {
         loadMoreRow.style.visibility = 'collapse';
     }
   };
@@ -56,16 +52,14 @@ function loadMoreSheets() {
     var returnJSON = JSON.parse(request.responseText);
 
     var sheetTableRows = getById('sheet-table-rows');
-    for (var i = 0; i < returnJSON['sheets'].length; i ++)
-    {
+    for (var i = 0; i < returnJSON['sheets'].length; i ++) {
       var newRow = document.createElement("tr");
       newRow.style["cursor"] = "pointer";
       newRow.onclick = function () {
         testSheet(this);
       };
 
-      for (var j = 0; j < 3; j ++)
-      {
+      for (var j = 0; j < 3; j ++) {
         var newCell = document.createElement("td");
         newCell.innerHTML = returnJSON['sheets'][i][j];
         newRow.appendChild(newCell);
@@ -74,12 +68,10 @@ function loadMoreSheets() {
     }
 
     var loadMoreRow = getById('load-more-row');
-    if (returnJSON['more_sheets'] == true)
-    {
+    if (returnJSON['more_sheets'] == true) {
         loadMoreRow.style.visibility = 'visible';
     }
-    else
-    {
+    else {
         loadMoreRow.style.visibility = 'collapse';
     }
   };
