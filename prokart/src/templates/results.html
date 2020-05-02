@@ -6,11 +6,12 @@
         <script type="text/javascript" src="{{ url_for('static', filename='js/select_translator.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('static', filename='js/results/results.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('static', filename='js/stars.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/utils.js') }}"></script>
     </head>
 
     <body style="margin: 0px; padding: 0px;">
         {% include 'components/topbar.html' %}
-        <div id="main">
+        <div id="main" tabindex="-1">
             <div style="margin-left: 5px;">
                 <p>
                     Score:

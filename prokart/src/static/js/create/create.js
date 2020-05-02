@@ -67,19 +67,9 @@ function searchAll() {
         loadMoreEntriesBtn.style.visibility = 'collapse';
     }
 
-    var editSheetButton = document.getElementById("edit-sheet");
-    var deleteSheetButton = document.getElementById("delete-sheet");
-    var editEntryButton = document.getElementById("edit-entry");
-    var deleteEntryButton = document.getElementById("delete-entry");
-
-    editSheetButton.classList.add("button-disabled");
-    editSheetButton.onclick = "";
-    deleteSheetButton.classList.add("button-disabled");
-    deleteSheetButton.onclick = "";
-    editEntryButton.classList.add("button-disabled");
-    editEntryButton.onclick = "";
-    deleteEntryButton.classList.add("button-disabled");
-    deleteEntryButton.onclick = "";
+    disableButtons(
+      ["edit-sheet", "delete-sheet", "edit-entry", "delete-entry"]
+    );
   };
 
   // Finds the search query
@@ -210,11 +200,12 @@ function clickSheet(toSelect) {
     }
   }
 
-  var editButton = document.getElementById("edit-sheet");
-  var deleteButton = document.getElementById("delete-sheet");
   if (!found)
   {
     toSelect.classList.add("selected-row");
+
+    var editButton = document.getElementById("edit-sheet");
+    var deleteButton = document.getElementById("delete-sheet");
 
     editButton.classList.remove("button-disabled");
     editButton.onclick = function () {
@@ -226,10 +217,7 @@ function clickSheet(toSelect) {
   }
   else
   {
-    editButton.classList.add("button-disabled");
-    editButton.onclick = "";
-    deleteButton.classList.add("button-disabled");
-    deleteButton.onclick = "";
+    disableButtons(["edit-sheet", "delete-sheet"]);
   }
 }
 
@@ -261,11 +249,7 @@ function clickEntry(toSelect) {
   }
   else
   {
-    var editButton = document.getElementById("edit-entry");
-    editButton.classList.add("button-disabled");
-    editButton.onclick = "";
-    deleteButton.classList.add("button-disabled");
-    deleteButton.onclick = "";
+    disableButtons(["edit-entry", "delete-entry"]);
   }
 }
 
@@ -282,12 +266,7 @@ function deleteSheet() {
   request.onload = function() {
     var returnJSON = JSON.parse(request.responseText);
 
-    var editButton = document.getElementById("edit-sheet");
-    editButton.classList.add("button-disabled");
-    editButton.onclick = "";
-    var deleteButton = document.getElementById("delete-sheet");
-    deleteButton.classList.add("button-disabled");
-    deleteButton.onclick = "";
+    disableButtons(["edit-sheet", "delete-sheet"]);
     rowToDelete.parentNode.removeChild(rowToDelete);
 
     // Allows each of the rows to be clicked.
@@ -341,13 +320,7 @@ function deleteEntry() {
   request.onload = function() {
     var returnJSON = JSON.parse(request.responseText);
 
-    var editButton = document.getElementById("edit-entry");
-    editButton.classList.add("button-disabled");
-    editButton.onclick = "";
-
-    var deleteButton = document.getElementById("delete-entry");
-    deleteButton.classList.add("button-disabled");
-    deleteButton.onclick = "";
+    disableButtons(["edit-entry", "delete-entry"]);
 
     rowToDelete.parentNode.removeChild(rowToDelete);
 

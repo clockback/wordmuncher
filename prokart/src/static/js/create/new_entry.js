@@ -1,10 +1,10 @@
 function showNewEntryInterface() {
-  document.getElementById('back').setAttribute("tabindex", "-1");
-  document.getElementById('search-all').setAttribute("tabindex", "-1");
-  document.getElementById('sidebar-left-home').setAttribute("tabindex", "-1");
-  document.getElementById('sidebar-center-translator').setAttribute(
-    "tabindex", "-1"
-  );
+  disallowTabSelection([
+    "back", "search-all", "sidebar-left-home", "sidebar-center-translator",
+    "new-sheet", "edit-sheet", "delete-sheet", "new-entry", "edit-entry",
+    "delete-entry"
+  ]);
+
   newEntrySearchSheets();
   document.getElementById('add-entry-container-background').classList.remove(
     'hide'
@@ -13,18 +13,18 @@ function showNewEntryInterface() {
 }
 
 function hideNewEntryInterface() {
+  allowTabSelection([
+    "back", "search-all", "sidebar-left-home", "sidebar-center-translator",
+    "new-sheet", "edit-sheet", "delete-sheet", "new-entry", "edit-entry",
+    "delete-entry"
+  ]);
+
   document.getElementById('add-entry-container-background').classList.add(
     'hide'
   );
-  document.getElementById('back').removeAttribute("tabindex");
   document.getElementById('new-entry-question').value = "";
   document.getElementById('new-entry-answer').value = "";
   document.getElementById('new-entry-search-sheets').value = "";
-  document.getElementById('search-all').removeAttribute("tabindex");
-  document.getElementById('sidebar-left-home').removeAttribute("tabindex");
-  document.getElementById('sidebar-center-translator').removeAttribute(
-    "tabindex"
-  );
   document.getElementById('new-entry-add-answer').value = "";
 
   var moreAnswers = document.querySelectorAll(
@@ -43,9 +43,7 @@ function hideNewEntryInterface() {
     warnings[i].classList.add("hide");
   }
 
-  var saveButton = document.getElementById("save-new-entry");
-  saveButton.classList.add("button-disabled");
-  saveButton.onclick = "";
+  disableButtons(["save-new-entry"]);
 
   document.getElementById('new-entry-sheet-table-hidden-rows').innerHTML = "";
 }
@@ -86,8 +84,7 @@ function changeNewEntryQuestion() {
       messageNewEntryEmpty.classList.add("hide");
       messageNewEntryLong.classList.remove("hide");
     }
-    saveButton.classList.add("button-disabled");
-    saveButton.onclick = "";
+    disableButtons(["save-new-entry"]);
     messageNewEntryExists.classList.add("hide");
   }
   else
@@ -100,8 +97,7 @@ function changeNewEntryQuestion() {
       var result = JSON.parse(request.responseText)['already_there'];
       if (result)
       {
-        saveButton.classList.add("button-disabled");
-        saveButton.onclick = "";
+        disableButtons(["save-new-entry"]);
         messageNewEntryExists.classList.remove("hide");
       }
       // The question does not already exist.
@@ -155,8 +151,7 @@ function changeNewEntryAnswer() {
       messageNewEntryEmpty.classList.add("hide");
       messageNewEntryLong.classList.remove("hide");
     }
-    saveButton.classList.add("button-disabled");
-    saveButton.onclick = "";
+    disableButtons(["save-new-entry"]);
   }
   else
   {

@@ -6,11 +6,12 @@
         <script type="text/javascript" src="{{ url_for('static', filename='js/select_translator.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('static', filename='js/test/test.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('static', filename='js/test/pre_test_sheet.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/utils.js') }}"></script>
     </head>
 
     <body style="margin: 0px; padding: 0px;">
         {% include 'components/topbar.html' %}
-        <div id="main">
+        <div id="main" tabindex="-1">
             <div style="margin-left: 5px;">
                 <p>Select your sheet you would like to test:</p>
                 <div class="input-box">

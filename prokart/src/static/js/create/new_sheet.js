@@ -5,20 +5,16 @@ function showNewSheetInterface() {
   document.getElementById("message-new-sheet-empty-name").classList.add(
     'hide'
   );
-  document.getElementById("message-new-sheet-long-name").classList.add(
-    'hide'
-  );
-  document.getElementById('back').setAttribute("tabindex", "-1");
-  document.getElementById('search-all').setAttribute("tabindex", "-1");
-  document.getElementById('sidebar-left-home').setAttribute("tabindex", "-1");
-  document.getElementById('sidebar-center-translator').setAttribute(
-    "tabindex", "-1"
-  );
+  document.getElementById("message-new-sheet-long-name").classList.add('hide');
+
+  disallowTabSelection([
+    "back", "search-all", "sidebar-left-home", "sidebar-center-translator",
+    "new-sheet", "edit-sheet", "delete-sheet", "new-entry", "edit-entry",
+    "delete-entry"
+  ]);
   newSheetSearchEntries();
 
-  var saveButton = document.getElementById("save-new-sheet");
-  saveButton.onclick = "";
-  saveButton.classList.add("button-disabled");
+  disableButtons(["save-new-sheet"]);
 
   document.getElementById('add-sheet-container-background').classList.remove(
     'hide'
@@ -30,14 +26,15 @@ function hideNewSheetInterface() {
   document.getElementById('add-sheet-container-background').classList.add(
     'hide'
   );
-  document.getElementById('back').removeAttribute("tabindex");
+
+  allowTabSelection([
+    "back", "search-all", "sidebar-left-home", "sidebar-center-translator",
+    "new-sheet", "edit-sheet", "delete-sheet", "new-entry", "edit-entry",
+    "delete-entry"
+  ]);
+
   document.getElementById('new-sheet-name').value = "";
   document.getElementById('new-sheet-search-entries').value = "";
-  document.getElementById('search-all').removeAttribute("tabindex");
-  document.getElementById('sidebar-left-home').removeAttribute("tabindex");
-  document.getElementById('sidebar-center-translator').removeAttribute(
-    "tabindex"
-  );
   document.getElementById('new-sheet-entry-table-hidden-rows').innerHTML = "";
 }
 
@@ -67,8 +64,7 @@ function changeNewSheetName() {
       messageNewSheetEmpty.classList.add("hide");
       messageNewSheetLong.classList.remove("hide");
     }
-    saveButton.classList.add("button-disabled");
-    saveButton.onclick = "";
+    disableButtons(["save-new-sheet"]);
     messageNewSheetExists.classList.add("hide");
   }
   else
@@ -81,8 +77,7 @@ function changeNewSheetName() {
       var result = JSON.parse(request.responseText)['already_there'];
       if (result)
       {
-        saveButton.classList.add("button-disabled");
-        saveButton.onclick = "";
+        disableButtons(["save-new-sheet"]);
         messageNewSheetExists.classList.remove("hide");
       }
       else

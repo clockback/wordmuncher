@@ -1,10 +1,10 @@
 function showEditEntryInterface(question) {
-  document.getElementById('back').setAttribute("tabindex", "-1");
-  document.getElementById('search-all').setAttribute("tabindex", "-1");
-  document.getElementById('sidebar-left-home').setAttribute("tabindex", "-1");
-  document.getElementById('sidebar-center-translator').setAttribute(
-    "tabindex", "-1"
-  );
+  disallowTabSelection([
+    "back", "search-all", "sidebar-left-home", "sidebar-center-translator",
+    "new-sheet", "edit-sheet", "delete-sheet", "new-entry", "edit-entry",
+    "delete-entry"
+  ]);
+
   editEntrySearchSheets();
 
   var editEntryQuestionEntry = document.getElementById('edit-entry-question');
@@ -97,18 +97,18 @@ function showEditEntryInterface(question) {
 }
 
 function hideEditEntryInterface() {
+  allowTabSelection([
+    "back", "search-all", "sidebar-left-home", "sidebar-center-translator",
+    "new-sheet", "edit-sheet", "delete-sheet", "new-entry", "edit-entry",
+    "delete-entry"
+  ]);
+
   document.getElementById('edit-entry-container-background').classList.add(
     'hide'
   );
-  document.getElementById('back').removeAttribute("tabindex");
   document.getElementById('edit-entry-question').value = "";
   document.getElementById('edit-entry-answer').value = "";
   document.getElementById('edit-entry-search-sheets').value = "";
-  document.getElementById('search-all').removeAttribute("tabindex");
-  document.getElementById('sidebar-left-home').removeAttribute("tabindex");
-  document.getElementById('sidebar-center-translator').removeAttribute(
-    "tabindex"
-  );
   document.getElementById('edit-entry-add-answer').value = "";
 
   var moreAnswers = document.querySelectorAll(
@@ -166,8 +166,7 @@ function changeEditEntryQuestion() {
       messageEditEntryEmpty.classList.add("hide");
       messageEditEntryLong.classList.remove("hide");
     }
-    saveButton.classList.add("button-disabled");
-    saveButton.onclick = "";
+    disableButtons(["save-edit-entry"])
     messageEditEntryExists.classList.add("hide");
   }
   else
@@ -180,8 +179,7 @@ function changeEditEntryQuestion() {
       var result = JSON.parse(request.responseText)['already_there'];
       if (result)
       {
-        saveButton.classList.add("button-disabled");
-        saveButton.onclick = "";
+        disableButtons(["save-edit-entry"]);
         messageEditEntryExists.classList.remove("hide");
       }
       // The question does not already exist.
@@ -238,8 +236,7 @@ function changeEditEntryAnswer() {
       messageEditEntryEmpty.classList.add("hide");
       messageEditEntryLong.classList.remove("hide");
     }
-    saveButton.classList.add("button-disabled");
-    saveButton.onclick = "";
+    disableButtons(["save-edit-entry"]);
   }
   else
   {

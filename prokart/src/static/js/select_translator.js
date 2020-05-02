@@ -28,7 +28,6 @@ function clickTopButton(element) {
   }
   else
   {
-    alert(element.innerHTML);
     window.location.reload();
   }
 }

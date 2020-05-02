@@ -7,8 +7,7 @@ function testSheet(row) {
   ).innerHTML = row.children[0].innerHTML;
 
   // Prevents selection of now concealed elements.
-  document.getElementById('search-sheets').setAttribute("tabindex", "-1");
-  document.getElementById('back-button').setAttribute("tabindex", "-1");
+  disallowTabSelection(["search-sheets", "back-button"]);
 
   var bar = container.querySelector("div.bar-chart-container");
   var percentage = row.children[1].innerHTML;
@@ -33,8 +32,7 @@ function testSheet(row) {
 
 function hideTestSheetInterface(row) {
   // Prevents selection of now concealed elements.
-  document.getElementById('search-sheets').removeAttribute("tabindex");
-  document.getElementById('back-button').removeAttribute("tabindex");
+  allowTabSelection(["search-sheets", "back-button"]);
 
   document.getElementById(
     "pre-test-sheet-container-background"

@@ -215,8 +215,7 @@ function changeLanguageName() {
       var returnJSON = JSON.parse(request.responseText);
       if (returnJSON["found"])
       {
-        addButton.classList.add("button-disabled");
-        addButton.onclick = null;
+        disableButtons(["add-button"]);
       }
       else
       {
@@ -233,15 +232,12 @@ function changeLanguageName() {
   }
   else
   {
-    addButton.classList.add("button-disabled");
-    addButton.onclick = null;
+    disableButtons(["add-button"]);
   }
 }
 
 function saveLanguage() {
-  var addButton = document.getElementById("add-button");
-  addButton.onclick = null;
-  addButton.classList.add("button-disabled");
+  disableButtons(["add-button"]);
   var languageName = document.getElementById("language-name").value;
   var flagText = document.getElementById("choose-flag").innerHTML;
   var request = new XMLHttpRequest();

@@ -397,10 +397,8 @@ function go() {
   var textArea = document.getElementById("answer-box");
 
   // Identifies the go button.
-  var button = document.getElementById("go-button");
-  button.onclick = null;
+  disableButtons(["go-button"]);
   textArea.disabled = true;
-  button.classList.add("button-disabled");
 
   request.onload = function () {
     var returnJSON = JSON.parse(request.responseText);
@@ -443,8 +441,6 @@ function hitEnterAnswerBox(element, event) {
 }
 
 function typeAnswerBox(element, event) {
-  var goButton = document.getElementById("go-button");
-
   // Prevents the enter key from being typed if empty.
   if (event.data == null && element.value == "\n")
   {
@@ -453,11 +449,11 @@ function typeAnswerBox(element, event) {
 
   if (element.value.length == 0)
   {
-    goButton.classList.add("button-disabled");
-    goButton.onclick = null;
+    disableButtons(["go-button"]);
   }
   else
   {
+    var goButton = document.getElementById("go-button");
     goButton.classList.remove("button-disabled");
     goButton.onclick = go;
   }

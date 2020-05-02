@@ -21,6 +21,9 @@ class TestLanguages(BasicTests):
         # Opens the browser.
         self.go_to('/languages')
 
+        # Clicks on the modify languages button.
+        self.click_button_id("modify-languages")
+
         # Types in the new language name.
         self.type_entry_id("language-name", language)
 
@@ -49,8 +52,15 @@ class TestLanguages(BasicTests):
         # We wish to translate from the following language.
         l_from = "German"
 
+        # The flag for the language we're translating is as follows.
+        f_from = "🇩🇪"
+
         # We wish to translate to the following language:
         l_to = "English"
+
+        # The flag for the language from which we're translating is as
+        # follows.
+        f_to = "🇬🇧"
 
         # Opens the browser.
         self.go_to('/languages')
@@ -71,4 +81,24 @@ class TestLanguages(BasicTests):
         self.wait_until_gone("save-button")
 
         # Checks that the translator has been loaded.
-        self.check_translator("🇩🇪", "🇬🇧")
+        self.check_translator(f_from, f_to)
+
+    def test_003_languages_copy_language(self) -> None:
+        """Checks that a language cannot be made with the name of
+        another language.
+        :return: None
+        """
+        # We wish to try creating a language with the following name.
+        language = "English"
+
+        # Opens the browser.
+        self.go_to('/languages')
+
+        # Clicks on the modify languages button.
+        self.click_button_id("modify-languages")
+
+        # Types in the new language name.
+        self.type_entry_id("language-name", language)
+
+        # Saves the new language.
+        self.check_button_disabled("add-button")

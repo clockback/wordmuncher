@@ -8,12 +8,13 @@ function showEditSheetInterface(name) {
   document.getElementById("message-edit-sheet-long-name").classList.add(
     'hide'
   );
-  document.getElementById('back').setAttribute("tabindex", "-1");
-  document.getElementById('search-all').setAttribute("tabindex", "-1");
-  document.getElementById('sidebar-left-home').setAttribute("tabindex", "-1");
-  document.getElementById('sidebar-center-translator').setAttribute(
-    "tabindex", "-1"
-  );
+
+  disallowTabSelection([
+    "back", "search-all", "sidebar-left-home", "sidebar-center-translator",
+    "new-sheet", "edit-sheet", "delete-sheet", "new-entry", "edit-entry",
+    "delete-entry"
+  ]);
+
   editSheetSearchEntries();
 
   var saveButton = document.getElementById("save-edit-sheet");
@@ -67,17 +68,17 @@ function showEditSheetInterface(name) {
 }
 
 function hideEditSheetInterface() {
+  allowTabSelection([
+    "back", "search-all", "sidebar-left-home", "sidebar-center-translator",
+    "new-sheet", "edit-sheet", "delete-sheet", "new-entry", "edit-entry",
+    "delete-entry"
+  ]);
+
   document.getElementById('edit-sheet-container-background').classList.add(
     'hide'
   );
-  document.getElementById('back').removeAttribute("tabindex");
   document.getElementById('edit-sheet-name').value = "";
   document.getElementById('edit-sheet-search-entries').value = "";
-  document.getElementById('search-all').removeAttribute("tabindex");
-  document.getElementById('sidebar-left-home').removeAttribute("tabindex");
-  document.getElementById('sidebar-center-translator').removeAttribute(
-    "tabindex"
-  );
   document.getElementById('edit-sheet-entry-table-hidden-rows').innerHTML = "";
 }
 
@@ -109,8 +110,7 @@ function changeEditSheetName() {
       messageEditSheetEmpty.classList.add("hide");
       messageEditSheetLong.classList.remove("hide");
     }
-    saveButton.classList.add("button-disabled");
-    saveButton.onclick = "";
+    disableButtons(["save-edit-sheet"]);
     messageEditSheetExists.classList.add("hide");
   }
   else
@@ -123,8 +123,7 @@ function changeEditSheetName() {
       var result = JSON.parse(request.responseText)['already_there'];
       if (result)
       {
-        saveButton.classList.add("button-disabled");
-        saveButton.onclick = "";
+        disableButtons(["save-edit-sheet"]);
         messageEditSheetExists.classList.remove("hide");
       }
       else
