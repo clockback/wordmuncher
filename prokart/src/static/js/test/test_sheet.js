@@ -276,8 +276,7 @@ function tryAgain(button, textArea) {
     }, 15
   );
 
-  button.onclick = go;
-  button.classList.remove("button-disabled");
+  enableButtons([[button, go]]);
   textArea.disabled = false;
   textArea.focus();
   sessionStorage.alreadyAttempted = 1;
@@ -453,8 +452,6 @@ function typeAnswerBox(element, event) {
   }
   else
   {
-    var goButton = document.getElementById("go-button");
-    goButton.classList.remove("button-disabled");
-    goButton.onclick = go;
+    enableButtons([["go-button", go]]);
   }
 }

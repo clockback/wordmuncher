@@ -36,19 +36,18 @@ function selectBox(event) {
 function updateSelectBox(event) {
   // When an item is clicked, update the original select box, and the
   // selected item:
-  var repeatOption, i, k, selectNode, selectedNode;
-  selectNode = this.parentNode.parentNode.getElementsByTagName(
+  var selectNode = this.parentNode.parentNode.getElementsByTagName(
     "select"
   )[0];
-  selectedNode = this.parentNode.previousSibling;
-  for (i = 0; i < selectNode.length; i++) {
+  var selectedNode = this.parentNode.previousSibling;
+  for (var i = 0; i < selectNode.length; i++) {
     if (selectNode.options[i].innerHTML == this.innerHTML) {
       selectNode.selectedIndex = i;
       selectedNode.innerHTML = this.innerHTML;
-      repeatOption = this.parentNode.getElementsByClassName(
+      var repeatOption = this.parentNode.getElementsByClassName(
         "same-as-selected"
       );
-      for (k = 0; k < repeatOption.length; k++) {
+      for (var k = 0; k < repeatOption.length; k++) {
         repeatOption[k].removeAttribute("class");
       }
       this.setAttribute("class", "same-as-selected");
@@ -61,9 +60,7 @@ function updateSelectBox(event) {
     "#translate-from .same-as-selected,#translate-to .same-as-selected"
   ).length == 2)
   {
-    saveButton = document.getElementById("save-button");
-    saveButton.classList.remove("button-disabled");
-    saveButton.onclick = saveTranslator;
+    enableButtons([["save-button", saveTranslator]]);
   }
 }
 
@@ -205,7 +202,6 @@ function selectFlag(element) {
 
 function changeLanguageName() {
   var languageName = document.getElementById("language-name").value;
-  var addButton = document.getElementById("add-button");
 
   if (languageName && languageName.length <= 40)
   {
@@ -219,8 +215,7 @@ function changeLanguageName() {
       }
       else
       {
-        addButton.classList.remove("button-disabled");
-        addButton.onclick = saveLanguage;
+        enableButtons([["add-button", saveLanguage]]);
       }
     };
 

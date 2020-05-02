@@ -17,9 +17,7 @@ function showEditSheetInterface(name) {
 
   editSheetSearchEntries();
 
-  var saveButton = document.getElementById("save-edit-sheet");
-  saveButton.onclick = saveEditSheet;
-  saveButton.classList.remove("button-disabled");
+  enableButtons([["save-edit-sheet", saveEditSheet]]);
 
   document.getElementById('edit-sheet-container-background').classList.remove(
     'hide'
@@ -83,18 +81,14 @@ function hideEditSheetInterface() {
 }
 
 function changeEditSheetName() {
-  var name, saveButton, saveButton, messageEditSheetExists;
-  var messageEditSheetEmpty, messageEditSheetLong;
-
-  name = document.getElementById("edit-sheet-name").value;
-  saveButton = document.getElementById("save-edit-sheet");
-  messageEditSheetExists = document.getElementById(
+  var name = document.getElementById("edit-sheet-name").value;
+  var messageEditSheetExists = document.getElementById(
     "message-edit-sheet-already-exists"
   );
-  messageEditSheetEmpty = document.getElementById(
+  var messageEditSheetEmpty = document.getElementById(
     "message-edit-sheet-empty-name"
   );
-  messageEditSheetLong = document.getElementById(
+  var messageEditSheetLong = document.getElementById(
     "message-edit-sheet-long-name"
   );
 
@@ -128,8 +122,7 @@ function changeEditSheetName() {
       }
       else
       {
-        saveButton.classList.remove("button-disabled");
-        saveButton.onclick = saveEditSheet;
+        enableButtons([["save-edit-sheet", saveEditSheet]]);
         messageEditSheetExists.classList.add("hide");
       }
     }

@@ -204,16 +204,12 @@ function clickSheet(toSelect) {
   {
     toSelect.classList.add("selected-row");
 
-    var editButton = document.getElementById("edit-sheet");
-    var deleteButton = document.getElementById("delete-sheet");
-
-    editButton.classList.remove("button-disabled");
-    editButton.onclick = function () {
-      showEditSheetInterface(toSelect.children[0].innerHTML);
-    }
-
-    deleteButton.classList.remove("button-disabled");
-    deleteButton.onclick = deleteSheet;
+    enableButtons([
+      ["edit-sheet", function () {
+        showEditSheetInterface(toSelect.children[0].innerHTML);
+      }],
+      ["delete-sheet", deleteSheet]
+    ]);
   }
   else
   {
@@ -240,12 +236,12 @@ function clickEntry(toSelect) {
   {
     toSelect.classList.add("selected-row");
 
-    editButton.classList.remove("button-disabled");
-    editButton.onclick = function () {
-      showEditEntryInterface(toSelect.children[0].innerHTML);
-    }
-    deleteButton.classList.remove("button-disabled");
-    deleteButton.onclick = deleteEntry;
+    enableButtons([
+      ["edit-entry", function () {
+        showEditEntryInterface(toSelect.children[0].innerHTML)
+      }],
+      ["delete-entry", deleteEntry]
+    ]);
   }
   else
   {

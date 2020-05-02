@@ -39,18 +39,16 @@ function hideNewSheetInterface() {
 }
 
 function changeNewSheetName() {
-  var name, saveButton, saveButton, messageNewSheetExists;
-  var messageNewSheetEmpty, messageNewSheetLong;
-
-  name = document.getElementById("new-sheet-name").value;
-  saveButton = document.getElementById("save-new-sheet");
-  messageNewSheetExists = document.getElementById(
+  var name = document.getElementById("new-sheet-name").value;
+  var messageNewSheetExists = document.getElementById(
     "message-new-sheet-already-exists"
   );
-  messageNewSheetEmpty = document.getElementById(
+  var messageNewSheetEmpty = document.getElementById(
     "message-new-sheet-empty-name"
   );
-  messageNewSheetLong = document.getElementById("message-new-sheet-long-name");
+  var messageNewSheetLong = document.getElementById(
+    "message-new-sheet-long-name"
+  );
 
   if (name == "" || name.length > 80)
   {
@@ -82,8 +80,7 @@ function changeNewSheetName() {
       }
       else
       {
-        saveButton.classList.remove("button-disabled");
-        saveButton.onclick = saveNewSheet;
+        enableButtons([["save-new-sheet", saveNewSheet]]);
         messageNewSheetExists.classList.add("hide");
       }
     }

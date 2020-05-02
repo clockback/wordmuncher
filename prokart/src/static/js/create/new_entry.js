@@ -57,18 +57,14 @@ function keyDownOnNewEntryContainer(event) {
 }
 
 function changeNewEntryQuestion() {
-  var name, saveButton, saveButton, messageNewSheetExists;
-  var messageNewSheetEmpty, messageNewSheetLong;
-
-  question = document.getElementById("new-entry-question").value;
-  saveButton = document.getElementById("save-new-entry");
-  messageNewEntryExists = document.getElementById(
+  var question = document.getElementById("new-entry-question").value;
+  var messageNewEntryExists = document.getElementById(
     "message-new-entry-already-exists"
   );
-  messageNewEntryEmpty = document.getElementById(
+  var messageNewEntryEmpty = document.getElementById(
     "message-new-entry-empty-question"
   );
-  messageNewEntryLong = document.getElementById(
+  var messageNewEntryLong = document.getElementById(
     "message-new-entry-long-question"
   );
 
@@ -108,8 +104,7 @@ function changeNewEntryQuestion() {
         ).value.length;
         if (0 < answerLength && answerLength <= 80)
         {
-          saveButton.classList.remove("button-disabled");
-          saveButton.onclick = saveNewEntry;
+          enableButtons([["save-new-entry", saveNewEntry]]);
         }
         messageNewEntryExists.classList.add("hide");
       }
@@ -127,15 +122,11 @@ function changeNewEntryQuestion() {
 }
 
 function changeNewEntryAnswer() {
-  var name, saveButton, saveButton, messageNewSheetExists;
-  var messageNewSheetEmpty, messageNewSheetLong;
-
-  answer = document.getElementById("new-entry-answer").value;
-  saveButton = document.getElementById("save-new-entry");
-  messageNewEntryEmpty = document.getElementById(
+  var answer = document.getElementById("new-entry-answer").value;
+  var messageNewEntryEmpty = document.getElementById(
     "message-new-entry-empty-answer"
   );
-  messageNewEntryLong = document.getElementById(
+  var messageNewEntryLong = document.getElementById(
     "message-new-entry-long-answer"
   );
 
@@ -165,8 +156,7 @@ function changeNewEntryAnswer() {
       && document.getElementById("new-entry-question").value.length > 0
     )
     {
-      saveButton.classList.remove("button-disabled");
-      saveButton.onclick = saveNewEntry;
+      enableButtons([["save-new-entry", saveNewEntry]]);
     }
   }
 }

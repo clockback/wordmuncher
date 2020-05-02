@@ -13,9 +13,7 @@ function showEditEntryInterface(question) {
 
   var editEntryAnswerEntry = document.getElementById('edit-entry-answer');
 
-  var saveButton = document.getElementById("save-edit-entry");
-  saveButton.classList.remove("button-disabled");
-  saveButton.onclick = saveEditEntry;
+  enableButtons([["save-edit-entry", saveEditEntry]]);
 
   var request = new XMLHttpRequest();
 
@@ -139,18 +137,14 @@ function keyDownOnEditEntryContainer(event) {
 }
 
 function changeEditEntryQuestion() {
-  var name, saveButton, saveButton, messageEditSheetExists;
-  var messageEditSheetEmpty, messageEditSheetLong;
-
-  question = document.getElementById("edit-entry-question").value;
-  saveButton = document.getElementById("save-edit-entry");
-  messageEditEntryExists = document.getElementById(
+  var question = document.getElementById("edit-entry-question").value;
+  var messageEditEntryExists = document.getElementById(
     "message-edit-entry-already-exists"
   );
-  messageEditEntryEmpty = document.getElementById(
+  var messageEditEntryEmpty = document.getElementById(
     "message-edit-entry-empty-question"
   );
-  messageEditEntryLong = document.getElementById(
+  var messageEditEntryLong = document.getElementById(
     "message-edit-entry-long-question"
   );
 
@@ -190,8 +184,7 @@ function changeEditEntryQuestion() {
         ).value.length;
         if (0 < answerLength && answerLength <= 80)
         {
-          saveButton.classList.remove("button-disabled");
-          saveButton.onclick = saveEditEntry;
+          enableButtons([["save-edit-entry", saveEditEntry]]);
         }
         messageEditEntryExists.classList.add("hide");
       }
@@ -212,15 +205,11 @@ function changeEditEntryQuestion() {
 }
 
 function changeEditEntryAnswer() {
-  var name, saveButton, saveButton, messageEditSheetExists;
-  var messageEditSheetEmpty, messageEditSheetLong;
-
-  answer = document.getElementById("edit-entry-answer").value;
-  saveButton = document.getElementById("save-edit-entry");
-  messageEditEntryEmpty = document.getElementById(
+  var answer = document.getElementById("edit-entry-answer").value;
+  var messageEditEntryEmpty = document.getElementById(
     "message-edit-entry-empty-answer"
   );
-  messageEditEntryLong = document.getElementById(
+  var messageEditEntryLong = document.getElementById(
     "message-edit-entry-long-answer"
   );
 
@@ -250,8 +239,7 @@ function changeEditEntryAnswer() {
       && document.getElementById("edit-entry-question").value.length > 0
     )
     {
-      saveButton.classList.remove("button-disabled");
-      saveButton.onclick = saveEditEntry;
+      enableButtons([["save-edit-entry", saveEditEntry]]);
     }
   }
 }
