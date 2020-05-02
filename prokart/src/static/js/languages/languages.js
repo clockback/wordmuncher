@@ -58,7 +58,7 @@ function updateSelectBox(event) {
   selectedNode.click();
 
   if (document.querySelectorAll(
-    "#translate_from .same-as-selected,#translate_to .same-as-selected"
+    "#translate-from .same-as-selected,#translate-to .same-as-selected"
   ).length == 2)
   {
     saveButton = document.getElementById("save-button");
@@ -107,10 +107,10 @@ function saveTranslator() {
   var request = new XMLHttpRequest();
 
   var translateFrom = document.querySelector(
-    "#translate_from>.select-selected"
+    "#translate-from>.select-selected"
   ).innerHTML.trim().slice(5);
   var translateTo = document.querySelector(
-    "#translate_to>.select-selected"
+    "#translate-to>.select-selected"
   ).innerHTML.trim().slice(5);
 
   request.onload = function () {

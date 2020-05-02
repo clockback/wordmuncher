@@ -22,12 +22,13 @@ function selectTranslator(from_l, to_l) {
 }
 
 function clickTopButton(element) {
-  if (element.innerHTML == "Start!")
+  if (element.innerHTML.trim() == "Start!")
   {
     window.location.href = "/languages";
   }
   else
   {
+    alert(element.innerHTML);
     window.location.reload();
   }
 }

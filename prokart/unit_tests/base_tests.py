@@ -26,6 +26,9 @@ class BasicTests(unittest.TestCase):
     # Type hints the driver.
     driver: wd.Firefox
 
+    # Contains all stored elements.
+    storage: Dict[str, FirefoxWebElement] = {}
+
     def setUp(self) -> None:
         """Prepares the test.
         :return: None
@@ -285,6 +288,36 @@ class BasicTests(unittest.TestCase):
 
         raise ValueError(f"No rows match combination: {cells}")
 
+    def check_select_has_option(self, select: str, text: str) -> None:
+        """Checks that a select element contains a certain string as an
+        option.
+        :param str select: The id of the select element.
+        :param str text: The option for which to check.
+        :return: None
+        """
+        # Finds the select element's option containing the string.
+        try:
+            self.driver.find_element_by_xpath(
+                f"//*[@id='{select}']//option[contains(text(),'{text}')]"
+            )
+
+        # Raises an exception if no such element exists.
+        except ec.NoSuchElementException:
+            raise ValueError(
+                f"No select '{select}' contains option with '{text}'."
+            )
+
+    def check_translator(self, l_from: str, l_to: str) -> None:
+        """Checks that the specified translator is in use.
+        :param str l_from: The flag for the language being translated.
+        :param str l_to: The flag for the language to which translations
+            are being made.
+        :return: None
+        """
+        self.assertEqual(
+            self.get_id("sidebar-center-translator").text, f"{l_from} → {l_to}"
+        )
+
     def check_visibility(self, element_id: str, visible: bool = True) -> None:
         """Checks that an element is visible.
         :param str element_id: The id of the element to check.
@@ -432,6 +465,59 @@ class BasicTests(unittest.TestCase):
             # Allows browser to register change.
             sleep(0.05)
 
+    def pick_flag(self, flag_name: str) -> None:
+        """Selects a flag with the specified name and ensures that it
+        is removed from the list of flags.
+        :param str flag_name: The name of the country or region with the
+            flag.
+        :return: None
+        """
+        # Clicks on the button to display the flags.
+        self.click_button_id("choose-flag")
+
+        # Finds the flags that have been revealed.
+        flags = self.driver.find_elements_by_xpath(
+            f"//*[@id = 'hidden-flags']/div[./span[text() = '{flag_name}']]"
+        )
+
+        # Iterates over the flags to find the one with the right name.
+        for flag in flags:
+            if flag.find_element_by_tag_name("span").get_attribute(
+                    "innerHTML"
+            ) == flag_name:
+                found_flag = flag
+                break
+
+        # If the flag was not found, raises an error.
+        else:
+            raise ValueError(f"Flag with name {flag_name} not found.")
+
+        # Finds the text representation of the flag.
+        flag_str = found_flag.find_element_by_tag_name("button").text
+
+        # Clicks on the flag.
+        found_flag.click()
+
+        # Checks that the flag in the button is the right flag.
+        self.assertEqual(
+            flag_str, self.get_id("choose-flag").text,
+            f"Flag {flag_str} did not appear in the button as needed."
+        )
+
+        # Checks that the flag has been removed from the table of flags.
+        self.assertIn(
+            "display: none;", found_flag.find_element_by_tag_name(
+                "button"
+            ).get_attribute("style"), "Flag was not removed from table."
+        )
+
+    def remember_element(self, element: str) -> None:
+        """Stores the name of an element for future reference.
+        :param str element: The id of the element to be stored.
+        :return: None
+        """
+        self.storage[element] = self.get_id(element)
+
     def remove_answer(self, answer: str) -> None:
         """Removes the answer from the answers table.
         :param str answer: The answer to be removed.
@@ -454,6 +540,33 @@ class BasicTests(unittest.TestCase):
             )
         except StaleElementReferenceException:
             pass
+
+    def select_option(self, select: str, text: str) -> None:
+        """Uses a select element to select something.
+        :param str select: The id of the select element.
+        :param str text: The option to select.
+        :return: None
+        """
+        # Finds the select element to click.
+        element = self.get_id(select)
+
+        # Clicks on the drop down.
+        element.click()
+
+        # Finds the select element's option containing the string.
+        try:
+            option = element.find_element_by_xpath(
+                f".//*[@class='select-items']/*[contains(text(),'{text}')]"
+            )
+
+        # Raises an exception if no such element exists.
+        except ec.NoSuchElementException:
+            raise ValueError(
+                f"No select '{select}' contains option with '{text}'."
+            )
+
+        # Clicks on the option.
+        option.click()
 
     def swap_answer(self, answer: str) -> None:
         """Clicks on the answer row specified, such that the selected
@@ -603,3 +716,20 @@ class BasicTests(unittest.TestCase):
 
             # Waits before all but the first typed character.
             sleep(0.03)
+
+    def wait_until_gone(self, element: str) -> None:
+        """Waits until the element with the provided id has disappeared.
+        :param str element: The id of the remembered element to
+            disappear.
+        :return: None
+        """
+        # Finds the element.
+        element = self.storage[element]
+
+        # Waits until the element has disappeared.
+        try:
+            WebDriverWait(self.driver, 10).until(ec.staleness_of(element))
+
+        # Raises an error if it does not load.
+        except TimeoutException:
+            raise TimeoutError(f"Element {element} did not disappear.")
