@@ -27,14 +27,14 @@ function loadResults() {
   }
 
   // Updates the displayed score.
-  var scoreElement = document.getElementById("final-score");
+  var scoreElement = getById("final-score");
   scoreElement.innerHTML = total_score + " / " + results.length;
 
   populateResultsTable(cumulative_results, questions);
 }
 
 function populateResultsTable(results, questions) {
-  var resultsTable = document.getElementById("results-table");
+  var resultsTable = getById("results-table");
 
   var request = new XMLHttpRequest();
 

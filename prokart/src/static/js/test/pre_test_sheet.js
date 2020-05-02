@@ -1,7 +1,5 @@
 function testSheet(row) {
-  var container = document.getElementById(
-    "pre-test-sheet-container-background"
-  );
+  var container = getById("pre-test-sheet-container-background");
   container.querySelector(
     "div>div.container-contents>h1"
   ).innerHTML = row.children[0].innerHTML;
@@ -27,16 +25,14 @@ function testSheet(row) {
   // Make container visible.
   container.classList.remove("hide");
 
-  document.getElementById("go-button-container").focus();
+  getById("go-button-container").focus();
 }
 
 function hideTestSheetInterface(row) {
   // Prevents selection of now concealed elements.
   allowTabSelection(["search-sheets", "back-button"]);
 
-  document.getElementById(
-    "pre-test-sheet-container-background"
-  ).classList.add("hide");
+  getById("pre-test-sheet-container-background").classList.add("hide");
 }
 
 function keyDownOnTestSheetContainer(event) {

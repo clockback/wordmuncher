@@ -4,7 +4,7 @@ function loadSheet() {
   sessionStorage.two_ago = "";
   sessionStorage.three_ago = "";
   sessionStorage.results = JSON.stringify([]);
-  sessionStorage.sheetName = document.getElementById("sheet-name").innerHTML;
+  sessionStorage.sheetName = getById("sheet-name").innerHTML;
 
   // Prepares a request for the search function.
   var request = new XMLHttpRequest();
@@ -18,10 +18,10 @@ function loadSheet() {
     var so_far = returnJSON["so_far"];
 
     // Set the question text.
-    document.getElementById("question-text").innerHTML = question;
+    getById("question-text").innerHTML = question;
 
     drawStars(
-      document.getElementById("stars-container"), points + (so_far == 2), true
+      getById("stars-container"), points + (so_far == 2), true
     );
 
     // Calculates the percentage complete.
@@ -34,10 +34,10 @@ function loadSheet() {
     barChartFigure.innerHTML = percent + "% complete";
 
     // Focuses on the answer box.
-    document.getElementById("answer-box").focus();
+    getById("answer-box").focus();
 
     // Reveal test.
-    document.getElementById("hide-screen").style.visibility = "hidden";
+    getById("hide-screen").style.visibility = "hidden";
   }
 
   // Points the request at the appropriate command.
@@ -81,9 +81,7 @@ function deleteAnswer(row, questionText) {
   row.remove();
   if (document.querySelectorAll("#answers-table tr").length == 0)
   {
-    document.getElementById(
-      "other-answers-header"
-    ).style.visibility = "hidden";
+    getById("other-answers-header").style.visibility = "hidden";
   }
 
   // Prepares a request to find out whether the answer is correct.
@@ -103,12 +101,12 @@ function addToAnswers() {
   // Prepares a request to find out whether the answer is correct.
   var request = new XMLHttpRequest();
 
-  var question = document.getElementById("question-text")
+  var question = getById("question-text")
   var questionText = question.innerHTML;
-  var answerText = document.getElementById("answer-box").value;
+  var answerText = getById("answer-box").value;
 
   request.onload = function () {
-    var wrongAnswerBox = document.getElementById("wrong-answer-box");
+    var wrongAnswerBox = getById("wrong-answer-box");
     wrongAnswerBox.classList.add("hide");
     correctAnswer(question);
   };
@@ -134,12 +132,12 @@ function keyDownOnWrongAnswerContainer(event) {
 function clickNextButton() {
   // Prepares a request to find out whether the answer is correct.
   var request = new XMLHttpRequest();
-  var question = document.getElementById("question-text")
+  var question = getById("question-text")
   var questionText = question.innerHTML;
-  var answerText = document.getElementById("answer-box").value;
+  var answerText = getById("answer-box").value;
 
   request.onload = function () {
-    var wrongAnswerBox = document.getElementById("wrong-answer-box");
+    var wrongAnswerBox = getById("wrong-answer-box");
     wrongAnswerBox.classList.add("hide");
     proceed(questionText);
   };
@@ -171,7 +169,7 @@ function proceed(questionText) {
   sessionStorage.two_ago = sessionStorage.one_ago;
   sessionStorage.one_ago = questionText;
 
-  var questionNumberPanel = document.getElementById("testbar-center-text");
+  var questionNumberPanel = getById("testbar-center-text");
   var numbers = questionNumberPanel.innerHTML.split(' / ');
   var current = Number(numbers[0]);
   var final = Number(numbers[1]);
@@ -194,10 +192,10 @@ function proceed(questionText) {
     var so_far = returnJSON["so_far"];
 
     // Set the question text.
-    document.getElementById("question-text").innerHTML = question;
+    getById("question-text").innerHTML = question;
 
     drawStars(
-      document.getElementById("stars-container"), points + (so_far == 2), true
+      getById("stars-container"), points + (so_far == 2), true
     );
 
     // Calculates the percentage complete.
@@ -210,7 +208,7 @@ function proceed(questionText) {
     barChartFigure.innerHTML = percent + "% complete";
 
     // Identifies the text box for the answer.
-    var textArea = document.getElementById("answer-box");
+    var textArea = getById("answer-box");
     textArea.value = "";
     textArea.disabled = false;
 
@@ -241,7 +239,7 @@ function noHoverAnswer(row) {
 
 function tryAgain(button, textArea) {
   // Identifies the drop down to try again.
-  var tryAgainMessage = document.getElementById("try-again");
+  var tryAgainMessage = getById("try-again");
 
   tryAgainMessage.style.visibility = null;
   var pos = 20;
@@ -289,7 +287,7 @@ function correctAnswer(question) {
   var questionText = question.innerHTML;
   question.innerHTML = "Correct!";
 
-  document.getElementById("correct-sound").play();
+  getById("correct-sound").play();
 
   request.onload = function () {
     var returnJSON = JSON.parse(request.responseText);
@@ -342,26 +340,22 @@ function wrongAnswer(question, textArea, closest, others) {
   var questionText = question.innerHTML;
   var attemptedAnswer = textArea.value;
 
-  document.getElementById("wrong-sound").play();
+  getById("wrong-sound").play();
 
-  document.getElementById("failed-question").innerHTML = questionText;
-  document.getElementById("wrong-answer").innerHTML = attemptedAnswer;
-  document.getElementById("right-answer").innerHTML = closest;
+  getById("failed-question").innerHTML = questionText;
+  getById("wrong-answer").innerHTML = attemptedAnswer;
+  getById("right-answer").innerHTML = closest;
 
   var otherAnswers = document.querySelector("#answers-table>.main-rows");
   otherAnswers.innerHTML = "";
 
   if (others.length == 0)
   {
-    document.getElementById(
-      "other-answers-header"
-    ).style.visibility = "hidden";
+    getById("other-answers-header").style.visibility = "hidden";
   }
   else
   {
-    document.getElementById(
-      "other-answers-header"
-    ).style.visibility = "visible";
+    getById("other-answers-header").style.visibility = "visible";
   }
 
   for (var i = 0; i < others.length; i ++)
@@ -379,8 +373,8 @@ function wrongAnswer(question, textArea, closest, others) {
     otherAnswers.appendChild(newRow);
   }
 
-  var wrongAnswerBox = document.getElementById("wrong-answer-box");
-  var nextButton = document.getElementById("next-button");
+  var wrongAnswerBox = getById("wrong-answer-box");
+  var nextButton = getById("next-button");
   wrongAnswerBox.classList.remove("hide");
   nextButton.focus();
 }
@@ -390,10 +384,10 @@ function go() {
   var request = new XMLHttpRequest();
 
   // Identifies the question.
-  var question = document.getElementById("question-text");
+  var question = getById("question-text");
 
   // Identifies the text box for the answer.
-  var textArea = document.getElementById("answer-box");
+  var textArea = getById("answer-box");
 
   // Identifies the go button.
   disableButtons(["go-button"]);

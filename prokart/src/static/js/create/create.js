@@ -6,7 +6,7 @@ function searchAll() {
   request.onload = function() {
     var returnJSON = JSON.parse(request.responseText);
 
-    var sheetTableRows = document.getElementById('sheet-table-rows');
+    var sheetTableRows = getById('sheet-table-rows');
     sheetTableRows.innerHTML = "";
 
     for (var i = 0; i < returnJSON['sheets'].length; i ++)
@@ -26,7 +26,7 @@ function searchAll() {
       sheetTableRows.appendChild(newRow);
     }
 
-    var entryTableRows = document.getElementById('entry-table-rows');
+    var entryTableRows = getById('entry-table-rows');
     entryTableRows.innerHTML = "";
 
     for (var i = 0; i < returnJSON['entries'].length; i ++)
@@ -46,8 +46,8 @@ function searchAll() {
       entryTableRows.appendChild(newRow);
     }
 
-    var loadMoreSheetsBtn = document.getElementById('sheet-load-more-row');
-    var loadMoreEntriesBtn = document.getElementById('entry-load-more-row');
+    var loadMoreSheetsBtn = getById('sheet-load-more-row');
+    var loadMoreEntriesBtn = getById('entry-load-more-row');
 
     if (returnJSON['more_sheets'] == true)
     {
@@ -73,7 +73,7 @@ function searchAll() {
   };
 
   // Finds the search query
-  query = document.getElementById("search-all").value;
+  query = getById("search-all").value;
 
   // Points the request at the appropriate command.
   request.open(
@@ -92,7 +92,7 @@ function loadMoreSheets(numberAlready) {
   // Prepares to recreate the search result table.
   request.onload = function() {
     var returnJSON = JSON.parse(request.responseText);
-    var rowsElement = document.getElementById('sheet-table-rows');
+    var rowsElement = getById('sheet-table-rows');
 
     for (var i = 0; i < returnJSON["sheets"].length; i ++)
     {
@@ -110,7 +110,7 @@ function loadMoreSheets(numberAlready) {
       }
       rowsElement.appendChild(newRow);
     }
-    var loadMoreRow = document.getElementById('sheet-load-more-row');
+    var loadMoreRow = getById('sheet-load-more-row');
     if (returnJSON['more_sheets'] == true)
     {
         loadMoreRow.style.visibility = 'visible';
@@ -124,7 +124,7 @@ function loadMoreSheets(numberAlready) {
   numberAlready = document.querySelectorAll("#sheet-table-rows>tr").length
 
   // Finds the search query
-  query = document.getElementById("search-all").value;
+  query = getById("search-all").value;
 
   // Points the request at the appropriate command.
   request.open(
@@ -143,7 +143,7 @@ function loadMoreEntries(numberAlready) {
   // Prepares to recreate the search result table.
   request.onload = function() {
     var returnJSON = JSON.parse(request.responseText);
-    rowsElement = document.getElementById('entry-table-rows');
+    rowsElement = getById('entry-table-rows');
 
     for (var i = 0; i < returnJSON['entries'].length; i ++)
     {
@@ -161,7 +161,7 @@ function loadMoreEntries(numberAlready) {
       }
       rowsElement.appendChild(newRow);
     }
-    var loadMoreRow = document.getElementById('entry-load-more-row');
+    var loadMoreRow = getById('entry-load-more-row');
     if (returnJSON['more_entries'] == true)
     {
         loadMoreRow.style.visibility = 'visible';
@@ -175,7 +175,7 @@ function loadMoreEntries(numberAlready) {
   numberAlready = document.querySelectorAll("#entry-table-rows>tr").length
 
   // Finds the search query
-  query = document.getElementById("search-all").value;
+  query = getById("search-all").value;
 
   // Points the request at the appropriate command.
   request.open(
@@ -230,8 +230,6 @@ function clickEntry(toSelect) {
     }
   }
 
-  var editButton = document.getElementById("edit-entry");
-  var deleteButton = document.getElementById("delete-entry");
   if (!found)
   {
     toSelect.classList.add("selected-row");

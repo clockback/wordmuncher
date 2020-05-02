@@ -170,7 +170,7 @@ class BasicTests(unittest.TestCase):
         # Attempts to obtain the string for the bound event.
         try:
             self.driver.execute_script(
-                f"document.getElementById('{button_id}').onclick.toString();"
+                "arguments[0].onclick.toString();", button
             )
 
         # If no string can be obtained, there the button is not bound to
@@ -197,7 +197,7 @@ class BasicTests(unittest.TestCase):
             self.driver.execute_script(
                 f"document.getElementById('{button_id}').onclick.toString();"
             )
-            raise Exception("Button is bound to an event.")
+            raise ValueError("Button is bound to an event.")
 
         # If no string can be obtained, there the button is not bound to
         # an event, and should raise an error.

@@ -7,11 +7,11 @@ function showEditEntryInterface(question) {
 
   editEntrySearchSheets();
 
-  var editEntryQuestionEntry = document.getElementById('edit-entry-question');
+  var editEntryQuestionEntry = getById('edit-entry-question');
   editEntryQuestionEntry.value = question;
   editEntryQuestionEntry.placeholder = question;
 
-  var editEntryAnswerEntry = document.getElementById('edit-entry-answer');
+  var editEntryAnswerEntry = getById('edit-entry-answer');
 
   enableButtons([["save-edit-entry", saveEditEntry]]);
 
@@ -55,12 +55,8 @@ function showEditEntryInterface(question) {
     }
 
     var sheets = returnJSON["sheets"];
-    var hiddenRows = document.getElementById(
-      "edit-entry-sheet-table-hidden-rows"
-    );
-    var visibleRows = document.getElementById(
-      "edit-entry-sheet-table-rows"
-    ).children;
+    var hiddenRows = getById("edit-entry-sheet-table-hidden-rows");
+    var visibleRows = getById("edit-entry-sheet-table-rows").children;
 
     for (var i = 0; i < sheets.length; i ++)
     {
@@ -78,9 +74,7 @@ function showEditEntryInterface(question) {
       }
     }
 
-    document.getElementById('edit-entry-container-background').classList.remove(
-      'hide'
-    );
+    getById('edit-entry-container-background').classList.remove('hide');
     editEntryQuestionEntry.focus();
   }
 
@@ -101,13 +95,11 @@ function hideEditEntryInterface() {
     "delete-entry"
   ]);
 
-  document.getElementById('edit-entry-container-background').classList.add(
-    'hide'
-  );
-  document.getElementById('edit-entry-question').value = "";
-  document.getElementById('edit-entry-answer').value = "";
-  document.getElementById('edit-entry-search-sheets').value = "";
-  document.getElementById('edit-entry-add-answer').value = "";
+  getById('edit-entry-container-background').classList.add('hide');
+  getById('edit-entry-question').value = "";
+  getById('edit-entry-answer').value = "";
+  getById('edit-entry-search-sheets').value = "";
+  getById('edit-entry-add-answer').value = "";
 
   var moreAnswers = document.querySelectorAll(
     "#edit-entry-answers-table>tbody>tr:not(:last-child)"
@@ -125,7 +117,7 @@ function hideEditEntryInterface() {
     warnings[i].classList.add("hide");
   }
 
-  document.getElementById('edit-entry-sheet-table-hidden-rows').innerHTML = "";
+  getById('edit-entry-sheet-table-hidden-rows').innerHTML = "";
 }
 
 function keyDownOnEditEntryContainer(event) {
@@ -137,16 +129,10 @@ function keyDownOnEditEntryContainer(event) {
 }
 
 function changeEditEntryQuestion() {
-  var question = document.getElementById("edit-entry-question").value;
-  var messageEditEntryExists = document.getElementById(
-    "message-edit-entry-already-exists"
-  );
-  var messageEditEntryEmpty = document.getElementById(
-    "message-edit-entry-empty-question"
-  );
-  var messageEditEntryLong = document.getElementById(
-    "message-edit-entry-long-question"
-  );
+  var question = getById("edit-entry-question").value;
+  var messageEditEntryExists = getById("message-edit-entry-already-exists");
+  var messageEditEntryEmpty = getById("message-edit-entry-empty-question");
+  var messageEditEntryLong = getById("message-edit-entry-long-question");
 
   if (question == "" || question.length > 80)
   {
@@ -179,9 +165,7 @@ function changeEditEntryQuestion() {
       // The question does not already exist.
       else
       {
-        var answerLength = document.getElementById(
-          'edit-entry-answer'
-        ).value.length;
+        var answerLength = getById('edit-entry-answer').value.length;
         if (0 < answerLength && answerLength <= 80)
         {
           enableButtons([["save-edit-entry", saveEditEntry]]);
@@ -190,7 +174,7 @@ function changeEditEntryQuestion() {
       }
     }
 
-    var prior = document.getElementById("edit-entry-question").placeholder;
+    var prior = getById("edit-entry-question").placeholder;
 
     // Points the request at the appropriate command.
     request.open(
@@ -205,13 +189,9 @@ function changeEditEntryQuestion() {
 }
 
 function changeEditEntryAnswer() {
-  var answer = document.getElementById("edit-entry-answer").value;
-  var messageEditEntryEmpty = document.getElementById(
-    "message-edit-entry-empty-answer"
-  );
-  var messageEditEntryLong = document.getElementById(
-    "message-edit-entry-long-answer"
-  );
+  var answer = getById("edit-entry-answer").value;
+  var messageEditEntryEmpty = getById("message-edit-entry-empty-answer");
+  var messageEditEntryLong = getById("message-edit-entry-long-answer");
 
   if (answer == "" || answer.length > 80)
   {
@@ -235,8 +215,7 @@ function changeEditEntryAnswer() {
       "edit-entry-question-div>span:not(.hide)"
     );
     if (
-      problems.length == 0
-      && document.getElementById("edit-entry-question").value.length > 0
+      problems.length == 0 && getById("edit-entry-question").value.length > 0
     )
     {
       enableButtons([["save-edit-entry", saveEditEntry]]);
@@ -258,7 +237,7 @@ function editEntryAddRow() {
 
   newAnswerInput.value = ""
 
-  var mainAnswerInput = document.getElementById("edit-entry-answer");
+  var mainAnswerInput = getById("edit-entry-answer");
   var moreAnswersCells = document.querySelectorAll(
     "#edit-entry-answers-table>tbody>tr:not(:last-child)>td:first-child"
   );
@@ -318,15 +297,13 @@ function editEntryHitEnterAnotherAnswer(event) {
 }
 
 function editEntryPromoteAnswer(promoteCell) {
-  var formerTopAnswerInput = document.getElementById("edit-entry-answer");
+  var formerTopAnswerInput = getById("edit-entry-answer");
   var formerTopAnswer = formerTopAnswerInput.value;
   formerTopAnswerInput.value = promoteCell.innerHTML;
   if (formerTopAnswer == "")
   {
     promoteCell.parentNode.remove();
-    document.getElementById("message-edit-entry-empty-answer").classList.add(
-      "hide"
-    );
+    getById("message-edit-entry-empty-answer").classList.add("hide");
   }
   else
   {
@@ -336,10 +313,10 @@ function editEntryPromoteAnswer(promoteCell) {
 
 function saveEditEntry()
 {
-  var questionEntry = document.getElementById("edit-entry-question");
+  var questionEntry = getById("edit-entry-question");
   var prior = questionEntry.placeholder;
   var question = questionEntry.value;
-  var answer = document.getElementById("edit-entry-answer").value;
+  var answer = getById("edit-entry-answer").value;
   var moreAnswersCells = document.querySelectorAll(
     "#edit-entry-answers-table>tbody>tr:not(:last-child)>td:first-child"
   );
@@ -350,9 +327,7 @@ function saveEditEntry()
   }
   var moreAnswersString = JSON.stringify(moreAnswers);
 
-  var hiddenRows = document.getElementById(
-    "edit-entry-sheet-table-hidden-rows"
-  ).children;
+  var hiddenRows = getById("edit-entry-sheet-table-hidden-rows").children;
   var parentSheets = [];
   for (var i = 0; i < hiddenRows.length; i ++)
   {
@@ -392,9 +367,7 @@ function clickEditEntrySheet(entry) {
   if (entry.classList.contains('selected-row'))
   {
     entry.classList.remove('selected-row');
-    var checkRows = document.getElementById(
-      'edit-entry-sheet-table-hidden-rows'
-    ).children
+    var checkRows = getById('edit-entry-sheet-table-hidden-rows').children
     for (var i = 0; i < checkRows.length; i ++)
     {
       if (checkRows[i].innerHTML == entry.firstChild.innerHTML)
@@ -406,9 +379,7 @@ function clickEditEntrySheet(entry) {
   else
   {
     entry.classList.add('selected-row');
-    var newRow = document.getElementById(
-      'edit-entry-sheet-table-hidden-rows'
-    ).insertRow(-1);
+    var newRow = getById('edit-entry-sheet-table-hidden-rows').insertRow(-1);
     newRow.innerHTML = entry.firstElementChild.innerHTML;
   }
 }
@@ -420,8 +391,8 @@ function editEntryLoadMoreSheets(numberAlready) {
   // Prepares to recreate the search result table.
   request.onload = function() {
     var returnJSON = JSON.parse(request.responseText);
-    rowsElement = document.getElementById('edit-entry-sheet-table-rows');
-    var possibleMatches = document.getElementById(
+    rowsElement = getById('edit-entry-sheet-table-rows');
+    var possibleMatches = getById(
       "edit-entry-sheet-table-hidden-rows"
     ).children;
 
@@ -457,7 +428,7 @@ function editEntryLoadMoreSheets(numberAlready) {
         newRow.classList.add("selected-row");
       }
     }
-    var loadMoreRow = document.getElementById('edit-entry-sheet-load-more-row');
+    var loadMoreRow = getById('edit-entry-sheet-load-more-row');
     if (returnJSON['more_sheets'] == true)
     {
         loadMoreRow.style.visibility = 'visible';
@@ -473,7 +444,7 @@ function editEntryLoadMoreSheets(numberAlready) {
   ).length
 
   // Finds the search query
-  query = document.getElementById("edit-entry-search-sheets").value;
+  query = getById("edit-entry-search-sheets").value;
 
   // Points the request at the appropriate command.
   request.open(
@@ -492,9 +463,9 @@ function editEntrySearchSheets()
 
   request.onload = function() {
     var returnJSON = JSON.parse(request.responseText);
-    var rowsElement = document.getElementById('edit-entry-sheet-table-rows');
+    var rowsElement = getById('edit-entry-sheet-table-rows');
     rowsElement.innerHTML = "";
-    var possibleMatches = document.getElementById(
+    var possibleMatches = getById(
       "edit-entry-sheet-table-hidden-rows"
     ).children;
     for (var i = 0; i < returnJSON["sheets"].length; i ++)
@@ -530,7 +501,7 @@ function editEntrySearchSheets()
       }
     }
 
-    var loadMoreRow = document.getElementById('edit-entry-sheet-load-more-row');
+    var loadMoreRow = getById('edit-entry-sheet-load-more-row');
     if (returnJSON['more_sheets'] == true)
     {
         loadMoreRow.style.visibility = 'visible';
@@ -542,7 +513,7 @@ function editEntrySearchSheets()
   }
 
   // Finds the search query
-  query = document.getElementById("edit-entry-search-sheets").value;
+  query = getById("edit-entry-search-sheets").value;
 
   // Points the request at the appropriate command.
   request.open(

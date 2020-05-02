@@ -1,13 +1,7 @@
 function showEditSheetInterface(name) {
-  document.getElementById("message-edit-sheet-already-exists").classList.add(
-    'hide'
-  );
-  document.getElementById("message-edit-sheet-empty-name").classList.add(
-    'hide'
-  );
-  document.getElementById("message-edit-sheet-long-name").classList.add(
-    'hide'
-  );
+  getById("message-edit-sheet-already-exists").classList.add('hide');
+  getById("message-edit-sheet-empty-name").classList.add('hide');
+  getById("message-edit-sheet-long-name").classList.add('hide');
 
   disallowTabSelection([
     "back", "search-all", "sidebar-left-home", "sidebar-center-translator",
@@ -19,10 +13,8 @@ function showEditSheetInterface(name) {
 
   enableButtons([["save-edit-sheet", saveEditSheet]]);
 
-  document.getElementById('edit-sheet-container-background').classList.remove(
-    'hide'
-  );
-  var editSheetNameEntry = document.getElementById('edit-sheet-name');
+  getById('edit-sheet-container-background').classList.remove('hide');
+  var editSheetNameEntry = getById('edit-sheet-name');
   editSheetNameEntry.value = name;
   editSheetNameEntry.placeholder = name;
   editSheetNameEntry.focus();
@@ -32,12 +24,8 @@ function showEditSheetInterface(name) {
   request.onload = function() {
     var returnJSON = JSON.parse(request.responseText);
     var entries = returnJSON["entries"];
-    var hiddenRows = document.getElementById(
-      "edit-sheet-entry-table-hidden-rows"
-    );
-    var visibleRows = document.getElementById(
-      "edit-sheet-entry-table-rows"
-    ).children;
+    var hiddenRows = getById("edit-sheet-entry-table-hidden-rows");
+    var visibleRows = getById("edit-sheet-entry-table-rows").children;
 
     for (var i = 0; i < entries.length; i ++)
     {
@@ -72,25 +60,17 @@ function hideEditSheetInterface() {
     "delete-entry"
   ]);
 
-  document.getElementById('edit-sheet-container-background').classList.add(
-    'hide'
-  );
-  document.getElementById('edit-sheet-name').value = "";
-  document.getElementById('edit-sheet-search-entries').value = "";
-  document.getElementById('edit-sheet-entry-table-hidden-rows').innerHTML = "";
+  getById('edit-sheet-container-background').classList.add('hide');
+  getById('edit-sheet-name').value = "";
+  getById('edit-sheet-search-entries').value = "";
+  getById('edit-sheet-entry-table-hidden-rows').innerHTML = "";
 }
 
 function changeEditSheetName() {
-  var name = document.getElementById("edit-sheet-name").value;
-  var messageEditSheetExists = document.getElementById(
-    "message-edit-sheet-already-exists"
-  );
-  var messageEditSheetEmpty = document.getElementById(
-    "message-edit-sheet-empty-name"
-  );
-  var messageEditSheetLong = document.getElementById(
-    "message-edit-sheet-long-name"
-  );
+  var name = getById("edit-sheet-name").value;
+  var messageEditSheetExists = getById("message-edit-sheet-already-exists");
+  var messageEditSheetEmpty = getById("message-edit-sheet-empty-name");
+  var messageEditSheetLong = getById("message-edit-sheet-long-name");
 
   if (name == "" || name.length > 80)
   {
@@ -127,7 +107,7 @@ function changeEditSheetName() {
       }
     }
 
-    var prior = document.getElementById("edit-sheet-name").placeholder;
+    var prior = getById("edit-sheet-name").placeholder;
 
     // Points the request at the appropriate command.
     request.open(
@@ -160,11 +140,9 @@ function saveEditSheet() {
   };
 
   // Gets the name of the new sheet.
-  var sheetName = document.getElementById('edit-sheet-name').value;
+  var sheetName = getById('edit-sheet-name').value;
 
-  var hiddenRows = document.getElementById(
-    "edit-sheet-entry-table-hidden-rows"
-  ).children;
+  var hiddenRows = getById("edit-sheet-entry-table-hidden-rows").children;
   var childEntries = [];
   for (var i = 0; i < hiddenRows.length; i ++)
   {
@@ -172,7 +150,7 @@ function saveEditSheet() {
   }
   var childEntriesString = JSON.stringify(childEntries);
 
-  var prior = document.getElementById("edit-sheet-name").placeholder;
+  var prior = getById("edit-sheet-name").placeholder;
 
   // Points the request at the appropriate command.
   request.open(
@@ -197,9 +175,7 @@ function clickEditSheetEntry(entry) {
   if (entry.classList.contains('selected-row'))
   {
     entry.classList.remove('selected-row');
-    var checkRows = document.getElementById(
-      'edit-sheet-entry-table-hidden-rows'
-    ).children
+    var checkRows = getById('edit-sheet-entry-table-hidden-rows').children
     for (var i = 0; i < checkRows.length; i ++)
     {
       if (checkRows[i].innerHTML == entry.firstElementChild.innerHTML)
@@ -211,9 +187,7 @@ function clickEditSheetEntry(entry) {
   else
   {
     entry.classList.add('selected-row');
-    var newRow = document.getElementById(
-      'edit-sheet-entry-table-hidden-rows'
-    ).insertRow(-1);
+    var newRow = getById('edit-sheet-entry-table-hidden-rows').insertRow(-1);
     newRow.innerHTML = entry.firstElementChild.innerHTML;
   }
 }
@@ -225,8 +199,8 @@ function editSheetLoadMoreEntries(numberAlready) {
   // Prepares to recreate the search result table.
   request.onload = function() {
     var returnJSON = JSON.parse(request.responseText);
-    rowsElement = document.getElementById('edit-sheet-entry-table-rows');
-    var possibleMatches = document.getElementById(
+    rowsElement = getById('edit-sheet-entry-table-rows');
+    var possibleMatches = getById(
       "edit-sheet-entry-table-hidden-rows"
     ).children;
 
@@ -262,7 +236,7 @@ function editSheetLoadMoreEntries(numberAlready) {
         newRow.classList.add("selected-row");
       }
     }
-    var loadMoreRow = document.getElementById('edit-sheet-entry-load-more-row');
+    var loadMoreRow = getById('edit-sheet-entry-load-more-row');
     if (returnJSON['more_entries'] == true)
     {
         loadMoreRow.style.visibility = 'visible';
@@ -278,7 +252,7 @@ function editSheetLoadMoreEntries(numberAlready) {
   ).length
 
   // Finds the search query
-  query = document.getElementById("edit-sheet-search-entries").value;
+  query = getById("edit-sheet-search-entries").value;
 
   // Points the request at the appropriate command.
   request.open(
@@ -297,9 +271,9 @@ function editSheetSearchEntries()
 
   request.onload = function() {
     var returnJSON = JSON.parse(request.responseText);
-    var rowsElement = document.getElementById('edit-sheet-entry-table-rows');
+    var rowsElement = getById('edit-sheet-entry-table-rows');
     rowsElement.innerHTML = "";
-    var possibleMatches = document.getElementById(
+    var possibleMatches = getById(
       "edit-sheet-entry-table-hidden-rows"
     ).children;
     for (var i = 0; i < returnJSON["entries"].length; i ++)
@@ -335,7 +309,7 @@ function editSheetSearchEntries()
       }
     }
 
-    var loadMoreRow = document.getElementById('edit-sheet-entry-load-more-row');
+    var loadMoreRow = getById('edit-sheet-entry-load-more-row');
     if (returnJSON['more_entries'] == true)
     {
         loadMoreRow.style.visibility = 'visible';
@@ -347,7 +321,7 @@ function editSheetSearchEntries()
   }
 
   // Finds the search query
-  query = document.getElementById("edit-sheet-search-entries").value;
+  query = getById("edit-sheet-search-entries").value;
 
   // Points the request at the appropriate command.
   request.open(

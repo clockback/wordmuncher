@@ -1,11 +1,7 @@
 function showNewSheetInterface() {
-  document.getElementById("message-new-sheet-already-exists").classList.add(
-    'hide'
-  );
-  document.getElementById("message-new-sheet-empty-name").classList.add(
-    'hide'
-  );
-  document.getElementById("message-new-sheet-long-name").classList.add('hide');
+  getById("message-new-sheet-already-exists").classList.add('hide');
+  getById("message-new-sheet-empty-name").classList.add('hide');
+  getById("message-new-sheet-long-name").classList.add('hide');
 
   disallowTabSelection([
     "back", "search-all", "sidebar-left-home", "sidebar-center-translator",
@@ -16,16 +12,12 @@ function showNewSheetInterface() {
 
   disableButtons(["save-new-sheet"]);
 
-  document.getElementById('add-sheet-container-background').classList.remove(
-    'hide'
-  );
-  document.getElementById('new-sheet-name').focus();
+  getById('add-sheet-container-background').classList.remove('hide');
+  getById('new-sheet-name').focus();
 }
 
 function hideNewSheetInterface() {
-  document.getElementById('add-sheet-container-background').classList.add(
-    'hide'
-  );
+  getById('add-sheet-container-background').classList.add('hide');
 
   allowTabSelection([
     "back", "search-all", "sidebar-left-home", "sidebar-center-translator",
@@ -33,22 +25,16 @@ function hideNewSheetInterface() {
     "delete-entry"
   ]);
 
-  document.getElementById('new-sheet-name').value = "";
-  document.getElementById('new-sheet-search-entries').value = "";
-  document.getElementById('new-sheet-entry-table-hidden-rows').innerHTML = "";
+  getById('new-sheet-name').value = "";
+  getById('new-sheet-search-entries').value = "";
+  getById('new-sheet-entry-table-hidden-rows').innerHTML = "";
 }
 
 function changeNewSheetName() {
-  var name = document.getElementById("new-sheet-name").value;
-  var messageNewSheetExists = document.getElementById(
-    "message-new-sheet-already-exists"
-  );
-  var messageNewSheetEmpty = document.getElementById(
-    "message-new-sheet-empty-name"
-  );
-  var messageNewSheetLong = document.getElementById(
-    "message-new-sheet-long-name"
-  );
+  var name = getById("new-sheet-name").value;
+  var messageNewSheetExists = getById("message-new-sheet-already-exists");
+  var messageNewSheetEmpty = getById("message-new-sheet-empty-name");
+  var messageNewSheetLong = getById("message-new-sheet-long-name");
 
   if (name == "" || name.length > 80)
   {
@@ -114,11 +100,9 @@ function saveNewSheet() {
   };
 
   // Gets the name of the new sheet.
-  var sheetName = document.getElementById('new-sheet-name').value;
+  var sheetName = getById('new-sheet-name').value;
 
-  var hiddenRows = document.getElementById(
-    "new-sheet-entry-table-hidden-rows"
-  ).children;
+  var hiddenRows = getById("new-sheet-entry-table-hidden-rows").children;
   var childEntries = [];
   for (var i = 0; i < hiddenRows.length; i ++)
   {
@@ -148,9 +132,7 @@ function clickNewSheetEntry(entry) {
   if (entry.classList.contains('selected-row'))
   {
     entry.classList.remove('selected-row');
-    var checkRows = document.getElementById(
-      'new-sheet-entry-table-hidden-rows'
-    ).children
+    var checkRows = getById('new-sheet-entry-table-hidden-rows').children
     for (var i = 0; i < checkRows.length; i ++)
     {
       if (checkRows[i].innerHTML == entry.firstElementChild.innerHTML)
@@ -162,9 +144,7 @@ function clickNewSheetEntry(entry) {
   else
   {
     entry.classList.add('selected-row');
-    var newRow = document.getElementById(
-      'new-sheet-entry-table-hidden-rows'
-    ).insertRow(-1);
+    var newRow = getById('new-sheet-entry-table-hidden-rows').insertRow(-1);
     newRow.innerHTML = entry.firstElementChild.innerHTML;
   }
 }
@@ -176,8 +156,8 @@ function newSheetLoadMoreEntries(numberAlready) {
   // Prepares to recreate the search result table.
   request.onload = function() {
     var returnJSON = JSON.parse(request.responseText);
-    rowsElement = document.getElementById('add-sheet-entry-table-rows');
-    var possibleMatches = document.getElementById(
+    rowsElement = getById('add-sheet-entry-table-rows');
+    var possibleMatches = getById(
       "new-sheet-entry-table-hidden-rows"
     ).children;
 
@@ -213,7 +193,7 @@ function newSheetLoadMoreEntries(numberAlready) {
         newRow.classList.add("selected-row");
       }
     }
-    var loadMoreRow = document.getElementById('new-sheet-entry-load-more-row');
+    var loadMoreRow = getById('new-sheet-entry-load-more-row');
     if (returnJSON['more_entries'] == true)
     {
         loadMoreRow.style.visibility = 'visible';
@@ -229,7 +209,7 @@ function newSheetLoadMoreEntries(numberAlready) {
   ).length
 
   // Finds the search query
-  query = document.getElementById("new-sheet-search-entries").value;
+  query = getById("new-sheet-search-entries").value;
 
   // Points the request at the appropriate command.
   request.open(
@@ -248,9 +228,9 @@ function newSheetSearchEntries()
 
   request.onload = function() {
     var returnJSON = JSON.parse(request.responseText);
-    var rowsElement = document.getElementById('add-sheet-entry-table-rows');
+    var rowsElement = getById('add-sheet-entry-table-rows');
     rowsElement.innerHTML = "";
-    var possibleMatches = document.getElementById(
+    var possibleMatches = getById(
       "new-sheet-entry-table-hidden-rows"
     ).children;
     for (var i = 0; i < returnJSON["entries"].length; i ++)
@@ -286,7 +266,7 @@ function newSheetSearchEntries()
       }
     }
 
-    var loadMoreRow = document.getElementById('new-sheet-entry-load-more-row');
+    var loadMoreRow = getById('new-sheet-entry-load-more-row');
     if (returnJSON['more_entries'] == true)
     {
         loadMoreRow.style.visibility = 'visible';
@@ -298,7 +278,7 @@ function newSheetSearchEntries()
   }
 
   // Finds the search query
-  query = document.getElementById("new-sheet-search-entries").value;
+  query = getById("new-sheet-search-entries").value;
 
   // Points the request at the appropriate command.
   request.open(

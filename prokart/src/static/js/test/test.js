@@ -6,7 +6,7 @@ function searchSheets(numberAlready) {
   request.onload = function() {
     var returnJSON = JSON.parse(request.responseText);
 
-    var sheetTableRows = document.getElementById('sheet-table-rows');
+    var sheetTableRows = getById('sheet-table-rows');
     sheetTableRows.innerHTML = "";
 
     for (var i = 0; i < returnJSON['sheets'].length; i ++)
@@ -26,7 +26,7 @@ function searchSheets(numberAlready) {
       sheetTableRows.appendChild(newRow);
     }
 
-    var loadMoreRow = document.getElementById('load-more-row');
+    var loadMoreRow = getById('load-more-row');
     if (returnJSON['more_sheets'] == true)
     {
         loadMoreRow.style.visibility = 'visible';
@@ -38,7 +38,7 @@ function searchSheets(numberAlready) {
   };
 
   // Finds the current search query.
-  var query = document.getElementById('search-sheets').value;
+  var query = getById('search-sheets').value;
 
   // Points the request at the appropriate command.
   request.open("GET", "/test/search?query=" + encodeURIComponent(query), true);
@@ -55,7 +55,7 @@ function loadMoreSheets() {
   request.onload = function() {
     var returnJSON = JSON.parse(request.responseText);
 
-    var sheetTableRows = document.getElementById('sheet-table-rows');
+    var sheetTableRows = getById('sheet-table-rows');
     for (var i = 0; i < returnJSON['sheets'].length; i ++)
     {
       var newRow = document.createElement("tr");
@@ -73,7 +73,7 @@ function loadMoreSheets() {
       sheetTableRows.appendChild(newRow);
     }
 
-    var loadMoreRow = document.getElementById('load-more-row');
+    var loadMoreRow = getById('load-more-row');
     if (returnJSON['more_sheets'] == true)
     {
         loadMoreRow.style.visibility = 'visible';
@@ -85,10 +85,10 @@ function loadMoreSheets() {
   };
 
   // Finds the current search query.
-  var query = document.getElementById('search-sheets').value;
+  var query = getById('search-sheets').value;
 
   // Finds the number of entries already
-  var already = document.getElementById('sheet-table-rows').children.length;
+  var already = getById('sheet-table-rows').children.length;
 
   // Points the request at the appropriate command.
   request.open(

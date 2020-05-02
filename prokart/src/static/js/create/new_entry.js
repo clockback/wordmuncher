@@ -6,10 +6,8 @@ function showNewEntryInterface() {
   ]);
 
   newEntrySearchSheets();
-  document.getElementById('add-entry-container-background').classList.remove(
-    'hide'
-  );
-  document.getElementById('new-entry-question').focus();
+  getById('add-entry-container-background').classList.remove('hide');
+  getById('new-entry-question').focus();
 }
 
 function hideNewEntryInterface() {
@@ -19,13 +17,11 @@ function hideNewEntryInterface() {
     "delete-entry"
   ]);
 
-  document.getElementById('add-entry-container-background').classList.add(
-    'hide'
-  );
-  document.getElementById('new-entry-question').value = "";
-  document.getElementById('new-entry-answer').value = "";
-  document.getElementById('new-entry-search-sheets').value = "";
-  document.getElementById('new-entry-add-answer').value = "";
+  getById('add-entry-container-background').classList.add('hide');
+  getById('new-entry-question').value = "";
+  getById('new-entry-answer').value = "";
+  getById('new-entry-search-sheets').value = "";
+  getById('new-entry-add-answer').value = "";
 
   var moreAnswers = document.querySelectorAll(
     "#new-entry-answers-table>tbody>tr:not(:last-child)"
@@ -45,7 +41,7 @@ function hideNewEntryInterface() {
 
   disableButtons(["save-new-entry"]);
 
-  document.getElementById('new-entry-sheet-table-hidden-rows').innerHTML = "";
+  getById('new-entry-sheet-table-hidden-rows').innerHTML = "";
 }
 
 function keyDownOnNewEntryContainer(event) {
@@ -57,16 +53,10 @@ function keyDownOnNewEntryContainer(event) {
 }
 
 function changeNewEntryQuestion() {
-  var question = document.getElementById("new-entry-question").value;
-  var messageNewEntryExists = document.getElementById(
-    "message-new-entry-already-exists"
-  );
-  var messageNewEntryEmpty = document.getElementById(
-    "message-new-entry-empty-question"
-  );
-  var messageNewEntryLong = document.getElementById(
-    "message-new-entry-long-question"
-  );
+  var question = getById("new-entry-question").value;
+  var messageNewEntryExists = getById("message-new-entry-already-exists");
+  var messageNewEntryEmpty = getById("message-new-entry-empty-question");
+  var messageNewEntryLong = getById("message-new-entry-long-question");
 
   if (question == "" || question.length > 80)
   {
@@ -99,9 +89,7 @@ function changeNewEntryQuestion() {
       // The question does not already exist.
       else
       {
-        var answerLength = document.getElementById(
-          'new-entry-answer'
-        ).value.length;
+        var answerLength = getById('new-entry-answer').value.length;
         if (0 < answerLength && answerLength <= 80)
         {
           enableButtons([["save-new-entry", saveNewEntry]]);
@@ -122,40 +110,30 @@ function changeNewEntryQuestion() {
 }
 
 function changeNewEntryAnswer() {
-  var answer = document.getElementById("new-entry-answer").value;
-  var messageNewEntryEmpty = document.getElementById(
-    "message-new-entry-empty-answer"
-  );
-  var messageNewEntryLong = document.getElementById(
-    "message-new-entry-long-answer"
-  );
+  var answer = getById("new-entry-answer").value;
+  var messageNewEntryEmpty = getById("message-new-entry-empty-answer");
+  var messageNewEntryLong = getById("message-new-entry-long-answer");
 
-  if (answer == "" || answer.length > 80)
-  {
-    if (answer == "")
-    {
+  if (answer == "" || answer.length > 80) {
+    if (answer == "") {
       messageNewEntryEmpty.classList.remove("hide");
       messageNewEntryLong.classList.add("hide");
     }
-    else
-    {
+    else {
       messageNewEntryEmpty.classList.add("hide");
       messageNewEntryLong.classList.remove("hide");
     }
     disableButtons(["save-new-entry"]);
   }
-  else
-  {
+  else {
     messageNewEntryEmpty.classList.add("hide");
     messageNewEntryLong.classList.add("hide");
     var problems = document.querySelectorAll(
       "new-entry-question-div>span:not(.hide)"
     );
     if (
-      problems.length == 0
-      && document.getElementById("new-entry-question").value.length > 0
-    )
-    {
+      problems.length == 0 && getById("new-entry-question").value.length > 0
+    ) {
       enableButtons([["save-new-entry", saveNewEntry]]);
     }
   }
@@ -168,14 +146,13 @@ function newEntryAddRow() {
   var newAnswer = newAnswerInput.value;
 
   // Only does something if an answer has been given.
-  if (newAnswer == '')
-  {
+  if (newAnswer == '') {
     return;
   }
 
   newAnswerInput.value = ""
 
-  var mainAnswerInput = document.getElementById("new-entry-answer");
+  var mainAnswerInput = getById("new-entry-answer");
   var moreAnswersCells = document.querySelectorAll(
     "#new-entry-answers-table>tbody>tr:not(:last-child)>td:first-child"
   );
@@ -235,15 +212,13 @@ function newEntryHitEnterAnotherAnswer(event) {
 }
 
 function newEntryPromoteAnswer(promoteCell) {
-  var formerTopAnswerInput = document.getElementById("new-entry-answer");
+  var formerTopAnswerInput = getById("new-entry-answer");
   var formerTopAnswer = formerTopAnswerInput.value;
   formerTopAnswerInput.value = promoteCell.innerHTML;
   if (formerTopAnswer == "")
   {
     promoteCell.parentNode.remove();
-    document.getElementById("message-new-entry-empty-answer").classList.add(
-      "hide"
-    );
+    getById("message-new-entry-empty-answer").classList.add("hide");
   }
   else
   {
@@ -253,8 +228,8 @@ function newEntryPromoteAnswer(promoteCell) {
 
 function saveNewEntry()
 {
-  var question = document.getElementById("new-entry-question").value;
-  var answer = document.getElementById("new-entry-answer").value;
+  var question = getById("new-entry-question").value;
+  var answer = getById("new-entry-answer").value;
   var moreAnswersCells = document.querySelectorAll(
     "#new-entry-answers-table>tbody>tr:not(:last-child)>td:first-child"
   );
@@ -265,9 +240,7 @@ function saveNewEntry()
   }
   var moreAnswersString = JSON.stringify(moreAnswers);
 
-  var hiddenRows = document.getElementById(
-    "new-entry-sheet-table-hidden-rows"
-  ).children;
+  var hiddenRows = getById("new-entry-sheet-table-hidden-rows").children;
   var parentSheets = [];
   for (var i = 0; i < hiddenRows.length; i ++)
   {
@@ -299,9 +272,7 @@ function clickNewEntrySheet(entry) {
   if (entry.classList.contains('selected-row'))
   {
     entry.classList.remove('selected-row');
-    var checkRows = document.getElementById(
-      'new-entry-sheet-table-hidden-rows'
-    ).children
+    var checkRows = getById('new-entry-sheet-table-hidden-rows').children
     for (var i = 0; i < checkRows.length; i ++)
     {
       if (checkRows[i].innerHTML == entry.firstChild.innerHTML)
@@ -313,9 +284,7 @@ function clickNewEntrySheet(entry) {
   else
   {
     entry.classList.add('selected-row');
-    var newRow = document.getElementById(
-      'new-entry-sheet-table-hidden-rows'
-    ).insertRow(-1);
+    var newRow = getById('new-entry-sheet-table-hidden-rows').insertRow(-1);
     newRow.innerHTML = entry.firstElementChild.innerHTML;
   }
 }
@@ -327,8 +296,8 @@ function newEntryLoadMoreSheets(numberAlready) {
   // Prepares to recreate the search result table.
   request.onload = function() {
     var returnJSON = JSON.parse(request.responseText);
-    rowsElement = document.getElementById('add-entry-sheet-table-rows');
-    var possibleMatches = document.getElementById(
+    rowsElement = getById('add-entry-sheet-table-rows');
+    var possibleMatches = getById(
       "new-entry-sheet-table-hidden-rows"
     ).children;
 
@@ -364,7 +333,7 @@ function newEntryLoadMoreSheets(numberAlready) {
         newRow.classList.add("selected-row");
       }
     }
-    var loadMoreRow = document.getElementById('new-entry-sheet-load-more-row');
+    var loadMoreRow = getById('new-entry-sheet-load-more-row');
     if (returnJSON['more_sheets'] == true)
     {
         loadMoreRow.style.visibility = 'visible';
@@ -380,7 +349,7 @@ function newEntryLoadMoreSheets(numberAlready) {
   ).length
 
   // Finds the search query
-  query = document.getElementById("new-entry-search-sheets").value;
+  query = getById("new-entry-search-sheets").value;
 
   // Points the request at the appropriate command.
   request.open(
@@ -399,9 +368,9 @@ function newEntrySearchSheets()
 
   request.onload = function() {
     var returnJSON = JSON.parse(request.responseText);
-    var rowsElement = document.getElementById('add-entry-sheet-table-rows');
+    var rowsElement = getById('add-entry-sheet-table-rows');
     rowsElement.innerHTML = "";
-    var possibleMatches = document.getElementById(
+    var possibleMatches = getById(
       "new-entry-sheet-table-hidden-rows"
     ).children;
     for (var i = 0; i < returnJSON["sheets"].length; i ++)
@@ -437,7 +406,7 @@ function newEntrySearchSheets()
       }
     }
 
-    var loadMoreRow = document.getElementById('new-entry-sheet-load-more-row');
+    var loadMoreRow = getById('new-entry-sheet-load-more-row');
     if (returnJSON['more_sheets'] == true)
     {
         loadMoreRow.style.visibility = 'visible';
@@ -449,7 +418,7 @@ function newEntrySearchSheets()
   }
 
   // Finds the search query
-  query = document.getElementById("new-entry-search-sheets").value;
+  query = getById("new-entry-search-sheets").value;
 
   // Points the request at the appropriate command.
   request.open(

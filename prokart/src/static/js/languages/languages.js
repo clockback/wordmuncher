@@ -124,7 +124,7 @@ function saveTranslator() {
 
 function expandFlags(element) {
   var allCollapseFlags = document.getElementsByClassName("flag-button");
-  var hiddenLanguages = document.getElementById("hidden-flags");
+  var hiddenLanguages = getById("hidden-flags");
   element.classList.add("flag-drop-down");
   element.onclick = function () {
     condenseFlags(this);
@@ -137,7 +137,7 @@ function expandFlags(element) {
     request.onload = function () {
       returnJSON = JSON.parse(request.responseText);
       sheets = returnJSON["flags"];
-      var hiddenFlags = document.getElementById("hidden-flags");
+      var hiddenFlags = getById("hidden-flags");
 
       for (var i = 0; i < sheets.length; i ++)
       {
@@ -179,7 +179,7 @@ function expandFlags(element) {
 }
 
 function condenseFlags(element) {
-  var hiddenLanguages = document.getElementById("hidden-flags");
+  var hiddenLanguages = getById("hidden-flags");
   hiddenLanguages.style.display = "none";
   element.classList.remove("flag-drop-down");
   element.onclick = function () {
@@ -194,14 +194,14 @@ function selectFlag(element) {
     allCollapseFlags[i].style.display = null;
   }
   element.style.display = "none";
-  var flagButton = document.getElementById("choose-flag");
+  var flagButton = getById("choose-flag");
   flagButton.innerHTML = element.innerHTML;
   condenseFlags(flagButton);
   flagButton.focus();
 }
 
 function changeLanguageName() {
-  var languageName = document.getElementById("language-name").value;
+  var languageName = getById("language-name").value;
 
   if (languageName && languageName.length <= 40)
   {
@@ -233,8 +233,8 @@ function changeLanguageName() {
 
 function saveLanguage() {
   disableButtons(["add-button"]);
-  var languageName = document.getElementById("language-name").value;
-  var flagText = document.getElementById("choose-flag").innerHTML;
+  var languageName = getById("language-name").value;
+  var flagText = getById("choose-flag").innerHTML;
   var request = new XMLHttpRequest();
 
   request.onload = function () {
