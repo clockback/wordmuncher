@@ -3,12 +3,12 @@ function showEditLanguagesInterface(question) {
     "modify-languages", "save-button", "sidebar-left-home",
     "sidebar-center-translator"
   ]);
-  getById('languages-container-background').classList.remove('hide');
+  unhide(['languages-container-background']);
   getById('language-name').focus();
 }
 
 function hideLanguagesInterface() {
-  getById('languages-container-background').classList.add('hide');
+  hide(['languages-container-background']);
   getById('language-name').value = "";
 
   disableButtons(["add-button"]);

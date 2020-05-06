@@ -31,56 +31,50 @@ function loadResults() {
 }
 
 function populateResultsTable(results, questions) {
+  var questionsString = JSON.stringify(questions);
+  openRequest("/results/summary_table", [
+    ["sheet", sessionStorage.sheetName], ["questions", questionsString]
+  ], processPopulateResultsTable);
+}
+
+function processPopulateResultsTable(request) {
+  var returnJSON = JSON.parse(request.responseText);
   var resultsTable = getById("results-table");
 
-  var request = new XMLHttpRequest();
+  var entries = returnJSON["entries"];
 
-  request.onload = function () {
-    var returnJSON = JSON.parse(request.responseText);
+  for (var i = 0; i < questions.length; i ++) {
+    var scores = entries[questions[i]];
 
-    var entries = returnJSON["entries"];
-
-    for (var i = 0; i < questions.length; i ++) {
-      var scores = entries[questions[i]];
-
-      var newRow = document.createElement("tr");
-      if (scores[0] == 2 && scores[1] == 2) {
-        newRow.classList.add("completed-colour");
-      }
-      else if (scores[0] > 0) {
-        newRow.classList.add("incomplete-colour");
-      }
-      else {
-        newRow.classList.add("failed-colour");
-      }
-
-      var questionCell = document.createElement("td");
-      questionCell.innerHTML = questions[i];
-
-      var correctCell = document.createElement("td");
-      correctCell.innerHTML = results[questions[i]][true];
-
-      var incorrectCell = document.createElement("td");
-      incorrectCell.innerHTML = results[questions[i]][false];
-
-      var starsCell = document.createElement("td");
-      drawStars(starsCell, scores[2] + (scores[0] == 2));
-
-      newRow.appendChild(questionCell);
-      newRow.appendChild(correctCell);
-      newRow.appendChild(incorrectCell);
-      newRow.appendChild(starsCell);
-      resultsTable.appendChild(newRow);
+    var newRow = document.createElement("tr");
+    if (scores[0] == 2 && scores[1] == 2) {
+      newRow.classList.add("completed-colour");
     }
-  };
+    else if (scores[0] > 0) {
+      newRow.classList.add("incomplete-colour");
+    }
+    else {
+      newRow.classList.add("failed-colour");
+    }
 
-  request.open(
-    "GET", "/results/summary_table?sheet="
-    + encodeURIComponent(sessionStorage.sheetName) + "&questions="
-    + encodeURIComponent(JSON.stringify(questions)), true
-  );
+    var questionCell = document.createElement("td");
+    questionCell.innerHTML = questions[i];
 
-  request.send();
+    var correctCell = document.createElement("td");
+    correctCell.innerHTML = results[questions[i]][true];
+
+    var incorrectCell = document.createElement("td");
+    incorrectCell.innerHTML = results[questions[i]][false];
+
+    var starsCell = document.createElement("td");
+    drawStars(starsCell, scores[2] + (scores[0] == 2));
+
+    newRow.appendChild(questionCell);
+    newRow.appendChild(correctCell);
+    newRow.appendChild(incorrectCell);
+    newRow.appendChild(starsCell);
+    resultsTable.appendChild(newRow);
+  }
 }
 
 window.addEventListener('load', loadResults);

@@ -1,7 +1,8 @@
 function showNewSheetInterface() {
-  getById("message-new-sheet-already-exists").classList.add('hide');
-  getById("message-new-sheet-empty-name").classList.add('hide');
-  getById("message-new-sheet-long-name").classList.add('hide');
+  hide([
+    "message-new-sheet-already-exists", "message-new-sheet-empty-name",
+    "message-new-sheet-long-name"
+  ]);
 
   disallowTabSelection([
     "back", "search-all", "sidebar-left-home", "sidebar-center-translator",
@@ -12,12 +13,12 @@ function showNewSheetInterface() {
 
   disableButtons(["save-new-sheet"]);
 
-  getById('add-sheet-container-background').classList.remove('hide');
+  unhide(["add-sheet-container-background"])
   getById('new-sheet-name').focus();
 }
 
 function hideNewSheetInterface() {
-  getById('add-sheet-container-background').classList.add('hide');
+  hide(["add-sheet-container-background"]);
 
   allowTabSelection([
     "back", "search-all", "sidebar-left-home", "sidebar-center-translator",
@@ -38,59 +39,40 @@ function changeNewSheetName() {
 
   if (name == "" || name.length > 80) {
     if (name == "") {
-      messageNewSheetEmpty.classList.remove("hide");
-      messageNewSheetLong.classList.add("hide");
+      unhide(["message-new-sheet-empty-name"]);
+      hide(
+        ["message-new-sheet-long-name", "message-new-sheet-already-exists"]
+      );
     }
     else {
-      messageNewSheetEmpty.classList.add("hide");
-      messageNewSheetLong.classList.remove("hide");
+      hide(
+        ["message-new-sheet-empty-name"], "message-new-sheet-already-exists"
+      );
+      unhide(["message-new-sheet-long-name"]);
     }
     disableButtons(["save-new-sheet"]);
-    messageNewSheetExists.classList.add("hide");
   }
   else {
-    messageNewSheetEmpty.classList.add("hide");
-    messageNewSheetLong.classList.add("hide");
-    var request = new XMLHttpRequest();
+    hide(["message-new-sheet-empty-name", "message-new-sheet-long-name"]);
+    openRequest("/sheet_already_exists", [
+      ["name", name]
+    ], processChangeNewSheetName);
+  }
+}
 
-    request.onload = function() {
-      var result = JSON.parse(request.responseText)['already_there'];
-      if (result) {
-        disableButtons(["save-new-sheet"]);
-        messageNewSheetExists.classList.remove("hide");
-      }
-      else {
-        enableButtons([["save-new-sheet", saveNewSheet]]);
-        messageNewSheetExists.classList.add("hide");
-      }
-    }
-
-    // Points the request at the appropriate command.
-    request.open(
-      "GET", "/sheet_already_exists?name=" + encodeURIComponent(name), true
-    );
-
-    // Sends the request off.
-    request.send();
+function processChangeNewSheetName(request) {
+  var result = JSON.parse(request.responseText)['already_there'];
+  if (result) {
+    disableButtons(["save-new-sheet"]);
+    unhide(["message-new-sheet-already-exists"]);
+  }
+  else {
+    enableButtons([["save-new-sheet", saveNewSheet]]);
+    hide(["message-new-sheet-already-exists"]);
   }
 }
 
 function saveNewSheet() {
-  // Prepares a request for the search function.
-  var request = new XMLHttpRequest();
-
-  // Prepares to recreate the search result table.
-  request.onload = function() {
-    var already_there = JSON.parse(request.responseText)['already_there'];
-    if (already_there) {
-      alert("Sheet already made!");
-    }
-    else {
-      hideNewSheetInterface();
-      searchAll();
-    }
-  };
-
   // Gets the name of the new sheet.
   var sheetName = getById('new-sheet-name').value;
 
@@ -101,14 +83,20 @@ function saveNewSheet() {
   }
   var childEntriesString = JSON.stringify(childEntries);
 
-  // Points the request at the appropriate command.
-  request.open(
-    "GET", "/create/new_sheet?name=" + encodeURIComponent(sheetName)
-    + "&entries=" + encodeURIComponent(childEntriesString), true
-  );
+  openRequest("/create/new_sheet", [
+    ["name", sheetName], ["entries", childEntriesString]
+  ], processSaveNewSheet);
+}
 
-  // Sends the request off.
-  request.send();
+function processSaveNewSheet(request) {
+  var already_there = JSON.parse(request.responseText)['already_there'];
+  if (already_there) {
+    alert("Sheet already made!");
+  }
+  else {
+    hideNewSheetInterface();
+    searchAll();
+  }
 }
 
 function keyDownOnNewSheetContainer(event) {
@@ -136,53 +124,6 @@ function clickNewSheetEntry(entry) {
 }
 
 function newSheetLoadMoreEntries(numberAlready) {
-  // Prepares a request for the search function.
-  var request = new XMLHttpRequest();
-
-  // Prepares to recreate the search result table.
-  request.onload = function() {
-    var returnJSON = JSON.parse(request.responseText);
-    rowsElement = getById('add-sheet-entry-table-rows');
-    var possibleMatches = getById(
-      "new-sheet-entry-table-hidden-rows"
-    ).children;
-
-    for (var i = 0; i < returnJSON['entries'].length; i ++) {
-      var foundHidden = false;
-      for (var j = 0; j < possibleMatches.length; j++) {
-        if (possibleMatches[j].innerHTML == returnJSON["entries"][i][0]) {
-          foundHidden = true;
-          break;
-        }
-      }
-
-      var newRow = document.createElement("tr");
-      newRow.style["cursor"] = "pointer";
-      newRow.onclick = function () {
-        clickNewSheetEntry(this);
-      }
-
-      for (var j = 0; j < 4; j ++) {
-        var cell = document.createElement("td");
-        cell.innerHTML = returnJSON["entries"][i][j];
-        newRow.appendChild(cell);
-      }
-
-      rowsElement.appendChild(newRow);
-
-      if (foundHidden) {
-        newRow.classList.add("selected-row");
-      }
-    }
-    var loadMoreRow = getById('new-sheet-entry-load-more-row');
-    if (returnJSON['more_entries'] == true) {
-        loadMoreRow.style.visibility = 'visible';
-    }
-    else {
-        loadMoreRow.style.visibility = 'collapse';
-    }
-  }
-
   numberAlready = document.querySelectorAll(
     "#add-sheet-entry-table-rows>tr"
   ).length
@@ -190,73 +131,103 @@ function newSheetLoadMoreEntries(numberAlready) {
   // Finds the search query
   query = getById("new-sheet-search-entries").value;
 
-  // Points the request at the appropriate command.
-  request.open(
-    "GET", "/create/load_more_entries?already=" + numberAlready
-    + "&query=" + encodeURIComponent(query), true
-  );
+  openRequest("/create/load_more_entries", [
+    ["already", numberAlready], ["query", query]
+  ]);
+}
 
-  // Sends the request off.
-  request.send();
+function processNewSheetLoadMoreEntries(request) {
+  var returnJSON = JSON.parse(request.responseText);
+  rowsElement = getById('add-sheet-entry-table-rows');
+  var possibleMatches = getById(
+    "new-sheet-entry-table-hidden-rows"
+  ).children;
+
+  for (var i = 0; i < returnJSON['entries'].length; i ++) {
+    var foundHidden = false;
+    for (var j = 0; j < possibleMatches.length; j++) {
+      if (possibleMatches[j].innerHTML == returnJSON["entries"][i][0]) {
+        foundHidden = true;
+        break;
+      }
+    }
+
+    var newRow = document.createElement("tr");
+    newRow.style["cursor"] = "pointer";
+    newRow.onclick = function () {
+      clickNewSheetEntry(this);
+    }
+
+    for (var j = 0; j < 4; j ++) {
+      var cell = document.createElement("td");
+      cell.innerHTML = returnJSON["entries"][i][j];
+      newRow.appendChild(cell);
+    }
+
+    rowsElement.appendChild(newRow);
+
+    if (foundHidden) {
+      newRow.classList.add("selected-row");
+    }
+  }
+  var loadMoreRow = getById('new-sheet-entry-load-more-row');
+  if (returnJSON['more_entries'] == true) {
+    loadMoreRow.style.visibility = 'visible';
+  }
+  else {
+    loadMoreRow.style.visibility = 'collapse';
+  }
 }
 
 function newSheetSearchEntries() {
- // Prepares a request for the search function.
-  var request = new XMLHttpRequest();
-
-  request.onload = function() {
-    var returnJSON = JSON.parse(request.responseText);
-    var rowsElement = getById('add-sheet-entry-table-rows');
-    rowsElement.innerHTML = "";
-    var possibleMatches = getById(
-      "new-sheet-entry-table-hidden-rows"
-    ).children;
-    for (var i = 0; i < returnJSON["entries"].length; i ++) {
-      var foundHidden = false;
-      for (var j = 0; j < possibleMatches.length; j++) {
-        if (possibleMatches[j].innerHTML == returnJSON["entries"][i][0]) {
-          foundHidden = true;
-          break;
-        }
-      }
-
-      var newRow = document.createElement("tr");
-      newRow.style["cursor"] = "pointer";
-      newRow.onclick = function () {
-        clickNewSheetEntry(this);
-      }
-
-      for (var j = 0; j < 4; j ++) {
-        var cell = document.createElement("td");
-        cell.innerHTML = returnJSON["entries"][i][j];
-        newRow.appendChild(cell);
-      }
-
-      rowsElement.appendChild(newRow);
-
-      if (foundHidden) {
-        newRow.classList.add("selected-row");
-      }
-    }
-
-    var loadMoreRow = getById('new-sheet-entry-load-more-row');
-    if (returnJSON['more_entries'] == true) {
-        loadMoreRow.style.visibility = 'visible';
-    }
-    else {
-        loadMoreRow.style.visibility = 'collapse';
-    }
-  }
-
   // Finds the search query
   query = getById("new-sheet-search-entries").value;
 
-  // Points the request at the appropriate command.
-  request.open(
-    "GET", "/create/search?query=" + encodeURIComponent(query)
-    + "&sheets=0&entries=1", true
-  );
+  openRequest("/create/search", [
+    ["query", query], ["sheets", 0], ["entries", 1]
+  ], processNewSheetSearchEntries);
+}
 
-  // Sends the request off.
-  request.send();
+function processNewSheetSearchEntries(request) {
+  var returnJSON = JSON.parse(request.responseText);
+  var rowsElement = getById('add-sheet-entry-table-rows');
+  rowsElement.innerHTML = "";
+  var possibleMatches = getById(
+    "new-sheet-entry-table-hidden-rows"
+  ).children;
+  for (var i = 0; i < returnJSON["entries"].length; i ++) {
+    var foundHidden = false;
+    for (var j = 0; j < possibleMatches.length; j++) {
+      if (possibleMatches[j].innerHTML == returnJSON["entries"][i][0]) {
+        foundHidden = true;
+        break;
+      }
+    }
+
+    var newRow = document.createElement("tr");
+    newRow.style["cursor"] = "pointer";
+    newRow.onclick = function () {
+      clickNewSheetEntry(this);
+    }
+
+    for (var j = 0; j < 4; j ++) {
+      var cell = document.createElement("td");
+      cell.innerHTML = returnJSON["entries"][i][j];
+      newRow.appendChild(cell);
+    }
+
+    rowsElement.appendChild(newRow);
+
+    if (foundHidden) {
+      newRow.classList.add("selected-row");
+    }
+  }
+
+  var loadMoreRow = getById('new-sheet-entry-load-more-row');
+  if (returnJSON['more_entries'] == true) {
+    loadMoreRow.style.visibility = 'visible';
+  }
+  else {
+    loadMoreRow.style.visibility = 'collapse';
+  }
 }

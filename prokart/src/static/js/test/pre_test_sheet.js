@@ -21,7 +21,7 @@ function testSheet(row) {
   }
 
   // Make container visible.
-  container.classList.remove("hide");
+  unhide([container]);
 
   getById("go-button-container").focus();
 }
@@ -30,7 +30,7 @@ function hideTestSheetInterface(row) {
   // Prevents selection of now concealed elements.
   allowTabSelection(["search-sheets", "back-button"]);
 
-  getById("pre-test-sheet-container-background").classList.add("hide");
+  hide(["pre-test-sheet-container-background"]);
 }
 
 function keyDownOnTestSheetContainer(event) {

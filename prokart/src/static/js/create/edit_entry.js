@@ -11,77 +11,70 @@ function showEditEntryInterface(question) {
   editEntryQuestionEntry.value = question;
   editEntryQuestionEntry.placeholder = question;
 
-  var editEntryAnswerEntry = getById('edit-entry-answer');
-
   enableButtons([["save-edit-entry", saveEditEntry]]);
 
-  var request = new XMLHttpRequest();
+  openRequest("/create/load_existing_entry", [
+    ["question", question]
+  ], processShowEditEntryInterface)
+}
 
-  request.onload = function() {
-    var returnJSON = JSON.parse(request.responseText);
-    editEntryAnswerEntry.value = returnJSON["answers"][0];
-    editEntryAnswerEntry.placeholder = returnJSON["answers"][0];
+function processShowEditEntryInterface(request) {
+  var returnJSON = JSON.parse(request.responseText);
 
-    var moreAnswers = document.querySelector(
-      "#edit-entry-answers-table>tbody"
+  var editEntryAnswerEntry = getById('edit-entry-answer');
+  editEntryAnswerEntry.value = returnJSON["answers"][0];
+  editEntryAnswerEntry.placeholder = returnJSON["answers"][0];
+
+  var moreAnswers = document.querySelector(
+    "#edit-entry-answers-table>tbody"
+  );
+  for (var i = 1; i < returnJSON["answers"].length; i ++) {
+    var newAdditionalAnswer = document.createElement("tr");
+
+    var newAdditionalAnswerName = document.createElement("td");
+    newAdditionalAnswerName.innerHTML = returnJSON["answers"][i];
+    newAdditionalAnswerName.onclick = function () {
+      editEntryPromoteAnswer(this);
+    };
+
+    var newAdditionalAnswerTrash = document.createElement("td");
+
+    var newAdditionalAnswerButton = document.createElement("button");
+    newAdditionalAnswerButton.innerHTML = "️️🗑️";
+    newAdditionalAnswerButton.classList.add("trash-can");
+    newAdditionalAnswerButton.onclick = function () {
+      trashRow(this);
+    };
+
+    newAdditionalAnswerTrash.appendChild(newAdditionalAnswerButton);
+    newAdditionalAnswer.appendChild(newAdditionalAnswerName);
+    newAdditionalAnswer.appendChild(newAdditionalAnswerTrash);
+    moreAnswers.insertBefore(
+      newAdditionalAnswer, document.querySelector(
+        "#edit-entry-answers-table>tbody>tr:last-child"
+      )
     );
-    for (var i = 1; i < returnJSON["answers"].length; i ++) {
-      var newAdditionalAnswer = document.createElement("tr");
-
-      var newAdditionalAnswerName = document.createElement("td");
-      newAdditionalAnswerName.innerHTML = returnJSON["answers"][i];
-      newAdditionalAnswerName.onclick = function () {
-        editEntryPromoteAnswer(this);
-      };
-
-      var newAdditionalAnswerTrash = document.createElement("td");
-
-      var newAdditionalAnswerButton = document.createElement("button");
-      newAdditionalAnswerButton.innerHTML = "️️🗑️";
-      newAdditionalAnswerButton.classList.add("trash-can");
-      newAdditionalAnswerButton.onclick = function () {
-        trashRow(this);
-      };
-
-      newAdditionalAnswerTrash.appendChild(newAdditionalAnswerButton);
-      newAdditionalAnswer.appendChild(newAdditionalAnswerName);
-      newAdditionalAnswer.appendChild(newAdditionalAnswerTrash);
-      moreAnswers.insertBefore(
-        newAdditionalAnswer, document.querySelector(
-          "#edit-entry-answers-table>tbody>tr:last-child"
-        )
-      );
-    }
-
-    var sheets = returnJSON["sheets"];
-    var hiddenRows = getById("edit-entry-sheet-table-hidden-rows");
-    var visibleRows = getById("edit-entry-sheet-table-rows").children;
-
-    for (var i = 0; i < sheets.length; i ++) {
-      var hiddenRow = document.createElement("tr");
-      hiddenRow.innerHTML = sheets[i];
-      hiddenRows.appendChild(hiddenRow);
-
-      for (var j = 0; j < visibleRows.length; j ++) {
-        if (visibleRows[j].children[0].innerHTML == sheets[i]) {
-          visibleRows[j].classList.add("selected-row");
-          break;
-        }
-      }
-    }
-
-    getById('edit-entry-container-background').classList.remove('hide');
-    editEntryQuestionEntry.focus();
   }
 
-  // Points the request at the appropriate command.
-  request.open(
-    "GET", "/create/load_existing_entry?question="
-    + encodeURIComponent(question), true
-  );
+  var sheets = returnJSON["sheets"];
+  var hiddenRows = getById("edit-entry-sheet-table-hidden-rows");
+  var visibleRows = getById("edit-entry-sheet-table-rows").children;
 
-  // Sends the request off.
-  request.send();
+  for (var i = 0; i < sheets.length; i ++) {
+    var hiddenRow = document.createElement("tr");
+    hiddenRow.innerHTML = sheets[i];
+    hiddenRows.appendChild(hiddenRow);
+
+    for (var j = 0; j < visibleRows.length; j ++) {
+      if (visibleRows[j].children[0].innerHTML == sheets[i]) {
+        visibleRows[j].classList.add("selected-row");
+        break;
+      }
+    }
+  }
+
+  unhide(['edit-entry-container-background']);
+  getById('edit-entry-question').focus();
 }
 
 function hideEditEntryInterface() {
@@ -91,7 +84,7 @@ function hideEditEntryInterface() {
     "delete-entry"
   ]);
 
-  getById('edit-entry-container-background').classList.add('hide');
+  hide(['edit-entry-container-background']);
   getById('edit-entry-question').value = "";
   getById('edit-entry-answer').value = "";
   getById('edit-entry-search-sheets').value = "";
@@ -104,12 +97,9 @@ function hideEditEntryInterface() {
     moreAnswers[i].remove();
   }
 
-  var warnings = document.querySelectorAll(
+  hide(document.querySelectorAll(
     "#edit-entry-question-div>span,#edit-entry-answer-div>span"
-  );
-  for (var i = 0; i < warnings.length; i ++) {
-    warnings[i].classList.add("hide");
-  }
+  ));
 
   getById('edit-entry-sheet-table-hidden-rows').innerHTML = "";
 }
@@ -123,76 +113,69 @@ function keyDownOnEditEntryContainer(event) {
 
 function changeEditEntryQuestion() {
   var question = getById("edit-entry-question").value;
-  var messageEditEntryExists = getById("message-edit-entry-already-exists");
-  var messageEditEntryEmpty = getById("message-edit-entry-empty-question");
-  var messageEditEntryLong = getById("message-edit-entry-long-question");
 
   if (question == "" || question.length > 80) {
     if (question == "") {
-      messageEditEntryEmpty.classList.remove("hide");
-      messageEditEntryLong.classList.add("hide");
+      unhide(["message-edit-entry-empty-question"]);
+      hide([
+        "message-edit-entry-long-question", "message-edit-entry-already-exists"
+      ]);
     }
     else {
-      messageEditEntryEmpty.classList.add("hide");
-      messageEditEntryLong.classList.remove("hide");
+      hide([
+        "message-edit-entry-empty-question",
+        "message-edit-entry-already-exists"
+      ]);
+      unhide(["message-edit-entry-long-question"]);
     }
     disableButtons(["save-edit-entry"])
-    messageEditEntryExists.classList.add("hide");
   }
   else {
-    messageEditEntryEmpty.classList.add("hide");
-    messageEditEntryLong.classList.add("hide");
-    var request = new XMLHttpRequest();
-
-    request.onload = function() {
-      var result = JSON.parse(request.responseText)['already_there'];
-      if (result) {
-        disableButtons(["save-edit-entry"]);
-        messageEditEntryExists.classList.remove("hide");
-      }
-      // The question does not already exist.
-      else {
-        var answerLength = getById('edit-entry-answer').value.length;
-        if (0 < answerLength && answerLength <= 80) {
-          enableButtons([["save-edit-entry", saveEditEntry]]);
-        }
-        messageEditEntryExists.classList.add("hide");
-      }
-    }
-
+    hide([
+      "message-edit-entry-empty-question", "message-edit-entry-long-question"
+    ]);
     var prior = getById("edit-entry-question").placeholder;
 
-    // Points the request at the appropriate command.
-    request.open(
-      "GET", "/create/entry_already_exists?question="
-      + encodeURIComponent(question) + "&prior=" + encodeURIComponent(prior),
-      true
-    );
+    openRequest("/create/entry_already_exists", [
+      ["question", question], ["prior", prior]
+    ], processChangeEditEntryQuestion);
+  }
+}
 
-    // Sends the request off.
-    request.send();
+function processChangeEditEntryQuestion(request) {
+  var result = JSON.parse(request.responseText)['already_there'];
+  if (result) {
+    disableButtons(["save-edit-entry"]);
+    unhide(["message-edit-entry-already-exists"]);
+  }
+  // The question does not already exist.
+  else {
+    var answerLength = getById('edit-entry-answer').value.length;
+    if (0 < answerLength && answerLength <= 80) {
+      enableButtons([["save-edit-entry", saveEditEntry]]);
+    }
+    hide(["message-edit-entry-already-exists"]);
   }
 }
 
 function changeEditEntryAnswer() {
   var answer = getById("edit-entry-answer").value;
-  var messageEditEntryEmpty = getById("message-edit-entry-empty-answer");
-  var messageEditEntryLong = getById("message-edit-entry-long-answer");
 
   if (answer == "" || answer.length > 80) {
     if (answer == "") {
-      messageEditEntryEmpty.classList.remove("hide");
-      messageEditEntryLong.classList.add("hide");
+      unhide(["message-edit-entry-empty-answer"]);
+      hide(["message-edit-entry-long-answer"]);
     }
     else {
-      messageEditEntryEmpty.classList.add("hide");
-      messageEditEntryLong.classList.remove("hide");
+      hide(["message-edit-entry-empty-answer"]);
+      unhide(["message-edit-entry-long-answer"]);
     }
     disableButtons(["save-edit-entry"]);
   }
   else {
-    messageEditEntryEmpty.classList.add("hide");
-    messageEditEntryLong.classList.add("hide");
+    hide([
+      "message-edit-entry-empty-answer", "message-edit-entry-long-answer"
+    ]);
     var problems = document.querySelectorAll(
       "edit-entry-question-div>span:not(.hide)"
     );
@@ -278,7 +261,7 @@ function editEntryPromoteAnswer(promoteCell) {
   formerTopAnswerInput.value = promoteCell.innerHTML;
   if (formerTopAnswer == "") {
     promoteCell.parentNode.remove();
-    getById("message-edit-entry-empty-answer").classList.add("hide");
+    hide(["message-edit-entry-empty-answer"]);
   }
   else {
     promoteCell.innerHTML = formerTopAnswer;
@@ -306,30 +289,21 @@ function saveEditEntry() {
   }
   var parentSheetsString = JSON.stringify(parentSheets);
 
-  var request = new XMLHttpRequest();
+  openRequest("/create/edit_entry", [
+    ["question", question], ["prior", prior], ["answer", answer],
+    ["moreAnswers", moreAnswersString], ["sheets", parentSheetsString]
+  ], processSaveEditEntry);
+}
 
-  request.onload = function() {
-    var already_there = JSON.parse(request.responseText)['already_there'];
-    if (already_there) {
-      alert("Sheet already made!");
-    }
-    else {
-      hideEditEntryInterface();
-      searchAll();
-    }
+function processSaveEditEntry(request) {
+  var already_there = JSON.parse(request.responseText)['already_there'];
+  if (already_there) {
+    alert("Sheet already made!");
   }
-
-  // Points the request at the appropriate command.
-  request.open(
-    "GET", "/create/edit_entry?question=" + encodeURIComponent(question)
-    + "&prior=" + encodeURIComponent(prior)
-    + "&answer=" + encodeURIComponent(answer)
-    + "&moreAnswers=" + encodeURIComponent(moreAnswersString)
-    + "&sheets=" + encodeURIComponent(parentSheetsString), true
-  );
-
-  // Sends the request off.
-  request.send();
+  else {
+    hideEditEntryInterface();
+    searchAll();
+  }
 }
 
 function clickEditEntrySheet(entry) {
@@ -350,53 +324,6 @@ function clickEditEntrySheet(entry) {
 }
 
 function editEntryLoadMoreSheets(numberAlready) {
-  // Prepares a request for the search function.
-  var request = new XMLHttpRequest();
-
-  // Prepares to recreate the search result table.
-  request.onload = function() {
-    var returnJSON = JSON.parse(request.responseText);
-    rowsElement = getById('edit-entry-sheet-table-rows');
-    var possibleMatches = getById(
-      "edit-entry-sheet-table-hidden-rows"
-    ).children;
-
-    for (var i = 0; i < returnJSON['sheets'].length; i ++) {
-      var foundHidden = false;
-      for (var j = 0; j < possibleMatches.length; j++) {
-        if (possibleMatches[j].innerHTML == returnJSON["sheets"][i][0]) {
-          foundHidden = true;
-          break;
-        }
-      }
-
-      var newRow = document.createElement("tr");
-      newRow.style["cursor"] = "pointer";
-      newRow.onclick = function () {
-        clickEditEntrySheet(this);
-      }
-
-      for (var j = 0; j < 3; j ++) {
-        var cell = document.createElement("td");
-        cell.innerHTML = returnJSON["sheets"][i][j];
-        newRow.appendChild(cell);
-      }
-
-      rowsElement.appendChild(newRow);
-
-      if (foundHidden) {
-        newRow.classList.add("selected-row");
-      }
-    }
-    var loadMoreRow = getById('edit-entry-sheet-load-more-row');
-    if (returnJSON['more_sheets'] == true) {
-        loadMoreRow.style.visibility = 'visible';
-    }
-    else {
-        loadMoreRow.style.visibility = 'collapse';
-    }
-  }
-
   numberAlready = document.querySelectorAll(
     "#edit-entry-sheet-table-rows>tr"
   ).length
@@ -404,73 +331,104 @@ function editEntryLoadMoreSheets(numberAlready) {
   // Finds the search query
   query = getById("edit-entry-search-sheets").value;
 
-  // Points the request at the appropriate command.
-  request.open(
-    "GET", "/create/load_more_sheets?already=" + numberAlready
-    + "&query=" + encodeURIComponent(query), true
-  );
+  openRequest("/create/load_more_sheets", [
+    ["already", numberAlready], ["query", query]
+  ], processEditEntryLoadMoreSheets);
+}
 
-  // Sends the request off.
-  request.send();
+function processEditEntryLoadMoreSheets(request) {
+  var returnJSON = JSON.parse(request.responseText);
+  rowsElement = getById('edit-entry-sheet-table-rows');
+  var possibleMatches = getById(
+    "edit-entry-sheet-table-hidden-rows"
+  ).children;
+
+  for (var i = 0; i < returnJSON['sheets'].length; i ++) {
+    var foundHidden = false;
+    for (var j = 0; j < possibleMatches.length; j++) {
+      if (possibleMatches[j].innerHTML == returnJSON["sheets"][i][0]) {
+        foundHidden = true;
+        break;
+      }
+    }
+
+    var newRow = document.createElement("tr");
+    newRow.style["cursor"] = "pointer";
+    newRow.onclick = function () {
+      clickEditEntrySheet(this);
+    }
+
+    for (var j = 0; j < 3; j ++) {
+      var cell = document.createElement("td");
+      cell.innerHTML = returnJSON["sheets"][i][j];
+      newRow.appendChild(cell);
+    }
+
+    rowsElement.appendChild(newRow);
+
+    if (foundHidden) {
+      newRow.classList.add("selected-row");
+    }
+  }
+  var loadMoreRow = getById('edit-entry-sheet-load-more-row');
+  if (returnJSON['more_sheets'] == true) {
+    loadMoreRow.style.visibility = 'visible';
+  }
+  else {
+    loadMoreRow.style.visibility = 'collapse';
+  }
 }
 
 function editEntrySearchSheets() {
- // Prepares a request for the search function.
-  var request = new XMLHttpRequest();
-
-  request.onload = function() {
-    var returnJSON = JSON.parse(request.responseText);
-    var rowsElement = getById('edit-entry-sheet-table-rows');
-    rowsElement.innerHTML = "";
-    var possibleMatches = getById(
-      "edit-entry-sheet-table-hidden-rows"
-    ).children;
-    for (var i = 0; i < returnJSON["sheets"].length; i ++) {
-      var foundHidden = false;
-      for (var j = 0; j < possibleMatches.length; j++) {
-        if (possibleMatches[j].innerHTML == returnJSON["sheets"][i][0]) {
-          foundHidden = true;
-          break;
-        }
-      }
-
-      var newRow = document.createElement("tr");
-      newRow.style["cursor"] = "pointer";
-      newRow.onclick = function () {
-        clickEditEntrySheet(this);
-      }
-
-      for (var j = 0; j < 3; j ++) {
-        var cell = document.createElement("td");
-        cell.innerHTML = returnJSON["sheets"][i][j];
-        newRow.appendChild(cell);
-      }
-
-      rowsElement.appendChild(newRow);
-
-      if (foundHidden) {
-        newRow.classList.add("selected-row");
-      }
-    }
-
-    var loadMoreRow = getById('edit-entry-sheet-load-more-row');
-    if (returnJSON['more_sheets'] == true) {
-        loadMoreRow.style.visibility = 'visible';
-    }
-    else {
-        loadMoreRow.style.visibility = 'collapse';
-    }
-  }
-
   // Finds the search query
   query = getById("edit-entry-search-sheets").value;
 
-  // Points the request at the appropriate command.
-  request.open(
-    "GET", "/create/search?query=" + encodeURIComponent(query)
-    + "&sheets=1&entries=0", true
-  );
+  openRequest("/create/search", [
+    ["query", query], ["sheets", 1], ["entries", 0]
+  ], processEditEntrySearchSheets);
+}
 
-  // Sends the request off.
-  request.send();
+function processEditEntrySearchSheets(request) {
+  var returnJSON = JSON.parse(request.responseText);
+  var rowsElement = getById('edit-entry-sheet-table-rows');
+  rowsElement.innerHTML = "";
+  var possibleMatches = getById(
+    "edit-entry-sheet-table-hidden-rows"
+  ).children;
+
+  for (var i = 0; i < returnJSON["sheets"].length; i ++) {
+    var foundHidden = false;
+    for (var j = 0; j < possibleMatches.length; j++) {
+      if (possibleMatches[j].innerHTML == returnJSON["sheets"][i][0]) {
+        foundHidden = true;
+        break;
+      }
+    }
+
+    var newRow = document.createElement("tr");
+    newRow.style["cursor"] = "pointer";
+    newRow.onclick = function () {
+      clickEditEntrySheet(this);
+    }
+
+    for (var j = 0; j < 3; j ++) {
+      var cell = document.createElement("td");
+      cell.innerHTML = returnJSON["sheets"][i][j];
+      newRow.appendChild(cell);
+    }
+
+    rowsElement.appendChild(newRow);
+
+    if (foundHidden) {
+      newRow.classList.add("selected-row");
+    }
+  }
+
+  var loadMoreRow = getById('edit-entry-sheet-load-more-row');
+  if (returnJSON['more_sheets'] == true) {
+    loadMoreRow.style.visibility = 'visible';
+  }
+  else {
+    loadMoreRow.style.visibility = 'collapse';
+  }
 }

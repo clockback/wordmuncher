@@ -6,48 +6,40 @@ function loadSheet() {
   sessionStorage.results = JSON.stringify([]);
   sessionStorage.sheetName = getById("sheet-name").innerHTML;
 
-  // Prepares a request for the search function.
-  var request = new XMLHttpRequest();
+  openRequest("/test_sheet/get_question", [
+    ["sheet", sessionStorage.sheetName]
+  ], processLoadSheet);
+}
 
-  request.onload = function () {
-    // Collect values from request.
-    var returnJSON = JSON.parse(request.responseText);
-    var question = returnJSON["question"];
-    var points = returnJSON["points"];
-    var needed = returnJSON["needed"];
-    var so_far = returnJSON["so_far"];
+function processLoadSheet(request) {
+  // Collect values from request.
+  var returnJSON = JSON.parse(request.responseText);
+  var question = returnJSON["question"];
+  var points = returnJSON["points"];
+  var needed = returnJSON["needed"];
+  var so_far = returnJSON["so_far"];
 
-    // Set the question text.
-    getById("question-text").innerHTML = question;
+  // Set the question text.
+  getById("question-text").innerHTML = question;
 
-    drawStars(
-      getById("stars-container"), points + (so_far == 2), true
-    );
-
-    // Calculates the percentage complete.
-    var percent = Math.round(so_far / needed * 100);
-
-    var barChart = document.querySelector(".bar-chart");
-    var barChartFigure = document.querySelector(".bar-chart-figure");
-
-    barChart.style.width = percent + "%";
-    barChartFigure.innerHTML = percent + "% complete";
-
-    // Focuses on the answer box.
-    getById("answer-box").focus();
-
-    // Reveal test.
-    getById("hide-screen").style.visibility = "hidden";
-  }
-
-  // Points the request at the appropriate command.
-  request.open(
-    "GET", "/test_sheet/get_question?sheet="
-    + encodeURIComponent(sessionStorage.sheetName), true
+  drawStars(
+    getById("stars-container"), points + (so_far == 2), true
   );
 
-  // Sends the request off.
-  request.send();
+  // Calculates the percentage complete.
+  var percent = Math.round(so_far / needed * 100);
+
+  var barChart = document.querySelector(".bar-chart");
+  var barChartFigure = document.querySelector(".bar-chart-figure");
+
+  barChart.style.width = percent + "%";
+  barChartFigure.innerHTML = percent + "% complete";
+
+  // Focuses on the answer box.
+  getById("answer-box").focus();
+
+  // Reveal test.
+  getById("hide-screen").style.visibility = "hidden";
 }
 
 window.addEventListener('load', loadSheet);
@@ -82,41 +74,26 @@ function deleteAnswer(row, questionText) {
     getById("other-answers-header").style.visibility = "hidden";
   }
 
-  // Prepares a request to find out whether the answer is correct.
-  var request = new XMLHttpRequest();
-
-  request.open(
-    "GET", "/test_sheet/remove_answer?sheet="
-    + encodeURIComponent(sessionStorage.sheetName) + "&question="
-    + encodeURIComponent(questionText) + "&answer="
-    + encodeURIComponent(answerText), true
-  );
-
-  request.send();
+  openRequest("/test_sheet/remove_answer", [
+    ["sheet", sessionStorage.sheetName], ["question", questionText],
+    ["answer", answerText]
+  ]);
 }
 
 function addToAnswers() {
-  // Prepares a request to find out whether the answer is correct.
-  var request = new XMLHttpRequest();
-
-  var question = getById("question-text")
+  var question = getById("question-text");
   var questionText = question.innerHTML;
-  var answerText = getById("answer-box").value;
+  var answer = getById("answer-box").value;
 
-  request.onload = function () {
-    var wrongAnswerBox = getById("wrong-answer-box");
-    wrongAnswerBox.classList.add("hide");
-    correctAnswer(question);
-  };
+  openRequest("/test_sheet/add_answer", [
+    ["sheet", sessionStorage.sheetName], ["question", questionText],
+    ["answer", answer]
+  ], processAddToAnswers, question);
+}
 
-  request.open(
-    "GET", "/test_sheet/add_answer?sheet="
-    + encodeURIComponent(sessionStorage.sheetName) + "&question="
-    + encodeURIComponent(questionText) + "&answer="
-    + encodeURIComponent(answerText), true
-  );
-
-  request.send();
+function processAddToAnswers(request, question) {
+  hide(["wrong-answer-box"]);
+  correctAnswer(question);
 }
 
 function keyDownOnWrongAnswerContainer(event) {
@@ -127,27 +104,20 @@ function keyDownOnWrongAnswerContainer(event) {
 }
 
 function clickNextButton() {
-  // Prepares a request to find out whether the answer is correct.
-  var request = new XMLHttpRequest();
   var question = getById("question-text")
   var questionText = question.innerHTML;
   var answerText = getById("answer-box").value;
 
-  request.onload = function () {
-    var wrongAnswerBox = getById("wrong-answer-box");
-    wrongAnswerBox.classList.add("hide");
-    proceed(questionText);
-  };
-
   updateResults(false, questionText);
 
-  request.open(
-    "GET", "/test_sheet/incorrect_answer?sheet="
-    + encodeURIComponent(sessionStorage.sheetName) + "&question="
-    + encodeURIComponent(questionText), true
-  );
+  openRequest("/test_sheet/incorrect_answer", [
+    ["sheet", sessionStorage.sheetName], ["question", questionText]
+  ], processClickNextButton, questionText);
+}
 
-  request.send();
+function processClickNextButton(request, questionText) {
+  hide(["wrong-answer-box"]);
+  proceed(questionText);
 }
 
 function abortTest() {
@@ -168,59 +138,54 @@ function proceed(questionText) {
   var numbers = questionNumberPanel.innerHTML.split(' / ');
   var current = Number(numbers[0]);
   var final = Number(numbers[1]);
+
   if (current == final) {
     window.location.href = "/results";
     return;
   }
+
   questionNumberPanel.innerHTML = (current + 1) + " / " + final;
-
-  // Prepares a request to find out whether the answer is correct.
-  var request = new XMLHttpRequest();
-
-  request.onload = function () {
-    // Collect values from request.
-    var returnJSON = JSON.parse(request.responseText);
-    var question = returnJSON["question"];
-    var points = returnJSON["points"];
-    var needed = returnJSON["needed"];
-    var so_far = returnJSON["so_far"];
-
-    // Set the question text.
-    getById("question-text").innerHTML = question;
-
-    drawStars(
-      getById("stars-container"), points + (so_far == 2), true
-    );
-
-    // Calculates the percentage complete.
-    var percent = Math.round(so_far / needed * 100);
-
-    var barChart = document.querySelector(".bar-chart");
-    var barChartFigure = document.querySelector(".bar-chart-figure");
-
-    barChart.style.width = percent + "%";
-    barChartFigure.innerHTML = percent + "% complete";
-
-    // Identifies the text box for the answer.
-    var textArea = getById("answer-box");
-    textArea.value = "";
-    textArea.disabled = false;
-
-    // Focuses on the answer box.
-    textArea.focus();
-  };
 
   var previous = JSON.stringify([
     sessionStorage.one_ago, sessionStorage.two_ago, sessionStorage.three_ago
   ]);
 
-  request.open(
-    "GET", "/test_sheet/get_question?sheet="
-    + encodeURIComponent(sessionStorage.sheetName) + "&previous="
-    + encodeURIComponent(previous), true
+  openRequest("/test_sheet/get_question", [
+    ["sheet", sessionStorage.sheetName], ["previous", previous]
+  ], processProceed);
+}
+
+function processProceed(request) {
+  // Collect values from request.
+  var returnJSON = JSON.parse(request.responseText);
+  var question = returnJSON["question"];
+  var points = returnJSON["points"];
+  var needed = returnJSON["needed"];
+  var so_far = returnJSON["so_far"];
+
+  // Set the question text.
+  getById("question-text").innerHTML = question;
+
+  drawStars(
+    getById("stars-container"), points + (so_far == 2), true
   );
 
-  request.send();
+  // Calculates the percentage complete.
+  var percent = Math.round(so_far / needed * 100);
+
+  var barChart = document.querySelector(".bar-chart");
+  var barChartFigure = document.querySelector(".bar-chart-figure");
+
+  barChart.style.width = percent + "%";
+  barChartFigure.innerHTML = percent + "% complete";
+
+  // Identifies the text box for the answer.
+  var textArea = getById("answer-box");
+  textArea.value = "";
+  textArea.disabled = false;
+
+  // Focuses on the answer box.
+  textArea.focus();
 }
 
 function noHoverAnswer(row) {
@@ -270,56 +235,48 @@ function tryAgain(button, textArea) {
 }
 
 function correctAnswer(question) {
-  // Prepares a request to find out whether the answer is correct.
-  var request = new XMLHttpRequest();
-
   var questionText = question.innerHTML;
   question.innerHTML = "Correct!";
 
   getById("correct-sound").play();
 
-  request.onload = function () {
-    var returnJSON = JSON.parse(request.responseText);
-
-    var endPercentage = Math.round(
-      returnJSON["so_far"] / returnJSON["needed"] * 100
-    );
-
-    var time = 0;
-    var percentageBar = document.querySelector(".bar-chart");
-    var percentageBarFigure = document.querySelector(".bar-chart-figure");
-    var startPercentage = parseInt(percentageBar.style.width);
-    var diff = endPercentage - startPercentage;
-    var updatePercentage = setInterval(function () {
-      time ++;
-      if (time < 100) {
-        var weight = 1 / (1 + Math.exp(0.075 * (50 - time)));
-      }
-      else {
-        var weight = 1;
-      }
-      presentPercentage = Math.round(startPercentage + diff * weight) + "%";
-      percentageBar.style.width = presentPercentage;
-      percentageBarFigure.innerHTML = presentPercentage + " complete";
-      if (time == 100) {
-        clearInterval(updatePercentage);
-        proceed(questionText);
-      }
-    }, 10);
-  };
-
   updateResults(true, questionText);
 
-  request.open(
-    "GET", "/test_sheet/correct_answer?sheet="
-    + encodeURIComponent(sessionStorage.sheetName) + "&question="
-    + encodeURIComponent(questionText), true
+  sessionStorage.alreadyAttempted = 0;
+
+  openRequest("/test_sheet/correct_answer", [
+    ["sheet", sessionStorage.sheetName], ["question", questionText]
+  ], processCorrectAnswer);
+}
+
+function processCorrectAnswer(request) {
+  var returnJSON = JSON.parse(request.responseText);
+
+  var endPercentage = Math.round(
+    returnJSON["so_far"] / returnJSON["needed"] * 100
   );
 
-  // Sends the request off.
-  request.send();
-
-  sessionStorage.alreadyAttempted = 0;
+  var time = 0;
+  var percentageBar = document.querySelector(".bar-chart");
+  var percentageBarFigure = document.querySelector(".bar-chart-figure");
+  var startPercentage = parseInt(percentageBar.style.width);
+  var diff = endPercentage - startPercentage;
+  var updatePercentage = setInterval(function () {
+    time ++;
+    if (time < 100) {
+      var weight = 1 / (1 + Math.exp(0.075 * (50 - time)));
+    }
+    else {
+      var weight = 1;
+    }
+    presentPercentage = Math.round(startPercentage + diff * weight) + "%";
+    percentageBar.style.width = presentPercentage;
+    percentageBarFigure.innerHTML = presentPercentage + " complete";
+    if (time == 100) {
+      clearInterval(updatePercentage);
+      proceed(questionText);
+    }
+  }, 10);
 }
 
 function wrongAnswer(question, textArea, closest, others) {
@@ -356,16 +313,11 @@ function wrongAnswer(question, textArea, closest, others) {
     otherAnswers.appendChild(newRow);
   }
 
-  var wrongAnswerBox = getById("wrong-answer-box");
-  var nextButton = getById("next-button");
-  wrongAnswerBox.classList.remove("hide");
-  nextButton.focus();
+  unhide(["wrong-answer-box"]);
+  getById("next-button").focus();
 }
 
 function go() {
-  // Prepares a request to find out whether the answer is correct.
-  var request = new XMLHttpRequest();
-
   // Identifies the question.
   var question = getById("question-text");
 
@@ -376,34 +328,29 @@ function go() {
   disableButtons(["go-button"]);
   textArea.disabled = true;
 
-  request.onload = function () {
-    var returnJSON = JSON.parse(request.responseText);
+  openRequest("/test_sheet/check_answer", [
+    ["sheet", sessionStorage.sheetName], ["question", question.innerHTML],
+    ["answer", textArea.value],
+    ["already_attempted", sessionStorage.alreadyAttempted]
+  ], processGo, question, textArea);
+}
 
-    // If the answer was almost correct, but not enough.
-    if (returnJSON["correct"]) {
-      correctAnswer(question);
-    }
-    else if (returnJSON["close"] && sessionStorage.alreadyAttempted == 0) {
-      tryAgain(button, textArea);
-      return;
-    }
-    else {
-      wrongAnswer(
-        question, textArea, returnJSON["closest"], returnJSON["others"]
-      );
-    }
-  };
+function processGo(request, question, textArea) {
+  var returnJSON = JSON.parse(request.responseText);
 
-  request.open(
-    "GET", "/test_sheet/check_answer?sheet="
-    + encodeURIComponent(sessionStorage.sheetName) + "&question="
-    + encodeURIComponent(question.innerHTML) + "&answer="
-    + encodeURIComponent(textArea.value) + "&already_attempted="
-    + encodeURIComponent(sessionStorage.alreadyAttempted)
-  );
-
-  // Sends the request off.
-  request.send();
+  // If the answer was almost correct, but not enough.
+  if (returnJSON["correct"]) {
+    correctAnswer(question);
+  }
+  else if (returnJSON["close"] && sessionStorage.alreadyAttempted == 0) {
+    tryAgain(button, textArea);
+    return;
+  }
+  else {
+    wrongAnswer(
+      question, textArea, returnJSON["closest"], returnJSON["others"]
+    );
+  }
 }
 
 function hitEnterAnswerBox(element, event) {

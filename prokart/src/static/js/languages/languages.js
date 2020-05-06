@@ -94,8 +94,6 @@ function populateSelectBoxes() {
 }
 
 function saveTranslator() {
-  var request = new XMLHttpRequest();
-
   var translateFrom = document.querySelector(
     "#translate-from>.select-selected"
   ).innerHTML.trim().slice(5);
@@ -103,16 +101,13 @@ function saveTranslator() {
     "#translate-to>.select-selected"
   ).innerHTML.trim().slice(5);
 
-  request.onload = function () {
-    window.location.href = "/";
-  };
+  openRequest("/languages/update_translator", [
+    ["from", translateFrom], ["to", translateTo]
+  ], processSaveTranslator);
+}
 
-  request.open(
-    "GET", "/languages/update_translator?from="
-    + encodeURIComponent(translateFrom) + "&to="
-    + encodeURIComponent(translateTo)
-  );
-  request.send();
+function processSaveTranslator(request) {
+  window.location.href = "/";
 }
 
 function expandFlags(element) {
@@ -124,47 +119,46 @@ function expandFlags(element) {
   };
 
   if (allCollapseFlags.length == 0) {
-    var request = new XMLHttpRequest();
-
-    request.onload = function () {
-      returnJSON = JSON.parse(request.responseText);
-      sheets = returnJSON["flags"];
-      var hiddenFlags = getById("hidden-flags");
-
-      for (var i = 0; i < sheets.length; i ++) {
-        var flag = sheets[i][0];
-        var country = sheets[i][1];
-
-        var newButtonDiv = document.createElement("div");
-        newButtonDiv.style.display = "inline-block";
-        newButtonDiv.classList.add("tooltip");
-
-        var newButton = document.createElement("button");
-        newButtonDiv.appendChild(newButton);
-        newButton.classList.add("flag-button");
-        newButton.onclick = function () {
-          selectFlag(this);
-        };
-        newButton.innerHTML = flag;
-        if (flag == element.innerHTML) {
-          newButton.style.display = "none";
-        }
-        hiddenFlags.appendChild(newButtonDiv);
-
-        var tooltip = document.createElement("span");
-        tooltip.classList.add("tooltip-text");
-        tooltip.innerHTML = country;
-        newButtonDiv.appendChild(tooltip);
-      }
-      hiddenLanguages.style.display = null;
-    };
-
-    request.open("GET", "/languages/get_flags");
-    request.send();
+    openRequest(
+       "/languages/get_flags", [], processExpandFlags, element, hiddenLanguages
+    );
   }
   else {
     hiddenLanguages.style.display = null;
   }
+}
+
+function processExpandFlags(request, element, hiddenLanguages) {
+  returnJSON = JSON.parse(request.responseText);
+  sheets = returnJSON["flags"];
+  var hiddenFlags = getById("hidden-flags");
+
+  for (var i = 0; i < sheets.length; i ++) {
+    var flag = sheets[i][0];
+    var country = sheets[i][1];
+
+    var newButtonDiv = document.createElement("div");
+    newButtonDiv.style.display = "inline-block";
+    newButtonDiv.classList.add("tooltip");
+
+    var newButton = document.createElement("button");
+    newButtonDiv.appendChild(newButton);
+    newButton.classList.add("flag-button");
+    newButton.onclick = function () {
+      selectFlag(this);
+    };
+    newButton.innerHTML = flag;
+    if (flag == element.innerHTML) {
+      newButton.style.display = "none";
+    }
+    hiddenFlags.appendChild(newButtonDiv);
+
+    var tooltip = document.createElement("span");
+    tooltip.classList.add("tooltip-text");
+    tooltip.innerHTML = country;
+    newButtonDiv.appendChild(tooltip);
+  }
+  hiddenLanguages.style.display = null;
 }
 
 function condenseFlags(element) {
@@ -192,46 +186,38 @@ function changeLanguageName() {
   var languageName = getById("language-name").value;
 
   if (languageName && languageName.length <= 40) {
-    var request = new XMLHttpRequest();
-
-    request.onload = function () {
-      var returnJSON = JSON.parse(request.responseText);
-      if (returnJSON["found"]) {
-        disableButtons(["add-button"]);
-      }
-      else {
-        enableButtons([["add-button", saveLanguage]]);
-      }
-    };
-
-    request.open(
-      "GET", "/languages/check_language?name="
-      + encodeURIComponent(languageName)
-    );
-
-    request.send();
+    openRequest("/languages/check_language", [
+      ["name", languageName]
+    ], processChangeLanguageName);
   }
   else {
     disableButtons(["add-button"]);
   }
 }
 
+function processChangeLanguageName(request) {
+  var returnJSON = JSON.parse(request.responseText);
+  if (returnJSON["found"]) {
+    disableButtons(["add-button"]);
+  }
+  else {
+    enableButtons([["add-button", saveLanguage]]);
+  }
+}
+
 function saveLanguage() {
   disableButtons(["add-button"]);
+
   var languageName = getById("language-name").value;
   var flagText = getById("choose-flag").innerHTML;
-  var request = new XMLHttpRequest();
 
-  request.onload = function () {
-    window.location.reload(true);
-  }
+  openRequest("/languages/add_language", [
+    ["name", languageName], ["flag", flagText]
+  ], processSaveLanguage);
+}
 
-  request.open(
-    "GET", "/languages/add_language?name=" + encodeURIComponent(languageName)
-    + "&flag=" + encodeURIComponent(flagText)
-  );
-
-  request.send();
+function processSaveLanguage(request) {
+  window.location.reload(true);
 }
 
 window.addEventListener('load', populateSelectBoxes);
