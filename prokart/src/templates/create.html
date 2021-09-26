@@ -1,9 +1,10 @@
-<html>
+<html onclick="closeAllSelect();">
     <head>
         <title>Prokart</title>
         <link rel="stylesheet" href="{{ url_for('static', filename='css/general.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/languages/desktop.css') }}" media="(min-width: 800px)">
         <link rel="icon" href="{{ url_for('static', filename='images/logo.svg') }}">
+        <link href="https://fonts.googleapis.com/css?family=M+PLUS+Rounded+1c" rel="stylesheet">
         <script type="text/javascript" src="{{ url_for('static', filename='js/select_translator.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('static', filename='js/utils.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('static', filename='js/create/create.js') }}"></script>
@@ -11,6 +12,7 @@
         <script type="text/javascript" src="{{ url_for('static', filename='js/create/edit_sheet.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('static', filename='js/create/new_entry.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('static', filename='js/create/edit_entry.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/create/schemas.js') }}"></script>
     </head>
 
     <body>
@@ -52,9 +54,9 @@
                         </table>
                     </div>
                     <div>
-                        <button id="new-sheet" class="button" onclick="showNewSheetInterface();">Add</button>
-                        <button id="edit-sheet" class="button button-disabled">Edit</button>
-                        <button id="delete-sheet" class="button button-disabled">Delete</button>
+                        <div id="new-sheet" class="button" onclick="showNewSheetInterface();">+</div>
+                        <div id="edit-sheet" class="button button-disabled"><img src="static/images/edit.svg" style="height: 24px; vertical-align: middle;"/></div>
+                        <div id="delete-sheet" class="button button-disabled">-</div>
                     </div>
                 </div>
                 <div class="column">
@@ -87,24 +89,25 @@
                         </table>
                     </div>
                     <div>
-                        <button id="new-entry" class="button" onclick="showNewEntryInterface();">Add</button>
-                        <button id="edit-entry" class="button button-disabled">Edit</button>
-                        <button id="delete-entry" class="button button-disabled">Delete</button>
+                        <div id="new-entry" class="button" onclick="showNewEntryInterface();">+</div>
+                        <div id="edit-entry" class="button button-disabled"><img src="static/images/edit.svg" style="height: 24px; vertical-align: middle;"/></div>
+                        <div id="delete-entry" class="button button-disabled">-</div>
                     </div>
                 </div>
                 <div style="clear: both;">
                     <p>
-                        <button id="back" class="button" onclick="window.location.href = '/';">Back</button>
+                        <div id="back" class="button" onclick="window.location.href = '/';">Back</div>
                     </p>
                 </div>
             </div>
         </div>
         <footer>
-            <div>Copyright © 2020 – Elliot Paton-Simpson</div>
+            <div>Copyright © 2021 – Elliot Paton-Simpson</div>
         </footer>
         {% include 'components/new_sheet.html' %}
         {% include 'components/edit_sheet.html' %}
         {% include 'components/new_entry.html' %}
         {% include 'components/edit_entry.html' %}
+        {% include 'components/schemas.html' %}
     </body>
 </html>

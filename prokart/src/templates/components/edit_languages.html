@@ -8,20 +8,22 @@
         <div class="container-contents">
             <div id="add-language" class="boxed-area" style="margin-top: 10px;">
                 <h2>Add language:</h2>
-                <div class="input-box">
-                    <input id="language-name" placeholder="Language name" oninput="changeLanguageName();" autocomplete="off"/>
-                </div>
-                <div style="display: inline-block; position: relative;">
-                    <button id="choose-flag" class="flag-drop" onclick="expandFlags(this);">🇬🇧</button>
+                <div>
+                    <div class="input-box">
+                        <input id="language-name" placeholder="Language name" oninput="changeLanguageName();" autocomplete="off"/>
+                    </div>
+                    <div style="display: inline-block; position: relative;">
+                        <span id="choose-flag" class="flag-drop" onclick="expandFlags(this);">🇬🇧</span>
+                    </div>
                 </div>
                 <div>
-                    <button id="add-button" class="button button-disabled">Add</button>
+                    <div id="add-button" class="button button-disabled">Add</div>
                 </div>
                 <div id="hidden-flags" style="margin-top: 5px; border-top: 1px solid grey; width: 100%; padding-top: 5px; display: none;"></div>
             </div>
-            <div>
-                <button class="button" onclick="hideLanguagesInterface();">Back</button>
-            </div>
+            <p>
+                <div class="button" onclick="hideLanguagesInterface();">Back</div>
+            </p>
         </div>
     </div>
 </div>

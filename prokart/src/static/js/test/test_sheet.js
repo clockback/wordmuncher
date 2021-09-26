@@ -15,13 +15,22 @@ function processLoadSheet(request) {
   // Collect values from request.
   var returnJSON = JSON.parse(request.responseText);
   var question = returnJSON["question"];
+  var answers = returnJSON["answers"];
   var points = returnJSON["points"];
   var needed = returnJSON["needed"];
   var so_far = returnJSON["so_far"];
 
+  if (answers !== null) {
+    prepareTable(answers);
+  }
+  else {
+    getById("answer-table").classList.add("hide");
+  }
+
   // Set the question text.
   getById("question-text").innerHTML = question;
 
+  // Draws the appropriate number of stars for the question.
   drawStars(
     getById("stars-container"), points + (so_far == 2), true
   );
@@ -106,7 +115,6 @@ function keyDownOnWrongAnswerContainer(event) {
 function clickNextButton() {
   var question = getById("question-text")
   var questionText = question.innerHTML;
-  var answerText = getById("answer-box").value;
 
   updateResults(false, questionText);
 
@@ -117,7 +125,7 @@ function clickNextButton() {
 
 function processClickNextButton(request, questionText) {
   hide(["wrong-answer-box"]);
-  proceed(questionText);
+  proceed(questionText, false);
 }
 
 function abortTest() {
@@ -129,7 +137,7 @@ function abortTest() {
   }
 }
 
-function proceed(questionText) {
+function proceed(questionText, forceEnd) {
   sessionStorage.three_ago = sessionStorage.two_ago;
   sessionStorage.two_ago = sessionStorage.one_ago;
   sessionStorage.one_ago = questionText;
@@ -139,12 +147,17 @@ function proceed(questionText) {
   var current = Number(numbers[0]);
   var final = Number(numbers[1]);
 
-  if (current == final) {
+  if (current == final || forceEnd) {
     window.location.href = "/results";
     return;
   }
 
   questionNumberPanel.innerHTML = (current + 1) + " / " + final;
+
+  var table = document.querySelector("#answer-table>tbody");
+  while (table.lastChild) {
+    table.removeChild(table.lastChild);
+  }
 
   var previous = JSON.stringify([
     sessionStorage.one_ago, sessionStorage.two_ago, sessionStorage.three_ago
@@ -159,9 +172,12 @@ function processProceed(request) {
   // Collect values from request.
   var returnJSON = JSON.parse(request.responseText);
   var question = returnJSON["question"];
+  var answers = returnJSON["answers"]
   var points = returnJSON["points"];
   var needed = returnJSON["needed"];
   var so_far = returnJSON["so_far"];
+  var subschemas = returnJSON["subschemas"];
+  var qualities = returnJSON["qualities"];
 
   // Set the question text.
   getById("question-text").innerHTML = question;
@@ -184,6 +200,8 @@ function processProceed(request) {
   textArea.value = "";
   textArea.disabled = false;
 
+  prepareTable(answers);
+
   // Focuses on the answer box.
   textArea.focus();
 }
@@ -195,7 +213,7 @@ function noHoverAnswer(row) {
   }
 }
 
-function tryAgain(button, textArea) {
+function tryAgain(textArea) {
   // Identifies the drop down to try again.
   var tryAgainMessage = getById("try-again");
 
@@ -228,7 +246,7 @@ function tryAgain(button, textArea) {
     }, 15
   );
 
-  enableButtons([[button, go]]);
+  enableButtons([["go-button", go]]);
   textArea.disabled = false;
   textArea.focus();
   sessionStorage.alreadyAttempted = 1;
@@ -246,10 +264,10 @@ function correctAnswer(question) {
 
   openRequest("/test_sheet/correct_answer", [
     ["sheet", sessionStorage.sheetName], ["question", questionText]
-  ], processCorrectAnswer);
+  ], processCorrectAnswer, questionText);
 }
 
-function processCorrectAnswer(request) {
+function processCorrectAnswer(request, questionText) {
   var returnJSON = JSON.parse(request.responseText);
 
   var endPercentage = Math.round(
@@ -261,6 +279,7 @@ function processCorrectAnswer(request) {
   var percentageBarFigure = document.querySelector(".bar-chart-figure");
   var startPercentage = parseInt(percentageBar.style.width);
   var diff = endPercentage - startPercentage;
+
   var updatePercentage = setInterval(function () {
     time ++;
     if (time < 100) {
@@ -274,7 +293,14 @@ function processCorrectAnswer(request) {
     percentageBarFigure.innerHTML = presentPercentage + " complete";
     if (time == 100) {
       clearInterval(updatePercentage);
-      proceed(questionText);
+
+      if (returnJSON["completed"]) {
+        unhide(["finished-sheet-box"]);
+        sessionStorage.nextQuestion = questionText;
+      }
+      else {
+        proceed(questionText, false);
+      }
     }
   }, 10);
 }
@@ -321,16 +347,54 @@ function go() {
   // Identifies the question.
   var question = getById("question-text");
 
+  // Disables the go button.
+  disableButtons(["go-button"]);
+
+  var schemaAnswer = !getById("answer-table").classList.contains("hide");
+  var sendAnswer;
+
   // Identifies the text box for the answer.
   var textArea = getById("answer-box");
 
-  // Identifies the go button.
-  disableButtons(["go-button"]);
-  textArea.disabled = true;
+  if (schemaAnswer) {
+    var inputs = document.getElementsByTagName("input");
+
+    sendAnswer = {};
+
+    for (var i = 0; i < inputs.length; i ++) {
+      var input = inputs[i];
+      input.disabled = true;
+
+      var inputDiv = input.parentNode;
+      inputDiv.classList.add("input-box-disabled");
+
+      var cell = inputDiv.parentNode;
+      var columnQuality = cell.getAttribute("data-col");
+      var rowQuality = cell.getAttribute("data-row");
+
+      if (sendAnswer[columnQuality] === undefined) {
+        if (rowQuality === null) {
+          sendAnswer[columnQuality] = input.value;
+        }
+        else {
+          sendAnswer[columnQuality] = {[rowQuality]: input.value}
+        }
+      }
+      else {
+        sendAnswer[columnQuality][rowQuality] = input.value;
+      }
+    }
+
+    sendAnswer = JSON.stringify(sendAnswer);
+  }
+  else {
+    textArea.disabled = true;
+    sendAnswer = textArea.value;
+  }
 
   openRequest("/test_sheet/check_answer", [
     ["sheet", sessionStorage.sheetName], ["question", question.innerHTML],
-    ["answer", textArea.value],
+    ["answer", sendAnswer],
     ["already_attempted", sessionStorage.alreadyAttempted]
   ], processGo, question, textArea);
 }
@@ -341,9 +405,19 @@ function processGo(request, question, textArea) {
   // If the answer was almost correct, but not enough.
   if (returnJSON["correct"]) {
     correctAnswer(question);
+    return;
+  }
+
+  if (returnJSON["corrections"].length > 0) {
+    if (returnJSON["close"] && sessionStorage.alreadyAttempted == 0) {
+      tryAgainTable(returnJSON["corrections"]);
+    }
+    else {
+      wrongAnswerTable(returnJSON["corrections"]);
+    }
   }
   else if (returnJSON["close"] && sessionStorage.alreadyAttempted == 0) {
-    tryAgain(button, textArea);
+    tryAgain(textArea);
     return;
   }
   else {
@@ -371,4 +445,271 @@ function typeAnswerBox(element, event) {
   else {
     enableButtons([["go-button", go]]);
   }
+}
+
+function updateNoQuestions() {
+  getById("testbar-center-text").innerHTML = (
+    "1 / " + sessionStorage.noQuestions
+  );
+}
+
+function stopTestEarly() {
+  hide(["finished-sheet-box"]);
+  proceed(sessionStorage.questionText, true);
+}
+
+function continueTest() {
+  hide(["finished-sheet-box"]);
+  proceed(sessionStorage.questionText, false);
+}
+
+function typeAnswerInTable() {
+  var inputs = document.getElementsByTagName("input");
+  var populated = true;
+
+  for (var i = 0; i < inputs.length; i ++) {
+    if (inputs[i].value == "") {
+      populated = false;
+      break;
+    }
+  }
+
+  if (populated) {
+    enableButtons([["go-button", go]]);
+  }
+  else {
+    disableButtons(["go-button"]);
+  }
+}
+
+function hitKeyAnswerInTable(event) {
+  if (event.key == "Enter") {
+
+    var inputs = document.getElementsByTagName("input");
+    var populated = true;
+
+    for (var i = 0; i < inputs.length; i ++) {
+      if (inputs[i].value == "") {
+        populated = false;
+        break;
+      }
+    }
+
+    if (populated) {
+      go();
+    }
+  }
+}
+
+function wrongAnswerTable(corrections) {
+  getById("wrong-sound").play();
+
+  var question = getById("question-text")
+  var questionText = question.innerHTML;
+
+  updateResults(false, questionText);
+
+  var inputs = document.getElementsByTagName("input");
+  for (var i = 0; i < inputs.length; i ++) {
+    var input = inputs[i];
+    var cell = input.parentNode.parentNode;
+
+    var dataCol = cell.getAttribute("data-col");
+    var dataRow = cell.getAttribute("data-row");
+
+    for (var j = 0; j < corrections.length; j ++) {
+      var correction = corrections[j];
+
+      if (dataCol == correction[0] && (
+        dataRow === null || dataRow == correction[1]
+      )) {
+        var correctionDiv = document.createElement("div");
+        correctionDiv.innerHTML = correction[correction.length - 1];
+        correctionDiv.classList.add("correction-text");
+        input.parentNode.classList.add("incorrect");
+        cell.appendChild(correctionDiv);
+      }
+    }
+  }
+
+  var time = 0;
+  var percentageBar = document.querySelector(".bar-chart");
+  var percentageBarFigure = document.querySelector(".bar-chart-figure");
+  var startPercentage = parseInt(percentageBar.style.width);
+  var diff = -startPercentage;
+
+  var updatePercentage = setInterval(function () {
+    time ++;
+    if (time < 100) {
+      var weight = 1 / (1 + Math.exp(0.075 * (50 - time)));
+    }
+    else {
+      var weight = 1;
+    }
+    presentPercentage = Math.round(startPercentage + diff * weight) + "%";
+    percentageBar.style.width = presentPercentage;
+    percentageBarFigure.innerHTML = presentPercentage + " complete";
+    if (time == 100) {
+      clearInterval(updatePercentage);
+
+      var goButton = getById("go-button");
+      goButton.innerHTML = "Next"
+      enableButtons([[goButton, decorateFunction(
+        proceed, questionText, false
+      )]])
+    }
+  }, 10);
+}
+
+function prepareTable(answers) {
+  document.querySelector(".textarea-container").classList.add("hide");
+  document.querySelector(".answer-area").classList.add(
+    "answer-area-with-table"
+  );
+
+  var schemaTable = document.querySelector("#answer-table>tbody");
+
+  var columnsSubschemaNameRow = document.createElement("tr");
+  schemaTable.appendChild(columnsSubschemaNameRow);
+
+  if (answers["rows"] !== null) {
+    var placeHolder = document.createElement("td");
+    placeHolder.colSpan = 2;
+    placeHolder.rowSpan = 2;
+    placeHolder.classList.add("placeholder-cell");
+    columnsSubschemaNameRow.appendChild(placeHolder);
+  }
+
+  var columnsHeader = document.createElement("th");
+  columnsHeader.innerHTML = answers["columns"];
+  columnsHeader.style.textAlign = "center";
+  columnsHeader.colSpan = answers["column names"].length;
+  columnsSubschemaNameRow.appendChild(columnsHeader);
+
+  var columnsSubschemaRow = document.createElement("tr");
+  schemaTable.appendChild(columnsSubschemaRow);
+
+  for (var i = 0; i < answers["column names"].length; i ++) {
+    var columnHeader = document.createElement("th");
+    columnHeader.innerHTML = answers["column names"][i];
+    columnsSubschemaRow.appendChild(columnHeader);
+  }
+
+  if (answers["rows"] === null) {
+    var singleAnswerRow = document.createElement("tr");
+    schemaTable.appendChild(singleAnswerRow);
+
+    for (var i = 0; i < answers["column names"].length; i ++) {
+      var emptyCell = document.createElement("td");
+      singleAnswerRow.appendChild(emptyCell);
+      emptyCell.setAttribute("data-col", answers["column ids"][i]);
+
+      if (answers["answer_locations"].includes(i)) {
+        var divForEntry = document.createElement("div");
+        divForEntry.classList.add("input-box");
+        divForEntry.classList.add("short-input");
+        emptyCell.appendChild(divForEntry);
+        var entry = document.createElement("input");
+        entry.oninput = typeAnswerInTable;
+        entry.onkeypress = hitKeyAnswerInTable;
+        divForEntry.appendChild(entry);
+      }
+    }
+  }
+
+  else {
+    for (var i = 0; i < answers["row names"].length; i ++) {
+      var row = document.createElement("tr");
+      schemaTable.appendChild(row);
+      if (i == 0) {
+        var rowsHeader = document.createElement("th");
+        rowsHeader.innerHTML = answers["rows"];
+        rowsHeader.rowSpan = answers["row names"].length;
+        row.appendChild(rowsHeader);
+      }
+
+      var rowHeader = document.createElement("th");
+      rowHeader.innerHTML = answers["row names"][i];
+      row.appendChild(rowHeader);
+
+      for (var j = 0; j < answers["column names"].length; j ++) {
+        var emptyCell = document.createElement("td");
+        row.appendChild(emptyCell);
+        emptyCell.setAttribute("data-col", answers["column ids"][j]);
+        emptyCell.setAttribute("data-row", answers["row ids"][i]);
+
+        for (k = 0; k < answers["answer_locations"].length; k ++) {
+          var position = answers["answer_locations"][k];
+          if (position[0] == j && position[1] == i) {
+            var divForEntry = document.createElement("div");
+            divForEntry.classList.add("input-box");
+            divForEntry.classList.add("short-input");
+            emptyCell.appendChild(divForEntry);
+            var entry = document.createElement("input");
+            entry.oninput = typeAnswerInTable;
+            entry.onkeypress = hitKeyAnswerInTable;
+            divForEntry.appendChild(entry);
+            break;
+          }
+        }
+      }
+    }
+  }
+}
+
+function tryAgainTable(answers) {
+  // Identifies the drop down to try again.
+  var tryAgainMessage = getById("try-again");
+
+  tryAgainMessage.style.visibility = null;
+  var pos = 20;
+  var time = 0;
+  tryAgainMessage.style.top = 0;
+
+  var showAlert = setInterval(
+    function () {
+      time ++;
+
+      // Stops iterating if player has done something else.
+      if (sessionStorage.alreadyAttempted != 1) {
+        pos = 20;
+        tryAgainMessage.style.visibility = "hidden";
+        clearInterval(showAlert);
+      }
+      else if (time <= 30) {
+        pos ++;
+      }
+      else if (pos > 20 && time >= 200) {
+        pos --;
+      }
+      else if (time >= 200 && pos <= 20) {
+        tryAgainMessage.style.visibility = "hidden";
+        clearInterval(showAlert);
+      }
+      tryAgainMessage.style.top = pos + "px";
+    }, 15
+  );
+
+  var inputs = document.getElementsByTagName("input");
+
+  for (var i = 0; i < inputs.length; i ++) {
+    var input = inputs[i];
+    var cell = input.parentNode.parentNode;
+
+    var dataCol = cell.getAttribute("data-col");
+    var dataRow = cell.getAttribute("data-row");
+
+    for (var j = 0; j < answers.length; j ++) {
+      var answer =  answers[j];
+
+      if (dataCol == answer[0] && (
+        dataRow === null || dataRow == answer[1]
+      )) {
+        input.disabled = false;
+        input.parentNode.classList.remove("input-box-disabled");
+      }
+    }
+  }
+
+  sessionStorage.alreadyAttempted = 1;
 }

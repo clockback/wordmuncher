@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 import shutil
 from time import sleep
-from typing import Callable, Dict, List
+from typing import Callable, Dict, List, Tuple, Union
 import unittest
 
 # Installed packages
@@ -50,6 +50,7 @@ class BasicTests(unittest.TestCase):
         :return: None
         """
         self.driver.close()
+        self.driver.quit()
 
     @classmethod
     def tearDownClass(cls) -> None:
@@ -93,7 +94,7 @@ class BasicTests(unittest.TestCase):
         :rtype: str
         """
         # Finds the two possible dialog boxes which might be affected.
-        add_entry_table = self.get_id("add-entry-container-background")
+        add_entry_table = self.get_id("new-entry-container-background")
         edit_entry_table = self.get_id("edit-entry-container-background")
 
         # Finds out which of the dialog boxes is visible.
@@ -108,6 +109,32 @@ class BasicTests(unittest.TestCase):
 
         # Finds which table to modify based upon what is visible.
         return "new" if add_visible else "edit"
+
+    def add_quality(self, subschema: str, quality: str) -> None:
+        """Adds a quality to the subschema.
+        :param str subschema: Either "columns" or "rows".
+        :param str quality: The quality to be added.
+        :return: None
+        """
+        # Finds the subschema table containing the quality.
+        table = self.get_id(f"{subschema}-subschema")
+
+        # Adds a new quality.
+        add_btn_cell = table.find_element_by_css_selector("td:last-child")
+        add_btn = table.find_element_by_class_name("quality-add")
+        (
+            ActionChains(self.driver).move_to_element(add_btn_cell)
+            .click(add_btn).perform()
+        )
+
+        # Selects the cell for the new quality.
+        table.find_element_by_css_selector(
+            "td:nth-last-child(2)>.quality-name"
+        ).click()
+
+        # Fills the name of the quality.
+        quality_input = table.find_element_by_tag_name("input")
+        self.type_str(quality_input, quality)
 
     def allot_additional_answers(self, answers: List[str]) -> None:
         """Makes sure that the answers in the additional answers table.
@@ -150,7 +177,7 @@ class BasicTests(unittest.TestCase):
 
             # Clicks on the arrow to add the answer.
             self.driver.find_element_by_css_selector(
-                f"#{spec}-entry-add-answer-button>button"
+                f"#{spec}-entry-add-answer-button>span"
             ).click()
 
     def check_button_enabled(self, button_id: str) -> None:
@@ -288,11 +315,15 @@ class BasicTests(unittest.TestCase):
 
         raise ValueError(f"No rows match combination: {cells}")
 
-    def check_select_has_option(self, select: str, text: str) -> None:
+    def check_select_has_option(
+            self, select: str, text: str, find: bool = True
+    ) -> None:
         """Checks that a select element contains a certain string as an
-        option.
+        option (or not).
         :param str select: The id of the select element.
         :param str text: The option for which to check.
+        :param bool find: Whether or not the option is expected to be
+            present (True) or absent (False).
         :return: None
         """
         # Finds the select element's option containing the string.
@@ -301,11 +332,17 @@ class BasicTests(unittest.TestCase):
                 f"//*[@id='{select}']//option[contains(text(),'{text}')]"
             )
 
+            if not find:
+                raise ValueError(
+                    f"The select '{select}' contains option with '{text}'."
+                )
+
         # Raises an exception if no such element exists.
         except ec.NoSuchElementException:
-            raise ValueError(
-                f"No select '{select}' contains option with '{text}'."
-            )
+            if find:
+                raise ValueError(
+                    f"No select '{select}' contains option with '{text}'."
+                )
 
     def check_translator(self, l_from: str, l_to: str) -> None:
         """Checks that the specified translator is in use.
@@ -346,7 +383,7 @@ class BasicTests(unittest.TestCase):
 
         # Verifies that it is indeed a button.
         self.assertEqual(
-            button.tag_name, "button", f"Element #{query} is not a button."
+            button.tag_name, "span", f"Element #{query} is not a button."
         )
 
         # Verifies that the button is not disabled.
@@ -385,6 +422,110 @@ class BasicTests(unittest.TestCase):
         """
         # Clicks on the button.
         self.get_id("sidebar-left-home").click()
+
+    def configure_schema(
+            self, subschema: Union[str, Tuple[str, str]],
+            qualities: Union[List[str], Tuple[List[str], List[str]]]
+    ) -> None:
+        """Uses the provided subschema and qualities to generate a
+        schema.
+        :param Union[str, Tuple[str, str]] subschema: Either one or two
+            subschema names.
+        :param Union[List[str], Tuple[List[str], List[str]]] qualities:
+            Either a list of qualities in order for a single subschema
+            or two lists for two subschemas.
+        :return: None
+        """
+        # Finds the button to add or remove rows.
+        add_remove_btn = self.get_id("add-remove-rows-subschema")
+
+        # Standardizes the format of the subschemas and qualities.
+        if isinstance(subschema, str):
+            self.configure_subschema(subschema, qualities, "columns")
+            if add_remove_btn.text == "Remove rows":
+                add_remove_btn.click()
+        else:
+            qualities: Tuple[List[str], List[str]]
+            self.configure_subschema(subschema[0], qualities[0], "columns")
+            if add_remove_btn.text == "Add rows":
+                add_remove_btn.click()
+
+            self.configure_subschema(subschema[1], qualities[1], "rows")
+
+    def configure_subschema(
+            self, subschema: str, qualities: List[str], rows_or_columns: str
+    ) -> None:
+        """Uses the interface to design an individual subschema.
+        :param str subschema: The updated name of the subschema.
+        :param List[str] qualities: The list of qualities assigned to
+            the subschema.
+        :param str rows_or_columns: Either "rows" or "columns".
+        :return: None
+        """
+        # Finds the column title span.
+        columns_title = self.driver.find_element_by_css_selector(
+            f"#{rows_or_columns}-subschema th>span"
+        )
+
+        # Updates the column title.
+        if columns_title.text != subschema:
+            columns_title.click()
+            columns_title_input = self.driver.find_element_by_css_selector(
+                f"#{rows_or_columns}-subschema input"
+            )
+            self.type_str(columns_title_input, subschema)
+
+        # Finds all the qualities associated with the first subschema.
+        quality_removes = self.driver.find_elements_by_css_selector(
+            f"#{rows_or_columns}-subschema .quality-remove"
+        )
+
+        # Adds column qualities for all those missing.
+        if len(quality_removes) < len(qualities):
+            no_add = len(qualities) - len(quality_removes)
+            add_quality = self.driver.find_element_by_css_selector(
+                f"#{rows_or_columns}-subschema .quality-add"
+            )
+            for _repeat in range(no_add):
+                (
+                    ActionChains(self.driver).move_to_element(add_quality)
+                    .click(add_quality).perform()
+                )
+                sleep(0.03)
+
+        # Removes all column qualities of which there are too many.
+        elif len(quality_removes) > len(qualities):
+            no_remove = len(quality_removes) - len(qualities)
+            for quality_remove in quality_removes[
+                :len(quality_removes) - no_remove - 1:-1
+            ]:
+                (
+                    ActionChains(self.driver).move_to_element(quality_remove)
+                    .click(quality_remove).perform()
+                )
+                sleep(0.03)
+
+        # Refreshes all the qualities associated with the first subschema.
+        quality_spans = self.driver.find_elements_by_css_selector(
+            f"#{rows_or_columns}-subschema .quality-name"
+        )
+
+        first = True
+        for quality_span, quality_name in zip(quality_spans, qualities):
+            if quality_span.text != quality_name:
+                quality_span.click()
+
+                # Treats the first attempt to select the cell as just a
+                # deselection of the previous cell.
+                if not first:
+                    quality_span.click()
+
+                quality_input = self.driver.find_element_by_css_selector(
+                    f"#{rows_or_columns}-subschema input"
+                )
+                self.type_str(quality_input, quality_name)
+
+                first = False
 
     def deselect_all_rows(self, table_id: str) -> None:
         """Deselects all rows already selected.
@@ -511,6 +652,74 @@ class BasicTests(unittest.TestCase):
             ).get_attribute("style"), "Flag was not removed from table."
         )
 
+    def populate_schema_create(
+            self, answers: Union[Dict[str, str], Dict[Tuple[str, str], str]],
+            context: str
+    ) -> None:
+        """Populates the required answers for a schema.
+        :param Union[Dict[str, str], Dict[Tuple[str, str], str]] answers:
+            A mapping between the schema qualities and the answers.
+        :param str context: Either "new" or "edit" regarding the entry.
+        :return: None
+        """
+        # Finds the table for the schema's answers.
+        table = self.get_id(f"{context}-entry-answer-schema-table")
+
+        # Find the column quality names.
+        column_qualities = [
+            th.text for th in table.find_elements_by_css_selector(
+                f"#{context}-entry-answer-schema-columns>th"
+            )
+        ]
+
+        # Find the row quality names.
+        row_qualities = [
+            th.text for th in table.find_elements_by_css_selector(
+                "tr:nth-child(3)>th:nth-child(2),tr:nth-child(1n+4)>th"
+            )
+        ]
+
+        # Establishes whether or not multiple rows are used.
+        use_rows = len(row_qualities) > 0
+
+        # Finds the cells.
+        all_cells = table.find_elements_by_css_selector(
+            "tr:nth-child(1n+3)>td"
+        )
+
+        # Groups the different cells by row.
+        if use_rows:
+            grouped_cells = [
+                all_cells[i:i + len(column_qualities)]
+                for i in range(0, len(all_cells), len(column_qualities))
+            ]
+        else:
+            grouped_cells = all_cells
+
+        # Iterates over each of the answers to be populated.
+        first_answer = True
+        for qualities, answer in answers.items():
+            # Finds which cell is to be modified for the answer.
+            if use_rows:
+                column = column_qualities.index(qualities[0])
+                row = row_qualities.index(qualities[1])
+                cell = grouped_cells[row][column]
+            else:
+                column = column_qualities.index(qualities)
+                cell = grouped_cells[column]
+
+            # Opens the input for the table cell.
+            cell.click()
+            if not first_answer:
+                sleep(0.03)
+                cell.click()
+            else:
+                first_answer = False
+
+            # Fills in the answer for the table cell.
+            answer_input = cell.find_element_by_tag_name("input")
+            self.type_str(answer_input, answer)
+
     def remember_element(self, element: str) -> None:
         """Stores the name of an element for future reference.
         :param str element: The id of the element to be stored.
@@ -540,6 +749,36 @@ class BasicTests(unittest.TestCase):
             )
         except StaleElementReferenceException:
             pass
+
+    def remove_quality(self, subschema: str, quality: str) -> None:
+        """Removes the quality from the subschema.
+        :param str subschema: Either "columns" or "rows".
+        :param str quality: The quality to be removed.
+        :return: None
+        """
+        # Finds the subschema table containing the quality.
+        table = self.get_id(f"{subschema}-subschema")
+
+        # Finds the qualities associated with the subschema.
+        quality_cells = table.find_elements_by_tag_name("td")
+
+        # Iterates over each of the quality cells.
+        for quality_cell in quality_cells:
+            # Finds the text for the cell.
+            cell_span = quality_cell.find_element_by_class_name("quality-name")
+
+            # If quality is found, removes it.
+            if cell_span.text == quality:
+                btn = quality_cell.find_element_by_class_name("quality-remove")
+                (
+                    ActionChains(self.driver).move_to_element(cell_span)
+                    .click(btn).perform()
+                )
+                break
+
+        # If no corresponding cell was found, raises an error.
+        else:
+            raise ValueError(f"Quality {quality} not found.")
 
     def select_option(self, select: str, text: str) -> None:
         """Uses a select element to select something.
@@ -615,6 +854,12 @@ class BasicTests(unittest.TestCase):
                 "Row should now contain previous primary answer "
                 f"'{before_primary}'."
             )
+
+    def swap_subschemas(self) -> None:
+        """Clicks the button that swaps the subschema around.
+        :return: None
+        """
+        self.get_id("swap-subschemas").click()
 
     def toggle_row(self, table_id: str, column_name: str, value: str) -> None:
         """Toggles the row in a table given its column value
@@ -696,18 +941,29 @@ class BasicTests(unittest.TestCase):
             )
 
         # Types into the entry.
-        self.type_str(entry, text)
+        self.type_str(entry, text, clear=True)
 
-    @staticmethod
-    def type_str(element: FirefoxWebElement, text: str) -> None:
+    def type_str(
+            self, element: FirefoxWebElement, text: str, *, clear: bool = True
+    ) -> None:
         """Types something as though it were being done by a user.
         :param FirefoxWebElement element: The element which is receiving
             the typing.
         :param str text: The string to be typed.
+        :param bool clear: Whether or not to clear the entry before
+            typing.
         :return: None
         """
         # Clicks on the element.
         element.click()
+
+        # Clears the entry of text.
+        if clear:
+            (
+                ActionChains(self.driver).key_down(Keys.CONTROL).key_down("a")
+                .key_up("a").key_up(Keys.CONTROL).send_keys(Keys.BACKSPACE)
+                .perform()
+            )
 
         # Iterates over each character.
         for char in text:
@@ -716,6 +972,67 @@ class BasicTests(unittest.TestCase):
 
             # Waits before all but the first typed character.
             sleep(0.03)
+
+    def verify_schema_answers(
+            self, answers: Union[Dict[str, str], Dict[Tuple[str, str], str]]
+    ) -> None:
+        """Ensures that an entry's answers have had the schema filled
+        out as needed.
+        :param Union[Dict[str, str], Dict[Tuple[str, str], str]] answers:
+            Either "new" or "edit" regarding the entry.
+        :return: None
+        """
+        # Finds the table for the schema's answers.
+        table = self.get_id("edit-entry-answer-schema-table")
+
+        # Find the column quality names.
+        column_qualities = [
+            th.text for th in table.find_elements_by_css_selector(
+                "#edit-entry-answer-schema-columns>th"
+            )
+        ]
+
+        # Find the row quality names.
+        row_qualities = [
+            th.text for th in table.find_elements_by_css_selector(
+                "tr:nth-child(3)>th:nth-child(2),tr:nth-child(1n+4)>th"
+            )
+        ]
+
+        # Establishes whether or not multiple rows are used.
+        use_rows = len(row_qualities) > 0
+
+        # Finds the cells.
+        all_cells = table.find_elements_by_css_selector(
+            "tr:nth-child(1n+3)>td"
+        )
+
+        # Groups the different cells by row.
+        if use_rows:
+            grouped_cells = [
+                all_cells[i:i + len(column_qualities)]
+                for i in range(0, len(all_cells), len(column_qualities))
+            ]
+        else:
+            grouped_cells = all_cells
+
+        # Iterates over each of the answers to be populated.
+        for qualities, answer in answers.items():
+            # Finds which cell is to be checked for the answer.
+            if use_rows:
+                column = column_qualities.index(qualities[0])
+                row = row_qualities.index(qualities[1])
+                cell = grouped_cells[row][column]
+            else:
+                column = column_qualities.index(qualities)
+                cell = grouped_cells[column]
+
+            # Opens the input for the table cell.
+            if cell.text != answer:
+                raise ValueError(
+                    f"Table cell {(*qualities,)} should contain {answer}. Got "
+                    f"{cell.text} instead."
+                )
 
     def wait_until_gone(self, element: str) -> None:
         """Waits until the element with the provided id has disappeared.

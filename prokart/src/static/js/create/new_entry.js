@@ -6,7 +6,7 @@ function showNewEntryInterface() {
   ]);
 
   newEntrySearchSheets();
-  unhide(["add-entry-container-background"]);
+  unhide(["new-entry-container-background"]);
   getById('new-entry-question').focus();
 }
 
@@ -17,7 +17,10 @@ function hideNewEntryInterface() {
     "delete-entry"
   ]);
 
-  hide(['add-entry-container-background']);
+  hide(['new-entry-container-background']);
+
+  pickNoSchema("new");
+
   getById('new-entry-question').value = "";
   getById('new-entry-answer').value = "";
   getById('new-entry-search-sheets').value = "";
@@ -84,8 +87,12 @@ function processChangeNewEntryQuestion(request) {
   }
   // The question does not already exist.
   else {
-    var answerLength = getById('new-entry-answer').value.length;
-    if (0 < answerLength && answerLength <= 80) {
+    var answer = getById('new-entry-answer');
+    var answerLength = answer.value.length;
+    if ((
+      answer.classList.contains("hide")
+      && 0 < answerLength && answerLength <= 80
+    ) || validSchemaAnswer("new")) {
       enableButtons([["save-new-entry", saveNewEntry]]);
     }
     hide(["message-new-entry-already-exists"]);
@@ -202,15 +209,24 @@ function newEntryPromoteAnswer(promoteCell) {
 
 function saveNewEntry() {
   var question = getById("new-entry-question").value;
-  var answer = getById("new-entry-answer").value;
   var moreAnswersCells = document.querySelectorAll(
     "#new-entry-answers-table>tbody>tr:not(:last-child)>td:first-child"
   );
-  var moreAnswers = [];
-  for (var i = 0; i < moreAnswersCells.length; i ++) {
-    moreAnswers.push(moreAnswersCells[i].innerHTML);
+  var answersString, answers, i;
+
+  // If the user has chosen a particular schema.
+  if (getById("new-entry-answer-div").classList.contains("hide")) {
+    answersString = JSON.stringify(getSchemaAnswers("new"));
   }
-  var moreAnswersString = JSON.stringify(moreAnswers);
+
+  // If the user has not selected a schema.
+  else {
+    var answers = [getById("new-entry-answer").value];
+    for (var i = 0; i < moreAnswersCells.length; i ++) {
+      answers.push(moreAnswersCells[i].innerHTML);
+    }
+    answersString = JSON.stringify(answers);
+  }
 
   var hiddenRows = getById("new-entry-sheet-table-hidden-rows").children;
   var parentSheets = [];
@@ -220,8 +236,8 @@ function saveNewEntry() {
   var parentSheetsString = JSON.stringify(parentSheets);
 
   openRequest("/create/new_entry", [
-    ["question", question], ["answer", answer],
-    ["moreAnswers", moreAnswersString], ["sheets", parentSheetsString]
+    ["question", question], ["answers", answersString],
+    ["sheets", parentSheetsString]
   ], processSaveNewEntry);
 }
 
@@ -354,4 +370,8 @@ function processNewEntrySearchSheets(request) {
   else {
     loadMoreRow.style.visibility = 'collapse';
   }
+}
+
+function newEntryChooseSchema(selectOption) {
+  chooseSchema(selectOption, "new", null);
 }

@@ -61,9 +61,12 @@ def get_question() -> Tuple[Dict[str, Union[str, int]], int]:
 
     # Selects, perhaps randomly, the question to be asked, along with
     # its scoring.
-    question, points, needed, so_far = conn.execute(
+    (
+        question, schema, answer_json, points, needed, so_far
+    ) = conn.execute(
         f"""
-        SELECT question, points, needed, so_far FROM sheets
+        SELECT question, schema, solutions, points, needed, so_far
+        FROM sheets
         INNER JOIN mentions ON mentions.sheet = sheets.sheet
         INNER JOIN entries ON mentions.entry = entries.entry
         INNER JOIN translators
@@ -71,7 +74,7 @@ def get_question() -> Tuple[Dict[str, Union[str, int]], int]:
         WHERE last_used = (
             SELECT MAX(last_used) FROM translators
         )
-        AND name = ?
+        AND sheets.name = ?
         ORDER BY
         {
             "CASE " + " ".join(
@@ -90,9 +93,78 @@ def get_question() -> Tuple[Dict[str, Union[str, int]], int]:
         (request.args['sheet'], *previous)
     ).fetchone()
 
+    json_answers = {}
+
+    if schema is not None:
+        answer = json.loads(answer_json)
+
+        subschemas = conn.execute(
+            """
+            SELECT subschema, name FROM subschemas
+            WHERE schema = ?
+            ORDER BY pos;
+            """, (schema,)
+        ).fetchall()
+
+        second_subschema_clause = (
+            "" if len(subschemas) == 1 else "OR subschema = ?"
+        )
+
+        qualities = conn.execute(
+            f"""
+            SELECT quality, subschema, name FROM qualities
+            WHERE subschema = ?
+            {second_subschema_clause}
+            ORDER BY pos;
+            """, tuple(x[0] for x in subschemas)
+        ).fetchall()
+
+        column_id, json_answers["columns"] = subschemas[0]
+        column_qualities = [
+            quality[::2] for quality in qualities if quality[1] == column_id
+        ]
+        json_answers["column ids"] = [x[0] for x in column_qualities]
+        json_answers["column names"] = [x[1] for x in column_qualities]
+
+        if len(subschemas) == 2:
+            row_id, json_answers["rows"] = subschemas[1]
+            row_qualities = [
+                quality[::2] for quality in qualities if quality[1] == row_id
+            ]
+            json_answers["row ids"] = [x[0] for x in row_qualities]
+            json_answers["row names"] = [x[1] for x in row_qualities]
+
+        else:
+            json_answers["rows"], row_qualities = None, None
+
+        json_answers["answer_locations"] = []
+
+        for column_quality in answer:
+            for i, (column_id, _column_name) in enumerate(column_qualities):
+                if column_id == int(column_quality):
+                    break
+            else:
+                raise ValueError(f"Answer has extra quality: {column_quality}")
+
+            if len(subschemas) == 1:
+                json_answers["answer_locations"].append(i)
+                continue
+
+            for row_quality in answer[column_quality]:
+                for j, (row_id, _row_name) in enumerate(row_qualities):
+                    if row_id == int(row_quality):
+                        break
+                else:
+                    raise ValueError(
+                        f"Answer has extra quality: {row_quality}"
+                    )
+
+                json_answers["answer_locations"].append([i, j])
+
     # Returns the result.
     return {
         "question": question,
+        "answers": json_answers if json_answers else None,
         "points": points,
         "needed": needed,
         "so_far": so_far
@@ -121,69 +193,157 @@ def check_answer() -> Tuple[Dict[str, Union[bool, None, List[str]]], int]:
     answer = request.args["answer"]
     already = int(request.args["already_attempted"])
 
-    # Finds the list of possible solutions.
-    possible_solutions = [x[0] for x in conn.execute(
+    entry, needed, solutions = conn.execute(
         """
-        SELECT solutions.text FROM sheets
+        SELECT entries.entry, needed, solutions FROM sheets
         INNER JOIN translators
             ON sheets.translator = translators.translator
         INNER JOIN mentions ON mentions.sheet = sheets.sheet
         INNER JOIN entries ON entries.entry = mentions.entry
-        INNER JOIN solutions ON solutions.entry = entries.entry
         WHERE last_used = (
             SELECT MAX(last_used) FROM translators
         )
         AND sheets.name = ?
-        AND question = ?
-        ORDER BY displayed;
+        AND question = ?;
         """, (sheet, question)
-    ).fetchall()]
+    ).fetchone()
 
-    # If the user was correct return the results without further
-    # investigation.
-    if answer in possible_solutions:
-        return {
-            "correct": True,
-            "close": True,
-            "closest": None,
-            "others": []
-        }, 200
+    # Finds the solutions.
+    possible_solutions = json.loads(solutions)
 
-    # Prepare to calculate the closest answer to that attempted.
-    best, best_ratio = None, 0
+    # Maintains record of which answers need correction.
+    corrections = []
 
-    # Iterates over each of the different possible answers.
-    for possible_solution in possible_solutions:
-        # Calculates how close the two answers were.
-        result = SequenceMatcher(None, answer, possible_solution).ratio()
+    # Checks if the question uses a schema.
+    if conn.execute(
+        """
+        SELECT entries.schema FROM entries
+        WHERE entries.entry = ?
+        """, (entry,)
+    ).fetchone()[0] is not None:
+        answer = json.loads(answer)
+        if answer == possible_solutions:
+            return {
+                "correct": True,
+                "close": True,
+                "closest": None,
+                "others": [],
+                "corrections": corrections
+            }, 200
 
-        # If it was very close, and the user is on their first try,
-        # returns the result without further investigation.
-        if result >= 0.9 and not already:
+        if isinstance(next(iter(answer.values())), dict):
+            answer = {
+                (int(i), int(j)): answer[i][j]
+                for i in answer for j in answer[i]
+            }
+            possible_solutions = {
+                (int(i), int(j)): possible_solutions[i][j]
+                for i in possible_solutions for j in possible_solutions[i]
+            }
+
+        # Assumes no answers are too far off.
+        intolerable = False
+
+        for key, particular_answer in answer.items():
+            particular_solution = possible_solutions[key]
+            if particular_answer == particular_solution:
+                continue
+
+            # Updates the correction
+            if isinstance(key, tuple):
+                corrections.append([*key, particular_solution])
+            else:
+                corrections.append([key, particular_solution])
+
+            # Considers if no intolerable answers have yet been given.
+            if not intolerable:
+                # Calculates how close the two answers were.
+                result = SequenceMatcher(
+                    None, particular_answer, particular_solution
+                ).ratio()
+
+                if result <= 0.8:
+                    intolerable = True
+
+        if not intolerable and not already:
             return {
                 "correct": False,
                 "close": True,
                 "closest": None,
-                "others": []
+                "others": [],
+                "corrections": corrections
             }, 200
 
-        # If the answer was both reasonably close and the best so far,
-        # records the answer.
-        elif result > best_ratio and result > 0.6:
-            best, best_ratio = possible_solution, result
+        # Resets the score and increases the goal up to 10.
+        conn.execute(
+            """
+            UPDATE entries
+                SET needed = ?, so_far = 0, completed = NULL
+            WHERE entry = ?;
+            """, (min((needed + 1, 10)), entry)
+        )
 
-    # If no answers were correct, chooses the answer displayed by
-    # default.
-    if not best:
-        best = possible_solutions[-1]
+        conn.commit()
 
-    # Returns the result.
-    return {
-        "correct": False,
-        "close": False,
-        "closest": best,
-        "others": [x for x in possible_solutions if x != best]
-    }, 200
+        return {
+            "correct": False,
+            "close": False,
+            "closest": None,
+            "others": [],
+            "corrections": corrections
+        }, 200
+
+    else:
+        # If the user was correct return the results without further
+        # investigation.
+        if answer in possible_solutions:
+            return {
+                "correct": True,
+                "close": True,
+                "closest": None,
+                "others": [],
+                "corrections": corrections
+            }, 200
+
+        # Prepare to calculate the closest answer to that attempted.
+        best, best_ratio = None, 0
+
+        # Iterates over each of the different possible answers.
+        for possible_solution in possible_solutions:
+            # Calculates how close the two answers were.
+            result = SequenceMatcher(
+                None, answer, possible_solution
+            ).ratio()
+
+            # If it was very close, and the user is on their first try,
+            # returns the result without further investigation.
+            if result >= 0.9 and not already:
+                return {
+                    "correct": False,
+                    "close": True,
+                    "closest": None,
+                    "others": [],
+                    "corrections": corrections
+                }, 200
+
+            # If the answer was both reasonably close and the best so
+            # far, records the answer.
+            elif result > best_ratio and result > 0.6:
+                best, best_ratio = possible_solution, result
+
+        # If no answers were correct, chooses the answer displayed by
+        # default.
+        if not best:
+            best = possible_solutions[-1]
+
+        # Returns the result.
+        return {
+            "correct": False,
+            "close": False,
+            "closest": best,
+            "others": [x for x in possible_solutions if x != best],
+            "corrections": corrections
+        }, 200
 
 
 @app.route('/test_sheet/correct_answer')
@@ -210,8 +370,13 @@ def correct_answer() -> Tuple[Dict[str, int], int]:
             completed FROM sheets
         INNER JOIN mentions ON sheets.sheet = mentions.sheet
         INNER JOIN entries ON entries.entry = mentions.entry
+        INNER JOIN translators
+            ON translators.translator = entries.translator
         WHERE sheets.name = ?
-        AND question = ?;
+        AND question = ?
+        AND last_used = (
+            SELECT MAX(last_used) FROM translators
+        );
         """, (sheet, question)
     ).fetchone()
 
@@ -236,13 +401,31 @@ def correct_answer() -> Tuple[Dict[str, int], int]:
         """, (needed, so_far, completed, entry)
     )
 
+    # Checks whether or not the sheet has been completed inasmuch as it
+    # is presently possible.
+    completed = not bool(conn.execute(
+        f"""
+        SELECT COUNT(*) FROM entries
+        INNER JOIN mentions ON entries.entry = mentions.entry
+        INNER JOIN sheets ON sheets.sheet = mentions.sheet
+        INNER JOIN translators
+            ON translators.translator = entries.translator
+        WHERE sheets.name = ?
+        AND so_far == needed
+        AND last_used = (
+            SELECT MAX(last_used) FROM translators
+        );
+        """, (sheet,)
+    ).fetchone()[0])
+
     # Commits the changes.
     conn.commit()
 
     # Returns the result.
     return {
         "needed": needed,
-        "so_far": so_far
+        "so_far": so_far,
+        "completed": completed
     }, 200
 
 
@@ -259,7 +442,7 @@ def incorrect_answer() -> Tuple[str, int]:
     sheet = request.args["sheet"]
     question = request.args["question"]
 
-    # Finds the entry ID and the number of points needed prsently.
+    # Finds the entry ID and the number of points needed presently.
     entry, needed = conn.execute(
         """
         SELECT entries.entry, needed FROM sheets
@@ -282,8 +465,8 @@ def incorrect_answer() -> Tuple[str, int]:
     # Commits the changes.
     conn.commit()
 
-    # Returns nothing
-    return "", 200
+    # Returns nothing.
+    return "", 204
 
 
 @app.route('/test_sheet/remove_answer')
@@ -300,26 +483,34 @@ def remove_answer() -> Tuple[str, int]:
     question = request.args["question"]
     answer = request.args["answer"]
 
-    # Finds the solution to be deleted.
-    (solution,) = conn.execute(
+    # Finds the old answers to the entry.
+    entry_s, solutions_j = conn.execute(
         """
-        SELECT solution FROM sheets
+        SELECT entries.entry, solutions FROM sheets
         INNER JOIN translators
             ON translators.translator = sheets.translator
         INNER JOIN mentions ON mentions.sheet = sheets.sheet
         INNER JOIN entries ON mentions.entry = entries.entry
-        INNER JOIN solutions ON entries.entry = solutions.entry
         WHERE last_used = (
             SELECT MAX(last_used) FROM translators
         )
         AND name = ?
-        AND question = ?
-        AND solutions.text = ?
-        """, (sheet_name, question, answer)
+        AND question = ?        
+        """, (sheet_name, question)
     ).fetchone()
 
-    # Deletes that solution.
-    conn.execute("DELETE FROM solutions WHERE solution = ?", (solution,))
+    # Sets a new solution.
+    solutions = json.loads(solutions_j)
+    solutions.remove(answer)
+
+    # Updates the solution.
+    conn.execute(
+        """
+        UPDATE entries
+        SET solutions = ?
+        WHERE entries.entry = ?;
+        """, (json.dumps(solutions), entry_s)
+    ).fetchone()
 
     # Commits the changes.
     conn.commit()
@@ -342,29 +533,34 @@ def add_answer() -> Tuple[str, int]:
     question = request.args["question"]
     answer = request.args["answer"]
 
-    # Finds the entry that is receving a new answer.
-    (entry,) = conn.execute(
+    # Finds the old answers to the entry.
+    entry_s, solutions_j = conn.execute(
         """
-        SELECT entries.entry FROM entries
+        SELECT entries.entry, solutions FROM sheets
         INNER JOIN translators
-            ON translators.translator = entries.translator
-        INNER JOIN mentions ON mentions.entry = entries.entry
-        INNER JOIN sheets ON mentions.sheet = sheets.sheet
+            ON translators.translator = sheets.translator
+        INNER JOIN mentions ON mentions.sheet = sheets.sheet
+        INNER JOIN entries ON mentions.entry = entries.entry
         WHERE last_used = (
             SELECT MAX(last_used) FROM translators
         )
-        AND sheets.name = ?
-        AND question = ?
+        AND name = ?
+        AND question = ?        
         """, (sheet_name, question)
     ).fetchone()
 
-    # Adds the answer to the list of solutions.
+    # Sets a new solution.
+    solutions = json.loads(solutions_j)
+    solutions.append(answer)
+
+    # Updates the solution.
     conn.execute(
         """
-        INSERT INTO solutions (entry, text, displayed) VALUES
-            (?, ?, 0);
-        """, (entry, answer)
-    )
+        UPDATE entries
+        SET solutions = ?
+        WHERE entries.entry = ?;
+        """, (json.dumps(solutions), entry_s)
+    ).fetchone()
 
     # Commits the changes.
     conn.commit()

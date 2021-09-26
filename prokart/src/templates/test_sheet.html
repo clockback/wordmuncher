@@ -4,12 +4,13 @@
         <title>Prokart</title>
         <link rel="stylesheet" href="{{ url_for('static', filename='css/general.css') }}">
         <link rel="icon" href="{{ url_for('static', filename='images/logo.svg') }}">
+        <link href="https://fonts.googleapis.com/css?family=M+PLUS+Rounded+1c" rel="stylesheet">
         <script type="text/javascript" src="{{ url_for('static', filename='js/test/test_sheet.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('static', filename='js/stars.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('static', filename='js/utils.js') }}"></script>
     </head>
 
-    <body>
+    <body onload="updateNoQuestions();">
         {% include 'components/testbar.html' %}
         <audio id="correct-sound">
           <source src="/static/audio/correct.mp3" type="audio/mpeg">
@@ -30,7 +31,13 @@
                             <textarea id="answer-box" autocomplete="off" placeholder="Type your answer" onkeypress="hitEnterAnswerBox(this, event);" oninput="typeAnswerBox(this, event);"></textarea>
                         </div>
                         <div>
-                            <button id="go-button" class="button button-disabled" style="float: right;">Check</button>
+                            <table id="answer-table" class="schema-table" style="margin-left: auto; margin-right: auto;">
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div style="margin: auto; max-width: 600px;">
+                            <div id="go-button" class="button button-disabled" style="float: right;">Check</div>
                             <div class="bar-chart-container">
                                 <div class="bar-chart" style="width: 100%;"></div>
                                 <div class="bar-chart-figure">100% complete</div>
@@ -43,5 +50,6 @@
         </div>
         <div id="try-again" class="alert" style="top: 20px; visibility: visible;">Check your spelling.</div>
         {% include 'components/wrong_answer.html' %}
+        {% include 'components/finished_sheet.html' %}
     </body>
 </html>

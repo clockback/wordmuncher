@@ -17,7 +17,6 @@ from prokart.src.modules import misc
 from prokart.src.modules.pages import (
     create, languages, mainpage, results, test, test_sheet
 )
-from prokart.src.modules.sql_handler import get_connection
 
 
 def main() -> None:

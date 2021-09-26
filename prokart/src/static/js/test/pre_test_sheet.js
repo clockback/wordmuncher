@@ -40,9 +40,16 @@ function keyDownOnTestSheetContainer(event) {
   }
 }
 
-function goTestSheet() {
+function goTestSheet(textBox) {
   var sheetName = document.querySelector(
     "div.container-contents>h1"
   ).innerHTML;
-  window.location.href = '/test/' + encodeURIComponent(sheetName);
+
+  sessionStorage.noQuestions = getById("no-questions").value;
+  sessionStorage.completed = false;
+  window.location.href = "/test/" + encodeURIComponent(sheetName);
+}
+
+function updateNumberOfQuestions() {
+    changeRangeValue("no-questions");
 }

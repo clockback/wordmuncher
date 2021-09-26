@@ -4,6 +4,7 @@
         <title>Prokart</title>
         <link rel="stylesheet" href="{{ url_for('static', filename='css/general.css') }}">
         <link rel="icon" href="{{ url_for('static', filename='images/logo.svg') }}">
+        <link href="https://fonts.googleapis.com/css?family=M+PLUS+Rounded+1c" rel="stylesheet">
         <script type="text/javascript" src="{{ url_for('static', filename='js/select_translator.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('static', filename='js/utils.js') }}"></script>
     </head>
@@ -15,13 +16,13 @@
                 <img style="width: 216.448px; height: 80px; margin-top: 40px;" src="{{ url_for('static', filename='images/logo-full.svg') }}"/>
                 <h2>A Language-Learning Tool</h2>
             </div>
-            <div class style="text-align: center;">
-                <button id="test-button" class="button" onclick="window.location.href = '/test'">Test</button>
-                <button id="create-button" class="button" onclick="window.location.href = '/create'">Create</button>
+            <div style="text-align: center;">
+                <div id="test-button" class="button" onclick="window.location.href = '/test'">Test</div>
+                <div id="create-button" class="button" onclick="window.location.href = '/create'">Create</div>
             </div>
         </div>
         <footer>
-            <div>Copyright © 2020 – Elliot Paton-Simpson</div>
+            <div>Copyright © 2021 – Elliot Paton-Simpson</div>
         </footer>
     </body>
 </html>

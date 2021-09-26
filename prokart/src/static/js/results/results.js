@@ -34,10 +34,10 @@ function populateResultsTable(results, questions) {
   var questionsString = JSON.stringify(questions);
   openRequest("/results/summary_table", [
     ["sheet", sessionStorage.sheetName], ["questions", questionsString]
-  ], processPopulateResultsTable);
+  ], processPopulateResultsTable, results, questions);
 }
 
-function processPopulateResultsTable(request) {
+function processPopulateResultsTable(request, results, questions) {
   var returnJSON = JSON.parse(request.responseText);
   var resultsTable = getById("results-table");
 

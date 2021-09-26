@@ -1,7 +1,7 @@
 # Builtins
-from itertools import chain, repeat
+from itertools import chain
 import json
-from typing import Dict, List, Optional, Set, Tuple, Union
+from typing import Callable, Dict, List, Optional, Set, Tuple, Union
 
 # Installed packages
 from flask import render_template, redirect, request, url_for
@@ -9,19 +9,53 @@ from flask import render_template, redirect, request, url_for
 # Local imports
 from prokart.src.application import app
 from prokart.src.modules.sql_handler import (
-    escape, get_connection, get_recent_translations, last_insert_rowid
+    escape, get_connection, get_recent_translations, get_schemas,
+    last_insert_rowid, save_new_schema, save_edit_schema
 )
 from prokart.src.modules.sheets import get_sheets
 
 
+def decorate_find_queries(queries: Set[str]) -> Callable[[str], bool]:
+    """Checks whether or not a vocabulary entry answer contains all
+    provided search terms.
+    """
+    def find_queries(question_str, entries_str: str) -> bool:
+        """Checks whether or not a vocabulary entry answer contains all
+        specifically provided search terms.
+        """
+        entries = json.loads(entries_str)
+
+        if isinstance(entries, list):
+            check_str = " ".join(entries)
+        elif isinstance(next(iter(entries.values())), str):
+            check_str = " ".join(entries.values())
+        else:
+            check_str = " ".join(
+                " ".join(cluster.values()) for cluster in entries.values()
+            )
+
+        check_str += f" {question_str}"
+
+        for query in queries:
+            if query not in check_str:
+                return False
+
+        return True
+
+    return find_queries
+
+
 def get_entries(
-        searches: Optional[Set[str]] = None, offset: int = 0
+        searches: Optional[Set[str]] = None, offset: int = 0,
+        filter_schema_answers: bool = False
 ) -> List[Tuple[str, str, int, int]]:
     """Finds the top entries.
     :param Optional[Set[str]] searches: The different string
         combinations that must occur in the sheet names.
     :param int offset: How many entries given the query have been
         returned already.
+    :param bool filter_schema_answers: Whether or not to filter the
+        schema answers.
     :return: Each of the different entries with the following values:
         * Question
         * Answer
@@ -32,45 +66,51 @@ def get_entries(
     # Establishes a connection.
     conn = get_connection()
 
-    # Constructs the part of the query that filters the searches.
-    search_queries = "\n".join(
-        "AND all_entries.question LIKE '%' || ? || '%' ESCAPE ' '"
-        for _search in searches
-    ) if searches else ""
+    conn.create_function("find_queries", 2, decorate_find_queries(
+        searches if searches else set()
+    ))
 
-    # Returns the results.
-    return conn.execute(
+    results = conn.execute(
         f"""
         SELECT
             question,
-            answer,
+            json_extract(solutions, '$[0]'),
             COUNT(mentions.entry),
             points + (so_far == needed)
             FROM (
                 SELECT
                     all_entries.entry,
-                    solutions.text AS answer,
+                    solutions,
                     question,
                     points,
                     needed,
                     so_far
                     FROM entries AS all_entries
-                INNER JOIN solutions ON solutions.entry = all_entries.entry
-                WHERE displayed = 1
+                WHERE find_queries(
+                    all_entries.question, all_entries.solutions
+                )
                 AND all_entries.translator = (
                     SELECT translator FROM translators
                     ORDER BY last_used DESC
                     LIMIT 1
                 )
-                {search_queries}
                 ORDER BY LOWER(all_entries.question)
                 LIMIT {app.config["MAX_ROWS"] + 1} OFFSET ?
             ) AS entries
         LEFT JOIN mentions ON mentions.entry = entries.entry
         GROUP BY entries.entry
         ORDER BY LOWER(entries.question)
-        """, (*(map(escape, searches) if searches else ()), offset)
+        """, (offset,)
     ).fetchall()
+
+    # Filters the answers to have no None values if necessary.
+    if filter_schema_answers:
+        for i, result in enumerate(results):
+            if result[1] is None:
+                results[i] = result[0], "", *result[2:]
+
+    # Returns the results.
+    return results
 
 
 @app.route('/create')
@@ -89,16 +129,17 @@ def create() -> Tuple[str, int]:
 
     # Gets the sheets and entries for the page.
     sheets = get_sheets()
-    entries = get_entries()
+    entries = get_entries(filter_schema_answers=True)
 
     # Renders and returns the page.
     return render_template(
         "create.html",
         sheets=sheets[:app.config["MAX_ROWS"]],
         entries=entries[:app.config["MAX_ROWS"]],
-        topbar=get_recent_translations(),
+        topbar=get_recent_translations(conn),
         load_more_sheets=len(sheets) > app.config["MAX_ROWS"],
-        load_more_entries=len(entries) > app.config["MAX_ROWS"]
+        load_more_entries=len(entries) > app.config["MAX_ROWS"],
+        schemas=get_schemas(conn)
     ), 200
 
 
@@ -523,6 +564,66 @@ def delete_entry() -> Tuple[Dict[str, List[str]], int]:
     return {"sheets": sheets}, 200
 
 
+@app.route('/create/order_to_serial')
+def order_to_serial_json() -> Tuple[
+    Dict[str, Union[Dict[int, Dict[int, str]], Dict[int, str]]], int
+]:
+    """Converts a collection of answers to use id values instead of
+    orderings, sending the new dictionary back in return.
+    :return: The answers where subschema and quality id values are used
+        instead of orderings.
+    :rtype: Tuple[
+        Dict[str, Union[Dict[int, Dict[int, str]], Dict[int, str]]], int
+    ]
+    """
+    return {"answers": order_to_serial(request['answers'])[1]}, 200
+
+
+def order_to_serial(
+        answers: Dict[str, Union[str, Dict[str, Dict[str, str]]]]
+) -> Tuple[int, Union[Dict[int, Dict[int, str]], Dict[int, str]]]:
+    """Converts a collection of answers to use id values instead of
+    orderings.
+    :param Dict[str, Union[str, Dict[str, Dict[str, str]]]] answers: The
+        collection of answers.
+    :return: The schema serial id and the answers where subschema and
+        quality id values are used instead of orderings.
+    :rtype: Tuple[int, Union[Dict[int, Dict[int, str]], Dict[int, str]]]
+    """
+    schema_s, schema = find_schema(answers['name'])
+    ma_dict = {}
+
+    # Corrects all the columns.
+    for column in filter(lambda col: col != "name", answers):
+        # Finds the serial for the column quality.
+        column_s = next(iter(filter(
+            lambda x: x[1] == 0 and str(x[3]) == column,
+            schema["qualities"]
+        )))[0]
+
+        # If there is a row subschema, corrects all the rows.
+        if isinstance(answers[column], dict):
+            # Starts creating a dictionary for the rows.
+            column_dict = {}
+
+            # Corrects the row.
+            for row in answers[column]:
+                row_s = next(iter(filter(
+                    lambda x: x[1] == 1 and str(x[3]) == row,
+                    schema["qualities"]
+                )))[0]
+                column_dict[row_s] = answers[column][row]
+
+            # Assigns the rows for that column.
+            ma_dict[column_s] = column_dict
+
+        # Otherwise uses the string answer for the column.
+        else:
+            ma_dict[column_s] = answers[column]
+
+    return schema_s, ma_dict
+
+
 @app.route('/create/new_entry')
 def new_entry() -> Tuple[Dict[str, bool], int]:
     """Attempts to create a new entry with the provided question and
@@ -552,35 +653,37 @@ def new_entry() -> Tuple[Dict[str, bool], int]:
     if already_there:
         return {'already_there': True}, 200
 
+    # Finds the provided answers.
+    answers = json.loads(request.args['answers'])
+
+    # Does not modify the JSON if it is a list of possible answers.
+    if isinstance(answers, list):
+        modified_answers = request.args['answers']
+        schema_s = None
+
+    # If the JSON is a dictionary, changes order to primary keys.
+    elif isinstance(answers, dict):
+        schema_s, ma_dict = order_to_serial(answers)
+        modified_answers = json.dumps(ma_dict)
+    else:
+        raise TypeError(f"answers has incorrect structure: {answers}")
+
     # If it doesn't exist, create it.
     conn.execute("PRAGMA foreign_keys = OFF;")
     conn.execute(
         """
-        INSERT INTO entries (translator, question)
-            SELECT translator, ? FROM translators
+        INSERT INTO entries (translator, schema, question, solutions)
+            SELECT translator, ?, ?, ? FROM translators
             WHERE last_used = (
                 SELECT MAX(last_used) FROM translators
             )
             ORDER BY translator
             LIMIT 1
-        """, (request.args['question'],)
+        """, (schema_s, request.args['question'], modified_answers)
     )
 
     # Finds the id for the entry.
     entry_s = last_insert_rowid(conn)
-
-    # Inserts each of the different answers.
-    more_answers = json.loads(request.args['moreAnswers'])
-    solutions = tuple(chain(*zip(
-        repeat(entry_s),
-        chain((request.args['answer'],), more_answers),
-        chain((True,), repeat(False))
-    )))
-    conn.execute(
-        "INSERT INTO solutions (entry, text, displayed) VALUES"
-        + ",".join("(?, ?, ?)" for _i in range(1 + len(more_answers))),
-        solutions
-    )
 
     # Finds the sheet serial numbers.
     sheets = json.loads(request.args['sheets'])
@@ -617,7 +720,7 @@ def new_entry() -> Tuple[Dict[str, bool], int]:
 
 @app.route('/create/extant_entries')
 def extant_entries() -> Tuple[Dict[str, List[str]], int]:
-    """Finds all the entries's questions which belong to a sheet.
+    """Finds all the entries' questions which belong to a sheet.
     :return: The list of questions.
     :rtype: Tuple[Dict[str, List[str]], int]
     """
@@ -651,11 +754,16 @@ def extant_entries() -> Tuple[Dict[str, List[str]], int]:
 
 
 @app.route('/create/load_existing_entry')
-def load_existing_entry():
+def load_existing_entry() -> Tuple[Dict[
+        str, List[Union[str, Optional[List[Tuple[int, int, int]]], List[str]]]
+], int]:
     """Finds the existing answers and sheet names associated with a
     particular entry.
     :return: The list of answers and list of sheet names.
-    :rtype: Tuple[Dict[str, List[str]], int]
+    :rtype: Tuple[Dict[
+        str, Optional[List[Union[str, List[Tuple[int, int, int]]],
+        List[str]]]
+    ], int]
     """
     # Establishes a connection.
     conn = get_connection()
@@ -663,11 +771,11 @@ def load_existing_entry():
     # Finds the question for the entry being searched.
     question = request.args["question"]
 
-    # Finds the list of possible answers for the entry.
-    answers = [x[0] for x in conn.execute(
+    # Finds the id value of the entry.
+    entry_s, schema_s, answers = conn.execute(
         """
-        SELECT text FROM entries
-        INNER JOIN solutions ON solutions.entry = entries.entry
+        SELECT entry, schema, solutions
+            FROM entries
         INNER JOIN translators
             ON entries.translator = translators.translator
         WHERE question = ?
@@ -677,31 +785,36 @@ def load_existing_entry():
                 SELECT MAX(last_used) FROM translators
             )
         )
-        ORDER BY displayed DESC
+        LIMIT 1
         """, (question,)
-    )]
+    ).fetchone()
+
+    schema_name = conn.execute(
+        """
+        SELECT name FROM schemas
+        WHERE schema = ?;
+        """, (schema_s,)
+    ).fetchone()[0] if schema_s else ""
 
     # Finds the list of names of sheets containing the entry.
     sheets = [x[0] for x in conn.execute(
         """
         SELECT name FROM sheets
-        INNER JOIN translators
-            ON translators.translator = sheets.translator
         INNER JOIN mentions ON mentions.sheet = sheets.sheet
         INNER JOIN entries
             ON mentions.entry = entries.entry
-        WHERE translators.translator = (
-            SELECT translator FROM translators
-            WHERE last_used = (
-                SELECT MAX(last_used) FROM translators
-            )
-        )
-            AND question = ?
-        """, (question,)
+        WHERE entries.entry = ?
+        """, (entry_s,)
     )]
 
+    answers_j = json.loads(answers)
+    if isinstance(answers, dict):
+        answers_j["name"] = schema_name
+
     # Returns the results.
-    return {"answers": answers, "sheets": sheets}, 200
+    return {
+        "schema_name": schema_name, "answers": answers_j, "sheets": sheets
+    }, 200
 
 
 @app.route('/create/edit_entry')
@@ -719,8 +832,18 @@ def edit_entry() -> Tuple[Dict[str, bool], int]:
     # answer, and the additional answers.
     question = request.args["question"]
     prior = request.args["prior"]
-    main_answer = request.args["answer"]
-    more_answers = json.loads(request.args["moreAnswers"])
+
+    # Finds the correct JSON structure for the answers as used in the
+    # database. Also finds the schema, provided there is one.
+    raw_answers = json.loads(request.args["answers"])
+    if isinstance(raw_answers, dict):
+        schema_s, updated_answers = order_to_serial(
+            json.loads(request.args["answers"])
+        )
+        answers = json.dumps(updated_answers)
+    else:
+        answers = json.dumps(raw_answers)
+        schema_s = None
 
     # Checks that a sheet for that translator and that name doesn't
     # already exist.
@@ -760,16 +883,15 @@ def edit_entry() -> Tuple[Dict[str, bool], int]:
         """, (prior,)
     ).fetchone()[0]
 
-    # Changes the entry question if necessary
-    if question != prior:
-        conn.execute(
-            """
-            UPDATE entries SET question = ?
-            WHERE entry = ?
-            """, (question, entry_s)
-        )
+    # Changes the entry question and answers.
+    conn.execute(
+        """
+        UPDATE entries SET question = ?, schema = ?, solutions = ?
+        WHERE entry = ?
+        """, (question, schema_s, answers, entry_s)
+    )
 
-    # Find all the current sheets and corresponding mentions
+    # Find all the current sheets and corresponding mentions.
     mentions = conn.execute(
         """
         SELECT name, mention FROM mentions
@@ -813,22 +935,192 @@ def edit_entry() -> Tuple[Dict[str, bool], int]:
             """, (entry_s, mention_s)
         )
 
-    # Deletes all solutions for the question.
-    conn.execute("DELETE FROM solutions WHERE entry = ?", (entry_s,))
-
-    # Adds entries for the question.
-    conn.execute(
-        f"""
-        INSERT INTO solutions (entry, text, displayed) VALUES
-            {", ".join(("(?, ?, ?)",) * (len(more_answers) + 1))}
-        """, sum(((entry_s, main_answer, True), *(
-            (entry_s, answer, False) for answer in more_answers
-        )), ())
-    )
-
     # Commits the changes.
     conn.execute("PRAGMA foreign_keys = ON;")
     conn.commit()
 
     # Returns the result.
     return {"already_there": False}, 200
+
+
+@app.route('/create/schema_already_exists')
+def schema_already_exists() -> Tuple[Dict[str, bool], int]:
+    """Determines whether or not a schema with the given name already
+    exists.
+    :return: Whether or not it exists.
+    :rtype: Tuple[Dict[str, bool], int]
+    """
+    # Finds the name of the sheet to be found.
+    name = request.args['name']
+
+    # Finds the question of an entry to be ignored even if it exists.
+    prior = request.args.get('prior', None)
+
+    # If the name is the same as the one ignored, returns False.
+    if name == prior:
+        return {'already_there': False}, 200
+
+    # Establishes a connection.
+    conn = get_connection()
+
+    # Finds whether or not the entry exists, based on the question.
+    already_there = bool(conn.execute(
+        """
+        SELECT 1 FROM schemas
+        WHERE name = ?
+        """, (name,)
+    ).fetchone())
+
+    # Returns the result.
+    return {'already_there': already_there}, 200
+
+
+@app.route('/create/save_schema')
+def save_schema() -> Tuple[Dict[str, int], int]:
+    """Saves the schema.
+    :return: The id for the schema.
+    :rtype: Tuple[Dict[str, int], int]
+    """
+    # Finds the name and structure of the schema.
+    name = request.args['name']
+    structure = json.loads(request.args['structure'])
+    orig_name = request.args['origName']
+    answers = json.loads(request.args['answers'])
+
+    # Establishes a connection.
+    conn = get_connection()
+
+    # Determines whether or not the schema is new or an edit.
+    is_new = orig_name == ""
+
+    # Adds the columns subschema.
+    if is_new:
+        schema_s, answers = save_new_schema(conn, name, structure), {}
+    else:
+        schema_s, answers = save_edit_schema(
+            conn, name, structure, orig_name, answers
+        )
+
+    # Returns the schema and updated answers answers.
+    return {"schema": schema_s, "answers": answers}, 200
+
+
+@app.route('/create/choose_schema')
+def choose_schema() -> Tuple[Dict[str, Union[
+    List[Tuple[int, str, int]], List[Tuple[int, int, str, int]],
+    Union[Dict[int, Dict[int, str]], Dict[int, str]]
+]], int]:
+    """Returns the structure of the schema with the give name.
+    :return: The schema structure.
+    :rtype: Tuple[Dict[str, Union[
+        List[Tuple[int, str, int]], List[Tuple[int, int, str, int]],
+        Union[Dict[int, Dict[int, str]], Dict[int, str]]
+    ]], int]
+    """
+    schema = dict(find_schema(request.args['schema'])[1])
+    answers = json.loads(request.args.get("answers", "{}"))
+
+    if isinstance(answers, dict) and "name" not in answers:
+        answers["name"] = request.args["schema"]
+
+    if request.args.get("answers") not in (None, "null"):
+        schema["answers"] = answers
+    else:
+        schema["answers"] = {}
+
+    return schema, 200
+
+
+def find_schema(name: str) -> Tuple[int, Dict[str, Union[
+    List[Tuple[int, str, int]], List[Tuple[int, int, str, int]]
+]]]:
+    """Returns the structure of the schema with the give name.
+    :return: The schema id and structure.
+    :rtype: Tuple[int, Dict[str, Union[
+        List[Tuple[int, str, int]], List[Tuple[int, int, str, int]]
+    ]]]
+    """
+    # Establishes a connection.
+    conn = get_connection()
+
+    # Finds the schema id.
+    schema, = conn.execute(
+        """
+        SELECT schema FROM schemas
+        WHERE name = ?
+        """, (name,)
+    ).fetchone()
+
+    # Finds the subschemas.
+    subschemas = list(chain(conn.execute(
+        """
+        SELECT subschemas.subschema, subschemas.name, COUNT(*)
+        FROM subschemas
+        INNER JOIN qualities
+            ON subschemas.subschema = qualities.subschema
+        WHERE schema = ?
+        GROUP BY subschemas.subschema
+        ORDER BY subschemas.pos
+        """, (schema,)
+    ).fetchall()))
+
+    # Finds the qualities.
+    qualities = conn.execute(
+        """
+        SELECT
+            qualities.quality,
+            subschemas.pos,
+            qualities.name,
+            qualities.pos
+        FROM qualities
+        INNER JOIN subschemas
+            ON subschemas.subschema = qualities.subschema
+        WHERE schema = ?
+        ORDER BY subschemas.pos, qualities.pos
+        """, (schema,)
+    ).fetchall()
+
+    return schema, {
+        "subschemas": subschemas,
+        "qualities": qualities
+    }
+
+
+@app.route('/create/count_schema_entries')
+def count_schema_entries() -> Tuple[Dict[str, int], int]:
+    """Finds the number of entries that rely on a schema.
+    :return: The number of entries.
+    :rtype: Tuple[str, int]
+    """
+    conn = get_connection()
+
+    uses = conn.execute(
+        """
+        SELECT COUNT(*) FROM schemas
+        INNER JOIN entries
+            ON entries.schema = schemas.schema
+        WHERE name = ?;
+        """, (request.args["name"],)
+    ).fetchone()[0]
+
+    return {"uses": uses}, 200
+
+
+@app.route('/create/delete_schema')
+def delete_schema() -> Tuple[str, int]:
+    """Deletes the schema.
+    :return: None
+    """
+    # Establishes a connection.
+    conn = get_connection()
+
+    # Deletes the schema.
+    conn.execute(
+        "DELETE FROM schemas WHERE name = ?;", (request.args["schema"],)
+    )
+
+    # Saves the changes.
+    conn.commit()
+
+    # Returns nothing.
+    return "", 204

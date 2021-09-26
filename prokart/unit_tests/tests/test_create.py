@@ -3,9 +3,9 @@ from prokart.unit_tests.base_tests import BasicTests
 
 
 class TestCreate(BasicTests):
-    """Contains all tests relating to the creation area. The creation
-    area is where different vocabulary sheets and entries are created
-    and edited.
+    """Contains all tests relating to the creation area, besides those
+    relating to the use of schemas. The creation area is where different
+    vocabulary sheets and entries are created and edited.
     """
     def test_001_create_new_sheet(self) -> None:
         """Checks that a new sheet can be created.
@@ -181,9 +181,6 @@ class TestCreate(BasicTests):
 
         # Saves the edited sheet.
         self.click_button_id("save-edit-sheet")
-
-        # Goes to the home page.
-        self.click_button_id("sidebar-left-home")
 
         # Goes to the home page.
         self.click_button_id("sidebar-left-home")

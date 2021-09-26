@@ -1,4 +1,4 @@
-<div id="add-entry-container-background" class="container-background container-background-transparent hide" onkeydown="keyDownOnNewEntryContainer(event);">
+<div id="new-entry-container-background" class="container-background container-background-transparent hide" onkeydown="keyDownOnNewEntryContainer(event);">
     <div class="container">
         <div class="title-bar">
             <div style="float: right; margin-right: 10px; margin-top: 5px;" onclick="hideNewEntryInterface();">
@@ -16,7 +16,21 @@
                 <span id="message-new-entry-empty-question" class="hide" style="color: rgb(100, 0, 0); font-weight: bold;">Must provide the entry a question.</span>
                 <span id="message-new-entry-long-question" class="hide" style="color: rgb(100, 0, 0); font-weight: bold;">Question must be no more than 80 characters.</span>
             </div>
-            <p>Answer:</p>
+            <div style="display: inline-block; width: 300px; margin: 10px 0 10px 0;">
+                <div id="new-entry-schema-picker" class="custom-select">
+                    <select autocomplete="off">
+                        <option value="0">No schema:</option>
+                        {% for id, schema in schemas %}
+                            <option value="{{ id }}">{{ schema }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div id="new-entry-new-schema" class="button" onclick="showSchemasInterface('new', 'new');" style="margin-top: 20px;">+</div>
+            <div id="new-entry-edit-schema" class="button button-disabled" style="margin-top: 20px;">
+                <img src="static/images/edit.svg" style="height: 24px; vertical-align: middle;"/>
+            </div>
+            <p id="new-entry-answer-text">Answer:</p>
             <div id="new-entry-answer-div">
                 <div class="input-box">
                     <input id="new-entry-answer" autocomplete="off" oninput="changeNewEntryAnswer();">
@@ -24,7 +38,17 @@
                 <span id="message-new-entry-empty-answer" class="hide" style="color: rgb(100, 0, 0); font-weight: bold;">Must provide the entry an answer.</span>
                 <span id="message-new-entry-long-answer" class="hide" style="color: rgb(100, 0, 0); font-weight: bold;">Answer must be no more than 80 characters.</span>
             </div>
-            <p>More answers:</p>
+            <div id="new-entry-answer-schema-div">
+                <table id="new-entry-answer-schema-table" class="schema-table hide">
+                    <tbody id="new-entry-answer-schema-body">
+                        <tr>
+                            <th id="new-entry-answer-schema-columns-header" style="text-align: center;"></th>
+                        </tr>
+                        <tr id="new-entry-answer-schema-columns"></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p id="new-entry-more-answers-text">More answers:</p>
             <div id="new-entry-answers-table-container" style="overflow-x: auto; overflow-y: hidden">
                 <table id="new-entry-answers-table" class="selectable-table">
                     <tbody class="main-rows main-rows-alt">
@@ -32,7 +56,7 @@
                             <td>
                                 <input id="new-entry-add-answer" placeholder="Add another" style="padding: 5px;" autocomplete="off" onkeypress="newEntryHitEnterAnotherAnswer(event);">
                             </td>
-                            <td id="new-entry-add-answer-button"><button class="add-row" onclick="newEntryAddRow();">➡</button></td>
+                            <td id="new-entry-add-answer-button"><span class="add-row" onclick="newEntryAddRow();">➡</span></td>
                         </tr>
                     </tbody>
                 </table>
@@ -68,8 +92,10 @@
                     </tbody>
                 </table>
             </div>
-            <button id="save-new-entry" class="button button-disabled">Save</button>
-            <button class="button" onclick="hideNewEntryInterface();">Back</button>
+            <p>
+                <div id="save-new-entry" class="button button-disabled">Save</div>
+                <div id="back-new-entry" class="button" onclick="hideNewEntryInterface();">Back</div>
+            </p>
         </div>
     </div>
 </div>

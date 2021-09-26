@@ -1,4 +1,3 @@
-
 ![](prokart/src/static/images/logo-full.svg "Logo")
 
 ## About
@@ -7,7 +6,7 @@ learn with vocabulary sheets.
 
 ### License
 
-Copyright © 2020 Elliot Paton-Simpson
+Copyright © 2021 Elliot Paton-Simpson
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

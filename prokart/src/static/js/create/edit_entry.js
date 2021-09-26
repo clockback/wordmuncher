@@ -5,55 +5,118 @@ function showEditEntryInterface(question) {
     "delete-entry"
   ]);
 
-  editEntrySearchSheets();
+  // If the user is showing the interface, having just been using the
+  // schema interface, nothing on the dialog itself needs to be updated.
+  if (question == null) {
+    unhide(['edit-entry-container-background']);
+    getById('edit-entry-question').focus();
+  }
 
-  var editEntryQuestionEntry = getById('edit-entry-question');
-  editEntryQuestionEntry.value = question;
-  editEntryQuestionEntry.placeholder = question;
+  // If the user is opening the interface afresh, it populates the
+  // dialog as necessary.
+  else {
+    editEntrySearchSheets();
 
-  enableButtons([["save-edit-entry", saveEditEntry]]);
+    var editEntryQuestionEntry = getById('edit-entry-question');
+    editEntryQuestionEntry.value = question;
+    editEntryQuestionEntry.placeholder = question;
 
-  openRequest("/create/load_existing_entry", [
-    ["question", question]
-  ], processShowEditEntryInterface)
+    enableButtons([["save-edit-entry", saveEditEntry]]);
+
+    openRequest("/create/load_existing_entry", [
+      ["question", question]
+    ], processShowEditEntryInterface)
+  }
 }
 
 function processShowEditEntryInterface(request) {
   var returnJSON = JSON.parse(request.responseText);
 
   var editEntryAnswerEntry = getById('edit-entry-answer');
-  editEntryAnswerEntry.value = returnJSON["answers"][0];
-  editEntryAnswerEntry.placeholder = returnJSON["answers"][0];
+  var answers = returnJSON["answers"];
+  var schemaName = returnJSON["schema_name"];
+  var picker = getById("edit-entry-schema-picker");
 
-  var moreAnswers = document.querySelector(
-    "#edit-entry-answers-table>tbody"
-  );
-  for (var i = 1; i < returnJSON["answers"].length; i ++) {
-    var newAdditionalAnswer = document.createElement("tr");
+  if (schemaName == "") {
+    editEntryAnswerEntry.value = answers[0];
+    editEntryAnswerEntry.placeholder = answers[0];
 
-    var newAdditionalAnswerName = document.createElement("td");
-    newAdditionalAnswerName.innerHTML = returnJSON["answers"][i];
-    newAdditionalAnswerName.onclick = function () {
-      editEntryPromoteAnswer(this);
-    };
+    // Uses the picker to select "No schema:".
+    picker.children[1].innerHTML = "No schema:";
+    var pickerDivs = picker.children[2].getElementsByTagName("div");
+    pickerDivs[0].classList.add("same-as-selected");
+    for (var i = 1; i < pickerDivs.length; i ++) {
+      pickerDivs[i].classList.remove("same-as-selected");
+    }
 
-    var newAdditionalAnswerTrash = document.createElement("td");
+    // Displays the default single answer option.
+    unhide([
+      "edit-entry-answer-div", "edit-entry-answers-table-container",
+      "edit-entry-answer-text", "edit-entry-more-answers-text"
+    ]);
+    hide(["edit-entry-answer-schema-table"]);
+    disableButtons(["edit-entry-edit-schema"]);
 
-    var newAdditionalAnswerButton = document.createElement("button");
-    newAdditionalAnswerButton.innerHTML = "️️🗑️";
-    newAdditionalAnswerButton.classList.add("trash-can");
-    newAdditionalAnswerButton.onclick = function () {
-      trashRow(this);
-    };
-
-    newAdditionalAnswerTrash.appendChild(newAdditionalAnswerButton);
-    newAdditionalAnswer.appendChild(newAdditionalAnswerName);
-    newAdditionalAnswer.appendChild(newAdditionalAnswerTrash);
-    moreAnswers.insertBefore(
-      newAdditionalAnswer, document.querySelector(
-        "#edit-entry-answers-table>tbody>tr:last-child"
-      )
+    var moreAnswers = document.querySelector(
+      "#edit-entry-answers-table>tbody"
     );
+    for (var i = 1; i < answers.length; i ++) {
+      var newAdditionalAnswer = document.createElement("tr");
+
+      var newAdditionalAnswerName = document.createElement("td");
+      newAdditionalAnswerName.innerHTML = answers[i];
+      newAdditionalAnswerName.onclick = function () {
+        editEntryPromoteAnswer(this);
+      };
+
+      var newAdditionalAnswerTrash = document.createElement("td");
+
+      var newAdditionalAnswerButton = document.createElement("button");
+      newAdditionalAnswerButton.innerHTML = "️️🗑️";
+      newAdditionalAnswerButton.classList.add("trash-can");
+      newAdditionalAnswerButton.onclick = function () {
+        trashRow(this);
+      };
+
+      newAdditionalAnswerTrash.appendChild(newAdditionalAnswerButton);
+      newAdditionalAnswer.appendChild(newAdditionalAnswerName);
+      newAdditionalAnswer.appendChild(newAdditionalAnswerTrash);
+      moreAnswers.insertBefore(
+        newAdditionalAnswer, document.querySelector(
+          "#edit-entry-answers-table>tbody>tr:last-child"
+        )
+      );
+    }
+  }
+  else {
+    editEntryAnswerEntry.value = "";
+    editEntryAnswerEntry.placeholder = "";
+
+    // Uses the picker to select the appropriate schema.
+    picker.children[1].innerHTML = schemaName;
+    var pickerDivs = picker.children[2].getElementsByTagName("div");
+    var j;
+    for (var i = 0; i < pickerDivs.length; i ++) {
+      if (pickerDivs[i].innerHTML == schemaName) {
+        j = i;
+        pickerDivs[i].classList.add("same-as-selected");
+      }
+      else {
+        pickerDivs[i].classList.remove("same-as-selected");
+      }
+    }
+
+    // Hides the default single answer option.
+    unhide(["edit-entry-answer-schema-table"]);
+    hide([
+      "edit-entry-answer-div", "edit-entry-answers-table-container",
+      "edit-entry-answer-text", "edit-entry-more-answers-text"
+    ]);
+    enableButtons(
+      [["edit-entry-edit-schema", showSchemasInterface, "edit", "edit"]]
+    );
+
+    editEntryChooseSchema(picker.children[0][j], answers, true);
   }
 
   var sheets = returnJSON["sheets"];
@@ -272,15 +335,24 @@ function saveEditEntry() {
   var questionEntry = getById("edit-entry-question");
   var prior = questionEntry.placeholder;
   var question = questionEntry.value;
-  var answer = getById("edit-entry-answer").value;
   var moreAnswersCells = document.querySelectorAll(
     "#edit-entry-answers-table>tbody>tr:not(:last-child)>td:first-child"
   );
-  var moreAnswers = [];
-  for (var i = 0; i < moreAnswersCells.length; i ++) {
-    moreAnswers.push(moreAnswersCells[i].innerHTML);
+  var answersString, answers, i;
+
+  // If the user has chosen a particular schema.
+  if (getById("edit-entry-answer-div").classList.contains("hide")) {
+    answersString = JSON.stringify(getSchemaAnswers("edit"));
   }
-  var moreAnswersString = JSON.stringify(moreAnswers);
+
+  // If the user has not selected as schema.
+  else {
+    var answers = [getById("edit-entry-answer").value];
+    for (i = 0; i < moreAnswersCells.length; i ++) {
+      answers.push(moreAnswersCells[i].innerHTML);
+    }
+    answersString = JSON.stringify(answers);
+  }
 
   var hiddenRows = getById("edit-entry-sheet-table-hidden-rows").children;
   var parentSheets = [];
@@ -290,8 +362,8 @@ function saveEditEntry() {
   var parentSheetsString = JSON.stringify(parentSheets);
 
   openRequest("/create/edit_entry", [
-    ["question", question], ["prior", prior], ["answer", answer],
-    ["moreAnswers", moreAnswersString], ["sheets", parentSheetsString]
+    ["question", question], ["prior", prior], ["answers", answersString],
+    ["sheets", parentSheetsString]
   ], processSaveEditEntry);
 }
 
@@ -431,4 +503,11 @@ function processEditEntrySearchSheets(request) {
   else {
     loadMoreRow.style.visibility = 'collapse';
   }
+}
+
+function editEntryChooseSchema(selectOption, answers, isId) {
+  if (answers === undefined) {
+    answers = null
+  }
+  chooseSchema(selectOption, "edit", answers, isId);
 }

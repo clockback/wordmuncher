@@ -3,6 +3,7 @@
         <title>Prokart</title>
         <link rel="stylesheet" href="{{ url_for('static', filename='css/general.css') }}">
         <link rel="icon" href="{{ url_for('static', filename='images/logo.svg') }}">
+        <link href="https://fonts.googleapis.com/css?family=M+PLUS+Rounded+1c" rel="stylesheet">
         <script type="text/javascript" src="{{ url_for('static', filename='js/select_translator.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('static', filename='js/test/test.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('static', filename='js/test/pre_test_sheet.js') }}"></script>
@@ -44,12 +45,12 @@
                     </table>
                 </div>
                 <div style="margin-top: 10px;">
-                    <button id="back-button" class="button" onclick="window.location.href = '/';">Back</button>
+                    <div id="back-button" class="button" onclick="window.location.href = '/';">Back</div>
                 </div>
             </div>
         </div>
         <footer>
-            <div>Copyright © 2020 – Elliot Paton-Simpson</div>
+            <div>Copyright © 2021 – Elliot Paton-Simpson</div>
         </footer>
         {% include 'components/pre_test_sheet.html' %}
     </body>

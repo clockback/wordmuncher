@@ -33,9 +33,6 @@ function hideNewSheetInterface() {
 
 function changeNewSheetName() {
   var name = getById("new-sheet-name").value;
-  var messageNewSheetExists = getById("message-new-sheet-already-exists");
-  var messageNewSheetEmpty = getById("message-new-sheet-empty-name");
-  var messageNewSheetLong = getById("message-new-sheet-long-name");
 
   if (name == "" || name.length > 80) {
     if (name == "") {
@@ -133,7 +130,7 @@ function newSheetLoadMoreEntries(numberAlready) {
 
   openRequest("/create/load_more_entries", [
     ["already", numberAlready], ["query", query]
-  ]);
+  ], processNewSheetLoadMoreEntries);
 }
 
 function processNewSheetLoadMoreEntries(request) {

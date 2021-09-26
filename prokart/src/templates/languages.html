@@ -3,19 +3,20 @@
         <title>Prokart</title>
         <link rel="stylesheet" href="{{ url_for('static', filename='css/general.css') }}">
         <link rel="icon" href="{{ url_for('static', filename='images/logo.svg') }}">
+        <link href="https://fonts.googleapis.com/css?family=M+PLUS+Rounded+1c" rel="stylesheet">
+        <script type="text/javascript" src="{{ url_for('static', filename='js/utils.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('static', filename='js/languages/languages.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('static', filename='js/languages/edit_languages.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('static', filename='js/select_translator.js') }}"></script>
-        <script type="text/javascript" src="{{ url_for('static', filename='js/utils.js') }}"></script>
     </head>
 
     <body>
         {% include 'components/topbar.html' %}
         <div id="main" tabindex="-1">
             <div style="margin-left: 5px; margin-top: 5px;">
-                <div>
-                    <button id="modify-languages" class="button" onclick="showEditLanguagesInterface();">Modify languages</button>
-                </div>
+                <p>
+                    <div id="modify-languages" class="button" onclick="showEditLanguagesInterface();">Modify languages</div>
+                </p>
                 <p>Translate from:</p>
                 <div style="display: inline-block; width: 300px;">
                     <div id="translate-from" class="custom-select">
@@ -42,13 +43,13 @@
                         </select>
                     </div>
                 </div>
-                <div>
-                    <button id="save-button" style="margin-top: 10px;" class="button button-disabled">Save</button>
-                </div>
+                <p>
+                    <div id="save-button" style="margin-top: 10px;" class="button button-disabled">Save</div>
+                </p>
             </div>
         </div>
         <footer>
-            <div>Copyright © 2020 – Elliot Paton-Simpson</div>
+            <div>Copyright © 2021 – Elliot Paton-Simpson</div>
         </footer>
         {% include 'components/edit_languages.html' %}
     </body>
