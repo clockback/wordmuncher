@@ -200,7 +200,17 @@ function processProceed(request) {
   textArea.value = "";
   textArea.disabled = false;
 
-  prepareTable(answers);
+  if (answers === null) {
+    document.querySelector(".textarea-container").classList.remove("hide");
+    document.querySelector(".answer-area").classList.remove(
+      "answer-area-with-table"
+    );
+    getById("answer-table").classList.add("hide");
+  }
+  else {
+    getById("answer-table").classList.remove("hide");
+    prepareTable(answers);
+  }
 
   // Focuses on the answer box.
   textArea.focus();

@@ -12,7 +12,7 @@
 }
 
 h1, h2, p, th, td, div {
-    font-family: "M PLUS Rounded 1c";
+    font-family: "M PLUS Rounded 1c", "Montserrat", sans-serif;
 }
 
 p {
@@ -30,7 +30,7 @@ body {
     color: white;
     font-size: 20px;
     font-weight: bold;
-    font-family: "M PLUS Rounded 1c";
+    font-family: "M PLUS Rounded 1c", "Montserrat", sans-serif;
     white-space: nowrap;
     border-radius: 2px;
     padding: 6px 20px;
@@ -116,7 +116,7 @@ span::-moz-focus-inner {
     color: white;
     width: var(--topbar-button-width);
     font-size: 23px;
-    font-family: "M PLUS Rounded 1c";
+    font-family: "M PLUS Rounded 1c", "Montserrat", sans-serif;
 }
 
 .sidebar-center-button:not(:hover) {
@@ -358,7 +358,7 @@ a:visited {
 
 .input-box>input {
     font-size: 20px;
-    font-family: "M PLUS Rounded 1c";
+    font-family: "M PLUS Rounded 1c", "Montserrat", sans-serif;
     border: none;
     overflow: hidden;
 }
@@ -369,14 +369,14 @@ a:visited {
 
 :not(.input-box)>input {
     border: none;
-    font-family: "M PLUS Rounded 1c";
+    font-family: "M PLUS Rounded 1c", "Montserrat", sans-serif;
 }
 
 .magnifying-glass {
     float: right;
     margin-left: 5px;
     font-size: 20px;
-    font-family: "M PLUS Rounded 1c";
+    font-family: "M PLUS Rounded 1c", "Montserrat", sans-serif;
     cursor: pointer;
 }
 
@@ -446,7 +446,7 @@ textarea {
     resize: none;
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
-    font-family: "M PLUS Rounded 1c";
+    font-family: "M PLUS Rounded 1c", "Montserrat", sans-serif;
     font-size: 20px;
     text-align: left;
     box-sizing: border-box;
