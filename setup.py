@@ -67,5 +67,5 @@ setup(
             'prokart = prokart.src.main:main'
         ]
     },
-    license='License :: OSI Approved :: MIT License',
+    license='License :: OSI Approved :: GPLv3 License',
 )
