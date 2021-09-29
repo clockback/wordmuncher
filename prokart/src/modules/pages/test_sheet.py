@@ -403,7 +403,7 @@ def correct_answer() -> Tuple[Dict[str, int], int]:
 
     # Checks whether or not the sheet has been completed inasmuch as it
     # is presently possible.
-    completed = not bool(conn.execute(
+    completed = not conn.execute(
         f"""
         SELECT COUNT(*) FROM entries
         INNER JOIN mentions ON entries.entry = mentions.entry
@@ -411,12 +411,12 @@ def correct_answer() -> Tuple[Dict[str, int], int]:
         INNER JOIN translators
             ON translators.translator = entries.translator
         WHERE sheets.name = ?
-        AND so_far == needed
+        AND so_far != needed
         AND last_used = (
             SELECT MAX(last_used) FROM translators
         );
         """, (sheet,)
-    ).fetchone()[0])
+    ).fetchone()[0]
 
     # Commits the changes.
     conn.commit()

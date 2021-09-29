@@ -1,13 +1,13 @@
 :root {
-    --base-color: #36486B;
-    --hover-color: #4040A1;
-    --disabled-color: #B4B4FF;
-    --odd-row: #FEFBD8;
-    --light-container: #FEFBD8;
-    --even-row: #FFFFE8;
-    --select-row: #618685;
+    --base-color: #2e8bc0;
+    --hover-color: #145da0;
+    --disabled-color: #b1d4e0;
+    --odd-row: #b1d4e0;
+    --light-container: #c1e4f0;
+    --bg-color: #F2F2FF;
+    --even-row: #c1e4f0;
+    --select-row: #0c2d48;
     --tooltip-color: #555;
-
     --topbar-button-width: 150px;
 }
 
@@ -296,11 +296,11 @@ a:visited {
     right: 40px;
     top: 40px;
     bottom: 40px;
-    background: white;
     margin: 0 auto;
     display: block;
     border-radius: 3px;
     overflow: hidden;
+    background: var(--bg-color);
 }
 
 .dialog {
@@ -425,7 +425,7 @@ td.center-full-row {
 
 .bar-chart {
     position: absolute;
-    background-color: var(--select-row);
+    background-color: var(--base-color);
     height: 1.5em;
     border-radius: 10px;
 }
@@ -717,10 +717,9 @@ div.textarea-container {
     display: inline-block;
     width: 50%;
     max-width: 500px;
-    background: light-grey;
     padding: 15px 15px 5px 15px;
     margin-left: 10px;
-    background: #eeeeee;
+    background: var(--even-row);
 }
 
 .range-slider {
@@ -768,4 +767,8 @@ div.textarea-container {
 .correction-text {
     font-weight: bold;
     font-size: 20px;
+}
+
+.main {
+    background: var(--bg-color);
 }
