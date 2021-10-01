@@ -19,7 +19,13 @@ def decorate_find_queries(queries: Set[str]) -> Callable[[str], bool]:
     """Checks whether or not a vocabulary entry answer contains all
     provided search terms.
     """
-    def find_queries(question_str, entries_str: str) -> bool:
+    simplified_queries = set()
+
+    # Removes any accent characters from consideration.
+    for original_query in queries:
+        simplified_queries.add(original_query.replace(chr(769), ""))
+
+    def find_queries(question_str: str, entries_str: str) -> bool:
         """Checks whether or not a vocabulary entry answer contains all
         specifically provided search terms.
         """
@@ -36,8 +42,8 @@ def decorate_find_queries(queries: Set[str]) -> Callable[[str], bool]:
 
         check_str += f" {question_str}"
 
-        for query in queries:
-            if query not in check_str:
+        for query in simplified_queries:
+            if query not in check_str.replace(chr(769), ""):
                 return False
 
         return True
