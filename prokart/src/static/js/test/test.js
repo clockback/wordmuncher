@@ -18,6 +18,7 @@ function processSearchSheets(request) {
     newRow.onclick = function () {
       testSheet(this);
     };
+    bindButtonKeyPressEvents(newRow, testSheet);
 
     for (var j = 0; j < 3; j ++) {
       var newCell = document.createElement("td");
@@ -54,10 +55,14 @@ function processLoadMoreSheets(request) {
   var sheetTableRows = getById('sheet-table-rows');
   for (var i = 0; i < returnJSON['sheets'].length; i ++) {
     var newRow = document.createElement("tr");
+    newRow.setAttribute("tabindex", "0");
     newRow.style["cursor"] = "pointer";
     newRow.onclick = function () {
       testSheet(this);
     };
+    bindButtonKeyPressEvents(newRow, function () {
+      testSheet(newRow);
+    })
 
     for (var j = 0; j < 3; j ++) {
       var newCell = document.createElement("td");

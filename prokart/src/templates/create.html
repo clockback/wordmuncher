@@ -40,7 +40,7 @@
                             </tbody>
                             <tbody class="main-rows" id="sheet-table-rows">
                                 {% for sheet, entries, completed in sheets %}
-                                    <tr onclick="clickSheet(this);" style="cursor: pointer;">
+                                    <tr tabindex="0" onclick="clickSheet(this);" onkeypress="buttonKeyPressEvent(clickSheet, this, event);" style="cursor: pointer;">
                                         <td>{{ sheet }}</td>
                                         <td>{{ entries }}</td>
                                         <td>{{ completed }}</td>
@@ -48,7 +48,7 @@
                                 {% endfor %}
                             </tbody>
                             <tbody>
-                                <tr id="sheet-load-more-row" style="visibility: {{ 'visible' if load_more_sheets else 'collapse' }} ; cursor: pointer;" onClick="loadMoreSheets()">
+                                <tr id="sheet-load-more-row" tabindex="0" style="visibility: {{ 'visible' if load_more_sheets else 'collapse' }} ; cursor: pointer;" onClick="loadMoreSheets()" onkeypress="buttonKeyPressEvent(loadMoreSheets, this, event);">
                                     <td colspan=3 class="center-full-row">Load more...</td>
                                 </tr>
                             </tbody>
@@ -74,7 +74,7 @@
                             </tbody>
                             <tbody class="main-rows" id="entry-table-rows">
                                 {% for question, answer, mentions, stars in entries %}
-                                    <tr onclick="clickEntry(this);" style="cursor: pointer;">
+                                    <tr onclick="clickEntry(this);" onkeypress="buttonKeyPressEvent(clickEntry, this, event);" tabindex="0" style="cursor: pointer;">
                                         <td>{{ question }}</td>
                                         <td>{{ answer }}</td>
                                         <td>{{ mentions }}</td>
@@ -83,7 +83,7 @@
                                 {% endfor %}
                             </tbody>
                             <tbody>
-                                <tr id="entry-load-more-row" style="visibility: {{ 'visible' if load_more_entries else 'collapse' }} ; cursor: pointer;" onClick="loadMoreEntries()">
+                                <tr id="entry-load-more-row" tabindex="0" style="visibility: {{ 'visible' if load_more_entries else 'collapse' }} ; cursor: pointer;" onClick="loadMoreEntries()" onkeypress="buttonKeyPressEvent(loadMoreEntries, this, event);">
                                     <td colspan=4 class="center-full-row">Load more...</td>
                                 </tr>
                             </tbody>

@@ -1,6 +1,6 @@
 <div class="sidebar">
     <div id="sidebar-left" class="sidebar-left">
-        <div id="sidebar-left-home" onclick="window.location.href = '/';" tabindex="0">
+        <div id="sidebar-left-home" tabindex="0" onclick="window.location.href = '/';" onkeypress="buttonKeyPressEvent(function () { window.location.href = '/'; }, null, event);">
             <img style="width: 40px; height: 40px;" src="{{ url_for('static', filename='images/logo-dark.svg') }}">
         </div>
     </div>

@@ -31,7 +31,7 @@
                         </tbody>
                         <tbody class="main-rows" id="sheet-table-rows">
                             {% for sheet, completed, entries in sheets %}
-                                <tr style="cursor: pointer;" onclick="testSheet(this)">
+                                <tr tabindex="0" style="cursor: pointer;" onclick="testSheet(this)" onkeypress="buttonKeyPressEvent(testSheet, this, event);">
                                     <td>{{ sheet }}</td>
                                     <td>{{ completed }}</td>
                                     <td>{{ entries }}</td>
@@ -39,7 +39,7 @@
                             {% endfor %}
                         </tbody>
                         <tbody>
-                            <tr id="load-more-row" style="visibility: {{ 'visible' if load_more else 'collapse' }} ; cursor: pointer;" onClick="loadMoreSheets()">
+                            <tr tabindex="0" id="load-more-row" style="visibility: {{ 'visible' if load_more else 'collapse' }} ; cursor: pointer;" onclick="loadMoreSheets()"  onkeypress="buttonKeyPressEvent(loadMoreSheets, this, event);">
                                 <td colspan=3 class="center-full-row">Load more...</td>
                             </tr>
                         </tbody>

@@ -62,13 +62,14 @@ function processShowEditEntryInterface(request) {
     );
     for (var i = 1; i < answers.length; i ++) {
       var newAdditionalAnswer = document.createElement("tr");
-      newAdditionalAnswer.setAttribute("tabindex", "0")
 
       var newAdditionalAnswerName = document.createElement("td");
+      newAdditionalAnswerName.setAttribute("tabindex", "0");
       newAdditionalAnswerName.innerHTML = answers[i];
       newAdditionalAnswerName.onclick = function () {
         editEntryPromoteAnswer(this);
       };
+      bindButtonKeyPressEvents(newAdditionalAnswerName, editEntryPromoteAnswer);
 
       var newAdditionalAnswerTrash = document.createElement("td");
 
@@ -282,9 +283,11 @@ function editEntryAddRow() {
 
   var newLeftColumn = document.createElement("td");
   newLeftColumn.innerHTML = newAnswer;
+  newLeftColumn.setAttribute("tabindex", "0");
   newLeftColumn.onclick = function () {
     editEntryPromoteAnswer(this);
   };
+  bindButtonKeyPressEvents(newLeftColumn, editEntryPromoteAnswer);
 
   var newTrashButton = document.createElement("button");
   newTrashButton.innerHTML = "🗑️";
@@ -426,10 +429,12 @@ function processEditEntryLoadMoreSheets(request) {
     }
 
     var newRow = document.createElement("tr");
+    newRow.setAttribute("tabindex", "0");
     newRow.style["cursor"] = "pointer";
     newRow.onclick = function () {
       clickEditEntrySheet(this);
     }
+    bindButtonKeyPressEvents(newRow, clickEditEntrySheet);
 
     for (var j = 0; j < 3; j ++) {
       var cell = document.createElement("td");
@@ -479,10 +484,12 @@ function processEditEntrySearchSheets(request) {
     }
 
     var newRow = document.createElement("tr");
+    newRow.setAttribute("tabindex", "0");
     newRow.style["cursor"] = "pointer";
     newRow.onclick = function () {
       clickEditEntrySheet(this);
     }
+    bindButtonKeyPressEvents(newRow, clickEditEntrySheet);
 
     for (var j = 0; j < 3; j ++) {
       var cell = document.createElement("td");

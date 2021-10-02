@@ -77,7 +77,7 @@
                     </tbody>
                     <tbody id="add-entry-sheet-table-rows" class="main-rows">
                         {% for sheet, entries, completed in sheets %}
-                            <tr onclick="clickNewEntrySheet(this);" style="cursor: pointer;">
+                            <tr style="cursor: pointer;" tabindex="0" onclick="clickNewEntrySheet(this);" onkeypress="buttonKeyPressEvent(clickNewEntrySheet, this, event);">
                                 <td>{{ sheet }}</td>
                                 <td>{{ entries }}</td>
                                 <td>{{ completed }}</td>
@@ -86,7 +86,7 @@
                     </tbody>
                     <tbody id="new-entry-sheet-table-hidden-rows" class="hidden-rows"></tbody>
                     <tbody>
-                        <tr id="new-entry-sheet-load-more-row" style="visibility: {{ 'visible' if load_more_sheets else 'collapse' }} ; cursor: pointer;" onClick="newEntryLoadMoreSheets()">
+                        <tr id="new-entry-sheet-load-more-row" tabindex="0" style="visibility: {{ 'visible' if load_more_sheets else 'collapse' }} ; cursor: pointer;" onClick="newEntryLoadMoreSheets()" onkeypress="buttonKeyPressEvent(newEntryLoadMoreSheets, this, event);">
                             <td colspan=4 class="center-full-row">Load more...</td>
                         </tr>
                     </tbody>

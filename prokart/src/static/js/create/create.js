@@ -16,10 +16,12 @@ function processSearchAll(request) {
 
   for (var i = 0; i < returnJSON['sheets'].length; i ++) {
     var newRow = document.createElement("tr");
+    newRow.setAttribute("tabindex", "0");
     newRow.style["cursor"] = "pointer";
     newRow.onclick = function () {
       clickSheet(this);
     };
+    bindButtonKeyPressEvents(newRow, clickSheet);
 
     for (var j = 0; j < 3; j ++) {
       var newCell = document.createElement("td");
@@ -34,10 +36,12 @@ function processSearchAll(request) {
 
   for (var i = 0; i < returnJSON['entries'].length; i ++) {
     var newRow = document.createElement("tr");
+    newRow.setAttribute("tabindex", "0");
     newRow.style["cursor"] = "pointer";
     newRow.onclick = function () {
       clickEntry(this);
     };
+    bindButtonKeyPressEvents(newRow, clickEntry);
 
     for (var j = 0; j < 4; j ++) {
       var newCell = document.createElement("td");
@@ -84,10 +88,12 @@ function processLoadMoreSheets(request) {
 
   for (var i = 0; i < returnJSON["sheets"].length; i ++) {
     var newRow = document.createElement("tr");
+    newRow.setAttribute("tabindex", "0");
     newRow.style["cursor"] = "pointer";
     newRow.onclick = function () {
       clickSheet(this);
     }
+    bindButtonKeyPressEvents(newRow, clickSheet);
 
     for (var j = 0; j < 3; j++) {
       var cell = document.createElement("td");
@@ -123,10 +129,12 @@ function processLoadMoreEntries(request) {
 
   for (var i = 0; i < returnJSON['entries'].length; i ++) {
     var newRow = document.createElement("tr");
+    newRow.setAttribute("tabindex", "0");
     newRow.style["cursor"] = "pointer";
     newRow.onclick = function () {
       clickEntry(this);
     }
+    bindButtonKeyPressEvents(newRow, clickEntry);
 
     for (var j = 0; j < 4; j++) {
       var cell = document.createElement("td");

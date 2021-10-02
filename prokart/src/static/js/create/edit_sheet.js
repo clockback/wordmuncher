@@ -182,10 +182,12 @@ function processEditSheetLoadMoreEntries(request) {
     }
 
     var newRow = document.createElement("tr");
+    newRow.setAttribute("tabindex", "0");
     newRow.style["cursor"] = "pointer";
     newRow.onclick = function () {
       clickEditSheetEntry(this);
     }
+    bindButtonKeyPressEvents(newRow, clickEditSheetEntry);
 
     for (var j = 0; j < 4; j ++) {
       var cell = document.createElement("td");
@@ -235,10 +237,12 @@ function processEditSheetSearchEntries(request) {
     }
 
     var newRow = document.createElement("tr");
+    newRow.setAttribute("tabindex", "0");
     newRow.style["cursor"] = "pointer";
     newRow.onclick = function () {
       clickEditSheetEntry(this);
     }
+    bindButtonKeyPressEvents(newRow, clickEditSheetEntry);
 
     for (var j = 0; j < 4; j ++) {
       var cell = document.createElement("td");

@@ -33,7 +33,7 @@
                     </tbody>
                     <tbody id="add-sheet-entry-table-rows" class="main-rows">
                         {% for question, answer, mentions, stars in entries %}
-                            <tr onclick="clickNewSheetEntry(this);" style="cursor: pointer;">
+                            <tr tabindex="0" style="cursor: pointer;" onclick="clickNewSheetEntry(this);" onkeypress="buttonKeyPressEvent(clickNewSheetEntry, this, event);">
                                 <td>{{ question }}</td>
                                 <td>{{ answer }}</td>
                                 <td>{{ mentions }}</td>
@@ -43,7 +43,7 @@
                     </tbody>
                     <tbody id="new-sheet-entry-table-hidden-rows" class="hidden-rows"></tbody>
                     <tbody>
-                        <tr id="new-sheet-entry-load-more-row" style="visibility: {{ 'visible' if load_more_entries else 'collapse' }} ; cursor: pointer;" onClick="newSheetLoadMoreEntries()">
+                        <tr id="new-sheet-entry-load-more-row" tabindex="0" style="visibility: {{ 'visible' if load_more_entries else 'collapse' }} ; cursor: pointer;" onClick="newSheetLoadMoreEntries()" onkeypress="buttonKeyPressEvent(newSheetLoadMoreEntries, this, event);">
                             <td colspan=4 class="center-full-row">Load more...</td>
                         </tr>
                     </tbody>

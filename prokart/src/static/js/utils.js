@@ -243,3 +243,15 @@ function changeRangeValue(textId) {
   textBox.innerHTML = bestVal;
   slider.value = bestVal;
 }
+
+function bindButtonKeyPressEvents(element, func) {
+  element.onkeypress = function (event) {
+    buttonKeyPressEvent(func, element, event);
+  };
+}
+
+function buttonKeyPressEvent(func, element, event) {
+  if (event.key == "Enter" || event.key == " ") {
+    func(element);
+  }
+}

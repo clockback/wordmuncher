@@ -150,11 +150,12 @@ function processNewSheetLoadMoreEntries(request) {
     }
 
     var newRow = document.createElement("tr");
-    newRow.style["cursor"] = "pointer";
     newRow.setAttribute("tabindex", "0")
+    newRow.style["cursor"] = "pointer";
     newRow.onclick = function () {
       clickNewSheetEntry(this);
     }
+    bindButtonKeyPressEvents(newRow, clickNewSheetEntry);
 
     for (var j = 0; j < 4; j ++) {
       var cell = document.createElement("td");
@@ -203,10 +204,12 @@ function processNewSheetSearchEntries(request) {
     }
 
     var newRow = document.createElement("tr");
+    newRow.setAttribute("tabindex", "0");
     newRow.style["cursor"] = "pointer";
     newRow.onclick = function () {
       clickNewSheetEntry(this);
     }
+    bindButtonKeyPressEvents(newRow, clickNewSheetEntry);
 
     for (var j = 0; j < 4; j ++) {
       var cell = document.createElement("td");

@@ -156,10 +156,12 @@ function newEntryAddRow() {
   }
 
   var newLeftColumn = document.createElement("td");
+  newLeftColumn.setAttribute("tabindex", "0");
   newLeftColumn.innerHTML = newAnswer;
   newLeftColumn.onclick = function () {
     newEntryPromoteAnswer(this);
   };
+  bindButtonKeyPressEvents(newLeftColumn, newEntryPromoteAnswer);
 
   var newTrashButton = document.createElement("button");
   newTrashButton.innerHTML = "🗑️";
@@ -173,7 +175,6 @@ function newEntryAddRow() {
 
   var newRow = document.createElement("tr");
   newRow.appendChild(newLeftColumn);
-  newRow.appendChild(newRightColumn);
   newRow.appendChild(newRightColumn);
 
   document.querySelector("#new-entry-answers-table>tbody").insertBefore(
@@ -293,10 +294,12 @@ var returnJSON = JSON.parse(request.responseText);
     }
 
     var newRow = document.createElement("tr");
+    newRow.setAttribute("tabindex", "0");
     newRow.style["cursor"] = "pointer";
     newRow.onclick = function () {
       clickNewEntrySheet(this);
     }
+    bindButtonKeyPressEvents(newRow, clickNewEntrySheet);
 
     for (var j = 0; j < 3; j ++) {
       var cell = document.createElement("td");
@@ -345,10 +348,12 @@ function processNewEntrySearchSheets(request) {
     }
 
     var newRow = document.createElement("tr");
+    newRow.setAttribute("tabindex", "0");
     newRow.style["cursor"] = "pointer";
     newRow.onclick = function () {
       clickNewEntrySheet(this);
     }
+    bindButtonKeyPressEvents(newRow, clickNewEntrySheet);
 
     for (var j = 0; j < 3; j ++) {
       var cell = document.createElement("td");
