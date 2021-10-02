@@ -6,6 +6,8 @@ __version__ = '0.1.0'
 
 # Builtins
 import argparse
+import threading
+import time
 import webbrowser
 
 # Installed packages
@@ -19,6 +21,19 @@ from prokart.src.modules.pages import (
 )
 
 
+def open_browser() -> None:
+    """Opens the application in the default web browser.
+    :return: None
+    """
+    # Only opens the browser if not told to suppress this action.
+    if not app.config["SUPPRESS"]:
+        # Gives time for the Waitress server to run.
+        time.sleep(0.5)
+
+        # Opens the application main page with the default browser.
+        webbrowser.open("http://0.0.0.0:8080")
+
+
 def main() -> None:
     """Establishes a connection to the SQLite database and starts up
     the server.
@@ -26,8 +41,8 @@ def main() -> None:
     """
     # Opens the application in the user's browser unless directed
     # otherwise.
-    if not app.config["SUPPRESS"]:
-        webbrowser.open("http://0.0.0.0:8080")
+    open_browser_thread = threading.Thread(target=open_browser)
+    open_browser_thread.start()
 
     # Attempts to host the application.
     try:
