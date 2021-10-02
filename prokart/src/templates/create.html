@@ -18,7 +18,7 @@
 
     <body>
         {% include 'components/topbar.html' %}
-        <div id="main" class="main" tabindex="-1">
+        <div id="main" class="main" tabindex="-1" data-tabbable="false">
             <div style="margin-left: 5px;">
                 <div>
                     <h1>Create</h1>
@@ -29,7 +29,7 @@
                 </div>
                 <div class="column">
                     <h2>Sheets</h2>
-                    <div id="sheet-table-container" tabindex="-1" style="overflow-x: auto; overflow-y: hidden; outline: none;">
+                    <div id="sheet-table-container" tabindex="-1" data-tabbable="false" style="overflow-x: auto; overflow-y: hidden; outline: none;">
                         <table id="sheets-table">
                             <tbody class="header-row">
                                 <tr>
@@ -62,7 +62,7 @@
                 </div>
                 <div class="column">
                     <h2>Entries</h2>
-                    <div id="entries-table-container" tabindex="-1" style="overflow-x: auto; overflow-y: hidden; outline: none;">
+                    <div id="entries-table-container" tabindex="-1" data-tabbable="false" style="overflow-x: auto; overflow-y: hidden; outline: none;">
                         <table id="entries-table">
                             <tbody class="header-row">
                                 <tr>

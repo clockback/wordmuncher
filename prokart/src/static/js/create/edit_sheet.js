@@ -4,11 +4,8 @@ function showEditSheetInterface(name) {
     "message-edit-sheet-long-name"
   ]);
 
-  disallowTabSelection([
-    "back", "search-all", "sidebar-left-home", "sidebar-center-translator",
-    "new-sheet", "edit-sheet", "delete-sheet", "new-entry", "edit-entry",
-    "delete-entry"
-  ]);
+  disableAllTabbables("main");
+  disableAllTabbables(document.querySelector(".sidebar"));
 
   editSheetSearchEntries();
 
@@ -46,11 +43,8 @@ function processShowEditSheetInterface(request) {
 }
 
 function hideEditSheetInterface() {
-  allowTabSelection([
-    "back", "search-all", "sidebar-left-home", "sidebar-center-translator",
-    "new-sheet", "edit-sheet", "delete-sheet", "new-entry", "edit-entry",
-    "delete-entry"
-  ]);
+  enableAllTabbables("main");
+  enableAllTabbables(document.querySelector(".sidebar"));
 
   hide(['edit-sheet-container-background']);
   getById('edit-sheet-name').value = "";

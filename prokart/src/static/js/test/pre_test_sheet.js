@@ -5,7 +5,8 @@ function testSheet(row) {
   ).innerHTML = row.children[0].innerHTML;
 
   // Prevents selection of now concealed elements.
-  disallowTabSelection(["search-sheets", "back-button"]);
+  disableAllTabbables("main");
+  disableAllTabbables(document.querySelector(".sidebar"));
 
   var bar = container.querySelector("div.bar-chart-container");
   var percentage = row.children[1].innerHTML;
@@ -28,7 +29,8 @@ function testSheet(row) {
 
 function hideTestSheetInterface(row) {
   // Prevents selection of now concealed elements.
-  allowTabSelection(["search-sheets", "back-button"]);
+  enableAllTabbables("main");
+  enableAllTabbables(document.querySelector(".sidebar"));
 
   hide(["pre-test-sheet-container-background"]);
 }

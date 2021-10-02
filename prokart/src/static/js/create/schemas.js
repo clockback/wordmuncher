@@ -1,11 +1,7 @@
 function showSchemasInterface(launchFrom, type) {
   sessionStorage.launchFrom = launchFrom;
 
-  disallowTabSelection([
-    `${launchFrom}-entry-question`, `${launchFrom}-entry-answer`,
-    `${launchFrom}-entry-add-answer`, `${launchFrom}-entry-search-sheets`,
-    `save-${launchFrom}-entry`
-  ]);
+  disableAllTabbables(`${type}-entry-container-background`);
 
   getById("add-remove-rows-subschema").onclick = clickAddRowsSubschema;
 
@@ -886,19 +882,14 @@ function processShowDeleteSchemaInterface(request, schemaName) {
 
   var result = JSON.parse(request.responseText)['already_there'];
 
-  disallowTabSelection([
-    "schema-name", "add-remove-rows-subschema", "swap-subschemas",
-    "delete-schema", "save-schema", "back-schema"
-  ]);
+  disableAllTabbables("schemas-container-background");
+
   unhide(["delete-schemas-dialog-container-background"]);
   deleteSchemaName.focus();
 }
 
 function hideDeleteSchemaInterface() {
-  allowTabSelection([
-    "schema-name", "add-remove-rows-subschema", "swap-subschemas",
-    "delete-schema", "save-schema", "back-schema"
-  ]);
+  enableAllTabbables("schemas-container-background");
   hide(["delete-schemas-dialog-container-background"]);
   getById("schema-name").focus();
 }

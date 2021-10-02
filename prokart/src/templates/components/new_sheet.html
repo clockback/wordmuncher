@@ -5,7 +5,7 @@
                 <img src="{{ url_for('static', filename='images/close.svg') }}" style="height: 20px; width: 20px; cursor: pointer;"/>
             </div>
         </div>
-        <div class="container-contents">
+        <div class="container-contents" tabindex="-1" data-tabbable="false">
             <h1>Add new sheet</h1>
             <p>Sheet name:</p>
             <div>
@@ -21,7 +21,7 @@
                 <input id="new-sheet-search-entries" autocomplete="off" class="search" placeholder="Search" oninput="newSheetSearchEntries();">
                 <div class="magnifying-glass">🔍</div>
             </div>
-            <div id="add-sheet-entries-table-container" style="overflow-x: auto; overflow-y: hidden" tabindex="-1">
+            <div id="add-sheet-entries-table-container" style="overflow-x: auto; overflow-y: hidden" tabindex="-1" data-tabbable="false">
                 <table id="add-sheet-entries-table">
                     <tbody class="header-row">
                         <tr>

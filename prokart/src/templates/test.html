@@ -13,14 +13,14 @@
 
     <body style="margin: 0px; padding: 0px;">
         {% include 'components/topbar.html' %}
-        <div id="main" class="main" tabindex="-1">
+        <div id="main" class="main" tabindex="-1" data-tabbable="false">
             <div style="margin-left: 5px;">
                 <p>Select your sheet you would like to test:</p>
                 <div class="input-box">
                     <input id="search-sheets" autocomplete="off" type="text" name="sheet query" value="{{ current_search }}" oninput="searchSheets()"/>
                     <div class="magnifying-glass">🔍</div>
                 </div>
-                <div id="sheet-table-container" style="overflow-x: auto; overflow-y: hidden" tabindex="-1">
+                <div id="sheet-table-container" style="overflow-x: auto; overflow-y: hidden" tabindex="-1" data-tabbable="false">
                     <table id="sheets-table">
                         <tbody class="header-row">
                             <tr>

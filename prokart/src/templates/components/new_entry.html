@@ -5,7 +5,7 @@
                 <img src="{{ url_for('static', filename='images/close.svg') }}" style="height: 20px; width: 20px; cursor: pointer;"/>
             </div>
         </div>
-        <div class="container-contents">
+        <div class="container-contents" tabindex="-1" data-tabbable="false">
             <h1>Add new entry</h1>
             <p>Question:</p>
             <div id="new-entry-question-div">
@@ -66,7 +66,7 @@
                 <input id="new-entry-search-sheets" autocomplete="off" class="search" placeholder="Search" oninput="newEntrySearchSheets();">
                 <div class="magnifying-glass">🔍</div>
             </div>
-            <div id="add-entry-entries-table-container" style="overflow-x: auto; overflow-y: hidden" tabindex="-1">
+            <div id="add-entry-entries-table-container" style="overflow-x: auto; overflow-y: hidden" tabindex="-1" data-tabbable="false">
                 <table id="add-entry-entries-table">
                     <tbody class="header-row">
                         <tr>

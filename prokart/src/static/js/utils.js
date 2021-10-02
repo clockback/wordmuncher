@@ -20,13 +20,6 @@ function stringToElement(id) {
   }
 }
 
-function disallowTabSelection(toCover) {
-  // Prevents the user from selecting the elements using the TAB key.
-  for (var i = 0; i < toCover.length; i ++) {
-    stringToElement(toCover[i]).setAttribute("tabindex", "-1");
-  }
-}
-
 function allowTabSelection(toCover) {
   // Allows the user to select the elements using the TAB key.
   for (var i = 0; i < toCover.length; i ++) {
@@ -253,5 +246,40 @@ function bindButtonKeyPressEvents(element, func) {
 function buttonKeyPressEvent(func, element, event) {
   if (event.key == "Enter" || event.key == " ") {
     func(element);
+  }
+}
+
+function disableAllTabbables(parent) {
+  if (typeof(parent) == "string") {
+    parent = getById(parent);
+  }
+
+  var allElements = parent.querySelectorAll(
+    "button,input,[tabindex]:not([tabindex='-1'])"
+  );
+
+  for (var i = 0; i < allElements.length; i ++) {
+    var element = allElements[i];
+    element.setAttribute("tabindex", "-1");
+  }
+}
+
+function enableAllTabbables(parent) {
+  if (typeof(parent) == "string") {
+    parent = getById(parent);
+  }
+
+  var allElements = parent.querySelectorAll(
+    "button,input,[tabindex='-1']:not([data-tabbable])"
+  );
+
+  for (var i = 0; i < allElements.length; i ++) {
+    var element = allElements[i];
+    if (element.tagName == "button" || element.tagName == "input") {
+      element.removeAttribute("tabindex");
+    }
+    else {
+      element.setAttribute("tabindex", "0");
+    }
   }
 }

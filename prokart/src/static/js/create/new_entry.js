@@ -1,9 +1,8 @@
 function showNewEntryInterface() {
-  disallowTabSelection([
-    "back", "search-all", "sidebar-left-home", "sidebar-center-translator",
-    "new-sheet", "edit-sheet", "delete-sheet", "new-entry", "edit-entry",
-    "delete-entry"
-  ]);
+  disableAllTabbables("main");
+  disableAllTabbables(document.querySelector(".sidebar"));
+
+  enableAllTabbables("new-entry-container-background");
 
   newEntrySearchSheets();
   unhide(["new-entry-container-background"]);
@@ -11,11 +10,8 @@ function showNewEntryInterface() {
 }
 
 function hideNewEntryInterface() {
-  allowTabSelection([
-    "back", "search-all", "sidebar-left-home", "sidebar-center-translator",
-    "new-sheet", "edit-sheet", "delete-sheet", "new-entry", "edit-entry",
-    "delete-entry"
-  ]);
+  enableAllTabbables("main");
+  enableAllTabbables(document.querySelector(".sidebar"));
 
   hide(['new-entry-container-background']);
 

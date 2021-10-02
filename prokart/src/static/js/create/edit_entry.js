@@ -1,9 +1,8 @@
 function showEditEntryInterface(question) {
-  disallowTabSelection([
-    "back", "search-all", "sidebar-left-home", "sidebar-center-translator",
-    "new-sheet", "edit-sheet", "delete-sheet", "new-entry", "edit-entry",
-    "delete-entry"
-  ]);
+  disableAllTabbables("main");
+  disableAllTabbables(document.querySelector(".sidebar"));
+
+  enableAllTabbables("edit-entry-container-background");
 
   // If the user is showing the interface, having just been using the
   // schema interface, nothing on the dialog itself needs to be updated.
@@ -143,11 +142,8 @@ function processShowEditEntryInterface(request) {
 }
 
 function hideEditEntryInterface() {
-  allowTabSelection([
-    "back", "search-all", "sidebar-left-home", "sidebar-center-translator",
-    "new-sheet", "edit-sheet", "delete-sheet", "new-entry", "edit-entry",
-    "delete-entry"
-  ]);
+  enableAllTabbables("main");
+  enableAllTabbables(document.querySelector(".sidebar"));
 
   hide(['edit-entry-container-background']);
   getById('edit-entry-question').value = "";

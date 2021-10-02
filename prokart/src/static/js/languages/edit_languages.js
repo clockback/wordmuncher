@@ -1,8 +1,7 @@
 function showEditLanguagesInterface(question) {
-  disallowTabSelection([
-    "modify-languages", "save-button", "sidebar-left-home",
-    "sidebar-center-translator"
-  ]);
+  disableAllTabbables("main");
+  disableAllTabbables(document.querySelector(".sidebar"));
+
   unhide(['languages-container-background']);
   getById('language-name').focus();
 }
@@ -12,10 +11,9 @@ function hideLanguagesInterface() {
   getById('language-name').value = "";
 
   disableButtons(["add-button"]);
-  allowTabSelection([
-    "modify-languages", "save-button", "sidebar-left-home",
-    "sidebar-center-translator"
-  ]);
+
+  enableAllTabbables("main");
+  enableAllTabbables(document.querySelector(".sidebar"));
 }
 
 function keyDownOnLanguagesContainer(event) {

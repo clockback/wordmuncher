@@ -4,11 +4,9 @@ function showNewSheetInterface() {
     "message-new-sheet-long-name"
   ]);
 
-  disallowTabSelection([
-    "back", "search-all", "sidebar-left-home", "sidebar-center-translator",
-    "new-sheet", "edit-sheet", "delete-sheet", "new-entry", "edit-entry",
-    "delete-entry"
-  ]);
+  disableAllTabbables("main");
+  disableAllTabbables(document.querySelector(".sidebar"));
+
   newSheetSearchEntries();
 
   disableButtons(["save-new-sheet"]);
@@ -20,11 +18,8 @@ function showNewSheetInterface() {
 function hideNewSheetInterface() {
   hide(["add-sheet-container-background"]);
 
-  allowTabSelection([
-    "back", "search-all", "sidebar-left-home", "sidebar-center-translator",
-    "new-sheet", "edit-sheet", "delete-sheet", "new-entry", "edit-entry",
-    "delete-entry"
-  ]);
+  enableAllTabbables("main");
+  enableAllTabbables(document.querySelector(".sidebar"));
 
   getById('new-sheet-name').value = "";
   getById('new-sheet-search-entries').value = "";
