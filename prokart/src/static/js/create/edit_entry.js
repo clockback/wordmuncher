@@ -62,6 +62,7 @@ function processShowEditEntryInterface(request) {
     );
     for (var i = 1; i < answers.length; i ++) {
       var newAdditionalAnswer = document.createElement("tr");
+      newAdditionalAnswer.setAttribute("tabindex", "0")
 
       var newAdditionalAnswerName = document.createElement("td");
       newAdditionalAnswerName.innerHTML = answers[i];

@@ -151,6 +151,7 @@ function processNewSheetLoadMoreEntries(request) {
 
     var newRow = document.createElement("tr");
     newRow.style["cursor"] = "pointer";
+    newRow.setAttribute("tabindex", "0")
     newRow.onclick = function () {
       clickNewSheetEntry(this);
     }

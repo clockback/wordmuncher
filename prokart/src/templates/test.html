@@ -20,7 +20,7 @@
                     <input id="search-sheets" autocomplete="off" type="text" name="sheet query" value="{{ current_search }}" oninput="searchSheets()"/>
                     <div class="magnifying-glass">🔍</div>
                 </div>
-                <div id="sheet-table-container" style="overflow-x: auto; overflow-y: hidden">
+                <div id="sheet-table-container" style="overflow-x: auto; overflow-y: hidden" tabindex="-1">
                     <table id="sheets-table">
                         <tbody class="header-row">
                             <tr>
@@ -46,7 +46,7 @@
                     </table>
                 </div>
                 <div style="margin-top: 10px;">
-                    <div id="back-button" class="button" onclick="window.location.href = '/';">Back</div>
+                    <button id="back-button" class="button" onclick="window.location.href = '/';">Back</button>
                 </div>
             </div>
         </div>

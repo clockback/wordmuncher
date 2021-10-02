@@ -13,7 +13,8 @@ function processSearchSheets(request) {
 
   for (var i = 0; i < returnJSON['sheets'].length; i ++) {
     var newRow = document.createElement("tr");
-    newRow.style["cursor"] = "pointer";
+    newRow.style.cursor = "pointer";
+    newRow.setAttribute("tabindex", "0");
     newRow.onclick = function () {
       testSheet(this);
     };

@@ -11,10 +11,6 @@
     --topbar-button-width: 150px;
 }
 
-h1, h2, p, th, td, div {
-    font-family: "M PLUS Rounded 1c", "Montserrat", sans-serif;
-}
-
 p {
     font-size: 18px;
 }
@@ -22,6 +18,7 @@ p {
 body {
     margin-left: 0;
     margin-right: 0;
+    font-family: "M PLUS Rounded 1c", "Montserrat", sans-serif;
 }
 
 .button {
@@ -90,15 +87,13 @@ span::-moz-focus-inner {
     margin-left: 5px;
     width: 40px;
     height: 40px;
-    margin-top: 2.5px;
+    margin-top: 5px;
     float: left;
 }
 
-.sidebar-left>span {
-    margin-top: 2px;
-    border: none;
+.sidebar-left>div {
     cursor: pointer;
-    background: none;
+    height: 40px;
 }
 
 .sidebar-center {
@@ -116,7 +111,6 @@ span::-moz-focus-inner {
     color: white;
     width: var(--topbar-button-width);
     font-size: 23px;
-    font-family: "M PLUS Rounded 1c", "Montserrat", sans-serif;
 }
 
 .sidebar-center-button:not(:hover) {
@@ -206,7 +200,6 @@ a:visited {
 /*the container must be positioned relative:*/
 .custom-select {
     position: relative;
-    font-family: Arial;
 }
 
 .custom-select select {
@@ -356,9 +349,12 @@ a:visited {
     color: red;
 }
 
+input {
+    font-family: "M PLUS Rounded 1c", "Montserrat", sans-serif;
+}
+
 .input-box>input {
     font-size: 20px;
-    font-family: "M PLUS Rounded 1c", "Montserrat", sans-serif;
     border: none;
     overflow: hidden;
 }
@@ -369,14 +365,13 @@ a:visited {
 
 :not(.input-box)>input {
     border: none;
-    font-family: "M PLUS Rounded 1c", "Montserrat", sans-serif;
 }
 
 .magnifying-glass {
     float: right;
     margin-left: 5px;
     font-size: 20px;
-    font-family: "M PLUS Rounded 1c", "Montserrat", sans-serif;
+    font-family: sans-serif;
     cursor: pointer;
 }
 
