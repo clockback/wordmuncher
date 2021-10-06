@@ -1,1 +1,1 @@
-web: python prokart/src/main.py
+web: python3 prokart/src/main.py
