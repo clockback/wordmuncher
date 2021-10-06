@@ -6,6 +6,7 @@ __version__ = '0.1.0'
 
 # Builtins
 import argparse
+import os
 import threading
 import time
 import webbrowser
@@ -46,8 +47,9 @@ def main() -> None:
 
     # Attempts to host the application.
     try:
+        port = int(os.environ.get("PORT", 33507))
         serve(
-            app, host='0.0.0.0', port=8080, threads=6,
+            app, host='0.0.0.0', port=port, threads=6,
             clear_untrusted_proxy_headers=True
         )
 
