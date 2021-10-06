@@ -1,1 +1,1 @@
-web: python3 prokart/src/main.py
+web: gunicorn --chdir prokart/src main:app
