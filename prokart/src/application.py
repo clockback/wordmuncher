@@ -6,7 +6,7 @@ from flask import Flask
 app: Flask = Flask(__name__)
 
 #
-app.debug = False
+app.debug = True
 
 # Sets the maximum number of rows that can be loaded into a table at a
 # time.
