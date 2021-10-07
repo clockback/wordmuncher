@@ -1,1 +1,1 @@
-web: gunicorn --chdir prokart/src main:app
+web: gunicorn gettingstarted.wsgi
