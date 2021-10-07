@@ -1,1 +1,1 @@
-web: gunicorn gettingstarted.wsgi
+web: python prokart/src/main.py

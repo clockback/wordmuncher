@@ -1,5 +1,5 @@
 """
-WSGI config for gettingstarted project.
+WSGI config for Prokart project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -9,8 +9,9 @@ https://docs.djangoproject.com/en/2.1/howto/deployment/wsgi/
 
 import os
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "gettingstarted.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "prokart_heroku.settings")
 
 from django.core.wsgi import get_wsgi_application
 
 application = get_wsgi_application()
+
