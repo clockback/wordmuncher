@@ -19,8 +19,6 @@ from prokart.src.modules.pages import (
     create, languages, mainpage, results, test, test_sheet
 )
 
-time.sleep(60)
-
 
 def main() -> None:
     """Establishes a connection to the SQLite database and starts up
