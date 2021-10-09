@@ -8,7 +8,7 @@ alert(SQLiteFS);
 
 */
 
-function getById(id) {
+window.getById = function (id) {
   // Returns the element with the requested id.
   try {
     return document.getElementById(id);
@@ -18,7 +18,7 @@ function getById(id) {
   }
 }
 
-function stringToElement(id) {
+window.stringToElement = function (id) {
   // If the value is a string, returns the corresponding element.
   if (typeof(id) == "string") {
     return getById(id);
@@ -30,14 +30,14 @@ function stringToElement(id) {
   }
 }
 
-function allowTabSelection(toCover) {
+window.allowTabSelection = function (toCover) {
   // Allows the user to select the elements using the TAB key.
   for (var i = 0; i < toCover.length; i ++) {
     stringToElement(toCover[i]).removeAttribute("tabindex");
   }
 }
 
-function disableButtons(toDisable) {
+window.disableButtons = function (toDisable) {
   // Disables each of the buttons, both by class and by event.
   for (var i = 0; i < toDisable.length; i ++) {
     var button = stringToElement(toDisable[i]);
@@ -46,7 +46,7 @@ function disableButtons(toDisable) {
   }
 }
 
-function enableButtons(toEnable) {
+window.enableButtons = function(toEnable) {
   // Enables each of the buttons, both by class and event.
   for (var i = 0; i < toEnable.length; i ++) {
     var button = stringToElement(toEnable[i][0]);
@@ -62,21 +62,21 @@ function enableButtons(toEnable) {
   }
 }
 
-function hide(toHide) {
+window.hide = function (toHide) {
   // Hides the specified elements using the class 'hide'.
   for (var i = 0; i < toHide.length; i ++) {
     stringToElement(toHide[i]).classList.add('hide');
   }
 }
 
-function unhide(toUnhide) {
+window.unhide = function (toUnhide) {
   // Unhides the specified elements using the class 'hide'.
   for (var i = 0; i < toUnhide.length; i ++) {
     stringToElement(toUnhide[i]).classList.remove('hide');
   }
 }
 
-function openRequest(url, params, callback) {
+window.openRequest = function (url, params, callback) {
   // Builds a request URI
 
   var request = new XMLHttpRequest();
@@ -103,7 +103,7 @@ function openRequest(url, params, callback) {
   request.send();
 }
 
-function populateSelectBoxes(callable, preserve, idAbove) {
+window.populateSelectBoxes = function (callable, preserve, idAbove) {
   var selectDiv, i, j, selectElement, selectedOption, hiddenOptions,
     hiddenOption, startJ;
 
@@ -146,13 +146,13 @@ function populateSelectBoxes(callable, preserve, idAbove) {
   }
 }
 
-function assignBox(hiddenOption, callable) {
+window.assignBox = function (hiddenOption, callable) {
   hiddenOption.onclick = function() {
     updateSelectBox(hiddenOption, callable);
   }
 }
 
-function selectBox(event) {
+window.selectBox = function (event) {
   /* When the select box is clicked, close any other select boxes, and
   open/close the current select box: */
   event.stopPropagation();
@@ -161,7 +161,7 @@ function selectBox(event) {
   this.classList.toggle("select-arrow-active");
 };
 
-function closeAllSelect(element) {
+window.closeAllSelect = function (element) {
   // A function that will close all select boxes in the document, except
   // the current select box:
   var selectItems, selectedItems, i, arrNo = [];
@@ -182,7 +182,7 @@ function closeAllSelect(element) {
   }
 }
 
-function updateSelectBox(element, callable) {
+window.updateSelectBox = function (element, callable) {
   // When an item is clicked, update the original select box, and the
   // selected item:
   var selectNode = element.parentNode.parentNode.getElementsByTagName(
@@ -208,7 +208,7 @@ function updateSelectBox(element, callable) {
   callable();
 }
 
-function addClickEvent(className, callable) {
+window.addClickEvent = function (className, callable) {
   // When an element with the provided class is clicked, the function
   // is called.
   var elements = document.getElementsByClassName(className);
@@ -217,14 +217,14 @@ function addClickEvent(className, callable) {
   }
 }
 
-function decorateFunction(callable) {
+window.decorateFunction = function (callable) {
   var args = arguments;
   return function () {
     callable(...Array.from(args).slice(1))
   }
 }
 
-function changeRangeValue(textId) {
+window.changeRangeValue = function (textId) {
   var slider = getById(textId);
   var sliderVal = slider.value;
   var textBox = getById(`${textId}-value`);
@@ -247,19 +247,19 @@ function changeRangeValue(textId) {
   slider.value = bestVal;
 }
 
-function bindButtonKeyPressEvents(element, func) {
+window.bindButtonKeyPressEvents = function (element, func) {
   element.onkeypress = function (event) {
     buttonKeyPressEvent(func, element, event);
   };
 }
 
-function buttonKeyPressEvent(func, element, event) {
+window.buttonKeyPressEvent = function (func, element, event) {
   if (event.key == "Enter" || event.key == " ") {
     func(element);
   }
 }
 
-function disableAllTabbables(parent) {
+window.disableAllTabbables = function (parent) {
   if (typeof(parent) == "string") {
     parent = getById(parent);
   }
@@ -274,7 +274,7 @@ function disableAllTabbables(parent) {
   }
 }
 
-function enableAllTabbables(parent) {
+window.enableAllTabbables = function (parent) {
   if (typeof(parent) == "string") {
     parent = getById(parent);
   }
