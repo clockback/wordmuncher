@@ -1,5 +1,6 @@
 import {
-    disableAllTabbables, enableAllTabbables, getById, hide, unhide
+    disableAllTabbables, disableButtons, enableAllTabbables, getById, hide,
+    unhide
 } from '../utils.js'
 
 export function showEditLanguagesInterface(question) {

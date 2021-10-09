@@ -8,6 +8,8 @@ import {
     hideLanguagesInterface
 } from './edit_languages.js';
 
+import {prepareEventsTopBar} from '../select_translator.js'
+
 function updateTranslator() {
     if (document.querySelectorAll(
         "#translate-from .same-as-selected,#translate-to .same-as-selected"
@@ -153,6 +155,8 @@ function prepareEventsLanguages() {
     getById("language-name").oninput = changeLanguageName;
     getById("choose-flag").onclick = expandFlags;
     getById("languages-back").onclick = hideLanguagesInterface;
+
+    prepareEventsTopBar();
 }
 
 window.addEventListener('load', prepareEventsLanguages);
