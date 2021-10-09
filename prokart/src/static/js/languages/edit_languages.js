@@ -1,4 +1,4 @@
-function showEditLanguagesInterface(question) {
+export function showEditLanguagesInterface(question) {
   disableAllTabbables("main");
   disableAllTabbables(document.querySelector(".sidebar"));
 
@@ -6,7 +6,7 @@ function showEditLanguagesInterface(question) {
   getById('language-name').focus();
 }
 
-function hideLanguagesInterface() {
+export function hideLanguagesInterface() {
   hide(['languages-container-background']);
   getById('language-name').value = "";
 
@@ -16,7 +16,7 @@ function hideLanguagesInterface() {
   enableAllTabbables(document.querySelector(".sidebar"));
 }
 
-function keyDownOnLanguagesContainer(event) {
+export function keyDownOnLanguagesContainer(event) {
   // Checks that the escape key was pressed..
   if (event.key == "Escape") {
     hideLanguagesInterface();

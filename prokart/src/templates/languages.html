@@ -1,4 +1,4 @@
-<html onclick="closeAllSelect();">
+<html>
     <head>
         <title>Prokart</title>
         <link rel="stylesheet" href="{{ url_for('static', filename='css/general.css') }}">
@@ -6,8 +6,7 @@
         <link href="https://fonts.googleapis.com/css?family=M+PLUS+Rounded+1c" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
         <script type="module" src="{{ url_for('static', filename='js/utils.js') }}"></script>
-        <script type="text/javascript" src="{{ url_for('static', filename='js/languages/languages.js') }}"></script>
-        <script type="text/javascript" src="{{ url_for('static', filename='js/languages/edit_languages.js') }}"></script>
+        <script type="module" src="{{ url_for('static', filename='js/languages/languages.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('static', filename='js/select_translator.js') }}"></script>
     </head>
 
@@ -16,7 +15,7 @@
         <div id="main" class="main" tabindex="-1" data-tabbable="false">
             <div style="margin-left: 5px; margin-top: 5px;">
                 <p>
-                    <button id="modify-languages" class="button" onclick="showEditLanguagesInterface();">Modify languages</button>
+                    <button id="modify-languages" class="button">Modify languages</button>
                 </p>
                 <p>Translate from:</p>
                 <div style="display: inline-block; width: 300px;">

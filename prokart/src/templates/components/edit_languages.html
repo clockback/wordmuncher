@@ -1,7 +1,7 @@
-<div id="languages-container-background" class="container-background container-background-transparent hide" onkeydown="keyDownOnLanguagesContainer(event);">
+<div id="languages-container-background" class="container-background container-background-transparent hide">
     <div class="container">
         <div class="title-bar">
-            <div style="float: right; margin-right: 10px; margin-top: 5px;" onclick="hideLanguagesInterface();">
+            <div style="float: right; margin-right: 10px; margin-top: 5px;">
                 <img src="{{ url_for('static', filename='images/close.svg') }}" style="height: 20px; width: 20px; cursor: pointer;"/>
             </div>
         </div>
@@ -10,10 +10,10 @@
                 <h2>Add language:</h2>
                 <div>
                     <div class="input-box">
-                        <input id="language-name" placeholder="Language name" oninput="changeLanguageName();" autocomplete="off"/>
+                        <input id="language-name" placeholder="Language name" autocomplete="off"/>
                     </div>
                     <div style="display: inline-block; position: relative;">
-                        <span id="choose-flag" class="flag-drop" onclick="expandFlags(this);">🇬🇧</span>
+                        <span id="choose-flag" class="flag-drop">🇬🇧</span>
                     </div>
                 </div>
                 <div>
@@ -22,7 +22,7 @@
                 <div id="hidden-flags" style="margin-top: 5px; border-top: 1px solid grey; width: 100%; padding-top: 5px; display: none;"></div>
             </div>
             <p>
-                <button class="button" onclick="hideLanguagesInterface();">Back</button>
+                <button id="languages-back" class="button">Back</button>
             </p>
         </div>
     </div>
