@@ -1,4 +1,9 @@
 import {
+    closeAllSelect, enableButtons, disableButtons, getById, openRequest,
+    populateSelectBoxes
+} from '../utils.js'
+
+import {
     showEditLanguagesInterface, keyDownOnLanguagesContainer,
     hideLanguagesInterface
 } from './edit_languages.js';

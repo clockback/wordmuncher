@@ -1,3 +1,7 @@
+import {
+    disableAllTabbables, enableAllTabbables, getById, hide, unhide
+} from '../utils.js'
+
 export function showEditLanguagesInterface(question) {
   disableAllTabbables("main");
   disableAllTabbables(document.querySelector(".sidebar"));
