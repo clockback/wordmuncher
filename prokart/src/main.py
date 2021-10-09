@@ -7,7 +7,6 @@ __version__ = '0.1.0'
 # Builtins
 import argparse
 import os
-import time
 
 # Installed packages
 from waitress import serve

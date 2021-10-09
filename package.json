@@ -1,0 +1,19 @@
+{
+    "name": "Prokart",
+    "version": "0.1.0",
+    "license": "MIT",
+    "scripts": {
+        "serve": "webpack serve"
+    },
+    "dependencies": {
+        "@jlongster/sql.js": "^1.6.7",
+        "absurd-sql": "^0.0.46"
+    },
+    "devDependencies": {
+        "webpack": "^5.50.0",
+        "html-webpack-plugin": "^5.3.2",
+        "webpack-cli": "^4.7.2",
+        "webpack-dev-server": "^3.11.2"
+    }
+}
+
