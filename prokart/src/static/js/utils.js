@@ -1,8 +1,12 @@
+/*
+
 import initSqlJs from '@jlongster/sql.js';
 import { SQLiteFS } from 'absurd-sql';
 import IndexedDBBackend from 'absurd-sql/dist/indexeddb-backend';
 
 alert(SQLiteFS);
+
+*/
 
 function getById(id) {
   // Returns the element with the requested id.
