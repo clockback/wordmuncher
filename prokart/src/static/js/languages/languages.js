@@ -1,14 +1,14 @@
 import {
     closeAllSelect, enableButtons, disableButtons, getById, openRequest,
     populateSelectBoxes
-} from '../utils.js'
+} from '../utils.js';
 
 import {
     showEditLanguagesInterface, keyDownOnLanguagesContainer,
     hideLanguagesInterface
 } from './edit_languages.js';
 
-import {prepareEventsTopBar} from '../select_translator.js'
+import {prepareEventsTopBar} from '../select_translator.js';
 
 function updateTranslator() {
     if (document.querySelectorAll(

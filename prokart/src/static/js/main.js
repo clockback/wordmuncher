@@ -1,5 +1,5 @@
-import {getById} from './utils.js'
-import {prepareEventsTopBar} from './select_translator.js'
+import {getById} from './utils.js';
+import {prepareEventsTopBar} from './select_translator.js';
 
 function prepareEventsMain() {
     getById("test-button").onclick = function () {

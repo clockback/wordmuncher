@@ -1,57 +1,62 @@
-function testSheet(row) {
-  var container = getById("pre-test-sheet-container-background");
-  container.querySelector(
-    "div>div.container-contents>h1"
-  ).innerHTML = row.children[0].innerHTML;
+import {
+    changeRangeValue, disableAllTabbables, enableAllTabbables, getById, hide,
+    unhide
+} from '../utils.js';
 
-  // Prevents selection of now concealed elements.
-  disableAllTabbables("main");
-  disableAllTabbables(document.querySelector(".sidebar"));
+export function testSheet() {
+    var container = getById("pre-test-sheet-container-background");
+    container.querySelector(
+        "div>div.container-contents>h1"
+    ).innerHTML = this.children[0].innerHTML;
 
-  var bar = container.querySelector("div.bar-chart-container");
-  var percentage = row.children[1].innerHTML;
+    // Prevents selection of now concealed elements.
+    disableAllTabbables("main");
+    disableAllTabbables(document.querySelector(".sidebar"));
 
-  bar.children[0].style.width = percentage + "%";
-  bar.children[1].innerHTML = percentage + "% complete";
+    var bar = container.querySelector("div.bar-chart-container");
+    var percentage = this.children[1].innerHTML;
 
-  if (percentage == 0) {
-    bar.children[0].style.visibility = "hidden";
-  }
-  else {
-    bar.children[0].style.visibility = null;
-  }
+    bar.children[0].style.width = percentage + "%";
+    bar.children[1].innerHTML = percentage + "% complete";
 
-  // Make container visible.
-  unhide([container]);
+    if (percentage == 0) {
+        bar.children[0].style.visibility = "hidden";
+    }
+    else {
+        bar.children[0].style.visibility = null;
+    }
 
-  getById("go-button-container").focus();
+    // Make container visible.
+    unhide([container]);
+
+    getById("go-button-container").focus();
 }
 
-function hideTestSheetInterface(row) {
-  // Prevents selection of now concealed elements.
-  enableAllTabbables("main");
-  enableAllTabbables(document.querySelector(".sidebar"));
+export function hideTestSheetInterface() {
+    // Prevents selection of now concealed elements.
+    enableAllTabbables("main");
+    enableAllTabbables(document.querySelector(".sidebar"));
 
-  hide(["pre-test-sheet-container-background"]);
+    hide(["pre-test-sheet-container-background"]);
 }
 
-function keyDownOnTestSheetContainer(event) {
-  // Checks that the escape key was pressed..
-  if (event.key == "Escape") {
-    hideTestSheetInterface();
-  }
+export function keyDownOnTestSheetContainer(event) {
+    // Checks that the escape key was pressed..
+    if (event.key == "Escape") {
+        hideTestSheetInterface();
+    }
 }
 
-function goTestSheet(textBox) {
-  var sheetName = document.querySelector(
-    "div.container-contents>h1"
-  ).innerHTML;
+export function goTestSheet(textBox) {
+    var sheetName = document.querySelector(
+        "div.container-contents>h1"
+    ).innerHTML;
 
-  sessionStorage.noQuestions = getById("no-questions").value;
-  sessionStorage.completed = false;
-  window.location.href = "/test/" + encodeURIComponent(sheetName);
+    sessionStorage.noQuestions = getById("no-questions").value;
+    sessionStorage.completed = false;
+    window.location.href = "/test/" + encodeURIComponent(sheetName);
 }
 
-function updateNumberOfQuestions() {
+export function updateNumberOfQuestions() {
     changeRangeValue("no-questions");
 }

@@ -262,7 +262,7 @@ export function bindButtonKeyPressEvents(element, func) {
 
 export function buttonKeyPressEvent(func, element, event) {
     if (event.key == "Enter" || event.key == " ") {
-        func(element);
+        func.call(element);
     }
 }
 

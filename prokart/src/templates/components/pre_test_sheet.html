@@ -1,4 +1,4 @@
-<div id="pre-test-sheet-container-background" class="container-background container-background-transparent hide" onkeydown="keyDownOnTestSheetContainer(event);">
+<div id="pre-test-sheet-container-background" class="container-background container-background-transparent hide">
     <div class="container">
         <div class="title-bar">
             <div style="float: right; margin-right: 10px; margin-top: 5px;">
@@ -14,7 +14,7 @@
             <div style="margin: 10px 0; display: flex; align-items: center; flex-direction: row;">
                 <div style="display: inline-block;">Number of questions:</div>
                 <div class="range-slider-container">
-                    <input id="no-questions" class="range-slider" min="5" max="200" value="10" type="range" list="no-questions-options" oninput="updateNumberOfQuestions();">
+                    <input id="no-questions" class="range-slider" min="5" max="200" value="10" type="range" list="no-questions-options">
                     <datalist id="no-questions-options">
                         <option value="5"></option>
                         <option value="10"></option>
@@ -29,8 +29,8 @@
                 </div>
             </div>
             <p>
-                <button id="go-button-container" class="button" onclick="goTestSheet();">Go!</button>
-                <button id="back-button-container" class="button" onclick="hideTestSheetInterface();">Back</button>
+                <button id="go-button-container" class="button">Go!</button>
+                <button id="back-button-container" class="button">Back</button>
             </p>
         </div>
     </div>
