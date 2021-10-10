@@ -100,6 +100,7 @@ function prepareEventsTest() {
     getById("no-questions").oninput = updateNumberOfQuestions;
     getById("go-button-container").onclick = goTestSheet;
     getById("back-button-container").onclick = hideTestSheetInterface;
+    document.querySelector(".title-bar>div").onclick = hideTestSheetInterface;
 
     prepareEventsTopBar();
 }
