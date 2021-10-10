@@ -1,6 +1,6 @@
 import {
-    enableAllTabbables, disableAllTabbables, disableButtons, enableButtons,
-    getById, hide, openRequest, unhide
+    bindButtonKeyPressEvents, enableAllTabbables, disableAllTabbables,
+    disableButtons, enableButtons, getById, hide, openRequest, unhide
 } from '../utils.js';
 import {drawStars} from '../stars.js';
 
@@ -768,6 +768,9 @@ function prepareEventsTestSheet() {
     getById("stop-test").onclick = stopTestEarly;
     getById("continue-test").onclick = continueTest;
     getById("wrong-answer-box").onkeydown = keyDownOnWrongAnswerContainer;
+    var backButton = document.querySelector("#testbar-left>span");
+    backButton.onclick = abortTest;
+    bindButtonKeyPressEvents(backButton, abortTest);
 }
 
 window.addEventListener('load', prepareEventsTestSheet);
