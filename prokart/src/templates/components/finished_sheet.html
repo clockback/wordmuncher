@@ -1,7 +1,7 @@
-<div id="finished-sheet-box" class="container-background container-background-transparent hide" onkeydown="keyDownOnFinishedSheetContainer(event);">
+<div id="finished-sheet-box" class="container-background container-background-transparent hide">
     <div class="dialog" style="height: 500px;">
         <div class="title-bar">
-            <div onclick="continueTest();" style="float: right; margin-right: 10px; margin-top: 5px;">
+            <div id="close-finished-sheet-box" style="float: right; margin-right: 10px; margin-top: 5px;">
                 <img src="{{ url_for('static', filename='images/close.svg') }}" style="height: 20px; width: 20px; cursor: pointer;"/>
             </div>
         </div>
@@ -9,8 +9,8 @@
             <h1>Sheet complete!</h1>
             <p>You've made all the progress on this sheet that you can. Do you want to stop?</p>
             <p>
-                <button class="button" onclick="stopTestEarly();">Stop</button>
-                <button class="button" onclick="continueTest();">Continue</button>
+                <button id="stop-test" class="button">Stop</button>
+                <button id="continue-test" class="button">Continue</button>
             </p>
         </div>
     </div>

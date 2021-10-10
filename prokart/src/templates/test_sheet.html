@@ -6,12 +6,11 @@
         <link rel="icon" href="{{ url_for('static', filename='images/logo.svg') }}">
         <link href="https://fonts.googleapis.com/css?family=M+PLUS+Rounded+1c" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
-        <script type="text/javascript" src="{{ url_for('static', filename='js/test/test_sheet.js') }}"></script>
-        <script type="text/javascript" src="{{ url_for('static', filename='js/stars.js') }}"></script>
-        <script type="text/javascript" src="{{ url_for('static', filename='js/utils.js') }}"></script>
+        <script type="module" src="{{ url_for('static', filename='js/test/test_sheet.js') }}"></script>
     </head>
 
-    <body onload="updateNoQuestions();">
+    <body>
+        <script>0</script>
         {% include 'components/testbar.html' %}
         <audio id="correct-sound">
           <source src="/static/audio/correct.mp3" type="audio/mpeg">
@@ -29,7 +28,7 @@
                     <p id="question-text"></p>
                     <div class="answer-area">
                         <div class="textarea-container">
-                            <textarea id="answer-box" autocomplete="off" placeholder="Type your answer" onkeypress="hitEnterAnswerBox(this, event);" oninput="typeAnswerBox(this, event);"></textarea>
+                            <textarea id="answer-box" autocomplete="off" placeholder="Type your answer"></textarea>
                         </div>
                         <div>
                             <table id="answer-table" class="schema-table" style="margin-left: auto; margin-right: auto;">
