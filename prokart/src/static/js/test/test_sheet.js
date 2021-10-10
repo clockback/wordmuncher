@@ -1,5 +1,6 @@
 import {
-    disableButtons, enableButtons, getById, hide, openRequest, unhide
+    enableAllTabbables, disableAllTabbables, disableButtons, enableButtons,
+    getById, hide, openRequest, unhide
 } from '../utils.js';
 import {drawStars} from '../stars.js';
 
@@ -107,6 +108,11 @@ function addToAnswers() {
 
 function processAddToAnswers(request, question) {
     hide(["wrong-answer-box"]);
+
+    enableAllTabbables("main");
+    enableAllTabbables("testbar");
+    disableAllTabbables("wrong-answer-box");
+
     correctAnswer(question);
 }
 
@@ -130,6 +136,11 @@ function clickNextButton() {
 
 function processClickNextButton(request, questionText) {
     hide(["wrong-answer-box"]);
+
+    enableAllTabbables("main");
+    enableAllTabbables("testbar");
+    disableAllTabbables("wrong-answer-box");
+
     proceed(questionText, false);
 }
 
@@ -312,7 +323,12 @@ function processCorrectAnswer(request, questionText) {
 
             if (returnJSON["completed"]) {
                 unhide(["finished-sheet-box"]);
+                disableAllTabbables("main");
+                disableAllTabbables("testbar");
+                enableAllTabbables("finished-sheet-box");
+
                 sessionStorage.nextQuestion = questionText;
+                getById("stop-test").focus();
             }
             else {
                 proceed(questionText, false);
@@ -356,6 +372,11 @@ function wrongAnswer(question, textArea, closest, others) {
     }
 
     unhide(["wrong-answer-box"]);
+
+    disableAllTabbables("main");
+    disableAllTabbables("testbar");
+    enableAllTabbables("wrong-answer-box");
+
     getById("next-button").focus();
 }
 
@@ -476,6 +497,10 @@ function stopTestEarly() {
 
 function continueTest() {
     hide(["finished-sheet-box"]);
+    disableAllTabbables("finished-sheet-box");
+    enableAllTabbables("main");
+    enableAllTabbables("testbar");
+
     proceed(sessionStorage.questionText, false);
 }
 
