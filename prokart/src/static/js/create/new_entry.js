@@ -3,7 +3,7 @@ import {
     disableButtons, enableAllTabbables, getById, hide, openRequest, unhide
 } from "../utils.js";
 import {
-    chooseSchema, pickNoSchema, searchAll, validSchemaAnswer
+    chooseSchema, getSchemaAnswers, pickNoSchema, searchAll, validSchemaAnswer
 } from "./create.js";
 
 export function showNewEntryInterface() {

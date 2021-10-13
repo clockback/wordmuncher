@@ -2,7 +2,7 @@ import {
     bindButtonKeyPressEvents, disableAllTabbables, disableButtons,
     enableAllTabbables, enableButtons, getById, hide, openRequest, unhide
 } from "../utils.js";
-import {chooseSchema, searchAll} from "./create.js";
+import {chooseSchema, getSchemaAnswers, searchAll} from "./create.js";
 
 export function showEditEntryInterface(question) {
     disableAllTabbables("main");
