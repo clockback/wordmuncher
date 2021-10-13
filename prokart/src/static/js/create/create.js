@@ -639,7 +639,7 @@ function validEntry() {
     }
 }
 
-function getSchemaAnswers(type) {
+export function getSchemaAnswers(type) {
     // Finds the table for the schema that has been filled.
     var tableBody = getById(`${type}-entry-answer-schema-body`);
 
