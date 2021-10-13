@@ -32,7 +32,7 @@ import {
 } from "./schemas.js";
 import {prepareEventsTopBar} from '../select_translator.js';
 
-function searchAll() {
+export function searchAll() {
     // Finds the search query
     var query = getById("search-all").value;
 

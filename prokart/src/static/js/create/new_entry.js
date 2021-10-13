@@ -2,7 +2,9 @@ import {
     bindButtonKeyPressEvents, enableButtons, disableAllTabbables,
     disableButtons, enableAllTabbables, getById, hide, openRequest, unhide
 } from "../utils.js";
-import {chooseSchema, pickNoSchema, validSchemaAnswer} from "./create.js";
+import {
+    chooseSchema, pickNoSchema, searchAll, validSchemaAnswer
+} from "./create.js";
 
 export function showNewEntryInterface() {
     disableAllTabbables("main");

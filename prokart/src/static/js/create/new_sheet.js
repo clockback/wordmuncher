@@ -2,6 +2,7 @@ import {
     bindButtonKeyPressEvents, enableButtons, disableAllTabbables,
     disableButtons, enableAllTabbables, getById, hide, openRequest, unhide
 } from "../utils.js";
+import {searchAll} from "./create.js";
 
 export function showNewSheetInterface() {
     hide([
