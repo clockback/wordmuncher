@@ -1,378 +1,381 @@
-function showNewEntryInterface() {
-  disableAllTabbables("main");
-  disableAllTabbables(document.querySelector(".sidebar"));
+import {
+    bindButtonKeyPressEvents, enableButtons, disableAllTabbables,
+    disableButtons, enableAllTabbables, getById, hide, openRequest, unhide
+} from "../utils.js";
+import {chooseSchema, pickNoSchema, validSchemaAnswer} from "./create.js";
 
-  enableAllTabbables("new-entry-container-background");
+export function showNewEntryInterface() {
+    disableAllTabbables("main");
+    disableAllTabbables(document.querySelector(".sidebar"));
 
-  newEntrySearchSheets();
-  unhide(["new-entry-container-background"]);
-  getById('new-entry-question').focus();
+    enableAllTabbables("new-entry-container-background");
+
+    newEntrySearchSheets();
+    unhide(["new-entry-container-background"]);
+    getById('new-entry-question').focus();
 }
 
-function hideNewEntryInterface() {
-  enableAllTabbables("main");
-  enableAllTabbables(document.querySelector(".sidebar"));
+export function hideNewEntryInterface() {
+    enableAllTabbables("main");
+    enableAllTabbables(document.querySelector(".sidebar"));
 
-  hide(['new-entry-container-background']);
+    hide(['new-entry-container-background']);
 
-  pickNoSchema("new");
+    pickNoSchema("new");
 
-  getById('new-entry-question').value = "";
-  getById('new-entry-answer').value = "";
-  getById('new-entry-search-sheets').value = "";
-  getById('new-entry-add-answer').value = "";
+    getById('new-entry-question').value = "";
+    getById('new-entry-answer').value = "";
+    getById('new-entry-search-sheets').value = "";
+    getById('new-entry-add-answer').value = "";
 
-  var moreAnswers = document.querySelectorAll(
-    "#new-entry-answers-table>tbody>tr:not(:last-child)"
-  );
-  for (var i = 0; i < moreAnswers.length; i ++) {
-    moreAnswers[i].remove();
-  }
+    var moreAnswers = document.querySelectorAll(
+        "#new-entry-answers-table>tbody>tr:not(:last-child)"
+    );
+    for (var i = 0; i < moreAnswers.length; i ++) {
+        moreAnswers[i].remove();
+    }
 
-  hide(document.querySelectorAll(
-    "#new-entry-question-div>span,#new-entry-answer-div>span"
-  ));
+    hide(document.querySelectorAll(
+        "#new-entry-question-div>span,#new-entry-answer-div>span"
+    ));
 
-  disableButtons(["save-new-entry"]);
+    disableButtons(["save-new-entry"]);
 
-  getById('new-entry-sheet-table-hidden-rows').innerHTML = "";
+    getById('new-entry-sheet-table-hidden-rows').innerHTML = "";
 }
 
-function keyDownOnNewEntryContainer(event) {
-  // Checks that the escape key was pressed..
-  if (event.key == "Escape") {
-    hideNewEntryInterface();
-  }
+export function keyDownOnNewEntryContainer(event) {
+    // Checks that the escape key was pressed..
+    if (event.key == "Escape") {
+        hideNewEntryInterface();
+    }
 }
 
-function changeNewEntryQuestion() {
-  var question = getById("new-entry-question").value;
+export function changeNewEntryQuestion() {
+    var question = getById("new-entry-question").value;
 
-  if (question == "" || question.length > 80) {
-    if (question == "") {
-      unhide(["message-new-entry-empty-question"]);
-      hide([
-        "message-new-entry-long-question", "message-new-entry-already-exists"
-      ]);
+    if (question == "" || question.length > 80) {
+        if (question == "") {
+            unhide(["message-new-entry-empty-question"]);
+            hide([
+                "message-new-entry-long-question",
+                "message-new-entry-already-exists"
+            ]);
+        }
+        else {
+            hide([
+                "message-new-entry-empty-question",
+                "message-new-entry-already-exists"
+            ]);
+            unhide(["message-new-entry-long-question"]);
+        }
+        disableButtons(["save-new-entry"]);
     }
     else {
-      hide([
-          "message-new-entry-empty-question",
-          "message-new-entry-already-exists"
+        hide([
+            "message-new-entry-empty-question",
+            "message-new-entry-long-question"
         ]);
-      unhide(["message-new-entry-long-question"]);
-    }
-    disableButtons(["save-new-entry"]);
-  }
-  else {
-    hide([
-      "message-new-entry-empty-question", "message-new-entry-long-question"
-    ]);
 
-    openRequest("/create/entry_already_exists", [
-      ["question", question]
-    ], processChangeNewEntryQuestion);
-  }
+        openRequest("/create/entry_already_exists", [
+            ["question", question]
+        ], processChangeNewEntryQuestion);
+    }
 }
 
 function processChangeNewEntryQuestion(request) {
-  var result = JSON.parse(request.responseText)['already_there'];
-  if (result) {
-    disableButtons(["save-new-entry"]);
-    unhide(["message-new-entry-already-exists"]);
-  }
-  // The question does not already exist.
-  else {
-    var answer = getById('new-entry-answer');
-    var answerLength = answer.value.length;
-    if ((
-      answer.classList.contains("hide")
-      && 0 < answerLength && answerLength <= 80
-    ) || validSchemaAnswer("new")) {
-      enableButtons([["save-new-entry", saveNewEntry]]);
+    var result = JSON.parse(request.responseText)['already_there'];
+    if (result) {
+        disableButtons(["save-new-entry"]);
+        unhide(["message-new-entry-already-exists"]);
     }
-    hide(["message-new-entry-already-exists"]);
-  }
+    // The question does not already exist.
+    else {
+        var answer = getById('new-entry-answer');
+        var answerLength = answer.value.length;
+        if ((
+            answer.classList.contains("hide")
+            && 0 < answerLength && answerLength <= 80
+        ) || validSchemaAnswer("new")) {
+            enableButtons([["save-new-entry", saveNewEntry]]);
+        }
+        hide(["message-new-entry-already-exists"]);
+    }
 }
 
-function changeNewEntryAnswer() {
-  var answer = getById("new-entry-answer").value;
+export function changeNewEntryAnswer() {
+    var answer = getById("new-entry-answer").value;
 
-  if (answer == "" || answer.length > 80) {
-    if (answer == "") {
-      unhide(["message-new-entry-empty-answer"]);
-      hide(["message-new-entry-long-answer"]);
+    if (answer == "" || answer.length > 80) {
+        if (answer == "") {
+            unhide(["message-new-entry-empty-answer"]);
+            hide(["message-new-entry-long-answer"]);
+        }
+        else {
+            hide(["message-new-entry-empty-answer"]);
+            unhide(["message-new-entry-long-answer"]);
+        }
+        disableButtons(["save-new-entry"]);
     }
     else {
-      hide(["message-new-entry-empty-answer"]);
-      unhide(["message-new-entry-long-answer"]);
+        hide(["message-new-entry-empty-answer", "message-new-entry-long-answer"]);
+        var problems = document.querySelectorAll(
+            "new-entry-question-div>span:not(.hide)"
+        );
+        if (
+            problems.length == 0 && getById("new-entry-question").value.length > 0
+        ) {
+            enableButtons([["save-new-entry", saveNewEntry]]);
+        }
     }
-    disableButtons(["save-new-entry"]);
-  }
-  else {
-    hide(["message-new-entry-empty-answer", "message-new-entry-long-answer"]);
-    var problems = document.querySelectorAll(
-      "new-entry-question-div>span:not(.hide)"
+}
+
+export function newEntryAddRow() {
+    var newAnswerInput = document.querySelector(
+        "#new-entry-answers-table>tbody>tr:last-child>td>input"
     );
-    if (
-      problems.length == 0 && getById("new-entry-question").value.length > 0
-    ) {
-      enableButtons([["save-new-entry", saveNewEntry]]);
+    var newAnswer = newAnswerInput.value;
+
+    // Only does something if an answer has been given.
+    if (newAnswer == '') {
+        return;
     }
-  }
-}
 
-function newEntryAddRow() {
-  var newAnswerInput = document.querySelector(
-    "#new-entry-answers-table>tbody>tr:last-child>td>input"
-  );
-  var newAnswer = newAnswerInput.value;
+    newAnswerInput.value = ""
 
-  // Only does something if an answer has been given.
-  if (newAnswer == '') {
-    return;
-  }
+    var mainAnswerInput = getById("new-entry-answer");
+    var moreAnswersCells = document.querySelectorAll(
+        "#new-entry-answers-table>tbody>tr:not(:last-child)>td:first-child"
+    );
 
-  newAnswerInput.value = ""
-
-  var mainAnswerInput = getById("new-entry-answer");
-  var moreAnswersCells = document.querySelectorAll(
-    "#new-entry-answers-table>tbody>tr:not(:last-child)>td:first-child"
-  );
-
-  if (mainAnswerInput.value == newAnswer) {
-    return;
-  }
-
-  for (var i = 0; i < moreAnswersCells.length; i ++) {
-    var anotherAnswer = moreAnswersCells[i].innerHTML;
-    if (anotherAnswer == newAnswer) {
-      return;
+    if (mainAnswerInput.value == newAnswer) {
+        return;
     }
-  }
 
-  var newLeftColumn = document.createElement("td");
-  newLeftColumn.setAttribute("tabindex", "0");
-  newLeftColumn.innerHTML = newAnswer;
-  newLeftColumn.onclick = function () {
-    newEntryPromoteAnswer(this);
-  };
-  bindButtonKeyPressEvents(newLeftColumn, newEntryPromoteAnswer);
+    for (var i = 0; i < moreAnswersCells.length; i ++) {
+        var anotherAnswer = moreAnswersCells[i].innerHTML;
+        if (anotherAnswer == newAnswer) {
+            return;
+        }
+    }
 
-  var newTrashButton = document.createElement("button");
-  newTrashButton.innerHTML = "🗑️";
-  newTrashButton.classList.add("trash-can");
-  newTrashButton.onclick = function () {
-    trashRow(this);
-  }
+    var newLeftColumn = document.createElement("td");
+    newLeftColumn.setAttribute("tabindex", "0");
+    newLeftColumn.innerHTML = newAnswer;
+    newLeftColumn.onclick = newEntryPromoteAnswer;
+    bindButtonKeyPressEvents(newLeftColumn, newEntryPromoteAnswer);
 
-  var newRightColumn = document.createElement("td");
-  newRightColumn.appendChild(newTrashButton);
+    var newTrashButton = document.createElement("button");
+    newTrashButton.innerHTML = "🗑️";
+    newTrashButton.classList.add("trash-can");
+    newTrashButton.onclick = trashRow;
 
-  var newRow = document.createElement("tr");
-  newRow.appendChild(newLeftColumn);
-  newRow.appendChild(newRightColumn);
+    var newRightColumn = document.createElement("td");
+    newRightColumn.appendChild(newTrashButton);
 
-  document.querySelector("#new-entry-answers-table>tbody").insertBefore(
-    newRow, document.querySelector(
-      "#new-entry-answers-table>tbody>tr:last-child"
-    )
-  );
-  newAnswerInput.focus();
+    var newRow = document.createElement("tr");
+    newRow.appendChild(newLeftColumn);
+    newRow.appendChild(newRightColumn);
+
+    document.querySelector("#new-entry-answers-table>tbody").insertBefore(
+        newRow, document.querySelector(
+            "#new-entry-answers-table>tbody>tr:last-child"
+        )
+    );
+    newAnswerInput.focus();
 }
 
-function trashRow(button) {
-  button.parentNode.parentNode.remove();
+function trashRow() {
+  this.parentNode.parentNode.remove();
 }
 
-function newEntryHitEnterAnotherAnswer(event) {
-  if (event.key == "Enter") {
-    newEntryAddRow();
-  }
+export function newEntryHitEnterAnotherAnswer(event) {
+    if (event.key == "Enter") {
+        newEntryAddRow();
+    }
 }
 
 function newEntryPromoteAnswer(promoteCell) {
-  var formerTopAnswerInput = getById("new-entry-answer");
-  var formerTopAnswer = formerTopAnswerInput.value;
-  formerTopAnswerInput.value = promoteCell.innerHTML;
-  if (formerTopAnswer == "") {
-    promoteCell.parentNode.remove();
-    hide(["message-new-entry-empty-answer"]);
-  }
-  else {
-    promoteCell.innerHTML = formerTopAnswer;
-  }
+    var formerTopAnswerInput = getById("new-entry-answer");
+    var formerTopAnswer = formerTopAnswerInput.value;
+    formerTopAnswerInput.value = promoteCell.innerHTML;
+
+    if (formerTopAnswer == "") {
+        promoteCell.parentNode.remove();
+        hide(["message-new-entry-empty-answer"]);
+    }
+    else {
+        promoteCell.innerHTML = formerTopAnswer;
+    }
 }
 
-function saveNewEntry() {
-  var question = getById("new-entry-question").value;
-  var moreAnswersCells = document.querySelectorAll(
-    "#new-entry-answers-table>tbody>tr:not(:last-child)>td:first-child"
-  );
-  var answersString, answers, i;
+export function saveNewEntry() {
+    var question = getById("new-entry-question").value;
+    var moreAnswersCells = document.querySelectorAll(
+        "#new-entry-answers-table>tbody>tr:not(:last-child)>td:first-child"
+    );
+    var answersString, answers, i;
 
-  // If the user has chosen a particular schema.
-  if (getById("new-entry-answer-div").classList.contains("hide")) {
-    answersString = JSON.stringify(getSchemaAnswers("new"));
-  }
-
-  // If the user has not selected a schema.
-  else {
-    var answers = [getById("new-entry-answer").value];
-    for (var i = 0; i < moreAnswersCells.length; i ++) {
-      answers.push(moreAnswersCells[i].innerHTML);
+    // If the user has chosen a particular schema.
+    if (getById("new-entry-answer-div").classList.contains("hide")) {
+        answersString = JSON.stringify(getSchemaAnswers("new"));
     }
-    answersString = JSON.stringify(answers);
-  }
 
-  var hiddenRows = getById("new-entry-sheet-table-hidden-rows").children;
-  var parentSheets = [];
-  for (var i = 0; i < hiddenRows.length; i ++) {
-    parentSheets.push(hiddenRows[i].innerHTML);
-  }
-  var parentSheetsString = JSON.stringify(parentSheets);
+    // If the user has not selected a schema.
+    else {
+        var answers = [getById("new-entry-answer").value];
+        for (var i = 0; i < moreAnswersCells.length; i ++) {
+            answers.push(moreAnswersCells[i].innerHTML);
+        }
+        answersString = JSON.stringify(answers);
+    }
 
-  openRequest("/create/new_entry", [
-    ["question", question], ["answers", answersString],
-    ["sheets", parentSheetsString]
-  ], processSaveNewEntry);
+    var hiddenRows = getById("new-entry-sheet-table-hidden-rows").children;
+    var parentSheets = [];
+    for (var i = 0; i < hiddenRows.length; i ++) {
+        parentSheets.push(hiddenRows[i].innerHTML);
+    }
+    var parentSheetsString = JSON.stringify(parentSheets);
+
+    openRequest("/create/new_entry", [
+        ["question", question], ["answers", answersString],
+        ["sheets", parentSheetsString]
+    ], processSaveNewEntry);
 }
 
 function processSaveNewEntry(request) {
-  hideNewEntryInterface();
-  searchAll();
+    hideNewEntryInterface();
+    searchAll();
 }
 
-function clickNewEntrySheet(entry) {
-  if (entry.classList.contains('selected-row')) {
-    entry.classList.remove('selected-row');
-    var checkRows = getById('new-entry-sheet-table-hidden-rows').children
-    for (var i = 0; i < checkRows.length; i ++) {
-      if (checkRows[i].innerHTML == entry.firstChild.innerHTML) {
-        checkRows[i].remove();
-      }
+export function clickNewEntrySheet() {
+    if (this.classList.contains('selected-row')) {
+        this.classList.remove('selected-row');
+        var checkRows = getById('new-entry-sheet-table-hidden-rows').children
+        for (var i = 0; i < checkRows.length; i ++) {
+            if (checkRows[i].innerHTML == this.firstChild.innerHTML) {
+                checkRows[i].remove();
+            }
+        }
     }
-  }
-  else {
-    entry.classList.add('selected-row');
-    var newRow = getById('new-entry-sheet-table-hidden-rows').insertRow(-1);
-    newRow.innerHTML = entry.firstElementChild.innerHTML;
-  }
+    else {
+        this.classList.add('selected-row');
+        var newRow = getById(
+            'new-entry-sheet-table-hidden-rows'
+        ).insertRow(-1);
+        newRow.innerHTML = this.firstElementChild.innerHTML;
+    }
 }
 
-function newEntryLoadMoreSheets(numberAlready) {
-  numberAlready = document.querySelectorAll(
-    "#add-entry-sheet-table-rows>tr"
-  ).length
+export function newEntryLoadMoreSheets(numberAlready) {
+    numberAlready = document.querySelectorAll(
+        "#add-entry-sheet-table-rows>tr"
+    ).length
 
-  // Finds the search query
-  query = getById("new-entry-search-sheets").value;
+    // Finds the search query
+    var query = getById("new-entry-search-sheets").value;
 
-  openRequest("/create/load_more_sheets", [
-    ["already", numberAlready], ["query", query]
-  ], processNewEntryLoadMoreSheets);
+    openRequest("/create/load_more_sheets", [
+        ["already", numberAlready], ["query", query]
+    ], processNewEntryLoadMoreSheets);
 }
 
 function processNewEntryLoadMoreSheets(request) {
-var returnJSON = JSON.parse(request.responseText);
-  rowsElement = getById('add-entry-sheet-table-rows');
-  var possibleMatches = getById(
-    "new-entry-sheet-table-hidden-rows"
-  ).children;
+    var returnJSON = JSON.parse(request.responseText);
+    var rowsElement = getById('add-entry-sheet-table-rows');
+    var possibleMatches = getById(
+        "new-entry-sheet-table-hidden-rows"
+    ).children;
 
-  for (var i = 0; i < returnJSON['sheets'].length; i ++) {
-    var foundHidden = false;
-    for (var j = 0; j < possibleMatches.length; j++) {
-      if (possibleMatches[j].innerHTML == returnJSON["sheets"][i][0]) {
-        foundHidden = true;
-        break;
-      }
+    for (var i = 0; i < returnJSON['sheets'].length; i ++) {
+        var foundHidden = false;
+        for (var j = 0; j < possibleMatches.length; j++) {
+            if (possibleMatches[j].innerHTML == returnJSON["sheets"][i][0]) {
+                foundHidden = true;
+                break;
+            }
+        }
+
+        var newRow = document.createElement("tr");
+        newRow.setAttribute("tabindex", "0");
+        newRow.style["cursor"] = "pointer";
+        newRow.onclick = clickNewEntrySheet;
+        bindButtonKeyPressEvents(newRow, clickNewEntrySheet);
+
+        for (var j = 0; j < 3; j ++) {
+            var cell = document.createElement("td");
+            cell.innerHTML = returnJSON["sheets"][i][j];
+            newRow.appendChild(cell);
+        }
+
+        rowsElement.appendChild(newRow);
+
+        if (foundHidden) {
+            newRow.classList.add("selected-row");
+        }
     }
-
-    var newRow = document.createElement("tr");
-    newRow.setAttribute("tabindex", "0");
-    newRow.style["cursor"] = "pointer";
-    newRow.onclick = function () {
-      clickNewEntrySheet(this);
+    var loadMoreRow = getById('new-entry-sheet-load-more-row');
+    if (returnJSON['more_sheets'] == true) {
+        loadMoreRow.style.visibility = 'visible';
     }
-    bindButtonKeyPressEvents(newRow, clickNewEntrySheet);
-
-    for (var j = 0; j < 3; j ++) {
-      var cell = document.createElement("td");
-      cell.innerHTML = returnJSON["sheets"][i][j];
-      newRow.appendChild(cell);
+    else {
+        loadMoreRow.style.visibility = 'collapse';
     }
-
-    rowsElement.appendChild(newRow);
-
-    if (foundHidden) {
-      newRow.classList.add("selected-row");
-    }
-  }
-  var loadMoreRow = getById('new-entry-sheet-load-more-row');
-  if (returnJSON['more_sheets'] == true) {
-    loadMoreRow.style.visibility = 'visible';
-  }
-  else {
-    loadMoreRow.style.visibility = 'collapse';
-  }
 }
 
-function newEntrySearchSheets() {
-  // Finds the search query
-  query = getById("new-entry-search-sheets").value;
+export function newEntrySearchSheets() {
+    // Finds the search query
+    var query = getById("new-entry-search-sheets").value;
 
-  openRequest("/create/search", [
-    ["query", query], ["sheets", 1], ["entries", 0]
-  ], processNewEntrySearchSheets);
+    openRequest("/create/search", [
+        ["query", query], ["sheets", 1], ["entries", 0]
+    ], processNewEntrySearchSheets);
 }
 
 function processNewEntrySearchSheets(request) {
-  var returnJSON = JSON.parse(request.responseText);
-  var rowsElement = getById('add-entry-sheet-table-rows');
-  rowsElement.innerHTML = "";
-  var possibleMatches = getById(
-    "new-entry-sheet-table-hidden-rows"
-  ).children;
-  for (var i = 0; i < returnJSON["sheets"].length; i ++) {
-    var foundHidden = false;
-    for (var j = 0; j < possibleMatches.length; j++) {
-      if (possibleMatches[j].innerHTML == returnJSON["sheets"][i][0]) {
-        foundHidden = true;
-        break;
-      }
+    var returnJSON = JSON.parse(request.responseText);
+    var rowsElement = getById('add-entry-sheet-table-rows');
+    rowsElement.innerHTML = "";
+    var possibleMatches = getById(
+        "new-entry-sheet-table-hidden-rows"
+    ).children;
+    for (var i = 0; i < returnJSON["sheets"].length; i ++) {
+        var foundHidden = false;
+        for (var j = 0; j < possibleMatches.length; j++) {
+            if (possibleMatches[j].innerHTML == returnJSON["sheets"][i][0]) {
+                foundHidden = true;
+                break;
+            }
+        }
+
+        var newRow = document.createElement("tr");
+        newRow.setAttribute("tabindex", "0");
+        newRow.style["cursor"] = "pointer";
+        newRow.onclick = clickNewEntrySheet;
+        bindButtonKeyPressEvents(newRow, clickNewEntrySheet);
+
+        for (var j = 0; j < 3; j ++) {
+            var cell = document.createElement("td");
+            cell.innerHTML = returnJSON["sheets"][i][j];
+            newRow.appendChild(cell);
+        }
+
+        rowsElement.appendChild(newRow);
+
+        if (foundHidden) {
+            newRow.classList.add("selected-row");
+        }
     }
 
-    var newRow = document.createElement("tr");
-    newRow.setAttribute("tabindex", "0");
-    newRow.style["cursor"] = "pointer";
-    newRow.onclick = function () {
-      clickNewEntrySheet(this);
+    var loadMoreRow = getById('new-entry-sheet-load-more-row');
+    if (returnJSON['more_sheets'] == true) {
+        loadMoreRow.style.visibility = 'visible';
     }
-    bindButtonKeyPressEvents(newRow, clickNewEntrySheet);
-
-    for (var j = 0; j < 3; j ++) {
-      var cell = document.createElement("td");
-      cell.innerHTML = returnJSON["sheets"][i][j];
-      newRow.appendChild(cell);
+    else {
+        loadMoreRow.style.visibility = 'collapse';
     }
-
-    rowsElement.appendChild(newRow);
-
-    if (foundHidden) {
-      newRow.classList.add("selected-row");
-    }
-  }
-
-  var loadMoreRow = getById('new-entry-sheet-load-more-row');
-  if (returnJSON['more_sheets'] == true) {
-    loadMoreRow.style.visibility = 'visible';
-  }
-  else {
-    loadMoreRow.style.visibility = 'collapse';
-  }
 }
 
-function newEntryChooseSchema(selectOption) {
-  chooseSchema(selectOption, "new", null);
+export function newEntryChooseSchema(selectOption) {
+    chooseSchema(selectOption, "new", null);
 }

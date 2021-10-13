@@ -1,7 +1,7 @@
-<div id="add-sheet-container-background" class="container-background container-background-transparent hide" onkeydown="keyDownOnNewSheetContainer(event);">
+<div id="add-sheet-container-background" class="container-background container-background-transparent hide">
     <div class="container">
         <div class="title-bar">
-            <div style="float: right; margin-right: 10px; margin-top: 5px;" onclick="hideNewSheetInterface();">
+            <div style="float: right; margin-right: 10px; margin-top: 5px;">
                 <img src="{{ url_for('static', filename='images/close.svg') }}" style="height: 20px; width: 20px; cursor: pointer;"/>
             </div>
         </div>
@@ -10,7 +10,7 @@
             <p>Sheet name:</p>
             <div>
                 <div class="input-box">
-                    <input id="new-sheet-name" autocomplete="off" oninput="changeNewSheetName();">
+                    <input id="new-sheet-name" autocomplete="off">
                 </div>
                 <span id="message-new-sheet-already-exists" class="hide" style="color: rgb(100, 0, 0); font-weight: bold;">Sheet already exists.</span>
                 <span id="message-new-sheet-empty-name" class="hide" style="color: rgb(100, 0, 0); font-weight: bold;">Must provide the sheet a name.</span>
@@ -18,7 +18,7 @@
             </div>
             <p>Search entries:</p>
             <div class="input-box">
-                <input id="new-sheet-search-entries" autocomplete="off" class="search" placeholder="Search" oninput="newSheetSearchEntries();">
+                <input id="new-sheet-search-entries" autocomplete="off" class="search" placeholder="Search">
                 <div class="magnifying-glass">🔍</div>
             </div>
             <div id="add-sheet-entries-table-container" style="overflow-x: auto; overflow-y: hidden" tabindex="-1" data-tabbable="false">
@@ -33,7 +33,7 @@
                     </tbody>
                     <tbody id="add-sheet-entry-table-rows" class="main-rows">
                         {% for question, answer, mentions, stars in entries %}
-                            <tr tabindex="0" style="cursor: pointer;" onclick="clickNewSheetEntry(this);" onkeypress="buttonKeyPressEvent(clickNewSheetEntry, this, event);">
+                            <tr tabindex="0" style="cursor: pointer;">
                                 <td>{{ question }}</td>
                                 <td>{{ answer }}</td>
                                 <td>{{ mentions }}</td>
@@ -43,7 +43,7 @@
                     </tbody>
                     <tbody id="new-sheet-entry-table-hidden-rows" class="hidden-rows"></tbody>
                     <tbody>
-                        <tr id="new-sheet-entry-load-more-row" tabindex="0" style="visibility: {{ 'visible' if load_more_entries else 'collapse' }} ; cursor: pointer;" onClick="newSheetLoadMoreEntries()" onkeypress="buttonKeyPressEvent(newSheetLoadMoreEntries, this, event);">
+                        <tr id="new-sheet-entry-load-more-row" tabindex="0" style="visibility: {{ 'visible' if load_more_entries else 'collapse' }} ; cursor: pointer;">
                             <td colspan=4 class="center-full-row">Load more...</td>
                         </tr>
                     </tbody>
@@ -51,7 +51,7 @@
             </div>
             <p>
                 <button id="save-new-sheet" class="button button-disabled">Save</button>
-                <button class="button" onclick="hideNewSheetInterface();">Back</button>
+                <button id="back-new-sheet" class="button">Back</button>
             </p>
         </div>
     </div>

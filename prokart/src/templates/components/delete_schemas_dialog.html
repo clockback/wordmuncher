@@ -1,7 +1,7 @@
-<div id="delete-schemas-dialog-container-background" class="container-background container-background-transparent elevated-container hide" onkeydown="keyDownOnDeleteSchemaContainer(event);">
+<div id="delete-schemas-dialog-container-background" class="container-background container-background-transparent elevated-container hide">
     <div class="dialog">
         <div class="title-bar">
-            <div style="float: right; margin-right: 10px; margin-top: 5px;" onclick="hideDeleteSchemaInterface();">
+            <div style="float: right; margin-right: 10px; margin-top: 5px;">
                 <img src="{{ url_for('static', filename='images/close.svg') }}" style="height: 20px; width: 20px; cursor: pointer;"/>
             </div>
         </div>
@@ -11,12 +11,12 @@
             <p>Confirm you wish to delete the schema by typing its name below:</p>
             <div id="delete-schema-name-div" style="margin-bottom: 10px;">
                 <div class="input-box">
-                    <input id="delete-schema-name" autocomplete="off" oninput="changeDeleteSchemaName();">
+                    <input id="delete-schema-name" autocomplete="off">
                 </div>
             </div>
             <p>
                 <button id="delete-schema-delete" class="button button-disabled">Delete</button>
-                <button id="delete-schema-back" class="button" onclick="hideDeleteSchemaInterface();">Back</button>
+                <button id="delete-schema-back" class="button">Back</button>
             </p>
         </div>
     </div>

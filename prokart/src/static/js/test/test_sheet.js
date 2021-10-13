@@ -1,6 +1,7 @@
 import {
-    bindButtonKeyPressEvents, enableAllTabbables, disableAllTabbables,
-    disableButtons, enableButtons, getById, hide, openRequest, unhide
+    bindButtonKeyPressEvents, decorateEventFunction, decorateFunction,
+    disableAllTabbables, disableButtons, enableAllTabbables, enableButtons,
+    getById, hide, openRequest, unhide
 } from '../utils.js';
 import {drawStars} from '../stars.js';
 
@@ -65,7 +66,7 @@ function updateResults(correct, questionText) {
     sessionStorage.results = JSON.stringify(results);
 }
 
-function onHoverAnswer(row, questionText) {
+function onHoverAnswer(questionText) {
     var clearCells = document.querySelectorAll(
         "#answers-table td:not(:first-child)"
     );
@@ -76,15 +77,13 @@ function onHoverAnswer(row, questionText) {
     var trashCell = document.createElement("td");
     trashCell.innerHTML = "️🗑️";
     trashCell.classList.add("trash-can");
-    trashCell.onclick = function () {
-        deleteAnswer(row, questionText);
-    };
-    row.appendChild(trashCell);
+    trashCell.onclick = decorateFunction(deleteAnswer, questionText);
+    this.appendChild(trashCell);
 }
 
-function deleteAnswer(row, questionText) {
-    var answerText = row.querySelector("td:first-child").innerHTML;
-    row.remove();
+function deleteAnswer(questionText) {
+    var answerText = this.querySelector("td:first-child").innerHTML;
+    this.remove();
     if (document.querySelectorAll("#answers-table tr").length == 0) {
         getById("other-answers-header").style.visibility = "hidden";
     }
@@ -233,8 +232,8 @@ function processProceed(request) {
     textArea.focus();
 }
 
-function noHoverAnswer(row) {
-    var clearCells = row.querySelectorAll(":not(:first-child)");
+function noHoverAnswer() {
+    var clearCells = this.querySelectorAll(":not(:first-child)");
     for (var i = 0; i < clearCells.length; i ++) {
         clearCells[i].remove();
     }
@@ -362,12 +361,10 @@ function wrongAnswer(question, textArea, closest, others) {
         var answerCell = document.createElement("td");
         answerCell.innerHTML = others[i];
         newRow.appendChild(answerCell);
-        newRow.onmouseenter = function () {
-            onHoverAnswer(this, questionText);
-        };
-        newRow.onmouseleave = function () {
-            noHoverAnswer(this);
-        };
+        newRow.onmouseenter = decorateEventFunction(
+            onHoverAnswer, questionText
+        );
+        newRow.onmouseleave = noHoverAnswer;
         otherAnswers.appendChild(newRow);
     }
 
@@ -768,9 +765,14 @@ function prepareEventsTestSheet() {
     getById("stop-test").onclick = stopTestEarly;
     getById("continue-test").onclick = continueTest;
     getById("wrong-answer-box").onkeydown = keyDownOnWrongAnswerContainer;
+    getById("next-button").onclick = clickNextButton;
+    getById("add-to-answers-button").onclick = addToAnswers;
     var backButton = document.querySelector("#testbar-left>span");
     backButton.onclick = abortTest;
     bindButtonKeyPressEvents(backButton, abortTest);
+    document.querySelector("#wrong-answer-box .title-bar>div").onclick = (
+        clickNextButton
+    );
 }
 
 window.addEventListener('load', prepareEventsTestSheet);

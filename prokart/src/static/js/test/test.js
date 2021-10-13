@@ -3,7 +3,7 @@ import {
     goTestSheet, hideTestSheetInterface, keyDownOnTestSheetContainer,
     testSheet, updateNumberOfQuestions
 } from './pre_test_sheet.js';
-import {prepareEventsTopBar} from '../select_translator.js'
+import {prepareEventsTopBar} from '../select_translator.js';
 
 function searchSheets(numberAlready) {
     // Finds the current search query.

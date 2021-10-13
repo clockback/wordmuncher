@@ -223,6 +223,14 @@ export function addClickEvent(className, callable) {
     }
 }
 
+export function decorateEventFunction(callable) {
+    var args = arguments;
+
+    return function () {
+        callable.call(this, ...Array.from(args).slice(1))
+    }
+}
+
 export function decorateFunction(callable) {
     var args = arguments;
     return function () {

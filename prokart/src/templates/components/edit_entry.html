@@ -1,7 +1,7 @@
-<div id="edit-entry-container-background" class="container-background container-background-transparent hide" onkeydown="keyDownOnEditEntryContainer(event);">
+<div id="edit-entry-container-background" class="container-background container-background-transparent hide">
     <div class="container">
         <div class="title-bar">
-            <div style="float: right; margin-right: 10px; margin-top: 5px;" onclick="hideEditEntryInterface();">
+            <div style="float: right; margin-right: 10px; margin-top: 5px;">
                 <img src="{{ url_for('static', filename='images/close.svg') }}" style="height: 20px; width: 20px; cursor: pointer;"/>
             </div>
         </div>
@@ -10,7 +10,7 @@
             <p>Question:</p>
             <div id="edit-entry-question-div">
                 <div class="input-box">
-                    <input id="edit-entry-question" autocomplete="off" oninput="changeEditEntryQuestion();">
+                    <input id="edit-entry-question" autocomplete="off">
                 </div>
                 <span id="message-edit-entry-already-exists" class="hide" style="color: rgb(100, 0, 0); font-weight: bold;">Question already exists.</span>
                 <span id="message-edit-entry-empty-question" class="hide" style="color: rgb(100, 0, 0); font-weight: bold;">Must provide the entry a question.</span>
@@ -26,14 +26,14 @@
                     </select>
                 </div>
             </div>
-            <button id="edit-entry-new-schema" class="button" onclick="showSchemasInterface('edit', 'new');" style="margin-top: 20px;">+</button>
+            <button id="edit-entry-new-schema" class="button" style="margin-top: 20px;">+</button>
             <button id="edit-entry-edit-schema" class="button button-disabled" style="margin-top: 20px;">
                 <img src="static/images/edit.svg" style="height: 24px; vertical-align: middle;"/>
             </button>
             <p id="edit-entry-answer-text">Answer:</p>
             <div id="edit-entry-answer-div">
                 <div class="input-box">
-                    <input id="edit-entry-answer" autocomplete="off" oninput="changeEditEntryAnswer();">
+                    <input id="edit-entry-answer" autocomplete="off">
                 </div>
                 <span id="message-edit-entry-empty-answer" class="hide" style="color: rgb(100, 0, 0); font-weight: bold;">Must provide the entry an answer.</span>
                 <span id="message-edit-entry-long-answer" class="hide" style="color: rgb(100, 0, 0); font-weight: bold;">Answer must be no more than 80 characters.</span>
@@ -54,16 +54,16 @@
                     <tbody class="main-rows main-rows-alt">
                         <tr>
                             <td>
-                                <input id="edit-entry-add-answer" placeholder="Add another" style="padding: 5px;" autocomplete="off" onkeypress="editEntryHitEnterAnotherAnswer(event);">
+                                <input id="edit-entry-add-answer" placeholder="Add another" style="padding: 5px;" autocomplete="off">
                             </td>
-                            <td id="edit-entry-add-answer-button"><span class="add-row" onclick="editEntryAddRow();">➡</span></td>
+                            <td id="edit-entry-add-answer-button"><span class="add-row">➡</span></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
             <p>Search sheets:</p>
             <div class="input-box">
-                <input id="edit-entry-search-sheets" autocomplete="off" class="search" placeholder="Search" oninput="editEntrySearchSheets();">
+                <input id="edit-entry-search-sheets" autocomplete="off" class="search" placeholder="Search">
                 <div class="magnifying-glass">🔍</div>
             </div>
             <div id="edit-entry-sheets-table-container" style="overflow-x: auto; overflow-y: hidden" tabindex="-1" data-tabbable="false">
@@ -77,7 +77,7 @@
                     </tbody>
                     <tbody id="edit-entry-sheet-table-rows" class="main-rows">
                         {% for sheet, entries, completed in sheets %}
-                            <tr tabindex="0" onclick="clickEditEntrySheet(this);" style="cursor: pointer;" onkeypress="buttonKeyPressEvent(clickEditEntrySheet, this, event);">
+                            <tr tabindex="0" style="cursor: pointer;">
                                 <td>{{ sheet }}</td>
                                 <td>{{ entries }}</td>
                                 <td>{{ completed }}</td>
@@ -86,7 +86,7 @@
                     </tbody>
                     <tbody id="edit-entry-sheet-table-hidden-rows" class="hidden-rows"></tbody>
                     <tbody>
-                        <tr id="edit-entry-sheet-load-more-row" tabindex="0" style="visibility: {{ 'visible' if load_more_sheets else 'collapse' }} ; cursor: pointer;" onClick="editEntryLoadMoreSheets()" onkeypress="buttonKeyPressEvent(editEntryLoadMoreSheets, this, event);">
+                        <tr id="edit-entry-sheet-load-more-row" tabindex="0" style="visibility: {{ 'visible' if load_more_sheets else 'collapse' }} ; cursor: pointer;">
                             <td colspan=4 class="center-full-row">Load more...</td>
                         </tr>
                     </tbody>
@@ -94,7 +94,7 @@
             </div>
             <p>
                 <button id="save-edit-entry" class="button">Save</button>
-                <button class="button" onclick="hideEditEntryInterface();">Back</button>
+                <button id="back-edit-entry" class="button">Back</button>
             </p>
         </div>
     </div>

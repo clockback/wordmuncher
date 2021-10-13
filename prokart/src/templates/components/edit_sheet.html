@@ -1,7 +1,7 @@
-<div id="edit-sheet-container-background" class="container-background container-background-transparent hide" onkeydown="keyDownOnEditSheetContainer(event);">
+<div id="edit-sheet-container-background" class="container-background container-background-transparent hide">
     <div class="container">
         <div class="title-bar">
-            <div style="float: right; margin-right: 10px; margin-top: 5px;" onclick="hideEditSheetInterface();">
+            <div style="float: right; margin-right: 10px; margin-top: 5px;">
                 <img src="{{ url_for('static', filename='images/close.svg') }}" style="height: 20px; width: 20px; cursor: pointer;"/>
             </div>
         </div>
@@ -10,7 +10,7 @@
             <p>Sheet name:</p>
             <div>
                 <div class="input-box">
-                    <input id="edit-sheet-name" autocomplete="off" oninput="changeEditSheetName();">
+                    <input id="edit-sheet-name" autocomplete="off">
                 </div>
                 <span id="message-edit-sheet-already-exists" class="hide" style="color: rgb(100, 0, 0); font-weight: bold;">Sheet already exists.</span>
                 <span id="message-edit-sheet-empty-name" class="hide" style="color: rgb(100, 0, 0); font-weight: bold;">Must provide the sheet a name.</span>
@@ -18,7 +18,7 @@
             </div>
             <p>Search entries:</p>
             <div class="input-box">
-                <input id="edit-sheet-search-entries" autocomplete="off" class="search" placeholder="Search" oninput="editSheetSearchEntries();">
+                <input id="edit-sheet-search-entries" autocomplete="off" class="search" placeholder="Search">
                 <div class="magnifying-glass">🔍</div>
             </div>
             <div id="edit-sheet-entries-table-container" style="overflow-x: auto; overflow-y: hidden" tabindex="-1" data-tabbable="false">
@@ -33,7 +33,7 @@
                     </tbody>
                     <tbody id="edit-sheet-entry-table-rows" class="main-rows">
                         {% for question, answer, mentions, stars in entries %}
-                            <tr tabindex="0" style="cursor: pointer;" onclick="clickEditSheetEntry(this);" onkeypress="buttonKeyPressEvent(clickEditSheetEntry, this, event);">
+                            <tr tabindex="0" style="cursor: pointer;">
                                 <td>{{ question }}</td>
                                 <td>{{ answer }}</td>
                                 <td>{{ mentions }}</td>
@@ -43,7 +43,7 @@
                     </tbody>
                     <tbody id="edit-sheet-entry-table-hidden-rows" class="hidden-rows"></tbody>
                     <tbody>
-                        <tr id="edit-sheet-entry-load-more-row" tabindex="0" style="visibility: {{ 'visible' if load_more_entries else 'collapse' }} ; cursor: pointer;" onClick="editSheetLoadMoreEntries()" onkeypress="buttonKeyPressEvent(editSheetLoadMoreEntries, this, event);">
+                        <tr id="edit-sheet-entry-load-more-row" tabindex="0" style="visibility: {{ 'visible' if load_more_entries else 'collapse' }} ; cursor: pointer;">
                             <td colspan=4 class="center-full-row">Load more...</td>
                         </tr>
                     </tbody>
@@ -51,7 +51,7 @@
             </div>
             <p>
                 <button id="save-edit-sheet" class="button">Save</button>
-                <button class="button" onclick="hideEditSheetInterface();">Back</button>
+                <button id="back-edit-sheet" class="button">Back</button>
             </p>
         </div>
     </div>

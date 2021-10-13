@@ -67,9 +67,7 @@ function processExpandFlags(request, element, hiddenLanguages) {
         var newButton = document.createElement("button");
         newButtonDiv.appendChild(newButton);
         newButton.classList.add("flag-button");
-        newButton.onclick = function () {
-            selectFlag(this);
-        };
+        newButton.onclick = selectFlag;
         newButton.innerHTML = flag;
         if (flag == element.innerHTML) {
             newButton.style.display = "none";
@@ -91,14 +89,14 @@ function condenseFlags() {
     this.onclick = expandFlags;
 }
 
-function selectFlag(element) {
+function selectFlag() {
     var allCollapseFlags = document.getElementsByClassName("flag-button");
     for (var i = 0; i < allCollapseFlags.length; i ++) {
         allCollapseFlags[i].style.display = null;
     }
-    element.style.display = "none";
+    this.style.display = "none";
     var flagButton = getById("choose-flag");
-    flagButton.innerHTML = element.innerHTML;
+    flagButton.innerHTML = this.innerHTML;
     condenseFlags.call(flagButton);
     flagButton.focus();
 }

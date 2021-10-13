@@ -1,4 +1,4 @@
-<html onclick="closeAllSelect();">
+<html>
     <head>
         <title>Prokart</title>
         <link rel="stylesheet" href="{{ url_for('static', filename='css/general.css') }}">
@@ -6,24 +6,18 @@
         <link rel="icon" href="{{ url_for('static', filename='images/logo.svg') }}">
         <link href="https://fonts.googleapis.com/css?family=M+PLUS+Rounded+1c" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
-        <script type="text/javascript" src="{{ url_for('static', filename='js/select_translator.js') }}"></script>
-        <script type="text/javascript" src="{{ url_for('static', filename='js/utils.js') }}"></script>
-        <script type="text/javascript" src="{{ url_for('static', filename='js/create/create.js') }}"></script>
-        <script type="text/javascript" src="{{ url_for('static', filename='js/create/new_sheet.js') }}"></script>
-        <script type="text/javascript" src="{{ url_for('static', filename='js/create/edit_sheet.js') }}"></script>
-        <script type="text/javascript" src="{{ url_for('static', filename='js/create/new_entry.js') }}"></script>
-        <script type="text/javascript" src="{{ url_for('static', filename='js/create/edit_entry.js') }}"></script>
-        <script type="text/javascript" src="{{ url_for('static', filename='js/create/schemas.js') }}"></script>
+        <script type="module" src="{{ url_for('static', filename='js/create/create.js') }}"></script>
     </head>
 
     <body>
+        <script>0</script>
         {% include 'components/topbar.html' %}
         <div id="main" class="main" tabindex="-1" data-tabbable="false">
             <div style="margin-left: 5px;">
                 <div>
                     <h1>Create</h1>
                     <div class="input-box">
-                        <input autocomplete="off" id="search-all" name="sheet query" oninput="searchAll()"/>
+                        <input id="search-all" autocomplete="off" name="sheet query"/>
                         <div class="magnifying-glass">🔍</div>
                     </div>
                 </div>
@@ -40,7 +34,7 @@
                             </tbody>
                             <tbody class="main-rows" id="sheet-table-rows">
                                 {% for sheet, entries, completed in sheets %}
-                                    <tr tabindex="0" onclick="clickSheet(this);" onkeypress="buttonKeyPressEvent(clickSheet, this, event);" style="cursor: pointer;">
+                                    <tr tabindex="0" style="cursor: pointer;">
                                         <td>{{ sheet }}</td>
                                         <td>{{ entries }}</td>
                                         <td>{{ completed }}</td>
@@ -48,14 +42,14 @@
                                 {% endfor %}
                             </tbody>
                             <tbody>
-                                <tr id="sheet-load-more-row" tabindex="0" style="visibility: {{ 'visible' if load_more_sheets else 'collapse' }} ; cursor: pointer;" onClick="loadMoreSheets()" onkeypress="buttonKeyPressEvent(loadMoreSheets, this, event);">
+                                <tr id="sheet-load-more-row" tabindex="0" style="visibility: {{ 'visible' if load_more_sheets else 'collapse' }} ; cursor: pointer;">
                                     <td colspan=3 class="center-full-row">Load more...</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                     <div>
-                        <button id="new-sheet" class="button" onclick="showNewSheetInterface();">+</button>
+                        <button id="new-sheet" class="button">+</button>
                         <button id="edit-sheet" class="button button-disabled"><img src="static/images/edit.svg" style="height: 24px; vertical-align: middle;"/></button>
                         <button id="delete-sheet" class="button button-disabled">-</button>
                     </div>
@@ -74,7 +68,7 @@
                             </tbody>
                             <tbody class="main-rows" id="entry-table-rows">
                                 {% for question, answer, mentions, stars in entries %}
-                                    <tr onclick="clickEntry(this);" onkeypress="buttonKeyPressEvent(clickEntry, this, event);" tabindex="0" style="cursor: pointer;">
+                                    <tr tabindex="0" style="cursor: pointer;">
                                         <td>{{ question }}</td>
                                         <td>{{ answer }}</td>
                                         <td>{{ mentions }}</td>
@@ -83,21 +77,21 @@
                                 {% endfor %}
                             </tbody>
                             <tbody>
-                                <tr id="entry-load-more-row" tabindex="0" style="visibility: {{ 'visible' if load_more_entries else 'collapse' }} ; cursor: pointer;" onClick="loadMoreEntries()" onkeypress="buttonKeyPressEvent(loadMoreEntries, this, event);">
+                                <tr id="entry-load-more-row" tabindex="0" style="visibility: {{ 'visible' if load_more_entries else 'collapse' }} ; cursor: pointer;">
                                     <td colspan=4 class="center-full-row">Load more...</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                     <div>
-                        <button id="new-entry" class="button" onclick="showNewEntryInterface();">+</button>
+                        <button id="new-entry" class="button">+</button>
                         <button id="edit-entry" class="button button-disabled"><img src="static/images/edit.svg" style="height: 24px; vertical-align: middle;"/></button>
                         <button id="delete-entry" class="button button-disabled">-</button>
                     </div>
                 </div>
                 <div style="clear: both;">
                     <p>
-                        <button id="back" class="button" onclick="window.location.href = '/';">Back</button>
+                        <button id="back" class="button">Back</button>
                     </p>
                 </div>
             </div>

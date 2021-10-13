@@ -1,7 +1,7 @@
-<div id="schemas-container-background" class="container-background container-background-transparent elevated-container hide" onkeydown="keyDownOnSchemasContainer(event);">
+<div id="schemas-container-background" class="container-background container-background-transparent elevated-container hide">
     <div class="container">
         <div class="title-bar">
-            <div style="float: right; margin-right: 10px; margin-top: 5px;" onclick="hideSchemasInterface();">
+            <div style="float: right; margin-right: 10px; margin-top: 5px;">
                 <img src="{{ url_for('static', filename='images/close.svg') }}" style="height: 20px; width: 20px; cursor: pointer;"/>
             </div>
         </div>
@@ -10,7 +10,7 @@
             <p>Schema name:</p>
             <div id="schema-name-div" style="margin-bottom: 10px;">
                 <div class="input-box">
-                    <input id="schema-name" autocomplete="off" oninput="changeSchemaName();">
+                    <input id="schema-name" autocomplete="off">
                 </div>
                 <span id="message-schema" class="hide" style="color: rgb(100, 0, 0); font-weight: bold;">Schema already exists.</span>
             </div>
@@ -67,11 +67,11 @@
             </div>
             <div id="schema-options" style="margin-top: 10px; margin-bottom: 10px;">
                 <button id="swap-subschemas" class="button button-disabled">Swap subschemas</button>
-                <button id="delete-schema" class="button hide" onclick="showDeleteSchemaInterface();">Delete</button>
+                <button id="delete-schema" class="button hide">Delete</button>
             </div>
             <p>
                 <button id="save-schema" class="button button-disabled">Save</button>
-                <button id="back-schema" class="button" onclick="hideSchemasInterface();">Back</button>
+                <button id="back-schema" class="button">Back</button>
             </p>
         </div>
     </div>
