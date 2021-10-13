@@ -584,7 +584,9 @@ function wrongAnswerTable(corrections) {
         else {
             var weight = 1;
         }
-        presentPercentage = Math.round(startPercentage + diff * weight) + "%";
+        var presentPercentage = Math.round(
+            startPercentage + diff * weight
+        ) + "%";
         percentageBar.style.width = presentPercentage;
         percentageBarFigure.innerHTML = presentPercentage + " complete";
         if (time == 100) {
