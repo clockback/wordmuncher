@@ -676,7 +676,7 @@ function prepareTable(answers) {
                 emptyCell.setAttribute("data-col", answers["column ids"][j]);
                 emptyCell.setAttribute("data-row", answers["row ids"][i]);
 
-                for (k = 0; k < answers["answer_locations"].length; k ++) {
+                for (var k = 0; k < answers["answer_locations"].length; k ++) {
                     var position = answers["answer_locations"][k];
                     if (position[0] == j && position[1] == i) {
                         var divForEntry = document.createElement("div");
