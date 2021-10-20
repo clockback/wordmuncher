@@ -2,19 +2,18 @@
 <html style="height: 100%;">
     <head>
         <title>Prokart</title>
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/general.css') }}">
-        <link rel="icon" href="{{ url_for('static', filename='images/logo.svg') }}">
+        <meta charset="utf-8">
+        <link rel="icon" href="prokart/src/static/images/logo.svg">
         <link href="https://fonts.googleapis.com/css?family=M+PLUS+Rounded+1c" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
-        <script type="module" src="{{ url_for('static', filename='js/main.js') }}"></script>
     </head>
 
     <body>
         <script>0</script>
-        {% include 'components/topbar.html' %}
+        <div id="topbar"></div>
         <div id="main" class="main" tabindex="-1" data-tabbable="false">
             <div style="top: 0; width: 100%; text-align: center;">
-                <img style="width: 216.448px; height: 80px; margin-top: 40px;" src="{{ url_for('static', filename='images/logo-full.svg') }}"/>
+                <img style="width: 216.448px; height: 80px; margin-top: 40px;" src="./prokart/src/static/images/logo-full.svg"/>
                 <h2>A Language-Learning Tool</h2>
             </div>
             <div style="text-align: center;">
