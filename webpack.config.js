@@ -1,15 +1,16 @@
-const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-    entry: './prokart/src/run.js',
-    output: {
-        path: path.join(__dirname, '/bundle'),
-        filename: 'index_bundle.js'
-    },
     devServer: {
-        port: 8081
+        publicPath: '/',
+        hot: true,
+        headers: {
+            'Cross-Origin-Opener-Policy': 'same-origin',
+            'Cross-Origin-Embedder-Policy': 'require-corp'
+        }
     },
+    entry: './prokart/src/run.js',
+    mode: 'development',
     module: {
         rules: [
             {
@@ -21,31 +22,30 @@ module.exports = {
                 }
             },
             {
-                test: /\.svg$/,
-                use: [
-                    {
-                        loader: 'file-loader',
-                        options: {
-                            name: '[name].[ext]',
-                            outputPath: 'prokart/src/static/images/'
-                        }
-                    }
-                ]
+                test: /\.css$/i,
+                use: ['style-loader', 'css-loader']
+            },
+            {
+                test: /\.svg$/i,
+                type: 'asset/resource'
+            },
+            {
+                test: /\.wasm$/i,
+                type: 'application/wasm'
             }
         ]
+    },
+    resolve: {
+        extensions: ['.dev.js', '.js', '.json', '.wasm'],
+        fallback: {
+            util: require.resolve("util/"),
+            fs: false,
+            crypto: false
+        }
     },
     plugins:[
         new HtmlWebpackPlugin({
             template: './prokart/src/templates/main.html'
         })
-    ],
-    resolve: {
-        fallback: {
-            util: require.resolve("util/"),
-            assert: false,
-            buffer: false,
-            fs: false,
-            crypto: false
-        }
-    }
+    ]
 }
