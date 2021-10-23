@@ -5,12 +5,15 @@ import { initBackend } from 'absurd-sql/dist/indexeddb-main-thread';
 
 ReactDOM.render(<TopBar />, document.getElementById('topbar'));
 
-function init() {
-    console.log("OH MY");
-    let worker = new Worker(
-        new URL('./static/js/sql/connect.js', import.meta.url)
-    );
-    initBackend(worker);
+if (typeof localStorage === "undefined" || localStorage === null) {
+    var LocalStorage = require('node-localstorage').LocalStorage;
+    localStorage = new LocalStorage('./scratch');
 }
 
-init();
+if (localStorage.getItem("version") == undefined) {
+    let worker = new Worker(
+        new URL('./static/js/sql/initDB.js', import.meta.url)
+    );
+    initBackend(worker);
+    localStorage.setItem("version", "0.1.0");
+}

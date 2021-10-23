@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
+import { initBackend } from 'absurd-sql/dist/indexeddb-main-thread';
 
 import '../../css/general.css';
 import logoDark from '../../images/logo-dark.svg';
-
 
 
 class TopBar extends Component {

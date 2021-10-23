@@ -3,7 +3,7 @@ import { SQLiteFS } from 'absurd-sql';
 import IndexedDBBackend from 'absurd-sql/dist/indexeddb-backend';
 
 
-async function init() {
+async function getConnection() {
     let SQL = await initSqlJs({ locateFile: file => file });
     let sqlFS = new SQLiteFS(SQL.FS, new IndexedDBBackend());
     SQL.register_for_idb(sqlFS);
@@ -19,8 +19,4 @@ async function init() {
     return db;
 }
 
-async function run() {
-    let db = await init();
-}
-
-console.log(1);
+export { getConnection };

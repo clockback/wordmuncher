@@ -40,7 +40,9 @@ module.exports = {
         fallback: {
             util: require.resolve("util/"),
             fs: false,
-            crypto: false
+            crypto: false,
+            constants: false,
+            assert: false
         }
     },
     plugins:[

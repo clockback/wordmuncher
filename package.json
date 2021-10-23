@@ -25,6 +25,7 @@
     "@babel/core": "^7.15.8",
     "@jlongster/sql.js": "^1.6.7",
     "absurd-sql": "^0.0.53",
+    "node-localstorage": "^2.2.1",
     "path": "^0.12.7",
     "path-browserify": "^1.0.1",
     "react": "^17.0.2",
@@ -35,8 +36,7 @@
   "devDependencies": {
     "@babel/preset-env": "^7.15.8",
     "@babel/preset-react": "^7.14.5",
-    "babel-core": "^6.26.3",
-    "babel-loader": "^8.2.2",
+    "babel-loader": "^8.2.3",
     "css-loader": "^6.4.0",
     "html-webpack-plugin": "^5.4.0",
     "style-loader": "^3.3.0",
