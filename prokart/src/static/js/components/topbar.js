@@ -28,11 +28,15 @@ async function getTranslators() {
 }
 
 class TopBar extends Component {
+    clickSidebarIcon = e => {
+        window.location.href = '/';
+    };
+
     render() {
         let sidebar = (
             <div>
                 <div id="sidebar-left" className="sidebar-left">
-                    <div id="sidebar-left-home" tabIndex="0">
+                    <div id="sidebar-left-home" tabIndex="0" onClick={this.clickSidebarIcon}>
                         <img style={{width: "40px", height: "40px"}} src={logoDark}/>
                     </div>
                 </div>
