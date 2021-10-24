@@ -110,14 +110,13 @@ span::-moz-focus-inner {
     border: none;
     color: white;
     width: var(--topbar-button-width);
-    font-size: 23px;
 }
 
 .sidebar-center-button:not(:hover) {
     font-size: 23px;
 }
 
-.sidebar-center-drop > div:hover > .sidebar-center-button,.sidebar-center > .sidebar-center-button:hover {
+.sidebar-center-drop > div:hover > .sidebar-center-button,.sidebar-center > div > .sidebar-center-button:hover {
     background-color: var(--hover-color);
     font-size: 25px;
 }

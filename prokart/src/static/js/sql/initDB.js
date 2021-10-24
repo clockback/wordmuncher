@@ -419,6 +419,8 @@ async function createAllTables() {
     createMentionsTable(db);
     createSubschemasTable(db);
     createQualitiesTable(db);
+
+    postMessage(true);
 }
 
 createAllTables();

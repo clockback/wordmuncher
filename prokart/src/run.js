@@ -1,9 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import TopBar from './static/js/components/topbar.js';
 import { initBackend } from 'absurd-sql/dist/indexeddb-main-thread';
 
-ReactDOM.render(<TopBar />, document.getElementById('topbar'));
+import TopBar from './static/js/components/topbar.js';
+
+function renderTopBar() {
+    ReactDOM.render(<TopBar />, document.getElementById('topbar'));
+}
 
 if (typeof localStorage === "undefined" || localStorage === null) {
     var LocalStorage = require('node-localstorage').LocalStorage;
@@ -11,9 +14,21 @@ if (typeof localStorage === "undefined" || localStorage === null) {
 }
 
 if (localStorage.getItem("version") == undefined) {
-    let worker = new Worker(
+    const newWorker = new Worker(
         new URL('./static/js/sql/initDB.js', import.meta.url)
     );
-    initBackend(worker);
+    newWorker.onmessage = function (event) {
+        if (event.data.type == '__absurd:spawn-idb-worker') {
+            return;
+        }
+        renderTopBar();
+        worker.terminate();
+    }
+    initBackend(newWorker);
+    window.worker = newWorker
+
     localStorage.setItem("version", "0.1.0");
+}
+else {
+    renderTopBar();
 }
