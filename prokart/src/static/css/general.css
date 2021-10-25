@@ -188,14 +188,6 @@ tbody.hidden-rows {
     visibility: collapse;
 }
 
-a {
-    text-decoration: none;
-}
-
-a:visited {
-    color: white;
-}
-
 /*the container must be positioned relative:*/
 .custom-select {
     position: relative;
@@ -378,7 +370,8 @@ input {
     display: none;
 }
 
-#main {
+.main {
+    background: var(--bg-color);
     top: 50px;
     bottom: 50px;
     overflow-y: auto;
@@ -761,8 +754,4 @@ div.textarea-container {
 .correction-text {
     font-weight: bold;
     font-size: 20px;
-}
-
-.main {
-    background: var(--bg-color);
 }

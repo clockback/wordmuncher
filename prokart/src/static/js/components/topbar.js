@@ -34,7 +34,7 @@ class TopBar extends Component {
 
     render() {
         let sidebar = (
-            <div>
+            <div className="sidebar">
                 <div id="sidebar-left" className="sidebar-left">
                     <div id="sidebar-left-home" tabIndex="0" onClick={this.clickSidebarIcon}>
                         <img style={{width: "40px", height: "40px"}} src={logoDark}/>

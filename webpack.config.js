@@ -7,7 +7,8 @@ module.exports = {
         headers: {
             'Cross-Origin-Opener-Policy': 'same-origin',
             'Cross-Origin-Embedder-Policy': 'require-corp'
-        }
+        },
+        historyApiFallback: true
     },
     entry: './prokart/src/run.js',
     mode: 'development',
@@ -42,7 +43,8 @@ module.exports = {
             fs: false,
             crypto: false,
             constants: false,
-            assert: false
+            assert: false,
+            http: false
         }
     },
     plugins:[
