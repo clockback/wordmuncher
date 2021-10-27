@@ -1,4 +1,5 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = {
     devServer: {
@@ -28,15 +29,10 @@ module.exports = {
             {
                 test: /\.svg$/i,
                 type: 'asset/resource'
-            },
-            {
-                test: /\.wasm$/i,
-                type: 'application/wasm'
             }
         ]
     },
     resolve: {
-        extensions: ['.dev.js', '.js', '.json', '.wasm'],
         fallback: {
             util: require.resolve("util/"),
             fs: false,
@@ -49,6 +45,9 @@ module.exports = {
     plugins:[
         new HtmlWebpackPlugin({
             template: './prokart/src/templates/main.html'
+        }),
+        new CopyWebpackPlugin({
+            patterns: [{from: "./sql-wasm.wasm"}]
         })
     ]
 }

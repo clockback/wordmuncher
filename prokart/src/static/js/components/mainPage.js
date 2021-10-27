@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import logoFull from '../../images/logo-full.svg';
 
 
 class MainPage extends Component {
@@ -15,7 +16,7 @@ class MainPage extends Component {
             <div>
                 <div className="main">
                     <div style={{top: "0", width: "100%", textAlign: "center"}}>
-                        <img style={{width: "216.448px", height: "80px", marginTop: "40px"}} src="./prokart/src/static/images/logo-full.svg"/>
+                        <img style={{width: "216.448px", height: "80px", marginTop: "40px"}} src={logoFull}/>
                         <h2>A Language-Learning Tool</h2>
                     </div>
                     <div style={{textAlign: "center"}}>
