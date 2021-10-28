@@ -28,7 +28,8 @@ module.exports = {
             },
             {
                 test: /\.svg$/i,
-                type: 'asset/resource'
+                exclude: /node_modules/,
+                use: ['file-loader?name=[name].[ext]']
             }
         ]
     },
