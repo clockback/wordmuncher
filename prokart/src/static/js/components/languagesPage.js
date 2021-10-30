@@ -3,6 +3,19 @@ import DropDown from './dropDown.js';
 
 
 class LanguagesPage extends Component {
+    state = {
+        fromLanguage: null,
+        toLanguage: null
+    };
+
+    selectFromLanguage = (text) => {
+        this.setState({fromLanguage: text});
+    };
+
+    selectToLanguage = (text) => {
+        this.setState({toLanguage: text});
+    };
+
     render() {
         return (
             <div>
@@ -13,19 +26,19 @@ class LanguagesPage extends Component {
                         </p>
                         <p>Translate from:</p>
                         <div style={{display: "inline-block", width: "300px"}}>
-                            <DropDown id="translate-from">
-                                <option value="0">Pick language:</option>
+                            <DropDown id="translate-from" callable={this.selectFromLanguage}>
+                                <option>Pick language:</option>
                             </DropDown>
                         </div>
                         <p>Translate to:</p>
                         <div style={{display: "inline-block", width: "300px"}}>
-                            <DropDown id="translate-to">
-                                <option value="0">Pick language:</option>
+                            <DropDown id="translate-to" callable={this.selectToLanguage}>
+                                <option>Pick language:</option>
                             </DropDown>
                         </div>
                     </div>
                     <p>
-                        <button id="save-button" style={{marginTop: "10px"}} className="button button-disabled">Save</button>
+                        <button id="save-button" style={{marginTop: "10px"}} className={`button ${(this.state.fromLanguage !== null && this.state.toLanguage !== null && this.state.fromLanguage != this.state.toLanguage) ? "" : "button-disabled"}`}>Save</button>
                     </p>
                 </div>
                 <footer>
