@@ -566,14 +566,19 @@ div.textarea-container {
     background-color: rgb(255, 100, 100)
 }
 
+.flag-drop-parent {
+    margin-left: 5px;
+    height: 43px;
+    display: inline-block;
+    position: relative;
+}
+
 .flag-drop {
     border: none;
-    font-size: 33px;
+    font-size: 1.8em;
+    padding-left: 5px;
     padding-right: 25px;
     cursor: pointer;
-    vertical-align: middle;
-    height: 33px;
-    display: inline-block;
 }
 
 .flag-drop:hover {
@@ -585,7 +590,7 @@ div.textarea-container {
     border: 6px solid transparent;
     border-color: transparent transparent #000 transparent;
     position: absolute;
-    top: 7px;
+    top: 11px;
     right: 5px;
 }
 
@@ -594,7 +599,7 @@ div.textarea-container {
     border: 6px solid transparent;
     border-color: #000 transparent transparent transparent;
     position: absolute;
-    top: 13px;
+    top: 17px;
     right: 5px;
 }
 

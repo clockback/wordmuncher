@@ -165,7 +165,8 @@ def add_language() -> Tuple[str, int]:
     # Adds the new language to the database.
     conn.execute(
         """
-        INSERT INTO languages (name, flag) VALUES (?, ?);
+        INSERT INTO languages (name, flag) VALUES
+            (?, SELECT flag FROM flags WHERE text = ?);
         """, (name, flag_s)
     )
 

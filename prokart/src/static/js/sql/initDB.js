@@ -1,6 +1,4 @@
-"use strict";
-
-import { getConnection } from './connect.js';
+import { getConnection } from './utils/connect.js';
 
 
 function createFlagsTable(db) {

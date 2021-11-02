@@ -4,20 +4,19 @@ import {Link, Switch, Route} from 'react-router-dom';
 import TopBar from './topbar.js';
 import MainPage from './mainPage.js';
 import LanguagesPage from './languagesPage.js';
+import '../../css/general.css';
 
 
 class App extends Component {
     render() {
         return (
-            <div>
+            <React.StrictMode>
                 <TopBar />
-                <div>
-                    <Switch>
-                        <Route exact path='/' component={MainPage}></Route>
-                        <Route exact path='/languages' component={LanguagesPage}></Route>
-                    </Switch>
-                </div>
-            </div>
+                <Switch>
+                    <Route exact path='/' component={MainPage}></Route>
+                    <Route exact path='/languages' component={LanguagesPage}></Route>
+                </Switch>
+            </React.StrictMode>
         );
     }
 }
