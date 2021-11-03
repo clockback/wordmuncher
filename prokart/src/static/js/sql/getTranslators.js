@@ -6,11 +6,18 @@ async function getTranslators() {
     let db = await getConnection();
 
     let translators = await readQuery(db, `
-        SELECT from_l, l1.name, f1.text, to_l, l2.name, f2.text FROM (
-                SELECT from_l, to_l FROM translators
-                ORDER BY last_used DESC
-                LIMIT 3
-            )
+        SELECT
+            from_l AS fromLanguage,
+            l1.name AS fromLanguageName,
+            f1.text AS fromLanguageFlag,
+            to_l AS toLanguage,
+            l2.name AS toLanguageName,
+            f2.text AS toLanguageFlag
+        FROM (
+            SELECT from_l, to_l FROM translators
+            ORDER BY last_used DESC
+            LIMIT 3
+        )
         INNER JOIN languages AS l1
             ON l1.language = from_l
         INNER JOIN languages AS l2

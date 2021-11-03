@@ -18,6 +18,22 @@ async function getLanguages(processLanguages) {
     });
 }
 
+async function saveTranslator(fromLanguage, toLanguage) {
+    let worker = new Worker(
+        new URL('../sql/saveTranslator.js', import.meta.url)
+    );
+    initBackend(worker);
+    worker.postMessage({
+        fromLanguage: fromLanguage[0], toLanguage: toLanguage[0]
+    });
+
+    addMessageListener(worker, function (event) {
+        worker.terminate();
+        localStorage.removeItem("translators");
+        window.location.href = "/";
+    });
+}
+
 class LanguagesPage extends Component {
     constructor(props) {
         super(props);
@@ -53,6 +69,10 @@ class LanguagesPage extends Component {
     closeEditLanguages = () => {
         this.setState({isOpenEditLanguages: false});
     };
+
+    onClickSave = () => {
+        saveTranslator(this.state.fromLanguage, this.state.toLanguage)
+    }
 
     render() {
         let mainProps = {
@@ -91,7 +111,8 @@ class LanguagesPage extends Component {
                 marginTop: "10px"
             },
             className: "button" + (canSave ? "" : " button-disabled"),
-            tabIndex: this.state.isOpenEditLanguages ? -1 : 0
+            tabIndex: this.state.isOpenEditLanguages ? -1 : 0,
+            onClick: canSave ? this.onClickSave : null
         };
 
         let editLanguages = null;
