@@ -4,7 +4,7 @@ import { initBackend } from 'absurd-sql/dist/indexeddb-main-thread';
 import DropDown from './dropDown.js';
 import EditLanguages from './editLanguages.js';
 import { addMessageListener } from '../sql/messageListener.js';
-
+import Footer from './footer.js';
 
 async function getLanguages(processLanguages) {
     let worker = new Worker(
@@ -78,8 +78,7 @@ class LanguagesPage extends Component {
         let mainProps = {
             id: "main",
             className: "main",
-            tabIndex: "-1",
-            datatabbable: "false"
+            tabIndex: "-1"
         };
 
         let modifyLanguagesProps = {
@@ -162,9 +161,7 @@ class LanguagesPage extends Component {
                         <button {...saveButtonProps}>Save</button>
                     </p>
                 </div>
-                <footer>
-                    <div>Copyright © 2021 – Elliot Paton-Simpson</div>
-                </footer>
+                <Footer />
                 {editLanguages}
             </div>
         );

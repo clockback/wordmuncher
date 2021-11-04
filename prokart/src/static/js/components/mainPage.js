@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
+
 import logoFull from '../../images/logo-full.svg';
+import Footer from './footer.js';
 
 
 class MainPage extends Component {
@@ -14,7 +16,7 @@ class MainPage extends Component {
     render() {
         return (
             <div>
-                <div className="main">
+                <div className="main" tabIndex="-1">
                     <div style={{top: "0", width: "100%", textAlign: "center"}}>
                         <img style={{width: "216.448px", height: "80px", marginTop: "40px"}} src={logoFull}/>
                         <h2>A Language-Learning Tool</h2>
@@ -24,9 +26,7 @@ class MainPage extends Component {
                         <button  id="create-button" className="button" onClick={this.onClickCreate}>Create</button>
                     </div>
                 </div>
-                <footer>
-                    <div>Copyright © 2021 – Elliot Paton-Simpson</div>
-                </footer>
+                <Footer />
             </div>
         );
     }

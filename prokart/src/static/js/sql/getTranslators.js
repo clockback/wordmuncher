@@ -7,6 +7,7 @@ async function getTranslators() {
 
     let translators = await readQuery(db, `
         SELECT
+            translator,
             from_l AS fromLanguage,
             l1.name AS fromLanguageName,
             f1.text AS fromLanguageFlag,
@@ -14,7 +15,7 @@ async function getTranslators() {
             l2.name AS toLanguageName,
             f2.text AS toLanguageFlag
         FROM (
-            SELECT from_l, to_l FROM translators
+            SELECT translator, from_l, to_l FROM translators
             ORDER BY last_used DESC
             LIMIT 3
         )

@@ -6,7 +6,6 @@ import { addMessageListener } from '../sql/messageListener.js';
 
 
 let checkNameWorker;
-let x = 0;
 
 
 async function checkLanguageName(languageName, permitName) {

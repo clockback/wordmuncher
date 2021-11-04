@@ -69,6 +69,7 @@ class TopBar extends Component {
                 <TopBarTranslators contents={this.state.contents} />
             </div>
         );
+
         return sidebar;
     }
 }
