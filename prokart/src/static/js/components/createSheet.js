@@ -6,6 +6,7 @@ import { addMessageListener } from '../sql/messageListener.js';
 import Search from './search.js';
 import SelectTable from './selectTable.js';
 
+
 let checkNameWorker;
 
 
@@ -114,12 +115,69 @@ class CreateSheet extends Component {
             );
         }
 
+        let dialogueProps = {
+            id: "add-sheet-container-background",
+            className: "container-background container-background-transparent"
+        };
+
+        let closeButtonDivProps = {
+            style: {
+                float: "right",
+                marginRight: "10px",
+                marginTop: "5px"
+            },
+            onClick: this.state.processing ? null : this.props.closeCallable
+        };
+
+        let closeButtonProps = {
+            src: closeImage,
+            style: {
+                height: "20px",
+                width: "20px",
+                cursor: "pointer"
+            }
+        };
+
+        let sheetNameProps = {
+            id: "new-sheet-name",
+            autoComplete: "off",
+            value: this.state.sheetName,
+            onChange: this.onChangeSheetName,
+            disabled: this.state.processing ? "disabled" : ""
+        };
+
+        let selectTableDivProps = {
+             style: {
+                overflowX: "auto",
+                overflowY: "hidden"
+             },
+             tabIndex: "-1"
+        };
+
+        let selectTableProps = {
+            columns: ["Question", "Answer", "# Mentions", "Stars"]
+        }
+
+        let backButtonProps = {
+            className: "button" + (
+                this.state.permitted ? "" : " button-disabled"
+            ),
+            onClick: (
+                this.state.permitted && !this.state.processing
+            ) ? this.onClickSave : null
+        };
+
+        let saveButtonProps = {
+            className: "button",
+            onClick: this.state.processing ? null : this.props.closeCallable
+        };
+
         return (
-            <div id="add-sheet-container-background" className={"container-background container-background-transparent"}>
+            <div {...dialogueProps}>
                 <div className="container">
                     <div className="title-bar">
-                        <div style={{float: "right", marginRight: "10px", marginTop: "5px"}} onClick={this.state.processing ? null : this.props.closeCallable}>
-                            <img src={closeImage} style={{height: "20px", width: "20px", cursor: "pointer"}}></img>
+                        <div {...closeButtonDivProps}>
+                            <img {...closeButtonProps}></img>
                         </div>
                     </div>
                     <div className="container-contents" tabIndex="-1">
@@ -127,7 +185,7 @@ class CreateSheet extends Component {
                         <p>Sheet name:</p>
                         <div>
                             <div className="input-box">
-                                <input id="new-sheet-name" autoComplete="off" value={this.state.sheetName} onChange={this.onChangeSheetName} disabled={this.state.processing ? "disabled" : ""}></input>
+                                <input {...sheetNameProps}></input>
                             </div>
                             {sheetAlreadyExistsWarning}
                             {sheetNeedsNameWarning}
@@ -135,12 +193,12 @@ class CreateSheet extends Component {
                         </div>
                         <p>Search entries:</p>
                         <Search />
-                        <div style={{overflowX: "auto", overflowY: "hidden"}} tabIndex="-1">
-                            <SelectTable columns={["Question", "Answer", "# Mentions", "Stars"]} />
+                        <div {...selectTableDivProps}>
+                            <SelectTable {...selectTableProps} />
                         </div>
                         <p>
-                            <button className={"button" + (this.state.permitted ? "" : " button-disabled")} onClick={this.state.permitted && !this.state.processing ? this.onClickSave : null}>Save</button>
-                            <button className="button" onClick={this.state.processing ? null : this.props.closeCallable}>Back</button>
+                            <button {...backButtonProps}>Save</button>
+                            <button {...saveButtonProps}>Back</button>
                         </p>
                     </div>
                 </div>
