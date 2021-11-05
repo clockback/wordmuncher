@@ -37,7 +37,6 @@ async function saveTranslator(fromLanguage, toLanguage) {
 class LanguagesPage extends Component {
     constructor(props) {
         super(props);
-        this.editLanguagesDialogue = React.createRef();
         this.state = {
             fromLanguage: null,
             toLanguage: null,
@@ -117,7 +116,6 @@ class LanguagesPage extends Component {
         let editLanguages = null;
         if (this.state.isOpenEditLanguages) {
             let editLanguagesProp = {
-                ref: this.editLanguagesDialogue,
                 closeCallable: this.closeEditLanguages
             };
             editLanguages = (

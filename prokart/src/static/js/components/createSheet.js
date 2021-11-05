@@ -155,7 +155,10 @@ class CreateSheet extends Component {
         };
 
         let selectTableProps = {
-            columns: ["Question", "Answer", "# Mentions", "Stars"]
+            columns: ["Question", "Answer", "# Mentions", "Stars"],
+            values: [],
+            selection: "multiple",
+            more: false
         }
 
         let backButtonProps = {

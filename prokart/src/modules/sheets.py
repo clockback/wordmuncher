@@ -31,7 +31,7 @@ def get_sheets(
 
     # Constructs the part of the query that filters the searches.
     search_queries = "\n".join(
-        f"AND all_sheets.name LIKE '%' || ? || '%' ESCAPE ' '"
+        "AND all_sheets.name LIKE '%' || ? || '%' ESCAPE ' '"
         for _search in searches
     ) if searches else ""
 
