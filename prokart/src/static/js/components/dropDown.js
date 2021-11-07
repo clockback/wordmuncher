@@ -29,21 +29,45 @@ class DropDown extends Component {
         }
 
         let varFirstIndex = 1;
-        if (this.props.preserve == "true") {
+        if (this.props.preserve === true) {
             varFirstIndex = 0;
         }
 
         for (var i = varFirstIndex; i < children.length; i ++) {
+            let optionProps = {
+                key: children[i].props.children,
+                changeIndex: this.onChangeIndex,
+                index: i,
+                optionSelected: this.state.currentI == i
+            };
+
             updatedChildren.push(
-                <DropDownOption key={children[i].props.children} changeIndex={this.onChangeIndex} index={i} optionSelected={this.state.currentI == i}>{children[i].props.children}</DropDownOption>
+                <DropDownOption {...optionProps}>
+                    {children[i].props.children}
+                </DropDownOption>
             );
         }
+
+        let selectedDivProps = {
+            onClick: this.onClickDropDown,
+            className: "select-selected" + (
+                this.state.selected ? " select-arrow-active" : ""
+            )
+        };
+
+        let toggleItemsProps = {
+            className: "select-items" + (
+                !this.state.selected ? " select-hide" : ""
+            )
+        };
 
         return (
             <div id={this.props.id} className="custom-select">
                 <select autoComplete="off">{children}</select>
-                <div onClick={this.onClickDropDown} className={`select-selected${this.state.selected ? ' select-arrow-active' : ''}`}>{children[this.state.currentI].props.children}</div>
-                <div className={`select-items ${!this.state.selected ? ' select-hide' : ''}`}>{updatedChildren}</div>
+                <div {...selectedDivProps}>
+                    {children[this.state.currentI].props.children}
+                </div>
+                <div {...toggleItemsProps}>{updatedChildren}</div>
             </div>
         );
     }

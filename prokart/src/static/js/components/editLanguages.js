@@ -98,7 +98,7 @@ class EditLanguages extends Component {
     };
 
     onKeyDown = (evt) => {
-        if (event.keyCode === 27) {
+        if (evt.keyCode === 27) {
             this.closeEditLanguages();
         }
     };

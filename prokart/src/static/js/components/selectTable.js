@@ -10,29 +10,35 @@ import editImage from '../../images/edit.svg';
 class SelectTable extends Component {
     constructor(props) {
         super(props);
-        this.state = {selection: null};
+        this.state = {};
+
         if (props.selection == "multiple") {
             this.state.selection = [];
+        }
+        else {
+            this.state.selection = null;
         }
     }
 
     selectRow = (i) => {
         let selection;
         if (this.props.selection == "single") {
-            if (this.state.selection == i) {
+            if (this.state.selection == this.props.values[i].id) {
                 selection = null;
             }
             else {
-                selection = i;
+                selection = this.props.values[i].id;
             }
         }
         else if (this.props.selection == "multiple") {
             let updatedSelection = this.state.selection;
-            if (updatedSelection.includes(i)) {
-                updatedSelection.splice(updatedSelection.indexOf(i), 1);
+            if (updatedSelection.includes(this.props.values[i].id)) {
+                updatedSelection.splice(
+                    updatedSelection.indexOf(this.props.values[i].id), 1
+                );
             }
             else {
-                updatedSelection.push(i);
+                updatedSelection.push(this.props.values[i].id);
             }
 
             selection = updatedSelection;
@@ -40,19 +46,13 @@ class SelectTable extends Component {
 
         this.setState({selection: selection}, function () {
             let allSelections = this.state.selection;
-            if (this.props.selection == "single") {
-                allSelections = (selection === null) ? [] : [selection];
-            }
-
-            let idValues = [];
-            for (let j = 0; j < allSelections.length; j ++) {
-                idValues.push(this.props.values[i].id);
+            if (this.props.selection === null) {
+                allSelections = [];
             }
 
             this.props.selectionCallback({
                 toggled: i,
-                selection: this.state.selection,
-                idValues: idValues
+                idValues: allSelections
             });
         });
     };
@@ -95,12 +95,13 @@ class SelectTable extends Component {
             };
 
             if (this.props.selection == "single") {
-                if (this.state.selection == i) {
+                if (this.state.selection == this.props.values[i].id) {
                     rowsProps.className = "selected-row";
                 }
             }
+
             else if (this.props.selection == "multiple") {
-                if (this.state.selection.includes(i)) {
+                if (this.state.selection.includes(this.props.values[i].id)) {
                     rowsProps.className = "selected-row";
                 }
             }

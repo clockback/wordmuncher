@@ -1,16 +1,18 @@
 import React, {Component} from 'react';
 import {isMobile} from "react-device-detect";
-import { initBackend } from 'absurd-sql/dist/indexeddb-main-thread';
+import {initBackend} from 'absurd-sql/dist/indexeddb-main-thread';
 
 import Footer from './footer.js';
 import Search from './search.js';
 import SelectTable from './selectTable.js';
 import CreateSheet from './createSheet.js';
+import CreateEntry from './createEntry.js';
 import editImage from '../../images/edit.svg';
 import {addMessageListener} from '../sql/messageListener.js';
 
 
 let getSheetsWorker = null;
+let getEntriesWorker = null;
 
 
 async function getSheets(loadSheets, query = null) {
@@ -36,11 +38,35 @@ async function getSheets(loadSheets, query = null) {
 }
 
 
+async function getEntries(loadEntries, query = null) {
+    if (getEntriesWorker) {
+        getEntriesWorker.terminate();
+    }
+
+    let translator = JSON.parse(localStorage.getItem("translators"))[0];
+
+    getEntriesWorker = new Worker(
+        new URL('../sql/getEntries.js', import.meta.url)
+    );
+    initBackend(getEntriesWorker);
+    getEntriesWorker.postMessage({
+        translator: translator.translator,
+        searchQueries: query ? query.split(' ') : []
+    });
+
+    addMessageListener(getEntriesWorker, function (event) {
+        getEntriesWorker.terminate();
+        loadEntries(event.data);
+    });
+}
+
+
 class CreatePage extends Component {
     constructor(props) {
         super(props);
         this.state = {
             addNewSheetOpen: false,
+            addNewEntryOpen: false,
             sheets: [],
             moreSheets: false,
             sheetSelected: null,
@@ -52,6 +78,7 @@ class CreatePage extends Component {
 
     componentDidMount() {
         getSheets(this.loadSheets);
+        getEntries(this.loadEntries);
     }
 
     loadSheets = (sheets) => {
@@ -70,16 +97,32 @@ class CreatePage extends Component {
         });
     };
 
+    loadEntries = (entries) => {
+        let updatedEntries = this.state.entries;
+        for (let i = 0; i < entries.length && i < 5; i ++) {
+            updatedEntries.push({
+                0: entries[i].question,
+                1: entries[i].answer,
+                2: entries[i].mentions,
+                3: entries[i].stars,
+                id: entries[i].entry
+            });
+        }
+        this.setState({
+            entries: updatedEntries,
+            moreEntries: entries.length == 6
+        });
+    };
+
     searchSheetsAndEntries = (query) => {
         this.setState({
             sheets: [],
             moreSheets: false,
-            sheetSelected: null,
             entries: [],
-            moreEntries: false,
-            entrySelected: null
+            moreEntries: false
         }, function () {
             getSheets(this.loadSheets, query);
+            getEntries(this.loadEntries, query);
         });
     };
 
@@ -91,9 +134,14 @@ class CreatePage extends Component {
         this.setState({addNewSheetOpen: true});
     };
 
+    onClickAddNewEntry = () => {
+        this.setState({addNewEntryOpen: true});
+    };
+
     onClickBackMisc = () => {
         this.setState({
-            addNewSheetOpen: false
+            addNewSheetOpen: false,
+            addNewEntryOpen: false
         });
     };
 
@@ -105,7 +153,7 @@ class CreatePage extends Component {
 
     onSelectEntry = (response) => {
         this.setState({
-            entrySelected: response.selection !== null
+            entrySelected: response.idValues
         });
     };
 
@@ -142,14 +190,18 @@ class CreatePage extends Component {
         let entriesTableProps = {
             id: "entries-table",
             columns: ["Question", "Answer", "# Mentions", "Stars"],
-            values: [],
+            values: this.state.entries,
             selection: "single",
+            selectionCallback: this.onSelectEntry,
             more: this.state.moreEntries
         };
 
-        let addNewSheet = null;
+        let dialogue = null;
         if (this.state.addNewSheetOpen) {
-            addNewSheet = <CreateSheet closeCallable={this.onClickBackMisc} />
+            dialogue = <CreateSheet closeCallable={this.onClickBackMisc} />
+        }
+        else if (this.state.addNewEntryOpen) {
+            dialogue = <CreateEntry closeCallable={this.onClickBackMisc} />
         }
 
         return (
@@ -179,7 +231,7 @@ class CreatePage extends Component {
                                 <SelectTable {...entriesTableProps} />
                             </div>
                             <div>
-                                <button id="new-entry" className="button">+</button>
+                                <button id="new-entry" className="button" onClick={this.onClickAddNewEntry}>+</button>
                                 <button id="edit-entry" className={"button" + (this.state.entrySelected ? "" : " button-disabled")}>
                                     <img src={editImage} style={{height: "24px", verticalAlign: "middle"}}></img>
                                 </button>
@@ -196,7 +248,7 @@ class CreatePage extends Component {
                     </div>
                 </div>
                 <Footer />
-                {addNewSheet}
+                {dialogue}
             </div>
         );
     }

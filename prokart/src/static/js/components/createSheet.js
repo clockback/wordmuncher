@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
-import { initBackend } from 'absurd-sql/dist/indexeddb-main-thread';
+import {initBackend} from 'absurd-sql/dist/indexeddb-main-thread';
 
 import closeImage from '../../images/close.svg';
-import { addMessageListener } from '../sql/messageListener.js';
+import {addMessageListener} from '../sql/messageListener.js';
 import Search from './search.js';
 import SelectTable from './selectTable.js';
 
@@ -82,17 +82,21 @@ class CreateSheet extends Component {
         saveNewSheet(this.state.sheetName, this.onClickBack);
     };
 
+    onKeyDown = (evt) => {
+        if (evt.keyCode === 27) {
+            this.onClickBack();
+        }
+    };
+
     onClickBack = () => {
         this.props.closeCallable();
     };
 
     render() {
-        let sheetNeedsNameWarning = null;
-        let sheetNameLongWarning = null;
-        let sheetAlreadyExistsWarning = null;
+        let nameWarning = null;
 
         if (this.state.nameModified && this.state.sheetName.length == 0) {
-            sheetNeedsNameWarning = (
+            nameWarning = (
                 <span style={{color: "rgb(100, 0, 0)", fontWeight: "bold"}}>
                     Must provide the sheet a name.
                 </span>
@@ -100,7 +104,7 @@ class CreateSheet extends Component {
         }
 
         else if (this.state.nameModified && this.state.sheetName.length > 80) {
-            sheetNameLongWarning = (
+            nameWarning = (
                 <span style={{color: "rgb(100, 0, 0)", fontWeight: "bold"}}>
                     Sheet name must be no more than 80 characters.
                 </span>
@@ -108,7 +112,7 @@ class CreateSheet extends Component {
         }
 
         else if (this.state.alreadyExists) {
-            sheetAlreadyExistsWarning = (
+            nameWarning = (
                 <span style={{color: "rgb(100, 0, 0)", fontWeight: "bold"}}>
                     Sheet already exists.
                 </span>
@@ -117,7 +121,8 @@ class CreateSheet extends Component {
 
         let dialogueProps = {
             id: "add-sheet-container-background",
-            className: "container-background container-background-transparent"
+            className: "container-background container-background-transparent",
+            onKeyDown: this.onClickBack
         };
 
         let closeButtonDivProps = {
@@ -126,7 +131,7 @@ class CreateSheet extends Component {
                 marginRight: "10px",
                 marginTop: "5px"
             },
-            onClick: this.state.processing ? null : this.props.closeCallable
+            onClick: this.state.processing ? null : this.onClickBack
         };
 
         let closeButtonProps = {
@@ -172,7 +177,7 @@ class CreateSheet extends Component {
 
         let saveButtonProps = {
             className: "button",
-            onClick: this.state.processing ? null : this.props.closeCallable
+            onClick: this.state.processing ? null : this.onClickBack
         };
 
         return (
@@ -188,11 +193,9 @@ class CreateSheet extends Component {
                         <p>Sheet name:</p>
                         <div>
                             <div className="input-box">
-                                <input {...sheetNameProps}></input>
+                                <input {...sheetNameProps} autoFocus></input>
                             </div>
-                            {sheetAlreadyExistsWarning}
-                            {sheetNeedsNameWarning}
-                            {sheetNameLongWarning}
+                            {nameWarning}
                         </div>
                         <p>Search entries:</p>
                         <Search />

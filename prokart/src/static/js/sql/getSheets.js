@@ -29,7 +29,7 @@ async function getSheets(msg) {
         }
     }
 
-    let translators = await readQuery(db, `
+    let sheets = await readQuery(db, `
         SELECT
             sheets.sheet,
             name,
@@ -59,7 +59,7 @@ async function getSheets(msg) {
         ORDER BY LOWER(sheets.name)
     `, parameters);
 
-    postMessage(translators);
+    postMessage(sheets);
 }
 
 self.onmessage = getSheets;
