@@ -7,7 +7,8 @@ import Search from './search.js';
 import SelectTable from './selectTable.js';
 
 
-let checkNameWorker;
+let checkNameWorker = null;
+let getEntriesWorker = null;
 
 
 async function checkSheetName(name, permitSheetName) {
@@ -32,7 +33,31 @@ async function checkSheetName(name, permitSheetName) {
     });
 }
 
-async function saveNewSheet(name, backFunction) {
+
+async function getEntries(loadEntries, query = null) {
+    if (getEntriesWorker) {
+        getEntriesWorker.terminate();
+    }
+
+    let translator = JSON.parse(localStorage.getItem("translators"))[0];
+
+    getEntriesWorker = new Worker(
+        new URL('../sql/getEntries.js', import.meta.url)
+    );
+    initBackend(getEntriesWorker);
+    getEntriesWorker.postMessage({
+        translator: translator.translator,
+        searchQueries: query ? query.split(' ') : []
+    });
+
+    addMessageListener(getEntriesWorker, function (event) {
+        getEntriesWorker.terminate();
+        loadEntries(event.data)
+    });
+}
+
+
+async function saveNewSheet(name, entries, backFunction) {
     let translator = JSON.parse(localStorage.getItem("translators"))[0];
     let worker = new Worker(
         new URL('../sql/saveNewSheet.js', import.meta.url)
@@ -40,7 +65,8 @@ async function saveNewSheet(name, backFunction) {
     initBackend(worker);
     worker.postMessage({
         translator: translator.translator,
-        name: name
+        name: name,
+        entries: entries
     });
 
     addMessageListener(worker, function (event) {
@@ -57,8 +83,38 @@ class CreateSheet extends Component {
             sheetName: "",
             permitted: false,
             processing: false,
-            alreadyExists: false
+            alreadyExists: false,
+            entries: [],
+            selectedEntries: [],
+            moreEntries: false
         };
+    };
+
+    componentDidMount() {
+        getEntries(this.loadEntries);
+    }
+
+    loadEntries = (entries) => {
+        let updatedEntries = this.state.entries;
+        for (let i = 0; i < entries.length && i < 5; i ++) {
+            updatedEntries.push({
+                0: entries[i].question,
+                1: entries[i].answer,
+                2: entries[i].mentions,
+                3: entries[i].stars,
+                id: entries[i].entry
+            });
+        }
+        this.setState({
+            entries: updatedEntries,
+            moreEntries: entries.length == 6
+        });
+    };
+
+    selectEntry = (data) => {
+        this.setState({
+            selectedEntries: data.idValues
+        });
     };
 
     onChangeSheetName = (evt) => {
@@ -79,7 +135,9 @@ class CreateSheet extends Component {
 
     onClickSave = (evt) => {
         this.setState({processing: true});
-        saveNewSheet(this.state.sheetName, this.onClickBack);
+        saveNewSheet(
+            this.state.sheetName, this.state.selectedEntries, this.onClickBack
+        );
     };
 
     onKeyDown = (evt) => {
@@ -122,7 +180,7 @@ class CreateSheet extends Component {
         let dialogueProps = {
             id: "add-sheet-container-background",
             className: "container-background container-background-transparent",
-            onKeyDown: this.onClickBack
+            onKeyDown: this.onKeyDown
         };
 
         let closeButtonDivProps = {
@@ -161,9 +219,10 @@ class CreateSheet extends Component {
 
         let selectTableProps = {
             columns: ["Question", "Answer", "# Mentions", "Stars"],
-            values: [],
+            values: this.state.entries,
             selection: "multiple",
-            more: false
+            more: false,
+            selectionCallback: this.selectEntry
         }
 
         let backButtonProps = {
