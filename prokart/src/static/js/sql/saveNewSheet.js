@@ -17,6 +17,7 @@ async function saveNewSheet(msg) {
             FROM sheets
             WHERE translator = ?
                 AND name = ?
+            LIMIT 1
     `);
 
     for (let i = 0; i < msg.data.entries.length; i ++) {

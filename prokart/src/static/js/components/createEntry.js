@@ -83,7 +83,7 @@ async function getSchemas(loadSchemas) {
 }
 
 
-async function saveNewEntry(question, solutions, finishSaving) {
+async function saveNewEntry(question, solutions, sheets, finishSaving) {
     let translator = JSON.parse(localStorage.getItem("translators"))[0];
 
     let worker = new Worker(
@@ -94,6 +94,7 @@ async function saveNewEntry(question, solutions, finishSaving) {
         translator: translator.translator,
         schema: null,
         question: question,
+        sheets: sheets,
         solutions: solutions
     });
 
@@ -191,7 +192,10 @@ class CreateEntry extends Component {
         this.setState({processing: true}, function () {
             let solutions = this.state.solutions;
             solutions.unshift(this.state.answerText);
-            saveNewEntry(this.state.question, solutions, this.onClickBack);
+            saveNewEntry(
+                this.state.question, solutions, this.state.selectedSheets,
+                this.onClickBack
+            );
         });
     };
 
