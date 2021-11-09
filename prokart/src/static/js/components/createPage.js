@@ -61,6 +61,50 @@ async function getEntries(loadEntries, query = null) {
 }
 
 
+async function deleteSheet(sheet, entries, updateMentions) {
+    let entriesIds = [];
+    for (let i = 0; i < entries.length; i ++) {
+        entriesIds.push(entries[i].id);
+    }
+
+    let worker = new Worker(
+        new URL('../sql/deleteSheet.js', import.meta.url)
+    );
+    initBackend(worker);
+    worker.postMessage({
+        sheet: sheet,
+        entries: entriesIds
+    });
+
+    addMessageListener(worker, function (event) {
+        worker.terminate();
+        updateMentions(event.data);
+    });
+}
+
+
+async function deleteEntry(entry, sheets, updateMentions) {
+    let sheetsIds = [];
+    for (let i = 0; i < sheets.length; i ++) {
+        sheetsIds.push(sheets[i].id);
+    }
+
+    let worker = new Worker(
+        new URL('../sql/deleteEntry.js', import.meta.url)
+    );
+    initBackend(worker);
+    worker.postMessage({
+        entry: entry,
+        sheets: sheetsIds
+    });
+
+    addMessageListener(worker, function (event) {
+        worker.terminate();
+        updateMentions(event.data);
+    });
+}
+
+
 class CreatePage extends Component {
     constructor(props) {
         super(props);
@@ -157,6 +201,76 @@ class CreatePage extends Component {
         });
     };
 
+    updateEntriesMentions = (affectedEntries) => {
+        let updatedEntries = [...this.state.entries];
+
+        for (let i = 0; i < updatedEntries.length; i ++) {
+            if (affectedEntries.includes(updatedEntries[i].id)) {
+                updatedEntries[i][2] -= 1;
+            }
+        }
+
+        this.setState({
+            entries: updatedEntries
+        });
+    };
+
+    onDeleteSheet = () => {
+        deleteSheet(
+            this.state.sheetSelected, this.state.entries,
+            this.updateEntriesMentions
+        );
+
+        let sheets = [...this.state.sheets];
+
+        for (let i = 0; i < sheets.length; i ++) {
+            if (sheets[i].id == this.state.sheetSelected) {
+                sheets.splice(i, 1);
+                break;
+            }
+        }
+
+        this.setState({
+            sheetSelected: null,
+            sheets: sheets
+        })
+    };
+
+    updateSheetsMentions = (affectedSheets) => {
+        let updatedSheets = [...this.state.sheets];
+
+        for (let i = 0; i < updatedSheets.length; i ++) {
+            if (affectedSheets.includes(updatedSheets[i].id)) {
+                updatedSheets[i][2] -= 1;
+            }
+        }
+
+        this.setState({
+            sheets: updatedSheets
+        });
+    };
+
+    onDeleteEntry = () => {
+        deleteEntry(
+            this.state.entrySelected, this.state.sheets,
+            this.updateSheetsMentions
+        );
+
+        let entries = [...this.state.entries];
+
+        for (let i = 0; i < entries.length; i ++) {
+            if (entries[i].id == this.state.entrySelected) {
+                entries.splice(i, 1);
+                break;
+            }
+        }
+
+        this.setState({
+            entrySelected: null,
+            entries: entries
+        })
+    };
+
     render() {
         let sheetTableContainerProps = {
             id: "sheet-table-container",
@@ -222,7 +336,7 @@ class CreatePage extends Component {
                                 <button id="edit-sheet" className={"button" + (this.state.sheetSelected === null ? " button-disabled" : "")}>
                                     <img src={editImage} style={{height: "24px", verticalAlign: "middle"}}></img>
                                 </button>
-                                <button id="delete-sheet" className={"button" + (this.state.sheetSelected === null ? " button-disabled" : "")}>-</button>
+                                <button id="delete-sheet" className={"button" + (this.state.sheetSelected === null ? " button-disabled" : "")} onClick={this.state.sheetSelected === null ? null : this.onDeleteSheet}>-</button>
                             </div>
                         </div>
                         <div className={isMobile ? null : "column"}>
@@ -235,7 +349,7 @@ class CreatePage extends Component {
                                 <button id="edit-entry" className={"button" + (this.state.entrySelected ? "" : " button-disabled")}>
                                     <img src={editImage} style={{height: "24px", verticalAlign: "middle"}}></img>
                                 </button>
-                                <button id="delete-entry" className={"button" + (this.state.entrySelected ? "" : " button-disabled")}>-</button>
+                                <button id="delete-entry" className={"button" + (this.state.entrySelected ? "" : " button-disabled")} onClick={this.state.entrySelected === null ? null : this.onDeleteEntry}>-</button>
                             </div>
                         </div>
                         <div style={{clear: "both"}}>
