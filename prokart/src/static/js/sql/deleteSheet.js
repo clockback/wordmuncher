@@ -18,7 +18,7 @@ async function deleteSheet(msg) {
         WHERE mentions.sheet=:sheet
     `, {":sheet": msg.data.sheet});
 
-    let updateMentions = []
+    let updateMentions = [];
 
     for (let i = 0; i < mentions.length; i ++) {
         if (msg.data.entries.includes(mentions[i].entry)) {
