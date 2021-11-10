@@ -5,6 +5,12 @@ import readQuery from './utils/readQuery.js';
 async function getTranslators() {
     let db = await getConnection();
 
+//    let stmt2 = db.prepare(`
+//        DELETE FROM entries;
+//    `);
+//    stmt2.run([]);
+//    stmt2.free();
+
     let translators = await readQuery(db, `
         SELECT
             translator,

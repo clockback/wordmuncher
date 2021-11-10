@@ -111,12 +111,15 @@ class CreatePage extends Component {
         this.state = {
             addNewSheetOpen: false,
             addNewEntryOpen: false,
+            editSheetOpen: false,
+            editEntryOpen: false,
             sheets: [],
             moreSheets: false,
             sheetSelected: null,
             entries: [],
             moreEntries: false,
-            entrySelected: null
+            entrySelected: null,
+            lastSearch: ""
         };
     }
 
@@ -163,7 +166,8 @@ class CreatePage extends Component {
             sheets: [],
             moreSheets: false,
             entries: [],
-            moreEntries: false
+            moreEntries: false,
+            lastSearch: query
         }, function () {
             getSheets(this.loadSheets, query);
             getEntries(this.loadEntries, query);
@@ -182,10 +186,36 @@ class CreatePage extends Component {
         this.setState({addNewEntryOpen: true});
     };
 
-    onClickBackMisc = () => {
-        this.setState({
+    onClickEditSheet = () => {
+        this.setState({editSheetOpen: true});
+    };
+
+    onClickEditEntry = () => {
+        this.setState({editEntryOpen: true});
+    };
+
+    onClickBackMisc = (refresh) => {
+        let updatedState = {
             addNewSheetOpen: false,
-            addNewEntryOpen: false
+            addNewEntryOpen: false,
+            editSheetOpen: false,
+            editEntryOpen: false
+        };
+
+        if (refresh) {
+            updatedState = Object.assign(updatedState, {
+                sheets: [],
+                moreSheets: false,
+                entries: [],
+                moreEntries: false
+            });
+        }
+
+        this.setState(updatedState, function () {
+            if (refresh) {
+                getSheets(this.loadSheets, this.state.lastSearch);
+                getEntries(this.loadEntries, this.state.lastSearch);
+            }
         });
     };
 
@@ -298,7 +328,8 @@ class CreatePage extends Component {
             values: this.state.sheets,
             selection: "single",
             selectionCallback: this.onSelectSheet,
-            more: this.state.moreSheets
+            more: this.state.moreSheets,
+            selectedIds: this.state.sheetSelected
         };
 
         let entriesTableProps = {
@@ -307,15 +338,62 @@ class CreatePage extends Component {
             values: this.state.entries,
             selection: "single",
             selectionCallback: this.onSelectEntry,
-            more: this.state.moreEntries
+            more: this.state.moreEntries,
+            selectedIds: this.state.entrySelected
         };
 
         let dialogue = null;
+
         if (this.state.addNewSheetOpen) {
-            dialogue = <CreateSheet closeCallable={this.onClickBackMisc} />
+            let createSheetProps = {
+                closeCallable: this.onClickBackMisc,
+                edit: false
+            };
+            dialogue = <CreateSheet {...createSheetProps} />
         }
+
         else if (this.state.addNewEntryOpen) {
-            dialogue = <CreateEntry closeCallable={this.onClickBackMisc} />
+            let createEntryProps = {
+                closeCallable: this.onClickBackMisc,
+                edit: false
+            };
+            dialogue = <CreateEntry {...createEntryProps} />
+        }
+
+        else if (this.state.editSheetOpen) {
+            let existingSheet;
+
+            for (let i = 0; i < this.state.sheets.length; i ++) {
+                if (this.state.sheets[i].id == this.state.sheetSelected) {
+                    existingSheet = this.state.sheets[i];
+                    break;
+                }
+            }
+
+            let createSheetProps = {
+                closeCallable: this.onClickBackMisc,
+                edit: true,
+                existingSheet: existingSheet
+            };
+            dialogue = <CreateSheet {...createSheetProps} />
+        }
+
+        else if (this.state.editEntryOpen) {
+            let existingEntry;
+
+            for (let i = 0; i < this.state.entries.length; i ++) {
+                if (this.state.entries[i].id == this.state.entrySelected) {
+                    existingEntry = this.state.entries[i];
+                    break;
+                }
+            }
+
+            let createEntryProps = {
+                closeCallable: this.onClickBackMisc,
+                edit: true,
+                existingEntry: existingEntry
+            };
+            dialogue = <CreateEntry {...createEntryProps} />
         }
 
         return (
@@ -333,7 +411,7 @@ class CreatePage extends Component {
                             </div>
                             <div>
                                 <button id="new-sheet" className="button" onClick={this.onClickAddNewSheet}>+</button>
-                                <button id="edit-sheet" className={"button" + (this.state.sheetSelected === null ? " button-disabled" : "")}>
+                                <button id="edit-sheet" className={"button" + (this.state.sheetSelected === null ? " button-disabled" : "")} onClick={this.state.sheetSelected === null ? null : this.onClickEditSheet}>
                                     <img src={editImage} style={{height: "24px", verticalAlign: "middle"}}></img>
                                 </button>
                                 <button id="delete-sheet" className={"button" + (this.state.sheetSelected === null ? " button-disabled" : "")} onClick={this.state.sheetSelected === null ? null : this.onDeleteSheet}>-</button>
@@ -346,7 +424,7 @@ class CreatePage extends Component {
                             </div>
                             <div>
                                 <button id="new-entry" className="button" onClick={this.onClickAddNewEntry}>+</button>
-                                <button id="edit-entry" className={"button" + (this.state.entrySelected ? "" : " button-disabled")}>
+                                <button id="edit-entry" className={"button" + (this.state.entrySelected ? "" : " button-disabled")} onClick={this.state.entrySelected === null ? null : this.onClickEditEntry}>
                                     <img src={editImage} style={{height: "24px", verticalAlign: "middle"}}></img>
                                 </button>
                                 <button id="delete-entry" className={"button" + (this.state.entrySelected ? "" : " button-disabled")} onClick={this.state.entrySelected === null ? null : this.onDeleteEntry}>-</button>

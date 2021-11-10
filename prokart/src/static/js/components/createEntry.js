@@ -83,6 +83,22 @@ async function getSchemas(loadSchemas) {
 }
 
 
+async function getEntryMentions(entry, loadMentions) {
+    let worker = new Worker(
+        new URL('../sql/getEntryMentions.js', import.meta.url)
+    );
+    initBackend(worker);
+    worker.postMessage({
+        entry: entry
+    });
+
+    addMessageListener(worker, function (event) {
+        worker.terminate();
+        loadMentions(event.data);
+    });
+}
+
+
 async function saveNewEntry(question, solutions, sheets, finishSaving) {
     let translator = JSON.parse(localStorage.getItem("translators"))[0];
 
@@ -100,7 +116,31 @@ async function saveNewEntry(question, solutions, sheets, finishSaving) {
 
     addMessageListener(worker, function (event) {
         worker.terminate();
-        finishSaving();
+        finishSaving(true);
+    });
+}
+
+
+async function saveExistingEntry(
+    entry, question, solutions, sheets, finishSaving
+) {
+    let translator = JSON.parse(localStorage.getItem("translators"))[0];
+
+    let worker = new Worker(
+        new URL('../sql/saveExistingEntry.js', import.meta.url)
+    );
+    initBackend(worker);
+    worker.postMessage({
+        entry: entry,
+        schema: null,
+        question: question,
+        sheets: sheets,
+        solutions: solutions
+    });
+
+    addMessageListener(worker, function (event) {
+        worker.terminate();
+        finishSaving(true);
     });
 }
 
@@ -111,23 +151,36 @@ class CreateEntry extends Component {
         this.state = {
             processing: false,
             questionModified: false,
-            permittedQuestion: false,
+            permittedQuestion: this.props.edit,
             questionAlreadyExists: false,
-            question: "",
+            question: this.props.edit ? this.props.existingEntry[0] : "",
             schemas: [],
             answerTextModified: false,
-            answerText: "",
+            answerText: this.props.edit ? this.props.existingEntry[1] : "",
             sheets: [],
             selectedSheets: [],
             moreSheets: false,
-            solutions: []
+            solutions: [],
+            loadedSheets: false,
+            loadedMentions: false
         };
     };
 
     componentDidMount() {
         getSchemas(this.loadSchemas);
         getSheets(this.loadSheets);
+
+        if (this.props.edit) {
+            getEntryMentions(this.props.existingEntry.id, this.loadMentions);
+        }
     }
+
+    loadMentions = (sheets) => {
+        this.setState({
+            selectedSheets: sheets,
+            loadedMentions: true
+        });
+    };
 
     loadSchemas = (schemas) => {
         this.state.schemas = schemas;
@@ -145,7 +198,8 @@ class CreateEntry extends Component {
         }
         this.setState({
             sheets: updatedSheets,
-            moreSheets: sheets.length == 6
+            moreSheets: sheets.length == 6,
+            loadedSheets: true
         });
     };
 
@@ -192,10 +246,20 @@ class CreateEntry extends Component {
         this.setState({processing: true}, function () {
             let solutions = this.state.solutions;
             solutions.unshift(this.state.answerText);
-            saveNewEntry(
-                this.state.question, solutions, this.state.selectedSheets,
-                this.onClickBack
-            );
+
+            if (this.props.edit) {
+                saveExistingEntry(
+                    this.props.existingEntry.id, this.state.question,
+                    solutions, this.state.selectedSheets,
+                    this.props.closeCallable
+                );
+            }
+            else {
+                saveNewEntry(
+                    this.state.question, solutions, this.state.selectedSheets,
+                    this.props.closeCallable
+                );
+            }
         });
     };
 
@@ -249,6 +313,10 @@ class CreateEntry extends Component {
     render() {
         let questionWarning = null;
         let answerWarning = null;
+        let loadedSheetsTable = (
+            this.state.loadedSheets
+            && this.state.loadedMentions == this.props.edit
+        );
 
         if (this.state.questionModified && this.state.question.length == 0) {
             questionWarning = (
@@ -307,16 +375,34 @@ class CreateEntry extends Component {
             && this.state.answerText.length <= 80
         );
 
+        let saveButtonProps = {
+            id: "save-new-entry",
+            className: "button" + (canSave ? "" : " button-disabled"),
+            tabIndex: "0",
+            onClick: (
+                canSave && !this.state.processing && loadedSheetsTable
+            ) ? this.saveEntry : null
+        };
+
+        let title = this.props.edit ? "Edit entry" : "Add new entry";
+
+        let sheetsTable;
+        if (loadedSheetsTable) {
+            sheetsTable = (
+                <SelectTable columns={["Sheet", "% Complete", "# Entries"]} values={this.state.sheets} selection="multiple" selectionCallback={this.selectSheet} selectedIds={this.state.selectedSheets} />
+            );
+        }
+
         return (
             <div id="new-entry-container-background" className="container-background container-background-transparent" onKeyDown={this.onKeyDown}>
                 <div className="container">
                     <div className="title-bar">
-                        <div style={{float: "right", marginRight: "10px", marginTop: "5px"}} onClick={this.state.processing ? null : this.props.closeCallable}>
+                        <div style={{float: "right", marginRight: "10px", marginTop: "5px"}} onClick={this.state.processing ? null : this.onClickBack}>
                             <img src={closeImage} style={{height: "20px", width: "20px", cursor: "pointer"}}></img>
                         </div>
                     </div>
                     <div className="container-contents" tabIndex="-1">
-                        <h1>Add new entry</h1>
+                        <h1>{title}</h1>
                         <p>Question:</p>
                         <div id="new-entry-question-div">
                             <div className="input-box">
@@ -343,11 +429,11 @@ class CreateEntry extends Component {
                         <p>Search sheets:</p>
                         <Search onChange={this.searchSheets} />
                         <div style={{overflowX: "auto", overflowY: "hidden"}} tabIndex="-1">
-                            <SelectTable columns={["Sheet", "% Complete", "# Entries"]} values={this.state.sheets} selection="multiple" selectionCallback={this.selectSheet} />
+                            {sheetsTable}
                         </div>
                         <p>
-                            <button id="save-new-entry" className={"button" + (canSave ? "" : " button-disabled")} tabIndex="0" onClick={canSave && !this.state.processing ? this.saveEntry : null}>Save</button>
-                            <button id="back-new-entry" className="button" tabIndex="0" onClick={this.state.processing ? null : this.props.closeCallable}>Back</button>
+                            <button {...saveButtonProps}>Save</button>
+                            <button id="back-new-entry" className="button" tabIndex="0" onClick={this.state.processing ? null : this.onClickBack}>Back</button>
                         </p>
                     </div>
                 </div>

@@ -8,22 +8,10 @@ import editImage from '../../images/edit.svg';
 
 
 class SelectTable extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {};
-
-        if (props.selection == "multiple") {
-            this.state.selection = [];
-        }
-        else {
-            this.state.selection = null;
-        }
-    }
-
     selectRow = (i) => {
         let selection;
         if (this.props.selection == "single") {
-            if (this.state.selection == this.props.values[i].id) {
+            if (this.props.selectedIds == this.props.values[i].id) {
                 selection = null;
             }
             else {
@@ -31,7 +19,7 @@ class SelectTable extends Component {
             }
         }
         else if (this.props.selection == "multiple") {
-            let updatedSelection = this.state.selection;
+            let updatedSelection = this.props.selectedIds;
             if (updatedSelection.includes(this.props.values[i].id)) {
                 updatedSelection.splice(
                     updatedSelection.indexOf(this.props.values[i].id), 1
@@ -44,16 +32,9 @@ class SelectTable extends Component {
             selection = updatedSelection;
         }
 
-        this.setState({selection: selection}, function () {
-            let allSelections = this.state.selection;
-            if (this.props.selection === null) {
-                allSelections = [];
-            }
-
-            this.props.selectionCallback({
-                toggled: i,
-                idValues: allSelections
-            });
+        this.props.selectionCallback({
+            toggled: i,
+            idValues: selection
         });
     };
 
@@ -95,13 +76,13 @@ class SelectTable extends Component {
             };
 
             if (this.props.selection == "single") {
-                if (this.state.selection == this.props.values[i].id) {
+                if (this.props.selectedIds == this.props.values[i].id) {
                     rowsProps.className = "selected-row";
                 }
             }
 
             else if (this.props.selection == "multiple") {
-                if (this.state.selection.includes(this.props.values[i].id)) {
+                if (this.props.selectedIds.includes(this.props.values[i].id)) {
                     rowsProps.className = "selected-row";
                 }
             }

@@ -52,7 +52,23 @@ async function getEntries(loadEntries, query = null) {
 
     addMessageListener(getEntriesWorker, function (event) {
         getEntriesWorker.terminate();
-        loadEntries(event.data)
+        loadEntries(event.data);
+    });
+}
+
+
+async function getSheetMentions(sheet, loadMentions) {
+    let worker = new Worker(
+        new URL('../sql/getSheetMentions.js', import.meta.url)
+    );
+    initBackend(worker);
+    worker.postMessage({
+        sheet: sheet
+    });
+
+    addMessageListener(worker, function (event) {
+        worker.terminate();
+        loadMentions(event.data);
     });
 }
 
@@ -71,28 +87,59 @@ async function saveNewSheet(name, entries, backFunction) {
 
     addMessageListener(worker, function (event) {
         worker.terminate();
-        backFunction();
+        backFunction(true);
     });
 }
+
+
+async function saveExistingSheet(sheet, name, entries, backFunction) {
+    let worker = new Worker(
+        new URL('../sql/saveExistingSheet.js', import.meta.url)
+    );
+    initBackend(worker);
+    worker.postMessage({
+        sheet: sheet,
+        name: name,
+        entries: entries
+    });
+
+    addMessageListener(worker, function (event) {
+        worker.terminate();
+        backFunction(true);
+    });
+}
+
 
 class CreateSheet extends Component {
     constructor(props) {
         super(props);
         this.state = {
             nameModified: false,
-            sheetName: "",
-            permitted: false,
+            sheetName: this.props.edit ? this.props.existingSheet[0] : "",
+            permitted: this.props.edit,
             processing: false,
             alreadyExists: false,
             entries: [],
             selectedEntries: [],
-            moreEntries: false
+            moreEntries: false,
+            loadedEntries: false,
+            loadedMentions: false
         };
     };
 
     componentDidMount() {
         getEntries(this.loadEntries);
+        if (this.props.edit) {
+            getSheetMentions(this.props.existingSheet.id, this.loadMentions);
+        }
     }
+
+    loadMentions = (entries) => {
+        this.setState({
+            selectedEntries: entries,
+            loadedMentions: true
+        });
+    };
 
     loadEntries = (entries) => {
         let updatedEntries = this.state.entries;
@@ -107,7 +154,8 @@ class CreateSheet extends Component {
         }
         this.setState({
             entries: updatedEntries,
-            moreEntries: entries.length == 6
+            moreEntries: entries.length == 6,
+            loadedEntries: true
         });
     };
 
@@ -134,10 +182,20 @@ class CreateSheet extends Component {
     };
 
     onClickSave = (evt) => {
-        this.setState({processing: true});
-        saveNewSheet(
-            this.state.sheetName, this.state.selectedEntries, this.onClickBack
-        );
+        this.setState({processing: true}, function () {
+            if (this.props.edit) {
+                saveExistingSheet(
+                    this.props.existingSheet.id, this.state.sheetName,
+                    this.state.selectedEntries, this.props.closeCallable
+                );
+            }
+            else {
+                saveNewSheet(
+                    this.state.sheetName, this.state.selectedEntries,
+                    this.props. closeCallable
+                );
+            }
+        });
     };
 
     onKeyDown = (evt) => {
@@ -152,6 +210,10 @@ class CreateSheet extends Component {
 
     render() {
         let nameWarning = null;
+        let loadedEntriesTable = (
+            this.state.loadedEntries
+            && this.state.loadedMentions == this.props.edit
+        );
 
         if (this.state.nameModified && this.state.sheetName.length == 0) {
             nameWarning = (
@@ -222,22 +284,33 @@ class CreateSheet extends Component {
             values: this.state.entries,
             selection: "multiple",
             more: false,
-            selectionCallback: this.selectEntry
+            selectionCallback: this.selectEntry,
+            selectedIds: this.state.selectedEntries
         }
 
-        let backButtonProps = {
+        let saveButtonProps = {
             className: "button" + (
                 this.state.permitted ? "" : " button-disabled"
             ),
             onClick: (
                 this.state.permitted && !this.state.processing
+                && loadedEntriesTable
             ) ? this.onClickSave : null
         };
 
-        let saveButtonProps = {
+        let backButtonProps = {
             className: "button",
             onClick: this.state.processing ? null : this.onClickBack
         };
+
+        let title = this.props.edit ? "Edit sheet" : "Add new sheet";
+
+        let entriesTable;
+        if (loadedEntriesTable) {
+            entriesTable = (
+                <SelectTable {...selectTableProps} />
+            );
+        }
 
         return (
             <div {...dialogueProps}>
@@ -248,7 +321,7 @@ class CreateSheet extends Component {
                         </div>
                     </div>
                     <div className="container-contents" tabIndex="-1">
-                        <h1>Add new sheet</h1>
+                        <h1>{title}</h1>
                         <p>Sheet name:</p>
                         <div>
                             <div className="input-box">
@@ -259,11 +332,11 @@ class CreateSheet extends Component {
                         <p>Search entries:</p>
                         <Search />
                         <div {...selectTableDivProps}>
-                            <SelectTable {...selectTableProps} />
+                            {entriesTable}
                         </div>
                         <p>
-                            <button {...backButtonProps}>Save</button>
-                            <button {...saveButtonProps}>Back</button>
+                            <button {...saveButtonProps}>Save</button>
+                            <button {...backButtonProps}>Back</button>
                         </p>
                     </div>
                 </div>
