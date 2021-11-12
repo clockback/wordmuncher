@@ -487,7 +487,7 @@ div.textarea-container {
     max-width: 600px;
 }
 
-#question-text {
+.question-text {
     font-weight: bold;
     font-size: 25px;
     margin: 10px;
@@ -499,7 +499,7 @@ div.textarea-container {
     margin-right: 10px;
 }
 
-#testbar {
+.testbar {
     width: 100%;
     position: fixed;
     height: 50px;
@@ -510,12 +510,12 @@ div.textarea-container {
     z-index: 150;
 }
 
-#testbar-left {
+.testbar-left {
     height: 50px;
     display: block;
 }
 
-#testbar-left>span {
+.testbar-left>span {
     margin: auto;
     padding: 0 20px;
     top: 50%;
@@ -528,7 +528,7 @@ div.textarea-container {
     background: none;
 }
 
-#testbar-center {
+.testbar-center {
     position: absolute;
     display: flex;
     margin: auto;
@@ -539,7 +539,7 @@ div.textarea-container {
     transform: translate(-50%, 0%);
 }
 
-#testbar-center-text {
+.testbar-center-text {
     margin: auto;
     font-size: 25px;
     color: white;

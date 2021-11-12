@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import { initBackend } from 'absurd-sql/dist/indexeddb-main-thread';
-import { addMessageListener } from '../sql/messageListener.js';
+import {initBackend} from 'absurd-sql/dist/indexeddb-main-thread';
+import {addMessageListener} from '../sql/messageListener.js';
 
 
 async function pickTranslator(fromLanguage, toLanguage) {

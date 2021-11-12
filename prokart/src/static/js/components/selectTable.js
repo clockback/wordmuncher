@@ -31,6 +31,9 @@ class SelectTable extends Component {
 
             selection = updatedSelection;
         }
+        else {
+            selection = this.props.values[i].id;
+        }
 
         this.props.selectionCallback({
             toggled: i,
