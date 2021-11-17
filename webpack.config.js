@@ -30,6 +30,13 @@ module.exports = {
                 test: /\.svg$/i,
                 exclude: /node_modules/,
                 use: ['file-loader?name=[name].[ext]']
+            },
+            {
+                test: /\.mp3$/,
+                loader: 'file-loader',
+                options: {
+                    name: 'static/audio/[name].[hash:8].[ext]'
+                }
             }
         ]
     },

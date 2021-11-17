@@ -4,6 +4,8 @@ import {initBackend} from 'absurd-sql/dist/indexeddb-main-thread';
 import TestBar from './testBar.js';
 import {addMessageListener} from '../sql/messageListener.js';
 import Footer from './footer.js';
+import correct from '../../audio/correct.mp3';
+import incorrect from '../../audio/incorrect.mp3';
 
 
 async function getTestEntry(lastEntries, loadEntry) {
@@ -119,8 +121,6 @@ class TestSheetPage extends Component {
             Math.sin(Math.PI * reverseI / 50 - Math.PI / 2) + 1
         );
 
-        console.log(viewPercentage);
-
         if (this.state.percentageI > 0) {
             setTimeout(this.updateProgressBar, 20);
         }
@@ -147,6 +147,9 @@ class TestSheetPage extends Component {
         let soFar = this.state.soFar;
         let needed = this.state.needed;
         if (this.state.solutions.includes(this.state.attemptAnswer)) {
+            let sound = new Audio(correct);
+            sound.play();
+
             if (soFar < needed ) {
                 if (soFar + 1 == needed) {
                     soFar = needed = 2;
@@ -164,6 +167,9 @@ class TestSheetPage extends Component {
             }
         }
         else {
+            let sound = new Audio(incorrect);
+            sound.play();
+
             needed ++;
             if (needed > 10) {
                 needed = 10;
