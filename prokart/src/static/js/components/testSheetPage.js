@@ -7,6 +7,7 @@ import Footer from './footer.js';
 import WrongAnswerBox from './wrongAnswerBox.js';
 import correct from '../../audio/correct.mp3';
 import incorrect from '../../audio/incorrect.mp3';
+import starImage from '../../images/star.svg'
 
 
 async function getTestEntry(lastEntries, loadEntry) {
@@ -74,6 +75,7 @@ class TestSheetPage extends Component {
             solutions: null,
             needed: null,
             soFar: null,
+            points: null,
             attemptAnswer: "",
             startPercentage: 0,
             endPercentage: 0,
@@ -110,6 +112,7 @@ class TestSheetPage extends Component {
             attemptAnswer: "",
             needed: entry.needed,
             soFar: entry.soFar,
+            points: entry.points,
             startPercentage: percentage,
             viewPercentage: Math.floor(percentage * 10) / 10,
             questionNumber: this.state.questionNumber + 1,
@@ -317,6 +320,18 @@ class TestSheetPage extends Component {
             );
         }
 
+        let stars = [];
+        for (let i = 0; i < this.state.points; i++) {
+            let starProps = {
+                key: i,
+                src: starImage
+            };
+
+            stars.push(
+                <img {...starProps}></img>
+            );
+        }
+
         return (
             <div>
                 <TestBar {...testBarProps} />
@@ -324,7 +339,9 @@ class TestSheetPage extends Component {
                     <div className="test-area">
                         <div>
                             <h1>{this.state.sheetName}</h1>
-                            <div style={{height: "23px"}}></div>
+                            <div style={{height: "23px"}}>
+                                {stars}
+                            </div>
                             <p className="question-text">
                                 {this.state.questionText}
                             </p>
