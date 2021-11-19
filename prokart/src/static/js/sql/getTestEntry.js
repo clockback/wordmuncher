@@ -12,11 +12,12 @@ async function getTestEntry(msg) {
     let lastEntriesCases = "";
     if (msg.data.lastEntries.length > 0) {
         lastEntriesCases += "CASE";
-        for (let i = 0; i < lastEntries.length; i ++) {
+        for (let i = 0; i < msg.data.lastEntries.length; i ++) {
             lastEntriesCases += `
-                WHEN entry = :${i} THEN ${lastEntries.length - i}
+                WHEN entries.entry = :${i}
+                    THEN ${msg.data.lastEntries.length - i}
             `;
-            parameters[`:${i}`] = lastEntries[i];
+            parameters[`:${i}`] = msg.data.lastEntries[i];
         }
         lastEntriesCases += "ELSE 0 END,"
     }

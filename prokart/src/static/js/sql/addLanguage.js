@@ -9,7 +9,7 @@ async function addLanguage(msg) {
             (
                 ?,
                 (SELECT flag FROM flags WHERE text = ?)
-            );
+            )
     `);
 
     stmt.run([msg.data.languageName, msg.data.flag]);
@@ -19,4 +19,3 @@ async function addLanguage(msg) {
 }
 
 self.onmessage = addLanguage;
-

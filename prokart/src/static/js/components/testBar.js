@@ -2,14 +2,12 @@ import React, {Component} from 'react';
 
 
 class TestBar extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            noQuestion: 1
-        };
-    }
-
     render() {
+        let questionText = (
+            (this.props.noQuestion > 0 ? this.props.noQuestion : 1)
+            + " / " + this.props.noQuestions
+        );
+
         return (
             <div className="testbar">
                 <div className="testbar-left">
@@ -21,7 +19,9 @@ class TestBar extends Component {
                     </span>
                 </div>
                 <div className="testbar-center">
-                    <div className="testbar-center-text">{this.state.noQuestion + " / " + this.props.noQuestions}</div>
+                    <div className="testbar-center-text">
+                        {questionText}
+                    </div>
                 </div>
             </div>
         );

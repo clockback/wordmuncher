@@ -25,6 +25,7 @@
     "@babel/core": "^7.15.8",
     "@jlongster/sql.js": "^1.6.7",
     "absurd-sql": "^0.0.53",
+    "difflib": "^0.2.4",
     "file-loader": "^6.2.0",
     "import": "^0.0.6",
     "node-localstorage": "^2.2.1",
