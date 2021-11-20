@@ -10,6 +10,9 @@ import incorrect from '../../audio/incorrect.mp3';
 import starImage from '../../images/star.svg'
 
 
+var difflib = require('difflib');
+
+
 async function getTestEntry(lastEntries, loadEntry) {
     let worker = new Worker(
         new URL('../sql/getTestEntry.js', import.meta.url)
@@ -81,7 +84,9 @@ class TestSheetPage extends Component {
             endPercentage: 0,
             viewPercentage: 0,
             percentageI: 0,
-            wrongAnswerBoxOpen: false
+            wrongAnswerBoxOpen: false,
+            typoDetected: false,
+            showTypoError: false
         };
         sessionStorage.setItem("results", "[]");
     }
@@ -117,7 +122,8 @@ class TestSheetPage extends Component {
             startPercentage: percentage,
             viewPercentage: Math.floor(percentage * 10) / 10,
             questionNumber: this.state.questionNumber + 1,
-            wrongAnswerBoxOpen: false
+            wrongAnswerBoxOpen: false,
+            typoDetected: false
         });
     };
 
@@ -230,6 +236,7 @@ class TestSheetPage extends Component {
     markAnswer = () => {
         let soFar = this.state.soFar;
         let needed = this.state.needed;
+
         if (this.state.solutions.includes(this.state.attemptAnswer)) {
             let sound = new Audio(correct);
             sound.play();
@@ -259,19 +266,35 @@ class TestSheetPage extends Component {
                 percentageI: 50
             }, this.updateProgressBar);
         }
-        else {
-            let sound = new Audio(incorrect);
-            sound.play();
 
-            this.setState({
-                endPercentage: 0,
-                percentageI: 50
-            }, this.updateProgressBar);
+        else {
+            let foundClose = (
+                !this.state.typoDetected && difflib.getCloseMatches(
+                    this.state.attemptAnswer, this.state.solutions
+                ).length > 0
+            );
+
+            if (foundClose) {
+                this.setState({
+                    typoDetected: true,
+                    processing: false,
+                    showTypoError: true
+                }, this.scheduleStopShowingTypoError);
+            }
+            else {
+                let sound = new Audio(incorrect);
+                sound.play();
+
+                this.setState({
+                    endPercentage: 0,
+                    percentageI: 50
+                }, this.updateProgressBar);
+            }
         }
     }
 
     onChangeAnswer = (event) => {
-        if (this.state.processing || event.target.value[0] == "\n") {
+        if (this.state.processing || event.target.value.includes("\n")) {
             return;
         }
 
@@ -279,6 +302,16 @@ class TestSheetPage extends Component {
             attemptAnswer: event.target.value
         });
     }
+
+    scheduleStopShowingTypoError = () => {
+        setTimeout(this.stopShowingTypoError, 1000);
+    };
+
+    stopShowingTypoError = () => {
+        this.setState({
+            showTypoError: false
+        });
+    };
 
     render() {
         let testBarProps = {
@@ -372,6 +405,11 @@ class TestSheetPage extends Component {
             );
         }
 
+        let questionText = this.state.questionText;
+        if (this.state.showTypoError) {
+            questionText = "Check your spelling!";
+        }
+
         return (
             <div>
                 <TestBar {...testBarProps} />
@@ -382,9 +420,7 @@ class TestSheetPage extends Component {
                             <div style={{height: "23px"}}>
                                 {stars}
                             </div>
-                            <p className="question-text">
-                                {this.state.questionText}
-                            </p>
+                            <p className="question-text">{questionText}</p>
                             <div className="answer-area">
                                 <div className="textarea-container">
                                     <textarea {...textAreaProps}></textarea>
