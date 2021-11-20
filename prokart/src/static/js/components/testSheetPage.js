@@ -83,6 +83,7 @@ class TestSheetPage extends Component {
             percentageI: 0,
             wrongAnswerBoxOpen: false
         };
+        sessionStorage.setItem("results", "[]");
     }
 
     componentDidMount() {
@@ -138,10 +139,20 @@ class TestSheetPage extends Component {
             needed = 10;
         }
 
+        let question = this.state.questionText;
         let entry = this.state.lastEntries[0];
         let getTestEntry = this.getTestEntry;
 
         let mark = function () {
+            let results = JSON.parse(sessionStorage.getItem("results"));
+            results.push({
+                question: question,
+                correct: false,
+                completed: false,
+                stars: this.state.points
+            });
+            sessionStorage.setItem("results", JSON.stringify(results));
+
             markEntryIncorrect(entry, needed, 0, getTestEntry);
         };
 
@@ -151,8 +162,24 @@ class TestSheetPage extends Component {
         }, mark);
     }
 
+    abortEarly = () => {
+        if (this.state.questionNumber > 1) {
+            window.location.href = "/results";
+        }
+        else {
+            window.location.href = "/test"
+        }
+    }
+
     getTestEntry = () => {
-        getTestEntry(this.state.lastEntries, this.loadEntry);
+        if (
+            this.state.questionNumber < sessionStorage.getItem("noQuestions")
+        ) {
+            getTestEntry(this.state.lastEntries, this.loadEntry);
+        }
+        else {
+            window.location.href = "/results";
+        }
     };
 
     scheduleShowError = () => {
@@ -207,16 +234,25 @@ class TestSheetPage extends Component {
             let sound = new Audio(correct);
             sound.play();
 
-            if (soFar < needed ) {
+            if (soFar < needed) {
                 if (soFar + 1 == needed) {
                     soFar = needed = 2;
                 }
                 else {
                     soFar ++;
                 }
-
-                markEntryCorrect(this.state.lastEntries[0], needed, soFar);
             }
+
+            let results = JSON.parse(sessionStorage.getItem("results"));
+            results.push({
+                question: this.state.questionText,
+                correct: true,
+                completed: needed == soFar,
+                stars: this.state.points + (needed == soFar)
+            });
+            sessionStorage.setItem("results", JSON.stringify(results));
+
+            markEntryCorrect(this.state.lastEntries[0], needed, soFar);
 
             this.setState({
                 endPercentage: soFar / needed * 100,
@@ -247,7 +283,8 @@ class TestSheetPage extends Component {
     render() {
         let testBarProps = {
             noQuestion: this.state.questionNumber,
-            noQuestions: sessionStorage.getItem("noQuestions")
+            noQuestions: sessionStorage.getItem("noQuestions"),
+            backFunction: this.state.processing ? null : this.abortEarly
         };
 
         let textAreaProps = {
@@ -321,7 +358,10 @@ class TestSheetPage extends Component {
         }
 
         let stars = [];
-        for (let i = 0; i < this.state.points; i++) {
+        let noStars = this.state.points + (
+            this.state.needed == 2 && this.state.soFar == 2
+        );
+        for (let i = 0; i < noStars; i++) {
             let starProps = {
                 key: i,
                 src: starImage
