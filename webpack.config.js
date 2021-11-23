@@ -52,7 +52,7 @@ module.exports = {
     },
     plugins:[
         new HtmlWebpackPlugin({
-            template: './prokart/src/templates/main.html'
+            template: './prokart/src/main.html'
         }),
         new CopyWebpackPlugin({
             patterns: [{from: "./sql-wasm.wasm"}]

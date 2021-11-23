@@ -67,6 +67,8 @@ class TopBar extends Component {
                     </div>
                 </div>
                 <TopBarTranslators contents={this.state.contents} />
+                <div class="sidebar-right">
+                </div>
             </div>
         );
 
