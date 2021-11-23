@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import { initBackend } from 'absurd-sql/dist/indexeddb-main-thread';
 
-import logoDark from '../../images/logo-dark.svg';
+import logoDark from '../../images/logo.svg';
 import { addMessageListener } from '../sql/messageListener.js';
 import TopBarTranslators from './topbarTranslators';
 

@@ -18,7 +18,7 @@ class MainPage extends Component {
             <div>
                 <div className="main" tabIndex="-1">
                     <div style={{top: "0", width: "100%", textAlign: "center"}}>
-                        <img style={{width: "216.448px", height: "80px", marginTop: "40px"}} src={logoFull}/>
+                        <img style={{width: "324px", height: "144px", marginTop: "40px"}} src={logoFull}/>
                         <h2>A Language-Learning Tool</h2>
                     </div>
                     <div style={{textAlign: "center"}}>
