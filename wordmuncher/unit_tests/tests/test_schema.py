@@ -1,5 +1,5 @@
 # Local imports
-from prokart.unit_tests.base_tests import BasicTests
+from wordmuncher.unit_tests.base_tests import BasicTests
 
 
 class TestSchema(BasicTests):

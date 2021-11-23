@@ -557,7 +557,7 @@ class BasicTests(unittest.TestCase):
     def go_to(
             self, location: str, check_id: str = "sidebar-left-home"
     ) -> None:
-        """Goes to the provided location in Prokart
+        """Goes to the provided location in Word Muncher
         :param str location: The location starting with '/'.
         :param str check_id: The id of the element which indicates that
             the page has finished loading.

@@ -10,7 +10,7 @@ module.exports = {
         },
         historyApiFallback: true
     },
-    entry: './prokart/src/run.js',
+    entry: './wordmuncher/src/run.js',
     mode: 'development',
     module: {
         rules: [
@@ -52,7 +52,7 @@ module.exports = {
     },
     plugins:[
         new HtmlWebpackPlugin({
-            template: './prokart/src/main.html'
+            template: './wordmuncher/src/main.html'
         }),
         new CopyWebpackPlugin({
             patterns: [{from: "./sql-wasm.wasm"}]

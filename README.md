@@ -1,7 +1,7 @@
-![](prokart/src/static/images/logo-full.svg "Logo")
+![](wordmuncher/src/static/images/logo-full.svg "Logo")
 
 ## About
-Prokart is an open-source web-application to help you create and
+Word Muncher is an open-source web-application to help you create and
 learn with vocabulary sheets.
 
 ### License

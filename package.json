@@ -1,8 +1,8 @@
 {
-  "name": "prokart",
+  "name": "wordmuncher",
   "version": "0.1.0",
   "description": "Language-learning application",
-  "main": "prokart/src/run.js",
+  "main": "wordmuncher/src/run.js",
   "scripts": {
     "start": "webpack-dev-server --mode development --open --hot",
     "build": "webpack --mode production",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/clockback/prokart.git"
+    "url": "git+https://github.com/clockback/wordmuncher.git"
   },
   "keywords": [
     "language"
@@ -18,9 +18,9 @@
   "author": "Elliot Paton-Simpson",
   "license": "AGPL-3.0",
   "bugs": {
-    "url": "https://github.com/clockback/prokart/issues"
+    "url": "https://github.com/clockback/wordmuncher/issues"
   },
-  "homepage": "https://github.com/clockback/prokart#readme",
+  "homepage": "https://github.com/clockback/wordmuncher#readme",
   "dependencies": {
     "@babel/core": "^7.15.8",
     "@jlongster/sql.js": "^1.6.7",
