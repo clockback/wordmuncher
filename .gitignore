@@ -5,4 +5,5 @@ prokart.egg-info
 venv/
 node_modules/
 bundle/
+dist/
 package-lock.json
