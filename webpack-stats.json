@@ -1,0 +1,206 @@
+{
+  "status": "done",
+  "assets": {
+    "logo.svg": {
+      "name": "logo.svg",
+      "path": "/home/elliot/pyprojects/wordmuncher/wordmuncher/static/wordmuncher/logo.svg",
+      "publicPath": "static/wordmuncher/logo.svg"
+    },
+    "logo-full.svg": {
+      "name": "logo-full.svg",
+      "path": "/home/elliot/pyprojects/wordmuncher/wordmuncher/static/wordmuncher/logo-full.svg",
+      "publicPath": "static/wordmuncher/logo-full.svg"
+    },
+    "edit.svg": {
+      "name": "edit.svg",
+      "path": "/home/elliot/pyprojects/wordmuncher/wordmuncher/static/wordmuncher/edit.svg",
+      "publicPath": "static/wordmuncher/edit.svg"
+    },
+    "star.svg": {
+      "name": "star.svg",
+      "path": "/home/elliot/pyprojects/wordmuncher/wordmuncher/static/wordmuncher/star.svg",
+      "publicPath": "static/wordmuncher/star.svg"
+    },
+    "static/audio/correct.a40658f9.mp3": {
+      "name": "static/audio/correct.a40658f9.mp3",
+      "path": "/home/elliot/pyprojects/wordmuncher/wordmuncher/static/wordmuncher/static/audio/correct.a40658f9.mp3",
+      "publicPath": "static/wordmuncher/static/audio/correct.a40658f9.mp3"
+    },
+    "static/audio/incorrect.e92de3da.mp3": {
+      "name": "static/audio/incorrect.e92de3da.mp3",
+      "path": "/home/elliot/pyprojects/wordmuncher/wordmuncher/static/wordmuncher/static/audio/incorrect.e92de3da.mp3",
+      "publicPath": "static/wordmuncher/static/audio/incorrect.e92de3da.mp3"
+    },
+    "close.svg": {
+      "name": "close.svg",
+      "path": "/home/elliot/pyprojects/wordmuncher/wordmuncher/static/wordmuncher/close.svg",
+      "publicPath": "static/wordmuncher/close.svg"
+    },
+    "wordmuncher-08e6931fb613d96ab071.js": {
+      "name": "wordmuncher-08e6931fb613d96ab071.js",
+      "path": "/home/elliot/pyprojects/wordmuncher/wordmuncher/static/wordmuncher/wordmuncher-08e6931fb613d96ab071.js",
+      "publicPath": "static/wordmuncher/wordmuncher-08e6931fb613d96ab071.js"
+    },
+    "wordmuncher_src_static_js_sql_initDB_js-08e6931fb613d96ab071.js": {
+      "name": "wordmuncher_src_static_js_sql_initDB_js-08e6931fb613d96ab071.js",
+      "path": "/home/elliot/pyprojects/wordmuncher/wordmuncher/static/wordmuncher/wordmuncher_src_static_js_sql_initDB_js-08e6931fb613d96ab071.js",
+      "publicPath": "static/wordmuncher/wordmuncher_src_static_js_sql_initDB_js-08e6931fb613d96ab071.js"
+    },
+    "vendors-node_modules_absurd-sql_dist_indexeddb-main-thread-worker-e59fee74_js-08e6931fb613d96ab071.js": {
+      "name": "vendors-node_modules_absurd-sql_dist_indexeddb-main-thread-worker-e59fee74_js-08e6931fb613d96ab071.js",
+      "path": "/home/elliot/pyprojects/wordmuncher/wordmuncher/static/wordmuncher/vendors-node_modules_absurd-sql_dist_indexeddb-main-thread-worker-e59fee74_js-08e6931fb613d96ab071.js",
+      "publicPath": "static/wordmuncher/vendors-node_modules_absurd-sql_dist_indexeddb-main-thread-worker-e59fee74_js-08e6931fb613d96ab071.js"
+    },
+    "wordmuncher_src_static_js_sql_getTranslators_js-08e6931fb613d96ab071.js": {
+      "name": "wordmuncher_src_static_js_sql_getTranslators_js-08e6931fb613d96ab071.js",
+      "path": "/home/elliot/pyprojects/wordmuncher/wordmuncher/static/wordmuncher/wordmuncher_src_static_js_sql_getTranslators_js-08e6931fb613d96ab071.js",
+      "publicPath": "static/wordmuncher/wordmuncher_src_static_js_sql_getTranslators_js-08e6931fb613d96ab071.js"
+    },
+    "wordmuncher_src_static_js_sql_pickTranslator_js-08e6931fb613d96ab071.js": {
+      "name": "wordmuncher_src_static_js_sql_pickTranslator_js-08e6931fb613d96ab071.js",
+      "path": "/home/elliot/pyprojects/wordmuncher/wordmuncher/static/wordmuncher/wordmuncher_src_static_js_sql_pickTranslator_js-08e6931fb613d96ab071.js",
+      "publicPath": "static/wordmuncher/wordmuncher_src_static_js_sql_pickTranslator_js-08e6931fb613d96ab071.js"
+    },
+    "wordmuncher_src_static_js_sql_getLanguages_js-08e6931fb613d96ab071.js": {
+      "name": "wordmuncher_src_static_js_sql_getLanguages_js-08e6931fb613d96ab071.js",
+      "path": "/home/elliot/pyprojects/wordmuncher/wordmuncher/static/wordmuncher/wordmuncher_src_static_js_sql_getLanguages_js-08e6931fb613d96ab071.js",
+      "publicPath": "static/wordmuncher/wordmuncher_src_static_js_sql_getLanguages_js-08e6931fb613d96ab071.js"
+    },
+    "wordmuncher_src_static_js_sql_saveTranslator_js-08e6931fb613d96ab071.js": {
+      "name": "wordmuncher_src_static_js_sql_saveTranslator_js-08e6931fb613d96ab071.js",
+      "path": "/home/elliot/pyprojects/wordmuncher/wordmuncher/static/wordmuncher/wordmuncher_src_static_js_sql_saveTranslator_js-08e6931fb613d96ab071.js",
+      "publicPath": "static/wordmuncher/wordmuncher_src_static_js_sql_saveTranslator_js-08e6931fb613d96ab071.js"
+    },
+    "wordmuncher_src_static_js_sql_checkLanguageName_js-08e6931fb613d96ab071.js": {
+      "name": "wordmuncher_src_static_js_sql_checkLanguageName_js-08e6931fb613d96ab071.js",
+      "path": "/home/elliot/pyprojects/wordmuncher/wordmuncher/static/wordmuncher/wordmuncher_src_static_js_sql_checkLanguageName_js-08e6931fb613d96ab071.js",
+      "publicPath": "static/wordmuncher/wordmuncher_src_static_js_sql_checkLanguageName_js-08e6931fb613d96ab071.js"
+    },
+    "wordmuncher_src_static_js_sql_addLanguage_js-08e6931fb613d96ab071.js": {
+      "name": "wordmuncher_src_static_js_sql_addLanguage_js-08e6931fb613d96ab071.js",
+      "path": "/home/elliot/pyprojects/wordmuncher/wordmuncher/static/wordmuncher/wordmuncher_src_static_js_sql_addLanguage_js-08e6931fb613d96ab071.js",
+      "publicPath": "static/wordmuncher/wordmuncher_src_static_js_sql_addLanguage_js-08e6931fb613d96ab071.js"
+    },
+    "wordmuncher_src_static_js_sql_findFlags_js-08e6931fb613d96ab071.js": {
+      "name": "wordmuncher_src_static_js_sql_findFlags_js-08e6931fb613d96ab071.js",
+      "path": "/home/elliot/pyprojects/wordmuncher/wordmuncher/static/wordmuncher/wordmuncher_src_static_js_sql_findFlags_js-08e6931fb613d96ab071.js",
+      "publicPath": "static/wordmuncher/wordmuncher_src_static_js_sql_findFlags_js-08e6931fb613d96ab071.js"
+    },
+    "wordmuncher_src_static_js_sql_getSheets_js-_c4f5-_6b37-_180a1-08e6931fb613d96ab071.js": {
+      "name": "wordmuncher_src_static_js_sql_getSheets_js-_c4f5-_6b37-_180a1-08e6931fb613d96ab071.js",
+      "path": "/home/elliot/pyprojects/wordmuncher/wordmuncher/static/wordmuncher/wordmuncher_src_static_js_sql_getSheets_js-_c4f5-_6b37-_180a1-08e6931fb613d96ab071.js",
+      "publicPath": "static/wordmuncher/wordmuncher_src_static_js_sql_getSheets_js-_c4f5-_6b37-_180a1-08e6931fb613d96ab071.js"
+    },
+    "wordmuncher_src_static_js_sql_getEntries_js-_224c-_6b37-_180a0-08e6931fb613d96ab071.js": {
+      "name": "wordmuncher_src_static_js_sql_getEntries_js-_224c-_6b37-_180a0-08e6931fb613d96ab071.js",
+      "path": "/home/elliot/pyprojects/wordmuncher/wordmuncher/static/wordmuncher/wordmuncher_src_static_js_sql_getEntries_js-_224c-_6b37-_180a0-08e6931fb613d96ab071.js",
+      "publicPath": "static/wordmuncher/wordmuncher_src_static_js_sql_getEntries_js-_224c-_6b37-_180a0-08e6931fb613d96ab071.js"
+    },
+    "wordmuncher_src_static_js_sql_deleteSheet_js-08e6931fb613d96ab071.js": {
+      "name": "wordmuncher_src_static_js_sql_deleteSheet_js-08e6931fb613d96ab071.js",
+      "path": "/home/elliot/pyprojects/wordmuncher/wordmuncher/static/wordmuncher/wordmuncher_src_static_js_sql_deleteSheet_js-08e6931fb613d96ab071.js",
+      "publicPath": "static/wordmuncher/wordmuncher_src_static_js_sql_deleteSheet_js-08e6931fb613d96ab071.js"
+    },
+    "wordmuncher_src_static_js_sql_deleteEntry_js-08e6931fb613d96ab071.js": {
+      "name": "wordmuncher_src_static_js_sql_deleteEntry_js-08e6931fb613d96ab071.js",
+      "path": "/home/elliot/pyprojects/wordmuncher/wordmuncher/static/wordmuncher/wordmuncher_src_static_js_sql_deleteEntry_js-08e6931fb613d96ab071.js",
+      "publicPath": "static/wordmuncher/wordmuncher_src_static_js_sql_deleteEntry_js-08e6931fb613d96ab071.js"
+    },
+    "wordmuncher_src_static_js_sql_checkSheetName_js-08e6931fb613d96ab071.js": {
+      "name": "wordmuncher_src_static_js_sql_checkSheetName_js-08e6931fb613d96ab071.js",
+      "path": "/home/elliot/pyprojects/wordmuncher/wordmuncher/static/wordmuncher/wordmuncher_src_static_js_sql_checkSheetName_js-08e6931fb613d96ab071.js",
+      "publicPath": "static/wordmuncher/wordmuncher_src_static_js_sql_checkSheetName_js-08e6931fb613d96ab071.js"
+    },
+    "wordmuncher_src_static_js_sql_getEntries_js-_224c-_6b37-_180a1-08e6931fb613d96ab071.js": {
+      "name": "wordmuncher_src_static_js_sql_getEntries_js-_224c-_6b37-_180a1-08e6931fb613d96ab071.js",
+      "path": "/home/elliot/pyprojects/wordmuncher/wordmuncher/static/wordmuncher/wordmuncher_src_static_js_sql_getEntries_js-_224c-_6b37-_180a1-08e6931fb613d96ab071.js",
+      "publicPath": "static/wordmuncher/wordmuncher_src_static_js_sql_getEntries_js-_224c-_6b37-_180a1-08e6931fb613d96ab071.js"
+    },
+    "wordmuncher_src_static_js_sql_getSheetMentions_js-08e6931fb613d96ab071.js": {
+      "name": "wordmuncher_src_static_js_sql_getSheetMentions_js-08e6931fb613d96ab071.js",
+      "path": "/home/elliot/pyprojects/wordmuncher/wordmuncher/static/wordmuncher/wordmuncher_src_static_js_sql_getSheetMentions_js-08e6931fb613d96ab071.js",
+      "publicPath": "static/wordmuncher/wordmuncher_src_static_js_sql_getSheetMentions_js-08e6931fb613d96ab071.js"
+    },
+    "wordmuncher_src_static_js_sql_saveNewSheet_js-08e6931fb613d96ab071.js": {
+      "name": "wordmuncher_src_static_js_sql_saveNewSheet_js-08e6931fb613d96ab071.js",
+      "path": "/home/elliot/pyprojects/wordmuncher/wordmuncher/static/wordmuncher/wordmuncher_src_static_js_sql_saveNewSheet_js-08e6931fb613d96ab071.js",
+      "publicPath": "static/wordmuncher/wordmuncher_src_static_js_sql_saveNewSheet_js-08e6931fb613d96ab071.js"
+    },
+    "wordmuncher_src_static_js_sql_saveExistingSheet_js-08e6931fb613d96ab071.js": {
+      "name": "wordmuncher_src_static_js_sql_saveExistingSheet_js-08e6931fb613d96ab071.js",
+      "path": "/home/elliot/pyprojects/wordmuncher/wordmuncher/static/wordmuncher/wordmuncher_src_static_js_sql_saveExistingSheet_js-08e6931fb613d96ab071.js",
+      "publicPath": "static/wordmuncher/wordmuncher_src_static_js_sql_saveExistingSheet_js-08e6931fb613d96ab071.js"
+    },
+    "wordmuncher_src_static_js_sql_getSheets_js-_c4f5-_6b37-_180a0-08e6931fb613d96ab071.js": {
+      "name": "wordmuncher_src_static_js_sql_getSheets_js-_c4f5-_6b37-_180a0-08e6931fb613d96ab071.js",
+      "path": "/home/elliot/pyprojects/wordmuncher/wordmuncher/static/wordmuncher/wordmuncher_src_static_js_sql_getSheets_js-_c4f5-_6b37-_180a0-08e6931fb613d96ab071.js",
+      "publicPath": "static/wordmuncher/wordmuncher_src_static_js_sql_getSheets_js-_c4f5-_6b37-_180a0-08e6931fb613d96ab071.js"
+    },
+    "wordmuncher_src_static_js_sql_checkQuestion_js-08e6931fb613d96ab071.js": {
+      "name": "wordmuncher_src_static_js_sql_checkQuestion_js-08e6931fb613d96ab071.js",
+      "path": "/home/elliot/pyprojects/wordmuncher/wordmuncher/static/wordmuncher/wordmuncher_src_static_js_sql_checkQuestion_js-08e6931fb613d96ab071.js",
+      "publicPath": "static/wordmuncher/wordmuncher_src_static_js_sql_checkQuestion_js-08e6931fb613d96ab071.js"
+    },
+    "wordmuncher_src_static_js_sql_getSchemas_js-08e6931fb613d96ab071.js": {
+      "name": "wordmuncher_src_static_js_sql_getSchemas_js-08e6931fb613d96ab071.js",
+      "path": "/home/elliot/pyprojects/wordmuncher/wordmuncher/static/wordmuncher/wordmuncher_src_static_js_sql_getSchemas_js-08e6931fb613d96ab071.js",
+      "publicPath": "static/wordmuncher/wordmuncher_src_static_js_sql_getSchemas_js-08e6931fb613d96ab071.js"
+    },
+    "wordmuncher_src_static_js_sql_getEntryMentions_js-08e6931fb613d96ab071.js": {
+      "name": "wordmuncher_src_static_js_sql_getEntryMentions_js-08e6931fb613d96ab071.js",
+      "path": "/home/elliot/pyprojects/wordmuncher/wordmuncher/static/wordmuncher/wordmuncher_src_static_js_sql_getEntryMentions_js-08e6931fb613d96ab071.js",
+      "publicPath": "static/wordmuncher/wordmuncher_src_static_js_sql_getEntryMentions_js-08e6931fb613d96ab071.js"
+    },
+    "wordmuncher_src_static_js_sql_saveNewEntry_js-08e6931fb613d96ab071.js": {
+      "name": "wordmuncher_src_static_js_sql_saveNewEntry_js-08e6931fb613d96ab071.js",
+      "path": "/home/elliot/pyprojects/wordmuncher/wordmuncher/static/wordmuncher/wordmuncher_src_static_js_sql_saveNewEntry_js-08e6931fb613d96ab071.js",
+      "publicPath": "static/wordmuncher/wordmuncher_src_static_js_sql_saveNewEntry_js-08e6931fb613d96ab071.js"
+    },
+    "wordmuncher_src_static_js_sql_saveExistingEntry_js-08e6931fb613d96ab071.js": {
+      "name": "wordmuncher_src_static_js_sql_saveExistingEntry_js-08e6931fb613d96ab071.js",
+      "path": "/home/elliot/pyprojects/wordmuncher/wordmuncher/static/wordmuncher/wordmuncher_src_static_js_sql_saveExistingEntry_js-08e6931fb613d96ab071.js",
+      "publicPath": "static/wordmuncher/wordmuncher_src_static_js_sql_saveExistingEntry_js-08e6931fb613d96ab071.js"
+    },
+    "wordmuncher_src_static_js_sql_getSheets_js-_c4f5-_6b37-_180a2-08e6931fb613d96ab071.js": {
+      "name": "wordmuncher_src_static_js_sql_getSheets_js-_c4f5-_6b37-_180a2-08e6931fb613d96ab071.js",
+      "path": "/home/elliot/pyprojects/wordmuncher/wordmuncher/static/wordmuncher/wordmuncher_src_static_js_sql_getSheets_js-_c4f5-_6b37-_180a2-08e6931fb613d96ab071.js",
+      "publicPath": "static/wordmuncher/wordmuncher_src_static_js_sql_getSheets_js-_c4f5-_6b37-_180a2-08e6931fb613d96ab071.js"
+    },
+    "wordmuncher_src_static_js_sql_getTestEntry_js-08e6931fb613d96ab071.js": {
+      "name": "wordmuncher_src_static_js_sql_getTestEntry_js-08e6931fb613d96ab071.js",
+      "path": "/home/elliot/pyprojects/wordmuncher/wordmuncher/static/wordmuncher/wordmuncher_src_static_js_sql_getTestEntry_js-08e6931fb613d96ab071.js",
+      "publicPath": "static/wordmuncher/wordmuncher_src_static_js_sql_getTestEntry_js-08e6931fb613d96ab071.js"
+    },
+    "wordmuncher_src_static_js_sql_markEntryCorrect_js-08e6931fb613d96ab071.js": {
+      "name": "wordmuncher_src_static_js_sql_markEntryCorrect_js-08e6931fb613d96ab071.js",
+      "path": "/home/elliot/pyprojects/wordmuncher/wordmuncher/static/wordmuncher/wordmuncher_src_static_js_sql_markEntryCorrect_js-08e6931fb613d96ab071.js",
+      "publicPath": "static/wordmuncher/wordmuncher_src_static_js_sql_markEntryCorrect_js-08e6931fb613d96ab071.js"
+    },
+    "wordmuncher_src_static_js_sql_markEntryIncorrect_js-08e6931fb613d96ab071.js": {
+      "name": "wordmuncher_src_static_js_sql_markEntryIncorrect_js-08e6931fb613d96ab071.js",
+      "path": "/home/elliot/pyprojects/wordmuncher/wordmuncher/static/wordmuncher/wordmuncher_src_static_js_sql_markEntryIncorrect_js-08e6931fb613d96ab071.js",
+      "publicPath": "static/wordmuncher/wordmuncher_src_static_js_sql_markEntryIncorrect_js-08e6931fb613d96ab071.js"
+    },
+    "wordmuncher_src_static_js_sql_addAnswer_js-08e6931fb613d96ab071.js": {
+      "name": "wordmuncher_src_static_js_sql_addAnswer_js-08e6931fb613d96ab071.js",
+      "path": "/home/elliot/pyprojects/wordmuncher/wordmuncher/static/wordmuncher/wordmuncher_src_static_js_sql_addAnswer_js-08e6931fb613d96ab071.js",
+      "publicPath": "static/wordmuncher/wordmuncher_src_static_js_sql_addAnswer_js-08e6931fb613d96ab071.js"
+    },
+    "wordmuncher_src_static_js_sql_removeAnswer_js-08e6931fb613d96ab071.js": {
+      "name": "wordmuncher_src_static_js_sql_removeAnswer_js-08e6931fb613d96ab071.js",
+      "path": "/home/elliot/pyprojects/wordmuncher/wordmuncher/static/wordmuncher/wordmuncher_src_static_js_sql_removeAnswer_js-08e6931fb613d96ab071.js",
+      "publicPath": "static/wordmuncher/wordmuncher_src_static_js_sql_removeAnswer_js-08e6931fb613d96ab071.js"
+    },
+    "vendors-node_modules_jlongster_sql_js_dist_sql-wasm_js-node_modules_absurd-sql_dist_index_js--b6e0c4-08e6931fb613d96ab071.js": {
+      "name": "vendors-node_modules_jlongster_sql_js_dist_sql-wasm_js-node_modules_absurd-sql_dist_index_js--b6e0c4-08e6931fb613d96ab071.js",
+      "path": "/home/elliot/pyprojects/wordmuncher/wordmuncher/static/wordmuncher/vendors-node_modules_jlongster_sql_js_dist_sql-wasm_js-node_modules_absurd-sql_dist_index_js--b6e0c4-08e6931fb613d96ab071.js",
+      "publicPath": "static/wordmuncher/vendors-node_modules_jlongster_sql_js_dist_sql-wasm_js-node_modules_absurd-sql_dist_index_js--b6e0c4-08e6931fb613d96ab071.js"
+    }
+  },
+  "chunks": {
+    "wordmuncher": [
+      "wordmuncher-08e6931fb613d96ab071.js"
+    ]
+  },
+  "publicPath": "static/wordmuncher/"
+}

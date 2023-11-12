@@ -1,7 +1,9 @@
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CopyWebpackPlugin = require("copy-webpack-plugin");
+const path = require('path');
+const BundleTracker = require('webpack-bundle-tracker');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
+    mode: 'development',
     devServer: {
         hot: true,
         headers: {
@@ -10,8 +12,14 @@ module.exports = {
         },
         historyApiFallback: true
     },
-    entry: './wordmuncher/src/run.js',
-    mode: 'development',
+    entry: {
+        wordmuncher: './wordmuncher/src/run.js'
+    },
+    output: {
+        path: path.resolve('./wordmuncher/static/wordmuncher/'),
+        filename: '[name]-[hash].js',
+        publicPath: 'static/wordmuncher/'
+    },
     module: {
         rules: [
             {
@@ -50,12 +58,11 @@ module.exports = {
             http: false
         }
     },
-    plugins:[
-        new HtmlWebpackPlugin({
-            template: './wordmuncher/src/main.html'
+    plugins: [
+        new CleanWebpackPlugin(),
+        new BundleTracker({
+            path: __dirname,
+            filename: './webpack-stats.json'
         }),
-        new CopyWebpackPlugin({
-            patterns: [{from: "./sql-wasm.wasm"}]
-        })
     ]
 }
