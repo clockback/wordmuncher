@@ -1,14 +1,11 @@
-Word Muncher
-============
+# Word Muncher
 
-About
------
+## About
 
 Word Muncher is an open-source web-application to help you create and
 learn with vocabulary sheets.
 
-License
--------
+## License
 
 Copyright © 2024 Elliot Paton-Simpson
 
@@ -19,9 +16,9 @@ License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful, but
 WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public
-License along with this program.  If not, see
+License along with this program. If not, see
 <http://www.gnu.org/licenses/>.
