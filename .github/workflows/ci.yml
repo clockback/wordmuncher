@@ -2,7 +2,7 @@ name: Run quality gates
 run-name: ${{ github.actor }} - Word Muncher
 on: [push]
 jobs:
-  check-formatting:
+  run-quality-gates:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
@@ -15,3 +15,5 @@ jobs:
         run: npm install
       - name: Check formatting
         run: npx prettier --check .
+      - name: Check linting
+        run: npm run lint
