@@ -1,0 +1,17 @@
+name: Run quality gates
+run-name: ${{ github.actor }} - Word Muncher
+on: [push]
+jobs:
+  check-formatting:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: Install NPM
+        uses: actions/setup-node@v4.0.3
+        with:
+          node-version: 20
+      - name: Install Word Muncher
+        run: npm install
+      - name: Check formatting
+        run: npx prettier --check .
