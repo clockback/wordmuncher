@@ -1,0 +1,14 @@
+{
+    "development": {
+        "dialect": "sqlite",
+        "storage": "/tmp/wordmuncher.db"
+    },
+    "test": {
+        "dialect": "sqlite",
+        "storage": "/tmp/wordmuncher.db"
+    },
+    "production": {
+        "dialect": "sqlite",
+        "storage": "/tmp/wordmuncher.db"
+    }
+}
