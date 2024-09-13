@@ -1,40 +1,45 @@
 "use strict";
-
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.createTable("vocabulary-sheet-entry", {
+        await queryInterface.createTable("TonguePairs", {
             id: {
-                type: Sequelize.INTEGER,
+                allowNull: false,
                 autoIncrement: true,
                 primaryKey: true,
+                type: Sequelize.INTEGER,
             },
-            vocabulary_sheet: {
+            translateFrom: {
                 type: Sequelize.INTEGER,
                 references: {
-                    model: "vocabulary-sheet",
+                    model: "tongue",
                     key: "id",
-                    deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE,
                 },
                 allowNull: false,
                 onDelete: "CASCADE",
                 onUpdate: "CASCADE",
             },
-            vocabulary_entry: {
+            translateTo: {
                 type: Sequelize.INTEGER,
                 references: {
-                    model: "vocabulary-entry",
+                    model: "Tongues",
                     key: "id",
-                    deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE,
                 },
                 allowNull: false,
                 onDelete: "CASCADE",
                 onUpdate: "CASCADE",
+            },
+            createdAt: {
+                allowNull: false,
+                type: Sequelize.DATE,
+            },
+            updatedAt: {
+                allowNull: false,
+                type: Sequelize.DATE,
             },
         });
     },
-
     async down(queryInterface, Sequelize) {
-        await queryInterface.dropTable("vocabulary-sheet-entry");
+        await queryInterface.dropTable("TonguePairs");
     },
 };
