@@ -1,26 +1,15 @@
 "use strict";
-
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.createTable("vocabulary-entry", {
+        await queryInterface.createTable("Questions", {
             id: {
-                type: Sequelize.INTEGER,
+                allowNull: false,
                 autoIncrement: true,
                 primaryKey: true,
-            },
-            tongue_pair: {
                 type: Sequelize.INTEGER,
-                references: {
-                    model: "tongue-pair",
-                    key: "id",
-                    deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE,
-                },
-                allowNull: false,
-                onDelete: "CASCADE",
-                onUpdate: "CASCADE",
             },
-            prompt: {
+            questionText: {
                 type: Sequelize.STRING,
                 allowNull: false,
             },
@@ -28,22 +17,27 @@ module.exports = {
                 type: Sequelize.STRING,
                 allowNull: false,
             },
-            mastery_level: {
+            tonguePair: {
                 type: Sequelize.INTEGER,
+                references: {
+                    model: "TonguePairs",
+                    key: "id",
+                },
                 allowNull: false,
+                onDelete: "CASCADE",
+                onUpdate: "CASCADE",
             },
-            correct_answers_needed: {
-                type: Sequelize.INTEGER,
+            createdAt: {
                 allowNull: false,
+                type: Sequelize.DATE,
             },
-            correct_answers_given: {
-                type: Sequelize.INTEGER,
+            updatedAt: {
                 allowNull: false,
+                type: Sequelize.DATE,
             },
         });
     },
-
     async down(queryInterface, Sequelize) {
-        await queryInterface.dropTable("vocabulary-entry");
+        await queryInterface.dropTable("Questions");
     },
 };

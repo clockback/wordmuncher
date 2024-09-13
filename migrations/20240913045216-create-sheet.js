@@ -1,39 +1,39 @@
 "use strict";
-
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.createTable("tongue-pair", {
+        await queryInterface.createTable("Sheets", {
             id: {
-                type: Sequelize.INTEGER,
+                allowNull: false,
                 autoIncrement: true,
                 primaryKey: true,
+                type: Sequelize.INTEGER,
             },
-            translate_from: {
+            sheetName: {
+                type: Sequelize.STRING,
+                allowNull: false,
+            },
+            tonguePair: {
                 type: Sequelize.INTEGER,
                 references: {
-                    model: "tongue",
+                    model: "TonguePairs",
                     key: "id",
                 },
                 allowNull: false,
                 onDelete: "CASCADE",
                 onUpdate: "CASCADE",
             },
-            translate_to: {
-                type: Sequelize.INTEGER,
-                references: {
-                    model: "tongue",
-                    key: "id",
-                    deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE,
-                },
+            createdAt: {
                 allowNull: false,
-                onDelete: "CASCADE",
-                onUpdate: "CASCADE",
+                type: Sequelize.DATE,
+            },
+            updatedAt: {
+                allowNull: false,
+                type: Sequelize.DATE,
             },
         });
     },
-
     async down(queryInterface, Sequelize) {
-        await queryInterface.dropTable("tongue-pair");
+        await queryInterface.dropTable("Sheets");
     },
 };
