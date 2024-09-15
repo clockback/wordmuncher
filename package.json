@@ -6,7 +6,8 @@
         "start": "next start",
         "format": "npx prettier --write .",
         "lint": "next lint",
-        "migration:create": "npx sequelize-cli model:generate",
+        "model:create": "npx sequelize-cli model:generate",
+        "migration:create": "npx sequelize-cli migration:generate",
         "migrate": "npx sequelize-cli db:migrate",
         "migrate:rollback": "npx sequelize-cli db:migrate:undo"
     },
