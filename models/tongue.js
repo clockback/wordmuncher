@@ -26,6 +26,7 @@ module.exports = (sequelize, DataTypes) => {
             tongueName: {
                 type: DataTypes.STRING,
                 allowNull: false,
+                unique: true,
             },
             flag: {
                 type: DataTypes.STRING,
