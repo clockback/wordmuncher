@@ -10,11 +10,9 @@ module.exports = (sequelize, DataTypes) => {
         static associate(models) {
             Tongue.hasMany(models.TonguePair, {
                 foreignKey: "translateTo",
-                as: "tonguePairs",
             });
             Tongue.hasMany(models.TonguePair, {
                 foreignKey: "translateFrom",
-                as: "tonguePairs",
             });
         }
     }

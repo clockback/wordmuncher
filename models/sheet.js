@@ -10,11 +10,9 @@ module.exports = (sequelize, DataTypes) => {
         static associate(models) {
             Sheet.belongsTo(models.TonguePair, {
                 foreignKey: "tonguePair",
-                as: "tonguePair",
             });
             Sheet.hasMany(models.SheetQuestion, {
                 foreignKey: "sheet",
-                as: "sheets",
             });
         }
     }
