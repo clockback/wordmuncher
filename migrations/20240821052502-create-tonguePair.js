@@ -12,7 +12,7 @@ module.exports = {
             translateFrom: {
                 type: Sequelize.INTEGER,
                 references: {
-                    model: "tongue",
+                    model: "Tongues",
                     key: "id",
                 },
                 allowNull: false,
