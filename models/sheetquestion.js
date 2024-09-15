@@ -10,11 +10,9 @@ module.exports = (sequelize, DataTypes) => {
         static associate(models) {
             SheetQuestion.belongsTo(models.Sheet, {
                 foreignKey: "sheet",
-                as: "sheet",
             });
             SheetQuestion.belongsTo(models.Question, {
                 foreignKey: "question",
-                as: "question",
             });
         }
     }
