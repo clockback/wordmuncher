@@ -1,7 +1,7 @@
 .container {
     color: rgb(var(--colour-pearl));
     box-sizing: border-box;
-    padding-left: var(--sidebar-width);
+    margin-left: var(--sidebar-width);
     height: 100vh;
 }
 
@@ -19,16 +19,12 @@
 }
 
 .mainpage {
-    width: 100vh;
-    margin: auto;
-    max-width: 1000px;
-    padding-inline: 100px;
+    width: 100%;
     height: 100%;
 }
 
 div.vertical {
-    position: absolute;
-    margin: 0;
+    position: relative;
     top: 50%;
     left: 50%;
     -ms-transform: translate(-50%, -50%);
@@ -38,6 +34,10 @@ div.vertical {
 a.inline {
     color: rgb(var(--colour-pearl));
     font-weight: bold;
+}
+
+div.buttonpadding {
+    padding-block: 10px;
 }
 
 button.centre {
@@ -50,7 +50,6 @@ button.centre {
     display: block;
     width: 300px;
     margin-inline: auto;
-    margin-block: 15px;
     border-radius: 10px;
     cursor: pointer;
     border: 2px solid rgb(var(--colour-pearl));
