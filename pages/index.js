@@ -20,9 +20,16 @@ export default function Home({ repo }) {
                     </a>
                 </div>
             </div>
-            <div className={styles.vertical}>
-                <button className={styles.centre}>Learn</button>
-                <button className={styles.centre}>Vocab</button>
+
+            <div className={styles.mainpage}>
+                <div className={styles.vertical}>
+                    <div className={styles.buttonpadding}>
+                        <button className={styles.centre}>Learn</button>
+                    </div>
+                    <div className={styles.buttonpadding}>
+                        <button className={styles.centre}>Vocab</button>
+                    </div>
+                </div>
             </div>
         </div>
     );
