@@ -26,5 +26,9 @@
         "eslint-config-next": "14.2.5",
         "prettier": "3.3.3",
         "sequelize-cli": "^6.6.2"
+    },
+    "imports": {
+        "#root/*.js": "./*.js",
+        "#root/*.css": "./*.css"
     }
 }
