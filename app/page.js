@@ -4,10 +4,12 @@ export default function Home() {
     return (
         <div className={styles.vertical}>
             <div className={styles.buttonpadding}>
-                <button className={styles.centre}>Learn</button>
+                <a className={styles.centre}>Learn</a>
             </div>
             <div className={styles.buttonpadding}>
-                <button className={styles.centre}>Vocab</button>
+                <a href="/vocab" className={styles.centre}>
+                    Vocab
+                </a>
             </div>
         </div>
     );
