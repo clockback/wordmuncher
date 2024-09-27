@@ -40,6 +40,7 @@ div.buttonpadding {
     padding-block: 10px;
 }
 
+a.centre,
 button.centre {
     background-color: transparent;
     color: rgb(var(--colour-pearl));
@@ -54,8 +55,18 @@ button.centre {
     cursor: pointer;
     border: 2px solid rgb(var(--colour-pearl));
     box-shadow: 0 3px rgb(var(--colour-pearl));
+    text-align: center;
+    text-decoration: none;
 }
 
+a.centre:hover,
 button.centre:hover {
     opacity: 0.8;
+}
+
+div.centre {
+    margin-inline: auto;
+    width: 800px;
+    display: block;
+    text-align: center;
 }
