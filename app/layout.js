@@ -1,5 +1,6 @@
 import "#root/styles/global.css";
 import styles from "#root/styles/Home.module.css";
+import Logo from "#root/app/assets/images/logo.svg";
 
 import { Space_Grotesk } from "next/font/google";
 
@@ -17,7 +18,13 @@ export default function RootLayout({ children }) {
                 <div className={styles.container}>
                     <div className={styles.sidebar}>
                         <div>
-                            <h1 className={styles.title}>Word Muncher</h1>
+                            <a href="/">
+                                <Logo
+                                    className={styles.padded}
+                                    alt="Word Muncher"
+                                    width="100%"
+                                />
+                            </a>
                             <a
                                 className={styles.inline}
                                 href="https://github.com/clockback/wordmuncher"

@@ -70,3 +70,7 @@ div.centre {
     display: block;
     text-align: center;
 }
+
+svg.padded {
+    padding-block: 20px;
+}
