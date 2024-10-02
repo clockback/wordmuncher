@@ -9,7 +9,10 @@
         "model:create": "npx sequelize-cli model:generate",
         "migration:create": "npx sequelize-cli migration:generate",
         "migrate": "npx sequelize-cli db:migrate",
-        "migrate:rollback": "npx sequelize-cli db:migrate:undo"
+        "migrate:rollback": "npx sequelize-cli db:migrate:undo",
+        "seed:create": "npx sequelize-cli seed:generate",
+        "seed": "npx sequelize-cli db:seed:all",
+        "seed:rollback": "npx sequelize-cli db:seed:undo:all"
     },
     "dependencies": {
         "next": "latest",
