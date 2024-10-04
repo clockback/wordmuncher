@@ -6,13 +6,13 @@
         "start": "next start",
         "format": "npx prettier --write .",
         "lint": "next lint",
-        "model:create": "npx sequelize-cli model:generate",
-        "migration:create": "npx sequelize-cli migration:generate",
-        "migrate": "npx sequelize-cli db:migrate",
-        "migrate:rollback": "npx sequelize-cli db:migrate:undo",
-        "seed:create": "npx sequelize-cli seed:generate",
-        "seed": "npx sequelize-cli db:seed:all",
-        "seed:rollback": "npx sequelize-cli db:seed:undo:all"
+        "model:create": "npx sequelize-cli model:generate --models-path=src/db/models",
+        "migration:create": "npx sequelize-cli migration:generate --migrations-path=src/db/migrations",
+        "migrate": "npx sequelize-cli db:migrate --migrations-path=src/db/migrations",
+        "migrate:rollback": "npx sequelize-cli db:migrate:undo --migrations-path=src/db/migrations",
+        "seed:create": "npx sequelize-cli seed:generate --seeders-path=src/db/seeders",
+        "seed": "npx sequelize-cli db:seed:all --seeders-path=src/db/seeders",
+        "seed:rollback": "npx sequelize-cli db:seed:undo:all --seeders-path=src/db/seeders"
     },
     "dependencies": {
         "next": "latest",
