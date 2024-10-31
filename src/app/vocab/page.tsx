@@ -1,6 +1,6 @@
-import styles from "#root/src/app/Home.module.css";
+import styles from "src/app/Home.module.css";
 
-export default function Home() {
+export default async function Home() {
     return (
         <div className={styles.centre}>
             <h1>You are studying French!</h1>
