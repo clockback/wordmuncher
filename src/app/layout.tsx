@@ -1,6 +1,6 @@
 import "./global.css";
 import styles from "./Home.module.css";
-import Logo from "#root/src/app/assets/images/logo.svg";
+import Logo from "src/app/assets/images/logo.svg";
 
 import { Space_Grotesk } from "next/font/google";
 
