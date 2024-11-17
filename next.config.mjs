@@ -8,6 +8,7 @@ const nextConfig = {
 
         return config;
     },
+    serverExternalPackages: ["sequelize"],
 };
 
 export default nextConfig;
