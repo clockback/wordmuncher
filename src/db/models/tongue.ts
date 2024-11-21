@@ -1,11 +1,14 @@
-import { Association, DataTypes, Model } from "sequelize";
+import { Association, CreationOptional, DataTypes, Model } from "sequelize";
 import sequelize from "./index";
 import TonguePair from "./tonguepair";
 
 class Tongue extends Model {
-    declare id: number;
+    declare id: CreationOptional<number>;
     declare tongueName: string;
     declare flag: string;
+
+    declare createdAt: CreationOptional<Date>;
+    declare updatedAt: CreationOptional<Date>;
 
     declare static associations: {
         TonguePairsFrom: Association<Tongue, TonguePair>;
