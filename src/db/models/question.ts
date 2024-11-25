@@ -1,16 +1,28 @@
-import { Association, DataTypes, Model } from "sequelize";
+import {
+    CreationOptional,
+    DataTypes,
+    ForeignKey,
+    InferAttributes,
+    InferCreationAttributes,
+    Model,
+    NonAttribute,
+} from "sequelize";
 import sequelize from "./index";
-import SheetQuestion from "./sheetquestion";
+import TonguePair from "./tonguepair";
 
-class Question extends Model {
+class Question extends Model<
+    InferAttributes<Question, { omit: "tonguePair" }>,
+    InferCreationAttributes<Question, { omit: "tonguePair" }>
+> {
     declare id: number;
     declare questionText: string;
     declare answer: string;
-    declare tonguePair: number;
 
-    declare static associations: {
-        sheetQuestions: Association<Question, SheetQuestion>;
-    };
+    declare tonguePairId: ForeignKey<TonguePair["id"]>;
+    declare tonguePair: NonAttribute<TonguePair>;
+
+    declare createdAt: CreationOptional<Date>;
+    declare updatedAt: CreationOptional<Date>;
 }
 
 Question.init(
@@ -28,7 +40,7 @@ Question.init(
             type: DataTypes.STRING,
             allowNull: false,
         },
-        tonguePair: {
+        tonguePairId: {
             type: DataTypes.INTEGER,
             references: {
                 model: "TonguePairs",
@@ -38,6 +50,8 @@ Question.init(
             onUpdate: "CASCADE",
             allowNull: false,
         },
+        createdAt: DataTypes.DATE,
+        updatedAt: DataTypes.DATE,
     },
     {
         sequelize,
