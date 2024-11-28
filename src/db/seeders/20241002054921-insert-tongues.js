@@ -5,6 +5,12 @@ module.exports = {
     async up(queryInterface, Sequelize) {
         await queryInterface.bulkInsert("Tongues", [
             {
+                tongueName: "English",
+                flag: "🇬🇧",
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+            {
                 tongueName: "Chinese",
                 flag: "🇨🇳",
                 createdAt: new Date(),
