@@ -14,7 +14,6 @@
     top: 0;
     left: 0;
     padding: 10px;
-    z-index: 100;
     background-color: rgb(var(--colour-ash));
 }
 
