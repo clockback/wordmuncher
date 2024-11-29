@@ -11,32 +11,32 @@ import sequelize from "./index";
 import Tongue from "./tongue";
 
 class TonguePair extends Model<
-    InferAttributes<TonguePair, { omit: "translateFrom" | "translateTo" }>,
+    InferAttributes<TonguePair, { omit: "nativeTongue" | "studyingTongue" }>,
     InferCreationAttributes<
         TonguePair,
-        { omit: "translateFrom" | "translateTo" }
+        { omit: "nativeTongue" | "studyingTongue" }
     >
 > {
     declare id: CreationOptional<number>;
 
-    declare translateFromTongueId: ForeignKey<Tongue["id"]>;
-    declare translateFrom: NonAttribute<Tongue>;
+    declare nativeTongueId: ForeignKey<Tongue["id"]>;
+    declare native: NonAttribute<Tongue>;
 
-    declare translateToTongueId: ForeignKey<Tongue["id"]>;
-    declare translateTo: NonAttribute<Tongue>;
+    declare studyingTongueId: ForeignKey<Tongue["id"]>;
+    declare studying: NonAttribute<Tongue>;
 
     declare createdAt: CreationOptional<Date>;
     declare updatedAt: CreationOptional<Date>;
 
-    async translateFromTongue(): Promise<Tongue> {
+    async nativeTongue(): Promise<Tongue> {
         return Tongue.findOne({
-            where: { id: this.translateFromTongueId },
+            where: { id: this.nativeTongueId },
         });
     }
 
-    async translateToTongue(): Promise<Tongue> {
+    async studyingTongue(): Promise<Tongue> {
         return Tongue.findOne({
-            where: { id: this.translateToTongueId },
+            where: { id: this.studyingTongueId },
         });
     }
 }
@@ -48,7 +48,7 @@ TonguePair.init(
             autoIncrement: true,
             primaryKey: true,
         },
-        translateFromTongueId: {
+        nativeTongueId: {
             type: DataTypes.INTEGER,
             references: {
                 model: "Tongues",
@@ -58,7 +58,7 @@ TonguePair.init(
             onUpdate: "CASCADE",
             allowNull: false,
         },
-        translateToTongueId: {
+        studyingTongueId: {
             type: DataTypes.INTEGER,
             references: {
                 model: "Tongues",
@@ -79,29 +79,29 @@ TonguePair.init(
 );
 
 Tongue.hasMany(TonguePair, {
-    foreignKey: "translateFromTongueId",
+    foreignKey: "nativeTongueId",
 });
 Tongue.hasMany(TonguePair, {
-    foreignKey: "translateToTongueId",
+    foreignKey: "studyingTongueId",
 });
 TonguePair.belongsTo(Tongue, {
-    foreignKey: "translateFromTongueId",
-    as: "translateFrom",
+    foreignKey: "nativeTongueId",
+    as: "native",
 });
 TonguePair.belongsTo(Tongue, {
-    foreignKey: "translateToTongueId",
-    as: "translateTo",
+    foreignKey: "studyingTongueId",
+    as: "studying",
 });
 
 Tongue.belongsToMany(Tongue, {
     through: TonguePair,
-    foreignKey: "translateFromTongueId",
-    as: "translateToTongueId",
+    foreignKey: "nativeTongueId",
+    as: "studyingTongueId",
 });
 Tongue.belongsToMany(Tongue, {
     through: TonguePair,
-    foreignKey: "translateToTongueId",
-    as: "translateFromTongueId",
+    foreignKey: "studyingTongueId",
+    as: "nativeTongueId",
 });
 
 export default TonguePair;
