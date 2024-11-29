@@ -14,8 +14,8 @@ async function pickTongue(tongueId: number): Promise<TonguePair> {
     // If there is no tongue pair currently, creates one.
     if (oldTonguePair === null) {
         newTonguePair = await TonguePair.create({
-            translateFromTongueId: 1,
-            translateToTongueId: tongueId,
+            nativeTongueId: 1,
+            studyingTongueId: tongueId,
         });
     }
 
@@ -23,8 +23,8 @@ async function pickTongue(tongueId: number): Promise<TonguePair> {
     else {
         const [createdTonguePair, created] = await TonguePair.findOrCreate({
             where: {
-                translateFromTongueId: oldTonguePair.translateFromTongueId,
-                translateToTongueId: tongueId,
+                nativeTongueId: oldTonguePair.nativeTongueId,
+                studyingTongueId: tongueId,
             },
         });
         newTonguePair = createdTonguePair;
@@ -40,11 +40,11 @@ async function pickTongueAndGetBack(
     "use server";
 
     let tonguePair = await pickTongue(tongueId);
-    let translateToTongue = await tonguePair.translateToTongue();
+    let studyingTongue = await tonguePair.studyingTongue();
     return {
-        id: translateToTongue.id,
-        tongueName: translateToTongue.tongueName,
-        flag: translateToTongue.flag,
+        id: studyingTongue.id,
+        tongueName: studyingTongue.tongueName,
+        flag: studyingTongue.flag,
     };
 }
 
@@ -67,7 +67,7 @@ export default async function Home() {
     const allTongues = await fetchAllTongues();
     const settings = await getSettings();
     const tonguePair = settings.tonguePair;
-    const initialTongueModel = tonguePair ? tonguePair.translateTo : null;
+    const initialTongueModel = tonguePair ? tonguePair.studying : null;
     const initialTongue = initialTongueModel
         ? {
               id: initialTongueModel.id,

@@ -22,10 +22,7 @@ async function settingsGetter(): Promise<Settings> {
         },
         include: {
             association: "tonguePair",
-            include: [
-                { association: "translateFrom" },
-                { association: "translateTo" },
-            ],
+            include: [{ association: "native" }, { association: "studying" }],
         },
     });
     if (created) {
