@@ -1,15 +1,14 @@
-import styles from "./Home.module.css";
+import styles from "./app.module.css";
+import Button from "@components/button/button";
 
 export default function Home() {
     return (
         <div className={styles.vertical}>
             <div className={styles.buttonpadding}>
-                <a className={styles.centre}>Learn</a>
+                <Button>Learn</Button>
             </div>
             <div className={styles.buttonpadding}>
-                <a href="/vocab" className={styles.centre}>
-                    Vocab
-                </a>
+                <Button href="/vocab">Vocab</Button>
             </div>
         </div>
     );

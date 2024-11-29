@@ -1,0 +1,6 @@
+div.centre {
+    margin-inline: auto;
+    width: 800px;
+    display: block;
+    text-align: center;
+}

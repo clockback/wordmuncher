@@ -1,10 +1,11 @@
-import styles from "src/app/Home.module.css";
+import styles from "./vocab.module.css";
+import Button from "@components/button/button";
 
 export default async function Home() {
     return (
         <div className={styles.centre}>
             <h1>You are studying French!</h1>
-            <button className={styles.centre}>Change language</button>
+            <Button>Change language</Button>
         </div>
     );
 }

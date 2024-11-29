@@ -1,0 +1,28 @@
+.centre {
+    background-color: transparent;
+    color: rgb(var(--colour-pearl));
+    padding: 10px;
+    min-width: 100px;
+    font-weight: bold;
+    font-size: 20px;
+    display: block;
+    margin-inline: auto;
+    border-radius: 10px;
+    cursor: pointer;
+    border: 2px solid rgb(var(--colour-pearl));
+    box-shadow: 0 3px rgb(var(--colour-pearl));
+    text-align: center;
+    text-decoration: none;
+}
+
+button.centre {
+    width: 324px;
+}
+
+a.centre {
+    width: 300px;
+}
+
+.centre:hover {
+    opacity: 0.8;
+}
