@@ -19,7 +19,8 @@
         ],
         "baseUrl": ".",
         "paths": {
-            "@models/*": ["./src/db/models/*"]
+            "@models/*": ["./src/db/models/*"],
+            "@components/*": ["./src/app/components/*"]
         },
         "target": "ES2017"
     },
