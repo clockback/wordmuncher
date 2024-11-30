@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 
-import styles from "./vocab.module.css";
-import TonguesPopup from "./tonguespopup";
+import styles from "./tongueselector.module.css";
+import TonguesPopup from "../tonguespopup/tonguespopup";
 import Button from "@components/button/button";
 
 interface TongueSelectorProps {

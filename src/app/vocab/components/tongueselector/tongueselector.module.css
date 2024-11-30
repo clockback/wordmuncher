@@ -1,0 +1,17 @@
+div.centre {
+    margin-inline: auto;
+    width: 800px;
+    display: block;
+    text-align: center;
+}
+
+div.learningflag {
+    font-size: 120px;
+    user-select: none;
+}
+
+div.header {
+    font-weight: bold;
+    font-size: 32px;
+    padding-block: 10px;
+}
