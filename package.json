@@ -12,7 +12,8 @@
         "migrate:rollback": "npx sequelize-cli db:migrate:undo",
         "seed:create": "npx sequelize-cli seed:generate",
         "seed": "npx sequelize-cli db:seed:all",
-        "seed:rollback": "npx sequelize-cli db:seed:undo:all"
+        "seed:rollback": "npx sequelize-cli db:seed:undo:all",
+        "spellcheck": "npx cspell \"**\""
     },
     "dependencies": {
         "next": "latest",
@@ -28,6 +29,7 @@
     "devDependencies": {
         "@svgr/webpack": "^8.1.0",
         "@types/react": "18.3.12",
+        "cspell": "^8.16.1",
         "eslint": "8.57.0",
         "eslint-config-next": "14.2.5",
         "prettier": "3.3.3",

@@ -17,3 +17,5 @@ jobs:
         run: npx prettier --check .
       - name: Check linting
         run: npm run lint
+      - name: Check spelling
+        run: npm run spellcheck
