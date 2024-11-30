@@ -1,7 +1,7 @@
 "use server";
 
 import { getSettings, setSettings } from "src/db/helpers/settings";
-import TongueSelector from "./tongueselector";
+import TongueSelector from "./components/tongueselector/tongueselector";
 import TonguePair from "@models/tonguepair";
 import Tongue from "@models/tongue";
 

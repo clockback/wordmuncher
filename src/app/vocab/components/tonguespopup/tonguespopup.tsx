@@ -1,6 +1,6 @@
 "use client";
 
-import styles from "./vocab.module.css";
+import styles from "./tonguespopup.module.css";
 
 interface TonguesPopupProps {
     allTongues: {
