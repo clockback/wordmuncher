@@ -1,0 +1,9 @@
+.sheetrow {
+    background-color: rgb(var(--colour-light-ash));
+    cursor: pointer;
+    user-select: none;
+}
+
+.paddedcell {
+    padding: 5px 10px;
+}

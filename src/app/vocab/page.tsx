@@ -3,6 +3,7 @@
 import { getSettings, setSettings } from "src/db/helpers/settings";
 import TongueSelector from "./components/tongueselector/tongueselector";
 import { Tongue, TonguePair } from "@models";
+import styles from "./vocab.module.css";
 
 async function pickTongue(tongueId: number): Promise<TonguePair> {
     "use server";
@@ -33,17 +34,32 @@ async function pickTongue(tongueId: number): Promise<TonguePair> {
     return newTonguePair;
 }
 
-async function pickTongueAndGetBack(
-    tongueId: number,
-): Promise<{ id: number; tongueName: string; flag: string }> {
+async function getTonguePairSheetsAsJson(
+    tonguePair: TonguePair,
+): Promise<{ sheetId: number; sheetName: string }[]> {
+    const sheets = [];
+    for (let sheet of await tonguePair.getSheets()) {
+        sheets.push({ sheetId: sheet.id, sheetName: sheet.sheetName });
+    }
+    return sheets;
+}
+
+async function pickTongueAndGetBack(tongueId: number): Promise<{
+    id: number;
+    tongueName: string;
+    flag: string;
+    sheets: { sheetId: number; sheetName: string }[];
+}> {
     "use server";
 
     let tonguePair = await pickTongue(tongueId);
     let studyingTongue = await tonguePair.studyingTongue();
+    let sheets = await getTonguePairSheetsAsJson(tonguePair);
     return {
         id: studyingTongue.id,
         tongueName: studyingTongue.tongueName,
         flag: studyingTongue.flag,
+        sheets: sheets,
     };
 }
 
@@ -66,20 +82,26 @@ export default async function Home() {
     const allTongues = await fetchAllTongues();
     const settings = await getSettings();
     const tonguePair = settings.tonguePair;
+    const sheets = tonguePair
+        ? await getTonguePairSheetsAsJson(tonguePair)
+        : [];
     const initialTongueModel = tonguePair ? tonguePair.studying : null;
     const initialTongue = initialTongueModel
         ? {
               id: initialTongueModel.id,
               tongueName: initialTongueModel.tongueName,
               flag: initialTongueModel.flag,
+              sheets: sheets,
           }
         : null;
 
     return (
-        <TongueSelector
-            onChangeTongue={pickTongueAndGetBack}
-            allTongues={allTongues}
-            initialTongue={initialTongue}
-        ></TongueSelector>
+        <div className={styles.centre}>
+            <TongueSelector
+                onChangeTongue={pickTongueAndGetBack}
+                allTongues={allTongues}
+                initialTongue={initialTongue}
+            ></TongueSelector>
+        </div>
     );
 }
