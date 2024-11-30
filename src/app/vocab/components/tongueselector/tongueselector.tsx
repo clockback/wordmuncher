@@ -5,11 +5,15 @@ import { useState } from "react";
 import styles from "./tongueselector.module.css";
 import TonguesPopup from "../tonguespopup/tonguespopup";
 import Button from "@components/button/button";
+import SheetsList from "../sheetslist/sheetslist";
 
 interface TongueSelectorProps {
-    onChangeTongue: (
-        tongueId: number,
-    ) => Promise<{ id: number; tongueName: string; flag: string }>;
+    onChangeTongue: (tongueId: number) => Promise<{
+        id: number;
+        tongueName: string;
+        flag: string;
+        sheets: { sheetId: number; sheetName: string }[];
+    }>;
     allTongues: {
         id: number;
         tongueName: string;
@@ -19,6 +23,7 @@ interface TongueSelectorProps {
         id: number;
         tongueName: string;
         flag: string;
+        sheets: { sheetId: number; sheetName: string }[];
     } | null;
 }
 
@@ -53,13 +58,16 @@ export default function TongueSelector({
     }
 
     return (
-        <div className={styles.centre}>
+        <>
             <div className={styles.header}>{learnLanguageText}</div>
             {flag}
             <Button onClick={() => setPopupVisible(true)}>
                 Change language
             </Button>
             {popup}
-        </div>
+            <SheetsList
+                sheets={currentTongue ? currentTongue.sheets : []}
+            ></SheetsList>
+        </>
     );
 }

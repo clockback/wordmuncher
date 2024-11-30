@@ -1,6 +1,7 @@
 :root {
     /* Colours */
     --colour-ash: 21, 21, 21;
+    --colour-light-ash: 32, 32, 32;
     --colour-pearl: 240, 240, 240;
     --colour-pearl-hover: 240, 240, 240, 0.9;
 

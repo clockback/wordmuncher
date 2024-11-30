@@ -8,7 +8,7 @@ import {
     NonAttribute,
 } from "sequelize";
 import sequelize from "./db-connection";
-import { Tongue } from "@models";
+import { Tongue, Sheet } from "@models";
 
 export class TonguePair extends Model<
     InferAttributes<TonguePair, { omit: "nativeTongue" | "studyingTongue" }>,
@@ -40,6 +40,12 @@ export class TonguePair extends Model<
         });
     }
 
+    async getSheets(): Promise<Sheet[]> {
+        return Sheet.findAll({
+            where: { tonguePairId: this.id },
+        });
+    }
+
     static associate() {
         TonguePair.belongsTo(Tongue, {
             foreignKey: "nativeTongueId",
@@ -48,6 +54,9 @@ export class TonguePair extends Model<
         TonguePair.belongsTo(Tongue, {
             foreignKey: "studyingTongueId",
             as: "studying",
+        });
+        TonguePair.hasMany(Sheet, {
+            foreignKey: "tonguePairId",
         });
     }
 }
