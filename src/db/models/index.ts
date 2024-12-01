@@ -1,10 +1,24 @@
-import { Sequelize } from "sequelize";
-import { SequelizeOptions } from "sequelize-typescript";
-import { options } from "../config/config.mjs";
+import { Tongue } from "./tongue";
+import { TonguePair } from "./tonguepair";
+import { Settings } from "./settings";
+import { Sheet } from "./sheet";
+import { Question } from "./question";
+import { SheetQuestion } from "./sheetquestion";
 
-const dbOptions = <SequelizeOptions>options;
-dbOptions.dialectModule = require("sqlite3");
+for (const model of [
+    Tongue,
+    TonguePair,
+    Settings,
+    Sheet,
+    Question,
+    SheetQuestion,
+]) {
+    model.associate();
+}
 
-const sequelize = new Sequelize(dbOptions);
-
-export default sequelize;
+export { Tongue } from "./tongue";
+export { TonguePair } from "./tonguepair";
+export { Settings } from "./settings";
+export { Sheet } from "./sheet";
+export { Question } from "./question";
+export { SheetQuestion } from "./sheetquestion";

@@ -7,10 +7,10 @@ import {
     Model,
     NonAttribute,
 } from "sequelize";
-import sequelize from "./index";
-import Tongue from "./tongue";
+import sequelize from "./db-connection";
+import { Tongue } from "../models";
 
-class TonguePair extends Model<
+export class TonguePair extends Model<
     InferAttributes<TonguePair, { omit: "nativeTongue" | "studyingTongue" }>,
     InferCreationAttributes<
         TonguePair,
@@ -37,6 +37,17 @@ class TonguePair extends Model<
     async studyingTongue(): Promise<Tongue> {
         return Tongue.findOne({
             where: { id: this.studyingTongueId },
+        });
+    }
+
+    static associate() {
+        TonguePair.belongsTo(Tongue, {
+            foreignKey: "nativeTongueId",
+            as: "native",
+        });
+        TonguePair.belongsTo(Tongue, {
+            foreignKey: "studyingTongueId",
+            as: "studying",
         });
     }
 }
@@ -77,31 +88,3 @@ TonguePair.init(
         timestamps: true,
     },
 );
-
-Tongue.hasMany(TonguePair, {
-    foreignKey: "nativeTongueId",
-});
-Tongue.hasMany(TonguePair, {
-    foreignKey: "studyingTongueId",
-});
-TonguePair.belongsTo(Tongue, {
-    foreignKey: "nativeTongueId",
-    as: "native",
-});
-TonguePair.belongsTo(Tongue, {
-    foreignKey: "studyingTongueId",
-    as: "studying",
-});
-
-Tongue.belongsToMany(Tongue, {
-    through: TonguePair,
-    foreignKey: "nativeTongueId",
-    as: "studyingTongueId",
-});
-Tongue.belongsToMany(Tongue, {
-    through: TonguePair,
-    foreignKey: "studyingTongueId",
-    as: "nativeTongueId",
-});
-
-export default TonguePair;

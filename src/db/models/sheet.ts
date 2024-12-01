@@ -7,10 +7,10 @@ import {
     Model,
     NonAttribute,
 } from "sequelize";
-import sequelize from "./index";
-import TonguePair from "./tonguepair";
+import sequelize from "./db-connection";
+import { Question, SheetQuestion, TonguePair } from "../models";
 
-class Sheet extends Model<
+export class Sheet extends Model<
     InferAttributes<Sheet, { omit: "tonguePair" }>,
     InferCreationAttributes<Sheet, { omit: "tonguePair" }>
 > {
@@ -23,6 +23,22 @@ class Sheet extends Model<
 
     declare createdAt: CreationOptional<Date>;
     declare updatedAt: CreationOptional<Date>;
+
+    static associate() {
+        Sheet.hasMany(SheetQuestion, {
+            foreignKey: "sheetId",
+        });
+
+        Sheet.belongsTo(TonguePair, {
+            foreignKey: "tonguePairId",
+        });
+
+        Sheet.belongsToMany(Question, {
+            through: SheetQuestion,
+            foreignKey: "questionId",
+            as: "sheetId",
+        });
+    }
 }
 Sheet.init(
     {
@@ -54,5 +70,3 @@ Sheet.init(
         timestamps: true,
     },
 );
-
-export default Sheet;

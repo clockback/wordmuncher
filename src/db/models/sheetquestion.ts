@@ -7,12 +7,10 @@ import {
     Model,
     NonAttribute,
 } from "sequelize";
-import sequelize from "./index";
-import Sheet from "./sheet";
-import Question from "./question";
-import TonguePair from "./tonguepair";
+import sequelize from "./db-connection";
+import { Question, Sheet } from "../models";
 
-class SheetQuestion extends Model<
+export class SheetQuestion extends Model<
     InferAttributes<SheetQuestion, { omit: "sheet" | "question" }>,
     InferCreationAttributes<SheetQuestion, { omit: "sheet" | "question" }>
 > {
@@ -26,6 +24,15 @@ class SheetQuestion extends Model<
 
     declare createdAt: CreationOptional<Date>;
     declare updatedAt: CreationOptional<Date>;
+
+    static associate() {
+        SheetQuestion.belongsTo(Sheet, {
+            foreignKey: "sheetId",
+        });
+        SheetQuestion.belongsTo(Question, {
+            foreignKey: "questionId",
+        });
+    }
 }
 
 SheetQuestion.init(
@@ -62,40 +69,3 @@ SheetQuestion.init(
         timestamps: true,
     },
 );
-
-SheetQuestion.belongsTo(Sheet, {
-    foreignKey: "sheetId",
-});
-
-SheetQuestion.belongsTo(Question, {
-    foreignKey: "questionId",
-});
-
-Question.hasMany(SheetQuestion, {
-    foreignKey: "questionId",
-});
-
-Question.belongsTo(TonguePair, {
-    foreignKey: "tonguePairId",
-});
-
-Question.belongsToMany(Sheet, {
-    through: SheetQuestion,
-    foreignKey: "sheetId",
-    as: "questionId",
-});
-Sheet.hasMany(SheetQuestion, {
-    foreignKey: "sheetId",
-});
-
-Sheet.belongsTo(TonguePair, {
-    foreignKey: "tonguePairId",
-});
-
-Sheet.belongsToMany(Question, {
-    through: SheetQuestion,
-    foreignKey: "questionId",
-    as: "sheetId",
-});
-
-export default SheetQuestion;
