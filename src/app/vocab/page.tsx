@@ -2,7 +2,7 @@
 
 import { getSettings, setSettings } from "src/db/helpers/settings";
 import TongueSelector from "./components/tongueselector/tongueselector";
-import { Tongue, TonguePair } from "src/db/models";
+import { Tongue, TonguePair } from "@models";
 
 async function pickTongue(tongueId: number): Promise<TonguePair> {
     "use server";
