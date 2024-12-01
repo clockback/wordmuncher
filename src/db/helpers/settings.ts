@@ -1,6 +1,6 @@
 import { cache } from "react";
 
-import { Settings, TonguePair } from "src/db/models";
+import { Settings, TonguePair } from "@models";
 
 // Possible options that can be passed to setSettings.
 interface SettingsSetter {
