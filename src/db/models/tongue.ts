@@ -1,8 +1,8 @@
 import { Association, CreationOptional, DataTypes, Model } from "sequelize";
-import sequelize from "./index";
-import TonguePair from "./tonguepair";
+import sequelize from "./db-connection";
+import { TonguePair } from "../models";
 
-class Tongue extends Model {
+export class Tongue extends Model {
     declare id: CreationOptional<number>;
     declare tongueName: string;
     declare flag: string;
@@ -14,6 +14,25 @@ class Tongue extends Model {
         TonguePairsFrom: Association<Tongue, TonguePair>;
         TonguePairsTo: Association<Tongue, TonguePair>;
     };
+
+    static associate() {
+        Tongue.hasMany(TonguePair, {
+            foreignKey: "nativeTongueId",
+        });
+        Tongue.hasMany(TonguePair, {
+            foreignKey: "studyingTongueId",
+        });
+        Tongue.belongsToMany(Tongue, {
+            through: TonguePair,
+            foreignKey: "nativeTongueId",
+            as: "studyingTongueId",
+        });
+        Tongue.belongsToMany(Tongue, {
+            through: TonguePair,
+            foreignKey: "studyingTongueId",
+            as: "nativeTongueId",
+        });
+    }
 }
 
 Tongue.init(
@@ -39,5 +58,3 @@ Tongue.init(
         timestamps: true,
     },
 );
-
-export default Tongue;

@@ -7,10 +7,10 @@ import {
     Model,
     NonAttribute,
 } from "sequelize";
-import sequelize from "./index";
-import TonguePair from "./tonguepair";
+import sequelize from "./db-connection";
+import { TonguePair } from "../models";
 
-class Settings extends Model<
+export class Settings extends Model<
     InferAttributes<Settings, { omit: "tonguePair" }>,
     InferCreationAttributes<Settings, { omit: "tonguePair" }>
 > {
@@ -21,6 +21,13 @@ class Settings extends Model<
 
     declare createdAt: CreationOptional<Date>;
     declare updatedAt: CreationOptional<Date>;
+
+    static associate() {
+        Settings.belongsTo(TonguePair, {
+            foreignKey: "tonguePairId",
+            as: "tonguePair",
+        });
+    }
 }
 
 Settings.init(
@@ -48,10 +55,3 @@ Settings.init(
         timestamps: true,
     },
 );
-
-Settings.belongsTo(TonguePair, {
-    foreignKey: "tonguePairId",
-    as: "tonguePair",
-});
-
-export default Settings;
