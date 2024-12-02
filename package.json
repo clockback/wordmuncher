@@ -13,6 +13,8 @@
         "seed:create": "npx sequelize-cli seed:generate",
         "seed": "npx sequelize-cli db:seed:all",
         "seed:rollback": "npx sequelize-cli db:seed:undo:all",
+        "seed-dev": "npx sequelize-cli --seeders-path src/db/seeders/dev-only db:seed:all",
+        "seed-dev:rollback": "npx sequelize-cli --seeders-path src/db/seeders/dev-only db:seed:undo:all",
         "spellcheck": "npx cspell \"**\""
     },
     "dependencies": {
