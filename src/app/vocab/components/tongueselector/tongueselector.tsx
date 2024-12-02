@@ -64,10 +64,10 @@ export default function TongueSelector({
             <Button onClick={() => setPopupVisible(true)}>
                 Change language
             </Button>
-            {popup}
             <SheetsList
                 sheets={currentTongue ? currentTongue.sheets : []}
             ></SheetsList>
+            {popup}
         </>
     );
 }
