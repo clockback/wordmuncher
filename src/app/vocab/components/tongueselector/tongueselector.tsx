@@ -5,6 +5,7 @@ import { useState } from "react";
 import styles from "./tongueselector.module.css";
 import TonguesPopup from "../tonguespopup/tonguespopup";
 import Button from "@components/button/button";
+import Flag from "@components/flag/flag";
 import SheetsList from "../sheetslist/sheetslist";
 
 interface TongueSelectorProps {
@@ -54,7 +55,7 @@ export default function TongueSelector({
         flag = null;
     } else {
         learnLanguageText = `Learning ${currentTongue.tongueName}!`;
-        flag = <div className={styles.learningflag}>{currentTongue.flag}</div>;
+        flag = <Flag flag={currentTongue.flag}></Flag>;
     }
 
     return (
