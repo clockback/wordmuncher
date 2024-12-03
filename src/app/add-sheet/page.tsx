@@ -1,10 +1,9 @@
-import Button from "@components/button/button";
 import Flag from "@components/flag/flag";
 
 import { Sheet } from "@models";
 
 import styles from "./add-sheet.module.css";
-import SheetNameInput from "./components/sheet-name-input/sheet-name-input";
+import AddSheetForm from "./components/add-sheet-form/add-sheet-form";
 import { getSettings } from "src/db/helpers/settings";
 
 async function validateSheetName(sheetName: string): Promise<boolean> {
@@ -31,10 +30,7 @@ export default async function Page() {
                 New sheet for {studying.tongueName}...
             </div>
             <Flag flag={studying.flag}></Flag>
-            <div className={styles.padinput}>
-                <SheetNameInput onChange={validateSheetName}></SheetNameInput>
-            </div>
-            <Button>Create</Button>
+            <AddSheetForm validateSheetName={validateSheetName} />
         </div>
     );
 }

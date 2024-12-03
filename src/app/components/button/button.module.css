@@ -8,11 +8,22 @@
     display: block;
     margin-inline: auto;
     border-radius: 10px;
-    cursor: pointer;
-    border: 2px solid rgb(var(--colour-pearl));
+    border: 2px solid;
     box-shadow: 0 3px rgb(var(--colour-pearl));
     text-align: center;
     text-decoration: none;
+}
+
+button.centre:enabled {
+    cursor: pointer;
+    border-color: rgb(var(--colour-pearl));
+    box-shadow: 0 3px rgb(var(--colour-pearl));
+}
+
+button.centre:disabled {
+    cursor: not-allowed;
+    border-color: rgb(var(--colour-pearl-hover));
+    box-shadow: 0 3px rgb(var(--colour-pearl-hover));
 }
 
 button.centre {
