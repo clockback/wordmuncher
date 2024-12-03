@@ -3,3 +3,7 @@ div.header {
     font-size: 32px;
     padding-block: 10px;
 }
+
+.buttonVerticalMargin {
+    margin-block: 20px;
+}

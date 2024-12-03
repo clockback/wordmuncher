@@ -6,6 +6,9 @@ interface SheetsListProps {
 }
 
 export default function SheetsList({ sheets }: SheetsListProps) {
+    if (sheets.length == 0) {
+        return null;
+    }
     const sheetElements = [];
     for (let sheet of sheets) {
         sheetElements.push(
