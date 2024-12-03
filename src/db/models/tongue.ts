@@ -1,6 +1,8 @@
 import { Association, CreationOptional, DataTypes, Model } from "sequelize";
-import sequelize from "./db-connection";
+
 import { TonguePair } from "@models";
+
+import sequelize from "./db-connection";
 
 export class Tongue extends Model {
     declare id: CreationOptional<number>;

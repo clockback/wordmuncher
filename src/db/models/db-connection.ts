@@ -1,10 +1,10 @@
 import { Sequelize } from "sequelize";
 import { SequelizeOptions } from "sequelize-typescript";
+
 import { options } from "../config/config.mjs";
 
-const dbOptions = <SequelizeOptions>options;
-dbOptions.dialectModule = require("sqlite3");
+const dbOptions = options;
 
-const sequelize = new Sequelize(dbOptions);
+const sequelize = new Sequelize(dbOptions as SequelizeOptions);
 
 export default sequelize;

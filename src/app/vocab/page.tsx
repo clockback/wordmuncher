@@ -1,9 +1,10 @@
 "use server";
 
-import { getSettings, setSettings } from "src/db/helpers/settings";
-import TongueSelector from "./components/tongueselector/tongueselector";
 import { Tongue, TonguePair } from "@models";
+
+import TongueSelector from "./components/tongueselector/tongueselector";
 import styles from "./vocab.module.css";
+import { getSettings, setSettings } from "src/db/helpers/settings";
 
 async function pickTongue(tongueId: number): Promise<TonguePair> {
     "use server";

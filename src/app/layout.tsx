@@ -1,8 +1,8 @@
-import "./global.css";
-import styles from "./app.module.css";
-import Logo from "src/app/assets/images/logo.svg";
-
 import { Space_Grotesk } from "next/font/google";
+
+import styles from "./app.module.css";
+import "./global.css";
+import Logo from "src/app/assets/images/logo.svg";
 
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"] });
 

@@ -7,8 +7,10 @@ import {
     Model,
     NonAttribute,
 } from "sequelize";
-import sequelize from "./db-connection";
+
 import { Sheet, SheetQuestion, TonguePair } from "@models";
+
+import sequelize from "./db-connection";
 
 export class Question extends Model<
     InferAttributes<Question, { omit: "tonguePair" }>,
