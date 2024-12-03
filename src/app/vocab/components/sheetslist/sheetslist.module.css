@@ -1,5 +1,5 @@
 .tablecontainer {
-    margin-top: 30px;
+    margin-block: 30px;
     max-height: 500px;
     overflow-y: scroll;
     overflow-x: hidden;

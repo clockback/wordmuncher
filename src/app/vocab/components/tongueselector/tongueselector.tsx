@@ -49,10 +49,9 @@ export default function TongueSelector({
     ) : null;
 
     let learnLanguageText: string;
-    let flag: null | JSX.Element;
+    let flag: JSX.Element | null = null;
     if (currentTongue === null) {
         learnLanguageText = "What language do you want to learn?";
-        flag = null;
     } else {
         learnLanguageText = `Learning ${currentTongue.tongueName}!`;
         flag = <Flag flag={currentTongue.flag}></Flag>;
@@ -62,12 +61,17 @@ export default function TongueSelector({
         <>
             <div className={styles.header}>{learnLanguageText}</div>
             {flag}
-            <Button onClick={() => setPopupVisible(true)}>
-                Change language
-            </Button>
+            <div className={styles.buttonVerticalMargin}>
+                <Button onClick={() => setPopupVisible(true)}>
+                    Change language
+                </Button>
+            </div>
             <SheetsList
                 sheets={currentTongue ? currentTongue.sheets : []}
             ></SheetsList>
+            <div className={styles.buttonVerticalMargin}>
+                <Button href="/add-sheet">Add sheet</Button>
+            </div>
             {popup}
         </>
     );
