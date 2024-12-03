@@ -7,8 +7,10 @@ import {
     Model,
     NonAttribute,
 } from "sequelize";
-import sequelize from "./db-connection";
+
 import { TonguePair } from "@models";
+
+import sequelize from "./db-connection";
 
 export class Settings extends Model<
     InferAttributes<Settings, { omit: "tonguePair" }>,

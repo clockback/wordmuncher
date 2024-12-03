@@ -1,9 +1,9 @@
-import { Tongue } from "./tongue";
-import { TonguePair } from "./tonguepair";
+import { Question } from "./question";
 import { Settings } from "./settings";
 import { Sheet } from "./sheet";
-import { Question } from "./question";
 import { SheetQuestion } from "./sheetquestion";
+import { Tongue } from "./tongue";
+import { TonguePair } from "./tonguepair";
 
 for (const model of [
     Tongue,
