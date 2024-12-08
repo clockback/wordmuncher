@@ -4,8 +4,10 @@ export const options = {
     logging: false,
 };
 
-export default {
+const allOptions = {
     development: options,
     test: options,
     production: options,
 };
+
+export default allOptions;
