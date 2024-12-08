@@ -10,9 +10,11 @@ import { getSettings } from "src/db/helpers/settings";
 async function validateSheetName(sheetName: string): Promise<boolean> {
     "use server";
 
+    const settings = await getSettings();
     const sheet = await Sheet.findOne({
         where: {
             sheetName: sheetName,
+            tonguePairId: settings.tonguePairId,
         },
     });
 
