@@ -71,5 +71,11 @@ Sheet.init(
         sequelize,
         modelName: "Sheet",
         timestamps: true,
+        indexes: [
+            {
+                unique: true,
+                fields: ["sheetName", "tonguePairId"],
+            },
+        ],
     },
 );
