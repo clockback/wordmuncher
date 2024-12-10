@@ -26,6 +26,12 @@ export class Sheet extends Model<
     declare createdAt: CreationOptional<Date>;
     declare updatedAt: CreationOptional<Date>;
 
+    async getQuestions(): Promise<Question[]> {
+        return Question.findAll({
+            include: [{ model: SheetQuestion, where: { sheetId: this.id } }],
+        });
+    }
+
     static associate() {
         Sheet.hasMany(SheetQuestion, {
             foreignKey: "sheetId",
