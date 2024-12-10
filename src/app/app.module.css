@@ -37,6 +37,7 @@ a.inline {
 
 div.buttonpadding {
     padding-block: 10px;
+    text-align: center;
 }
 
 svg.padded {

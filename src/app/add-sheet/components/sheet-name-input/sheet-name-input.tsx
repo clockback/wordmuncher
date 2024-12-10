@@ -43,12 +43,14 @@ export default function SheetNameInput({
                 type="text"
             ></input>
             {warning}
-            <Button
-                type="submit"
-                disabled={sheetInputEmpty || sheetFound || pending}
-            >
-                Create
-            </Button>
+            <div className={styles.centrebutton}>
+                <Button
+                    type="submit"
+                    disabled={sheetInputEmpty || sheetFound || pending}
+                >
+                    Create
+                </Button>
+            </div>
         </>
     );
 }
