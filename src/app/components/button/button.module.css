@@ -6,7 +6,7 @@
     font-weight: bold;
     font-size: 20px;
     display: inline-block;
-    margin-inline: auto;
+    margin-inline: 5px;
     border-radius: 10px;
     border: 2px solid;
     box-shadow: 0 3px rgb(var(--colour-pearl));
