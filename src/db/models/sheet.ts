@@ -8,7 +8,7 @@ import {
     NonAttribute,
 } from "sequelize";
 
-import { Question, SheetQuestion, TonguePair } from "@models";
+import { Answer, Question, SheetQuestion, TonguePair } from "@models";
 
 import sequelize from "./db-connection";
 
@@ -28,7 +28,14 @@ export class Sheet extends Model<
 
     async getQuestions(): Promise<Question[]> {
         return Question.findAll({
-            include: [{ model: SheetQuestion, where: { sheetId: this.id } }],
+            include: [
+                { model: SheetQuestion, where: { sheetId: this.id } },
+                {
+                    model: Answer,
+                    as: "answers",
+                    required: false,
+                },
+            ],
         });
     }
 
