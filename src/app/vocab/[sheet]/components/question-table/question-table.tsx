@@ -9,10 +9,19 @@ export default function QuestionTable({
 }) {
     const questionRows = [];
     for (let question of allQuestions) {
+        let mainAnswer = "";
+        if (question.answers) {
+            for (let answer of question.answers) {
+                if (answer.isMainAnswer) {
+                    mainAnswer = answer.answerText;
+                }
+            }
+        }
+
         questionRows.push(
             <tr key={question.id}>
                 <td>{question.questionText}</td>
-                <td>{question.answer}</td>
+                <td>{mainAnswer}</td>
             </tr>,
         );
     }

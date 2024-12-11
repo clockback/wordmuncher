@@ -8,7 +8,7 @@ import {
     NonAttribute,
 } from "sequelize";
 
-import { Sheet, SheetQuestion, TonguePair } from "@models";
+import { Answer, Sheet, SheetQuestion, TonguePair } from "@models";
 
 import sequelize from "./db-connection";
 
@@ -18,10 +18,11 @@ export class Question extends Model<
 > {
     declare id: number;
     declare questionText: string;
-    declare answer: string;
 
     declare tonguePairId: ForeignKey<TonguePair["id"]>;
     declare tonguePair: NonAttribute<TonguePair>;
+
+    declare answers?: NonAttribute<Answer[]>;
 
     declare createdAt: CreationOptional<Date>;
     declare updatedAt: CreationOptional<Date>;
@@ -40,6 +41,8 @@ export class Question extends Model<
             foreignKey: "sheetId",
             as: "questionId",
         });
+
+        Question.hasMany(Answer, { foreignKey: "questionId", as: "answers" });
     }
 }
 
@@ -51,10 +54,6 @@ Question.init(
             primaryKey: true,
         },
         questionText: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        answer: {
             type: DataTypes.STRING,
             allowNull: false,
         },
