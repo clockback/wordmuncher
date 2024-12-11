@@ -5,6 +5,37 @@
 Word Muncher is an open-source web-application to help you create and
 learn with vocabulary sheets.
 
+[//]: # "TODO v0.1.0: Remove notice of no releases."
+
+There are no releases yet of Word Muncher.
+
+## Development
+
+To install:
+
+```bash
+npm i
+```
+
+To run (at port 3000):
+
+```bash
+npm run dev
+```
+
+Quality checks:
+
+```bash
+npm run lint
+npm run spellcheck
+```
+
+Format:
+
+```bash
+npm run format
+```
+
 ## License
 
 Copyright © 2024 Elliot Paton-Simpson
