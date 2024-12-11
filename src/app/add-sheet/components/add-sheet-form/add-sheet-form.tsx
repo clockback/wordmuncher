@@ -17,7 +17,7 @@ export default function AddSheetForm({ validateSheetName }: AddSheetFormProps) {
     function addSheetHandleResponse(response: NextResponse) {
         response.json().then((contents) => {
             if (contents.success) {
-                router.push("/vocab");
+                router.push(`/vocab/${contents.sheetId}`);
             } else {
                 console.log("Failed to create sheet!");
                 setPending(false);

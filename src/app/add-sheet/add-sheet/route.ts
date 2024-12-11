@@ -8,18 +8,26 @@ import { getSettings } from "src/db/helpers/settings";
 export async function POST(request: NextRequest) {
     const settings = await getSettings();
     const proposedName = (await request.json()).proposedName;
+    let sheetId: number = -1;
     try {
-        await Sheet.create({
+        const sheet = await Sheet.create({
             sheetName: proposedName,
             tonguePairId: settings.tonguePairId,
         });
+        sheetId = sheet.id;
     } catch (err: unknown) {
         if (err instanceof UniqueConstraintError) {
-            return NextResponse.json({ success: false }, { status: 409 });
+            return NextResponse.json(
+                { success: false, sheetId: -1 },
+                { status: 409 },
+            );
         } else {
             throw err;
         }
     }
 
-    return NextResponse.json({ success: true }, { status: 200 });
+    return NextResponse.json(
+        { success: true, sheetId: sheetId },
+        { status: 200 },
+    );
 }
