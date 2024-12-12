@@ -12,6 +12,7 @@
     box-shadow: 0 3px rgb(var(--colour-pearl));
     text-align: center;
     text-decoration: none;
+    font-family: inherit;
 }
 
 button.centre:enabled {
