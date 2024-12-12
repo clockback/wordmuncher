@@ -51,11 +51,17 @@ export default function TongueSelector({
 
     let learnLanguageText: string;
     let flag: JSX.Element | null = null;
+    let addSheetButton: JSX.Element | null = null;
     if (currentTongue === null) {
         learnLanguageText = "What language do you want to learn?";
     } else {
         learnLanguageText = `Learning ${currentTongue.tongueName}!`;
         flag = <Flag flag={currentTongue.flag}></Flag>;
+        addSheetButton = (
+            <div className={styles.buttonVerticalMargin}>
+                <Button href="/add-sheet">Add sheet</Button>
+            </div>
+        );
     }
 
     return (
@@ -70,9 +76,7 @@ export default function TongueSelector({
             <SheetsList
                 sheets={currentTongue ? currentTongue.sheets : []}
             ></SheetsList>
-            <div className={styles.buttonVerticalMargin}>
-                <Button href="/add-sheet">Add sheet</Button>
-            </div>
+            {addSheetButton}
             {popup}
         </>
     );
