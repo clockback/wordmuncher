@@ -1,12 +1,8 @@
 import { notFound } from "next/navigation";
 
-import Button from "@components/button/button";
-
 import { Sheet } from "@models";
 
-import EditSheetHeader from "./components/edit-sheet-header/edit-sheet-header";
-import QuestionTable from "./components/question-table/question-table";
-import styles from "./edit-sheet.module.css";
+import SheetEditor from "./components/sheet-editor/sheet-editor";
 
 export default async function Page({
     params,
@@ -24,26 +20,15 @@ export default async function Page({
     }
 
     const questions = await sheet.getQuestions();
+    const questionsJson = [];
+    for (let question of questions) {
+        questionsJson.push(question.toJSON());
+    }
 
     return (
-        <>
-            <EditSheetHeader>{sheet.sheetName}</EditSheetHeader>
-            <div className={styles.allcolumns}>
-                <div className={styles.lefthalf}>
-                    <div className={styles.pad}>
-                        <QuestionTable allQuestions={questions}></QuestionTable>
-                    </div>
-                </div>
-                <div className={styles.righthalf}>
-                    <div className={styles.pad}></div>
-                </div>
-            </div>
-            <div className={styles.bottombuttons}>
-                <div className={styles.alignbuttons}>
-                    <Button>Delete</Button>
-                    <Button href="/vocab">Back</Button>
-                </div>
-            </div>
-        </>
+        <SheetEditor
+            sheet={sheet.toJSON()}
+            questions={questionsJson}
+        ></SheetEditor>
     );
 }

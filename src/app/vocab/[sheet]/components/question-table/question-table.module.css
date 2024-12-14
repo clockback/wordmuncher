@@ -10,6 +10,7 @@
 
 .questiontable > tbody > tr > td {
     padding-inline: 10px;
+    cursor: pointer;
 }
 
 .questiontable > tbody > tr:nth-child(even) {
