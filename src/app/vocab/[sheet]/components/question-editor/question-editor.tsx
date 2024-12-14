@@ -1,30 +1,32 @@
 "use client";
 
-import { JSX, useState } from "react";
+import { JSX } from "react";
 
 import Button from "@components/button/button";
 
+import { Question } from "@models";
+
 import styles from "./question-editor.module.css";
 
-interface QuestionJSONProps {
-    questionText: string;
-    id: number;
-    answers: { id: number; answerText: string; isMainAnswer: boolean }[];
-}
-
 interface QuestionEditorProps {
-    question: QuestionJSONProps;
+    question: Question;
     answerEntryValue: string;
     setAnswerEntryValue: (value: string) => void;
+    pending: boolean;
+    clickSaveQuestion: (formData: FormData) => void;
+    savePossible: boolean;
+    setSavePossible: (value: boolean) => void;
 }
 
 export default function QuestionEditor({
     question,
     answerEntryValue,
     setAnswerEntryValue,
+    pending,
+    clickSaveQuestion,
+    savePossible,
+    setSavePossible,
 }: QuestionEditorProps | null) {
-    const [savePossible, setSavePossible] = useState(false);
-
     if (question === null) {
         return <></>;
     }
@@ -40,6 +42,8 @@ export default function QuestionEditor({
             className={styles.answerentry}
             value={answerEntryValue}
             onChange={onChangeAnswer}
+            name="main-answer"
+            disabled={pending}
         ></input>
     );
 
@@ -65,7 +69,7 @@ export default function QuestionEditor({
     }
 
     return (
-        <form>
+        <form action={clickSaveQuestion}>
             <h1>{question.questionText}</h1>
             <h2>Answer</h2>
             {answerEntry}
@@ -74,7 +78,9 @@ export default function QuestionEditor({
                 <tbody>{otherAnswerRows}</tbody>
             </table>
             <div className={styles.padsavebutton}>
-                <Button disabled={!savePossible || true}>Save question</Button>
+                <Button disabled={!savePossible || pending}>
+                    Save question
+                </Button>
             </div>
         </form>
     );

@@ -9,20 +9,20 @@ interface QuestionJSONProps {
 }
 
 interface QuestionTableProps {
-    allQuestions: QuestionJSONProps[];
-    onClickQuestion: (question: QuestionJSONProps) => void;
+    allQuestions: Question[];
+    onClickQuestion: (question: Question) => void;
+    selectedQuestionId: number;
+    promptSaveOnNavigate: boolean;
 }
 
 export default function QuestionTable({
     allQuestions,
     onClickQuestion,
+    selectedQuestionId,
+    promptSaveOnNavigate,
 }: QuestionTableProps) {
     const questionRows = [];
     for (let question of allQuestions) {
-        const selectQuestion = () => {
-            onClickQuestion(question);
-        };
-
         let mainAnswer = "";
         if (question.answers) {
             for (let answer of question.answers) {
@@ -32,8 +32,18 @@ export default function QuestionTable({
             }
         }
 
+        const questionIsSelected = question.id == selectedQuestionId;
+        const questionModified = questionIsSelected && promptSaveOnNavigate;
+        const rowClass = questionModified ? styles.selected : null;
+
+        const selectQuestion = () => {
+            if (!questionIsSelected) {
+                onClickQuestion(question);
+            }
+        };
+
         questionRows.push(
-            <tr key={question.id} onClick={selectQuestion}>
+            <tr className={rowClass} key={question.id} onClick={selectQuestion}>
                 <td>{question.questionText}</td>
                 <td>{mainAnswer}</td>
             </tr>,
