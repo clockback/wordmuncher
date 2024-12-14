@@ -54,10 +54,7 @@ export default function QuestionEditor({
         }
         otherAnswerRows.push(
             <tr key={answer.id}>
-                <td className={styles.otheranswer}>
-                    first answer first answer first answer first answer first
-                    answer first answer first answer
-                </td>
+                <td className={styles.otheranswer}>{answer.answerText}</td>
                 <td
                     className={styles.promoteanswer}
                     title="Promote to main answer"
