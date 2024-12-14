@@ -24,3 +24,7 @@
 .questiontable tr {
     padding-inline: 10px;
 }
+
+.selected {
+    color: orangered;
+}
