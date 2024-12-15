@@ -1,33 +1,34 @@
 "use client";
 
-import { JSX } from "react";
+import { NextResponse } from "next/server";
+import { JSX, useContext } from "react";
 
 import Button from "@components/button/button";
 
 import { Question } from "@models";
 
+import editSheetContext from "../../context";
 import styles from "./question-editor.module.css";
 
-interface QuestionEditorProps {
-    question: Question;
-    answerEntryValue: string;
-    setAnswerEntryValue: (value: string) => void;
-    pending: boolean;
-    clickSaveQuestion: (formData: FormData) => void;
-    savePossible: boolean;
-    setSavePossible: (value: boolean) => void;
+interface clickSaveQuestionResponseProps {
+    questionId: number;
+    mainAnswer: string;
 }
 
-export default function QuestionEditor({
-    question,
-    answerEntryValue,
-    setAnswerEntryValue,
-    pending,
-    clickSaveQuestion,
-    savePossible,
-    setSavePossible,
-}: QuestionEditorProps | null) {
-    if (question === null) {
+export default function QuestionEditor() {
+    const {
+        allQuestions,
+        answerEntryValue,
+        pending,
+        setAnswerEntryValue,
+        savePossible,
+        selectedQuestion,
+        setAllQuestions,
+        setPending,
+        setSavePossible,
+    } = useContext(editSheetContext);
+
+    if (selectedQuestion === null) {
         return <></>;
     }
 
@@ -47,8 +48,47 @@ export default function QuestionEditor({
         ></input>
     );
 
+    function updateQuestion(
+        question: Question,
+        contents: clickSaveQuestionResponseProps,
+    ) {
+        for (let answer of question.answers) {
+            if (answer.isMainAnswer) {
+                answer.answerText = contents.mainAnswer;
+            }
+        }
+    }
+
+    function clickSaveQuestionHandleResponse(response: NextResponse) {
+        response.json().then((contents) => {
+            const questionId = contents.questionId;
+            const updatedQuestions = structuredClone(allQuestions);
+            for (let question of updatedQuestions) {
+                if (question.id == questionId) {
+                    updateQuestion(question, contents);
+                }
+            }
+            setAllQuestions(updatedQuestions);
+            setSavePossible(false);
+            setPending(false);
+        });
+    }
+
+    function clickSaveQuestion(formData: FormData) {
+        setPending(true);
+        const proposedMainAnswer = formData.get("main-answer") as string;
+        fetch(`/vocab/update-question`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                id: selectedQuestion.id,
+                proposedMainAnswer: proposedMainAnswer.trim(),
+            }),
+        }).then(clickSaveQuestionHandleResponse);
+    }
+
     const otherAnswerRows = [];
-    for (let answer of question.answers) {
+    for (let answer of selectedQuestion.answers) {
         if (answer.isMainAnswer) {
             continue;
         }
@@ -67,7 +107,7 @@ export default function QuestionEditor({
 
     return (
         <form action={clickSaveQuestion}>
-            <h1>{question.questionText}</h1>
+            <h1>{selectedQuestion.questionText}</h1>
             <h2>Answer</h2>
             {answerEntry}
             <h3>Other accepted answers:</h3>

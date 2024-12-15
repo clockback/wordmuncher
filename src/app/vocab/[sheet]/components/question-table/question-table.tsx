@@ -1,27 +1,37 @@
+import { useContext } from "react";
+
 import { Question } from "@models";
 
+import editSheetContext from "../../context";
 import styles from "./question-table.module.css";
 
-interface QuestionJSONProps {
-    questionText: string;
-    id: number;
-    answers: { answerText: string; isMainAnswer: boolean }[];
-}
-
-interface QuestionTableProps {
-    allQuestions: Question[];
-    onClickQuestion: (question: Question) => void;
-    selectedQuestionId: number;
-    promptSaveOnNavigate: boolean;
-}
-
-export default function QuestionTable({
-    allQuestions,
-    onClickQuestion,
-    selectedQuestionId,
-    promptSaveOnNavigate,
-}: QuestionTableProps) {
+export default function QuestionTable() {
     const questionRows = [];
+    const {
+        allQuestions,
+        savePossible,
+        selectedQuestion,
+        setAnswerEntryValue,
+        setSavePossible,
+        setSelectedQuestion,
+    } = useContext(editSheetContext);
+
+    function selectQuestion(question: Question) {
+        setSelectedQuestion(question);
+        setSavePossible(false);
+
+        let mainAnswer: string | null = null;
+        for (let answer of question.answers) {
+            if (answer.isMainAnswer) {
+                mainAnswer = answer.answerText;
+                break;
+            }
+        }
+        if (mainAnswer !== null) {
+            setAnswerEntryValue(mainAnswer);
+        }
+    }
+
     for (let question of allQuestions) {
         let mainAnswer = "";
         if (question.answers) {
@@ -32,18 +42,23 @@ export default function QuestionTable({
             }
         }
 
-        const questionIsSelected = question.id == selectedQuestionId;
-        const questionModified = questionIsSelected && promptSaveOnNavigate;
+        const questionIsSelected =
+            selectedQuestion && question.id == selectedQuestion.id;
+        const questionModified = questionIsSelected && savePossible;
         const rowClass = questionModified ? styles.selected : null;
 
-        const selectQuestion = () => {
+        const onClickQuestion = () => {
             if (!questionIsSelected) {
-                onClickQuestion(question);
+                selectQuestion(question);
             }
         };
 
         questionRows.push(
-            <tr className={rowClass} key={question.id} onClick={selectQuestion}>
+            <tr
+                className={rowClass}
+                key={question.id}
+                onClick={onClickQuestion}
+            >
                 <td>{question.questionText}</td>
                 <td>{mainAnswer}</td>
             </tr>,
