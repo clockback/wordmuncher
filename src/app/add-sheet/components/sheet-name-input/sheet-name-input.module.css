@@ -6,6 +6,7 @@
     background-color: rgb(var(--colour-pearl));
     padding: 5px;
     margin-block: 10px 10px;
+    font-family: inherit;
 }
 
 .warning {
