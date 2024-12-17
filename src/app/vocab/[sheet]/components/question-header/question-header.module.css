@@ -1,0 +1,14 @@
+.questionheader {
+    cursor: pointer;
+    font-size: 40px;
+}
+
+.questionheader:hover {
+    background-color: rgb(var(--colour-dark-charcoal));
+}
+
+.questioninput {
+    font-size: 40px;
+    width: 100%;
+    box-sizing: border-box;
+}

@@ -12,13 +12,17 @@ export default function QuestionTable() {
         savePossible,
         selectedQuestion,
         setAnswerEntryValue,
+        setIsEditingQuestionText,
         setSavePossible,
+        setProposedQuestionText,
         setSelectedQuestion,
     } = useContext(editSheetContext);
 
     function selectQuestion(question: Question) {
         setSelectedQuestion(question);
         setSavePossible(false);
+        setIsEditingQuestionText(false);
+        setProposedQuestionText(question.questionText);
 
         let mainAnswer: string | null = null;
         for (let answer of question.answers) {
