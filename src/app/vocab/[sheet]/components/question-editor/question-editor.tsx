@@ -8,6 +8,7 @@ import Button from "@components/button/button";
 import { Question } from "@models";
 
 import editSheetContext from "../../context";
+import OtherAnswersTable from "../other-answers-table/other-answers-table";
 import QuestionHeader from "../question-header/question-header";
 import styles from "./question-editor.module.css";
 
@@ -98,33 +99,13 @@ export default function QuestionEditor() {
         }).then(clickSaveQuestionHandleResponse);
     }
 
-    const otherAnswerRows = [];
-    for (let answer of selectedQuestion.answers) {
-        if (answer.isMainAnswer) {
-            continue;
-        }
-        otherAnswerRows.push(
-            <tr key={answer.id}>
-                <td className={styles.otheranswer}>{answer.answerText}</td>
-                <td
-                    className={styles.promoteanswer}
-                    title="Promote to main answer"
-                >
-                    ⤴
-                </td>
-            </tr>,
-        );
-    }
-
     return (
         <form action={clickSaveQuestion}>
             <QuestionHeader></QuestionHeader>
             <h2>Answer</h2>
             {answerEntry}
             <h3>Other accepted answers:</h3>
-            <table className={styles.otheranswerstable}>
-                <tbody>{otherAnswerRows}</tbody>
-            </table>
+            <OtherAnswersTable></OtherAnswersTable>
             <div className={styles.padsavebutton}>
                 <Button
                     disabled={!savePossible || pending || !questionFormValid}
