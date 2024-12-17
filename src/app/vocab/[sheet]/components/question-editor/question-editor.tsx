@@ -8,11 +8,13 @@ import Button from "@components/button/button";
 import { Question } from "@models";
 
 import editSheetContext from "../../context";
+import QuestionHeader from "../question-header/question-header";
 import styles from "./question-editor.module.css";
 
 interface clickSaveQuestionResponseProps {
     questionId: number;
     mainAnswer: string;
+    questionText: string;
 }
 
 export default function QuestionEditor() {
@@ -20,11 +22,15 @@ export default function QuestionEditor() {
         allQuestions,
         answerEntryValue,
         pending,
+        proposedQuestionText,
+        questionFormValid,
         setAnswerEntryValue,
         savePossible,
         selectedQuestion,
         setAllQuestions,
+        setIsEditingQuestionText,
         setPending,
+        setQuestionFormValid,
         setSavePossible,
     } = useContext(editSheetContext);
 
@@ -35,6 +41,7 @@ export default function QuestionEditor() {
     let answerEntry: JSX.Element | null = null;
     const onChangeAnswer = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSavePossible(true);
+        setQuestionFormValid(e.target.value.length > 0);
         setAnswerEntryValue(e.target.value);
     };
 
@@ -52,6 +59,7 @@ export default function QuestionEditor() {
         question: Question,
         contents: clickSaveQuestionResponseProps,
     ) {
+        question.questionText = contents.questionText;
         for (let answer of question.answers) {
             if (answer.isMainAnswer) {
                 answer.answerText = contents.mainAnswer;
@@ -76,12 +84,15 @@ export default function QuestionEditor() {
 
     function clickSaveQuestion(formData: FormData) {
         setPending(true);
+        setIsEditingQuestionText(false);
+
         const proposedMainAnswer = formData.get("main-answer") as string;
         fetch(`/vocab/update-question`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 id: selectedQuestion.id,
+                proposedQuestionText: proposedQuestionText.trim(),
                 proposedMainAnswer: proposedMainAnswer.trim(),
             }),
         }).then(clickSaveQuestionHandleResponse);
@@ -107,7 +118,7 @@ export default function QuestionEditor() {
 
     return (
         <form action={clickSaveQuestion}>
-            <h1>{selectedQuestion.questionText}</h1>
+            <QuestionHeader></QuestionHeader>
             <h2>Answer</h2>
             {answerEntry}
             <h3>Other accepted answers:</h3>
@@ -115,7 +126,9 @@ export default function QuestionEditor() {
                 <tbody>{otherAnswerRows}</tbody>
             </table>
             <div className={styles.padsavebutton}>
-                <Button disabled={!savePossible || pending}>
+                <Button
+                    disabled={!savePossible || pending || !questionFormValid}
+                >
                     Save question
                 </Button>
             </div>
