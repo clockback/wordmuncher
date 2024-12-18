@@ -28,10 +28,12 @@ export default function SheetEditor({ sheet, questions }: SheetEditorProps) {
     const [questionFormValid, setQuestionFormValid] = useState(true);
     const [otherAnswers, setOtherAnswers] = useState([]);
     const [isAddingOtherAnswer, setIsAddingOtherAnswer] = useState(false);
+    const [editingOtherAnswerI, setEditingOtherAnswerI] = useState(null);
 
     const context = {
         allQuestions,
         answerEntryValue,
+        editingOtherAnswerI,
         isAddingOtherAnswer,
         isEditingQuestionText,
         otherAnswers,
@@ -42,6 +44,7 @@ export default function SheetEditor({ sheet, questions }: SheetEditorProps) {
         savePossible,
         selectedQuestion,
         setAllQuestions,
+        setEditingOtherAnswerI,
         setIsAddingOtherAnswer,
         setIsEditingQuestionText,
         setOtherAnswers,
