@@ -30,7 +30,7 @@ export default function AddOtherAnswer() {
         }
 
         const newOtherAnswers: string[] = Object.assign([], otherAnswers);
-        newOtherAnswers.push(currentOtherAnswer);
+        newOtherAnswers.push(currentOtherAnswer.trim());
         setOtherAnswers(newOtherAnswers);
     }
 
