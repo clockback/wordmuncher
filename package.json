@@ -15,7 +15,7 @@
         "seed:rollback": "sequelize-cli db:seed:undo:all",
         "seed-dev": "sequelize-cli --seeders-path src/db/seeders/dev-only db:seed:all",
         "seed-dev:rollback": "sequelize-cli --seeders-path src/db/seeders/dev-only db:seed:undo:all",
-        "spellcheck": "cspell \"**\""
+        "spellcheck": "cspell --quiet \"**\""
     },
     "dependencies": {
         "next": "^15.0.4",
