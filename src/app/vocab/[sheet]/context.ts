@@ -5,6 +5,7 @@ import { Question } from "@models";
 interface EditSheetContextType {
     allQuestions: Question[];
     answerEntryValue: string;
+    isAddingOtherAnswer: boolean;
     isEditingQuestionText: boolean;
     otherAnswers: string[];
     pending: boolean;
@@ -14,6 +15,7 @@ interface EditSheetContextType {
     savePossible: boolean;
     selectedQuestion: Question;
     setAllQuestions: (value: Question[]) => void;
+    setIsAddingOtherAnswer: (value: boolean) => void;
     setIsEditingQuestionText: (value: boolean) => void;
     setOtherAnswers: (value: string[]) => void;
     setPending: (value: boolean) => void;

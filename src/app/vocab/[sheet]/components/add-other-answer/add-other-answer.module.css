@@ -1,0 +1,13 @@
+.addotheranswer {
+    padding-inline: 10px;
+    font-weight: bold;
+    text-align: center;
+    user-select: none;
+}
+
+.addotheranswerinput {
+    width: 100%;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: 18px;
+}
