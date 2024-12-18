@@ -26,11 +26,13 @@ export default function SheetEditor({ sheet, questions }: SheetEditorProps) {
     const [proposedQuestionText, setProposedQuestionText] = useState("");
     const [isEditingQuestionText, setIsEditingQuestionText] = useState(false);
     const [questionFormValid, setQuestionFormValid] = useState(true);
+    const [otherAnswers, setOtherAnswers] = useState([]);
 
     const context = {
         allQuestions,
         answerEntryValue,
         isEditingQuestionText,
+        otherAnswers,
         pending,
         proposedQuestionText,
         questionFormValid,
@@ -39,6 +41,7 @@ export default function SheetEditor({ sheet, questions }: SheetEditorProps) {
         selectedQuestion,
         setAllQuestions,
         setIsEditingQuestionText,
+        setOtherAnswers,
         setPending,
         setProposedQuestionText,
         setQuestionFormValid,

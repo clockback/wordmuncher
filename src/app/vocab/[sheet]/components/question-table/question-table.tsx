@@ -13,8 +13,9 @@ export default function QuestionTable() {
         selectedQuestion,
         setAnswerEntryValue,
         setIsEditingQuestionText,
-        setSavePossible,
+        setOtherAnswers,
         setProposedQuestionText,
+        setSavePossible,
         setSelectedQuestion,
     } = useContext(editSheetContext);
 
@@ -25,15 +26,19 @@ export default function QuestionTable() {
         setProposedQuestionText(question.questionText);
 
         let mainAnswer: string | null = null;
+        const otherAnswers: string[] = [];
+
         for (let answer of question.answers) {
             if (answer.isMainAnswer) {
                 mainAnswer = answer.answerText;
-                break;
+            } else {
+                otherAnswers.push(answer.answerText);
             }
         }
         if (mainAnswer !== null) {
             setAnswerEntryValue(mainAnswer);
         }
+        setOtherAnswers(otherAnswers);
     }
 
     for (let question of allQuestions) {

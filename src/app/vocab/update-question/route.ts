@@ -8,7 +8,21 @@ export async function POST(request: NextRequest) {
     const requestJSON = await request.json();
     const proposedQuestionText = requestJSON.proposedQuestionText;
     const proposedMainAnswer = requestJSON.proposedMainAnswer;
+    const proposedOtherAnswers = requestJSON.proposedOtherAnswers;
     const questionId = requestJSON.id;
+
+    const allOtherAnswers: {
+        questionId: number;
+        isMainAnswer: boolean;
+        answerText: string;
+    }[] = [];
+    for (let proposedOtherAnswer of proposedOtherAnswers) {
+        allOtherAnswers.push({
+            questionId: questionId,
+            isMainAnswer: false,
+            answerText: proposedOtherAnswer,
+        });
+    }
 
     try {
         await sequelize.transaction(async (t) => {
@@ -19,15 +33,21 @@ export async function POST(request: NextRequest) {
                     transaction: t,
                 },
             );
+            await Answer.destroy({
+                where: { isMainAnswer: false, questionId: questionId },
+                transaction: t,
+            });
             await Answer.update(
                 { answerText: proposedMainAnswer },
                 {
-                    where: { isMainAnswer: true, questionId: questionId },
+                    where: { questionId: questionId },
                     transaction: t,
                 },
             );
+            await Answer.bulkCreate(allOtherAnswers, { transaction: t });
         });
     } catch (error) {
+        console.log(`error: ${error}`);
         return NextResponse.json({}, { status: 409 });
     }
 
@@ -36,6 +56,7 @@ export async function POST(request: NextRequest) {
             questionId: questionId,
             questionText: proposedQuestionText,
             mainAnswer: proposedMainAnswer,
+            otherAnswers: proposedOtherAnswers,
         },
         { status: 200 },
     );

@@ -22,6 +22,7 @@ export default function QuestionEditor() {
     const {
         allQuestions,
         answerEntryValue,
+        otherAnswers,
         pending,
         proposedQuestionText,
         questionFormValid,
@@ -95,6 +96,7 @@ export default function QuestionEditor() {
                 id: selectedQuestion.id,
                 proposedQuestionText: proposedQuestionText.trim(),
                 proposedMainAnswer: proposedMainAnswer.trim(),
+                proposedOtherAnswers: otherAnswers,
             }),
         }).then(clickSaveQuestionHandleResponse);
     }
