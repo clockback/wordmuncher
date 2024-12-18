@@ -4,19 +4,33 @@ import editSheetContext from "../../context";
 import styles from "./other-answers-table.module.css";
 
 export default function OtherAnswersTable() {
-    const { selectedQuestion } = useContext(editSheetContext);
+    const {
+        answerEntryValue,
+        otherAnswers,
+        setAnswerEntryValue,
+        setOtherAnswers,
+        setSavePossible,
+    } = useContext(editSheetContext);
 
     const otherAnswerRows = [];
-    for (let answer of selectedQuestion.answers) {
-        if (answer.isMainAnswer) {
-            continue;
-        }
+
+    for (const [answerI, answer] of otherAnswers.entries()) {
+        const promote = () => {
+            const newOtherAnswers: string[] = Object.assign([], otherAnswers);
+            newOtherAnswers[answerI] = answerEntryValue;
+
+            setOtherAnswers(newOtherAnswers);
+            setAnswerEntryValue(answer);
+            setSavePossible(true);
+        };
+
         otherAnswerRows.push(
-            <tr key={answer.id}>
-                <td className={styles.otheranswer}>{answer.answerText}</td>
+            <tr key={answerI}>
+                <td className={styles.otheranswer}>{answer}</td>
                 <td
                     className={styles.promoteanswer}
                     title="Promote to main answer"
+                    onClick={promote}
                 >
                     ⤴
                 </td>
