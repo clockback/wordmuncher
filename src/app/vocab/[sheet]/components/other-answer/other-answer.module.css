@@ -1,0 +1,42 @@
+.otheranswer {
+    padding-inline: 10px;
+}
+
+.otheranswer:hover {
+    text-decoration: underline;
+}
+
+.promoteanswer {
+    padding-inline: 20px;
+    width: 20px;
+    text-align: center;
+}
+
+.promoteanswer:hover {
+    background-color: dimgrey;
+    font-weight: bolder;
+}
+
+.editotheranswer {
+    padding-inline: 10px;
+    font-weight: bold;
+    text-align: center;
+    user-select: none;
+}
+
+.editotheranswerinput {
+    width: 100%;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: 18px;
+}
+
+.otheranswerinputrow {
+    padding-inline: 10px;
+}
+
+.otheranswerinput {
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 18px;
+}
