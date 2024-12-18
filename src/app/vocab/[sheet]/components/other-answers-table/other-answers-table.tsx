@@ -1,6 +1,7 @@
 import { useContext } from "react";
 
 import editSheetContext from "../../context";
+import AddOtherAnswer from "../add-other-answer/add-other-answer";
 import styles from "./other-answers-table.module.css";
 
 export default function OtherAnswersTable() {
@@ -40,7 +41,10 @@ export default function OtherAnswersTable() {
 
     return (
         <table className={styles.otheranswerstable}>
-            <tbody>{otherAnswerRows}</tbody>
+            <tbody>
+                {otherAnswerRows}
+                <AddOtherAnswer></AddOtherAnswer>
+            </tbody>
         </table>
     );
 }
