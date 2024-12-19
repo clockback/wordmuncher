@@ -43,10 +43,12 @@ export default function EditOtherAnswer({
     };
 
     const blurEditOtherAnswer = () => {
-        if (
-            currentOtherAnswer.trim().length > 0 &&
-            !otherAnswers.includes(currentOtherAnswer.trim())
-        ) {
+        if (currentOtherAnswer.trim().length == 0) {
+            const newOtherAnswers: string[] = Object.assign([], otherAnswers);
+            newOtherAnswers.splice(answerI, 1);
+            setOtherAnswers(newOtherAnswers);
+            setSavePossible(true);
+        } else if (!otherAnswers.includes(currentOtherAnswer.trim())) {
             const newOtherAnswers: string[] = Object.assign([], otherAnswers);
             newOtherAnswers[answerI] = currentOtherAnswer.trim();
             setOtherAnswers(newOtherAnswers);
