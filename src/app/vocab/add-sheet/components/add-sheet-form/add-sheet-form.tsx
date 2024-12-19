@@ -28,7 +28,7 @@ export default function AddSheetForm({ validateSheetName }: AddSheetFormProps) {
     function addSheet(formData: FormData) {
         setPending(true);
         const proposedName = formData.get("sheet-name") as string;
-        fetch("/add-sheet/add-sheet", {
+        fetch("/vocab/add-sheet/add-sheet", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
