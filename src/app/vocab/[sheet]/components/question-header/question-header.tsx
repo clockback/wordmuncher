@@ -1,20 +1,25 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 
 import editSheetContext from "../../context";
 import styles from "./question-header.module.css";
 
 export default function QuestionHeader() {
     const {
+        allQuestions,
         isEditingQuestionText,
         proposedQuestionText,
+        selectedQuestion,
         setSavePossible,
         setIsEditingQuestionText,
         setProposedQuestionText,
         setQuestionFormValid,
     } = useContext(editSheetContext);
 
+    const [inputText, setInputText] = useState("");
+
     if (!isEditingQuestionText) {
         const editQuestion = () => {
+            setInputText(proposedQuestionText);
             setIsEditingQuestionText(true);
         };
 
@@ -26,13 +31,30 @@ export default function QuestionHeader() {
     }
 
     const onChangeQuestionText = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setProposedQuestionText(e.target.value);
+        setInputText(e.target.value);
         setQuestionFormValid(e.target.value.length > 0);
-        setSavePossible(true);
     };
 
     const onBlur = () => {
         setIsEditingQuestionText(false);
+        const questionText = inputText.trim();
+        if (questionText.length == 0) {
+            return;
+        }
+
+        if (questionText == selectedQuestion.questionText) {
+            setProposedQuestionText(inputText);
+            return;
+        }
+
+        for (let question of allQuestions) {
+            if (question.questionText == questionText) {
+                return;
+            }
+        }
+
+        setProposedQuestionText(inputText);
+        setSavePossible(true);
     };
 
     return (
@@ -42,7 +64,7 @@ export default function QuestionHeader() {
                 className={styles.questioninput}
                 onChange={onChangeQuestionText}
                 onBlur={onBlur}
-                value={proposedQuestionText}
+                value={inputText}
             ></input>
         </h1>
     );
