@@ -59,7 +59,7 @@ export default function TongueSelector({
         flag = <Flag flag={currentTongue.flag}></Flag>;
         addSheetButton = (
             <div className={styles.buttonVerticalMargin}>
-                <Button href="/add-sheet">Add sheet</Button>
+                <Button href="/vocab/add-sheet">Add sheet</Button>
             </div>
         );
     }
