@@ -30,6 +30,13 @@ export default function QuestionHeader() {
         );
     }
 
+    function preventFormSubmission(e: React.KeyboardEvent<HTMLInputElement>) {
+        if (e.code == "Enter") {
+            e.preventDefault();
+            onBlur();
+        }
+    }
+
     const onChangeQuestionText = (e: React.ChangeEvent<HTMLInputElement>) => {
         setInputText(e.target.value);
         setQuestionFormValid(e.target.value.length > 0);
@@ -64,6 +71,7 @@ export default function QuestionHeader() {
                 className={styles.questioninput}
                 onChange={onChangeQuestionText}
                 onBlur={onBlur}
+                onKeyDown={preventFormSubmission}
                 value={inputText}
             ></input>
         </h1>
