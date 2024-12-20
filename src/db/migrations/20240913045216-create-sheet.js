@@ -12,8 +12,9 @@ module.exports = {
             sheetName: {
                 type: Sequelize.STRING,
                 allowNull: false,
+                unique: true,
             },
-            tonguePair: {
+            tonguePairId: {
                 type: Sequelize.INTEGER,
                 references: {
                     model: "TonguePairs",

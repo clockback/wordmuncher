@@ -12,6 +12,7 @@ module.exports = {
             tongueName: {
                 allowNull: false,
                 type: Sequelize.STRING,
+                unique: true,
             },
             flag: {
                 allowNull: false,
