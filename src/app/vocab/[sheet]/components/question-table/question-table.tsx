@@ -12,6 +12,7 @@ export default function QuestionTable() {
         savePossible,
         selectedQuestion,
         setAnswerEntryValue,
+        setIsAddingNewQuestion,
         setIsEditingQuestionText,
         setOtherAnswers,
         setProposedQuestionText,
@@ -24,6 +25,7 @@ export default function QuestionTable() {
         setSavePossible(false);
         setIsEditingQuestionText(false);
         setProposedQuestionText(question.questionText);
+        setIsAddingNewQuestion(false);
 
         let mainAnswer: string | null = null;
         const otherAnswers: string[] = [];
@@ -74,6 +76,14 @@ export default function QuestionTable() {
         );
     }
 
+    const clickAddNewQuestion = () => {
+        setSelectedQuestion(null);
+        setIsAddingNewQuestion(true);
+        setProposedQuestionText("");
+        setAnswerEntryValue("");
+        setIsEditingQuestionText(true);
+    };
+
     return (
         <table className={styles.questiontable}>
             <thead>
@@ -82,7 +92,18 @@ export default function QuestionTable() {
                     <th>Answer</th>
                 </tr>
             </thead>
-            <tbody>{questionRows}</tbody>
+            <tbody>
+                {questionRows}
+                <tr>
+                    <td
+                        className={styles.addnewquestionbutton}
+                        colSpan={2}
+                        onClick={clickAddNewQuestion}
+                    >
+                        Add new question
+                    </td>
+                </tr>
+            </tbody>
         </table>
     );
 }

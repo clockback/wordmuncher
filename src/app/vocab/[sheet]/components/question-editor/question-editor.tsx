@@ -22,6 +22,7 @@ export default function QuestionEditor() {
     const {
         allQuestions,
         answerEntryValue,
+        isAddingNewQuestion,
         otherAnswers,
         pending,
         proposedQuestionText,
@@ -30,14 +31,16 @@ export default function QuestionEditor() {
         savePossible,
         selectedQuestion,
         setAllQuestions,
+        setIsAddingNewQuestion,
         setIsEditingQuestionText,
         setOtherAnswers,
         setPending,
         setQuestionFormValid,
         setSavePossible,
+        sheetId,
     } = useContext(editSheetContext);
 
-    if (selectedQuestion === null) {
+    if (selectedQuestion === null && !isAddingNewQuestion) {
         return <></>;
     }
 
@@ -82,7 +85,31 @@ export default function QuestionEditor() {
         }
     }
 
-    function clickSaveQuestionHandleResponse(response: NextResponse) {
+    function clickSaveNewQuestionHandleResponse(response: NextResponse) {
+        response.json().then((contents) => {
+            const updatedQuestions = structuredClone(allQuestions);
+            updatedQuestions.push(contents);
+            setAllQuestions(updatedQuestions);
+            setSavePossible(false);
+            setPending(false);
+            setIsAddingNewQuestion(false);
+        });
+    }
+
+    function clickSaveNewQuestion(mainAnswer: string) {
+        fetch(`/vocab/${sheetId}/add-question`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                sheetId: sheetId,
+                proposedQuestionText: proposedQuestionText.trim(),
+                proposedMainAnswer: mainAnswer,
+                proposedOtherAnswers: otherAnswers,
+            }),
+        }).then(clickSaveNewQuestionHandleResponse);
+    }
+
+    function clickSaveEditQuestionHandleResponse(response: NextResponse) {
         response.json().then((contents) => {
             const questionId = contents.questionId;
             const updatedQuestions = structuredClone(allQuestions);
@@ -97,21 +124,31 @@ export default function QuestionEditor() {
         });
     }
 
-    function clickSaveQuestion(formData: FormData) {
-        setPending(true);
-        setIsEditingQuestionText(false);
-
-        const proposedMainAnswer = formData.get("main-answer") as string;
-        fetch(`/vocab/update-question`, {
+    function clickSaveEditQuestion(mainAnswer: string) {
+        fetch("/vocab/update-question", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 id: selectedQuestion.id,
                 proposedQuestionText: proposedQuestionText.trim(),
-                proposedMainAnswer: proposedMainAnswer.trim(),
+                proposedMainAnswer: mainAnswer,
                 proposedOtherAnswers: otherAnswers,
             }),
-        }).then(clickSaveQuestionHandleResponse);
+        }).then(clickSaveEditQuestionHandleResponse);
+    }
+
+    function clickSaveQuestion(formData: FormData) {
+        setPending(true);
+        setIsEditingQuestionText(false);
+
+        const proposedMainAnswer = formData.get("main-answer") as string;
+        const mainAnswer = proposedMainAnswer.trim();
+
+        if (isAddingNewQuestion) {
+            clickSaveNewQuestion(mainAnswer);
+        } else {
+            clickSaveEditQuestion(mainAnswer);
+        }
     }
 
     return (
