@@ -6,6 +6,7 @@ import styles from "./question-header.module.css";
 export default function QuestionHeader() {
     const {
         allQuestions,
+        answerEntryValue,
         isEditingQuestionText,
         proposedQuestionText,
         selectedQuestion,
@@ -39,7 +40,6 @@ export default function QuestionHeader() {
 
     const onChangeQuestionText = (e: React.ChangeEvent<HTMLInputElement>) => {
         setInputText(e.target.value);
-        setQuestionFormValid(e.target.value.length > 0);
     };
 
     const onBlur = () => {
@@ -60,6 +60,9 @@ export default function QuestionHeader() {
             }
         }
 
+        setQuestionFormValid(
+            proposedQuestionText.length > 0 && answerEntryValue.length > 0,
+        );
         setProposedQuestionText(inputText);
         setSavePossible(true);
     };
