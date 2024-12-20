@@ -62,7 +62,11 @@ export default function EditOtherAnswer({
     if (answerI != editingOtherAnswerI) {
         const promote = () => {
             const newOtherAnswers: string[] = Object.assign([], otherAnswers);
-            newOtherAnswers[answerI] = answerEntryValue;
+            if (answerEntryValue.length > 0) {
+                newOtherAnswers[answerI] = answerEntryValue;
+            } else {
+                newOtherAnswers.splice(answerI, 1);
+            }
 
             setOtherAnswers(newOtherAnswers);
             setAnswerEntryValue(answer);
