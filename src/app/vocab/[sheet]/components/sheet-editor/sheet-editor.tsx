@@ -32,11 +32,13 @@ export default function SheetEditor({ sheet, questions }: SheetEditorProps) {
     const [otherAnswers, setOtherAnswers] = useState([]);
     const [isAddingOtherAnswer, setIsAddingOtherAnswer] = useState(false);
     const [editingOtherAnswerI, setEditingOtherAnswerI] = useState(null);
+    const [isAddingNewQuestion, setIsAddingNewQuestion] = useState(false);
 
     const context = {
         allQuestions,
         answerEntryValue,
         editingOtherAnswerI,
+        isAddingNewQuestion,
         isAddingOtherAnswer,
         isEditingQuestionText,
         otherAnswers,
@@ -48,6 +50,7 @@ export default function SheetEditor({ sheet, questions }: SheetEditorProps) {
         selectedQuestion,
         setAllQuestions,
         setEditingOtherAnswerI,
+        setIsAddingNewQuestion,
         setIsAddingOtherAnswer,
         setIsEditingQuestionText,
         setOtherAnswers,

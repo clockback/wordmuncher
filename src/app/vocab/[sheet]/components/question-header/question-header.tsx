@@ -7,6 +7,7 @@ export default function QuestionHeader() {
     const {
         allQuestions,
         answerEntryValue,
+        isAddingNewQuestion,
         isEditingQuestionText,
         proposedQuestionText,
         selectedQuestion,
@@ -43,13 +44,23 @@ export default function QuestionHeader() {
     };
 
     const onBlur = () => {
-        setIsEditingQuestionText(false);
         const questionText = inputText.trim();
+        if (
+            !isAddingNewQuestion ||
+            questionText.length > 0 ||
+            proposedQuestionText.length > 0
+        ) {
+            setIsEditingQuestionText(false);
+        }
+
         if (questionText.length == 0) {
             return;
         }
 
-        if (questionText == selectedQuestion.questionText) {
+        if (
+            !isAddingNewQuestion &&
+            questionText == selectedQuestion.questionText
+        ) {
             setProposedQuestionText(inputText);
             return;
         }

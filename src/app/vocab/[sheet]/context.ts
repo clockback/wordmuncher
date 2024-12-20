@@ -6,6 +6,7 @@ interface EditSheetContextType {
     allQuestions: Question[];
     answerEntryValue: string;
     editingOtherAnswerI: number | null;
+    isAddingNewQuestion: boolean;
     isAddingOtherAnswer: boolean;
     isEditingQuestionText: boolean;
     otherAnswers: string[];
@@ -17,6 +18,7 @@ interface EditSheetContextType {
     selectedQuestion: Question;
     setAllQuestions: (value: Question[]) => void;
     setEditingOtherAnswerI: (value: number | null) => void;
+    setIsAddingNewQuestion: (value: boolean) => void;
     setIsAddingOtherAnswer: (value: boolean) => void;
     setIsEditingQuestionText: (value: boolean) => void;
     setOtherAnswers: (value: string[]) => void;

@@ -22,6 +22,7 @@ export default function QuestionEditor() {
     const {
         allQuestions,
         answerEntryValue,
+        isAddingNewQuestion,
         otherAnswers,
         pending,
         proposedQuestionText,
@@ -36,7 +37,7 @@ export default function QuestionEditor() {
         setSavePossible,
     } = useContext(editSheetContext);
 
-    if (selectedQuestion === null) {
+    if (selectedQuestion === null && !isAddingNewQuestion) {
         return <></>;
     }
 
