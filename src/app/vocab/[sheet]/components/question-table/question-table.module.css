@@ -28,3 +28,8 @@
 .selected {
     color: orangered;
 }
+
+.addnewquestionbutton {
+    text-align: center;
+    font-weight: bold;
+}

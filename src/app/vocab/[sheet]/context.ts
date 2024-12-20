@@ -6,6 +6,7 @@ interface EditSheetContextType {
     allQuestions: Question[];
     answerEntryValue: string;
     editingOtherAnswerI: number | null;
+    isAddingNewQuestion: boolean;
     isAddingOtherAnswer: boolean;
     isEditingQuestionText: boolean;
     otherAnswers: string[];
@@ -14,9 +15,10 @@ interface EditSheetContextType {
     questionFormValid: boolean;
     setAnswerEntryValue: (value: string) => void;
     savePossible: boolean;
-    selectedQuestion: Question;
+    selectedQuestion: Question | null;
     setAllQuestions: (value: Question[]) => void;
     setEditingOtherAnswerI: (value: number | null) => void;
+    setIsAddingNewQuestion: (value: boolean) => void;
     setIsAddingOtherAnswer: (value: boolean) => void;
     setIsEditingQuestionText: (value: boolean) => void;
     setOtherAnswers: (value: string[]) => void;
@@ -24,7 +26,8 @@ interface EditSheetContextType {
     setProposedQuestionText: (value: string) => void;
     setQuestionFormValid: (value: boolean) => void;
     setSavePossible: (value: boolean) => void;
-    setSelectedQuestion: (value: Question) => void;
+    setSelectedQuestion: (value: Question | null) => void;
+    sheetId: number;
 }
 
 const editSheetContext = createContext<EditSheetContextType | undefined>(

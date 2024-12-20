@@ -1,12 +1,24 @@
 import { useContext, useState } from "react";
 
+import { Question } from "@models";
+
 import editSheetContext from "../../context";
 import styles from "./question-header.module.css";
+
+function questionAlreadyExists(questionText: string, allQuestions: Question[]) {
+    for (let question of allQuestions) {
+        if (question.questionText == questionText) {
+            return true;
+        }
+    }
+    return false;
+}
 
 export default function QuestionHeader() {
     const {
         allQuestions,
         answerEntryValue,
+        isAddingNewQuestion,
         isEditingQuestionText,
         proposedQuestionText,
         selectedQuestion,
@@ -42,7 +54,30 @@ export default function QuestionHeader() {
         setInputText(e.target.value);
     };
 
-    const onBlur = () => {
+    const onBlurIsAddingNewQuestion = () => {
+        const questionText = inputText.trim();
+
+        const alreadyExists = questionAlreadyExists(questionText, allQuestions);
+
+        if (
+            (questionText.length > 0 && !alreadyExists) ||
+            proposedQuestionText.length > 0
+        ) {
+            setIsEditingQuestionText(false);
+        }
+
+        if (questionText.length == 0 || alreadyExists) {
+            return;
+        }
+
+        setQuestionFormValid(
+            proposedQuestionText.length > 0 && answerEntryValue.length > 0,
+        );
+        setProposedQuestionText(questionText);
+        setSavePossible(true);
+    };
+
+    const onBlurIsEditingQuestion = () => {
         setIsEditingQuestionText(false);
         const questionText = inputText.trim();
         if (questionText.length == 0) {
@@ -54,10 +89,8 @@ export default function QuestionHeader() {
             return;
         }
 
-        for (let question of allQuestions) {
-            if (question.questionText == questionText) {
-                return;
-            }
+        if (questionAlreadyExists(questionText, allQuestions)) {
+            return;
         }
 
         setQuestionFormValid(
@@ -65,6 +98,14 @@ export default function QuestionHeader() {
         );
         setProposedQuestionText(questionText);
         setSavePossible(true);
+    };
+
+    const onBlur = () => {
+        if (isAddingNewQuestion) {
+            onBlurIsAddingNewQuestion();
+        } else {
+            onBlurIsEditingQuestion();
+        }
     };
 
     return (
