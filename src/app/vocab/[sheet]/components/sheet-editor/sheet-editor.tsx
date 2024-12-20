@@ -1,5 +1,8 @@
 "use client";
 
+import { redirect } from "next/navigation";
+import { useRouter } from "next/router";
+import { NextResponse } from "next/server";
 import { useState } from "react";
 
 import Button from "@components/button/button";
@@ -55,6 +58,20 @@ export default function SheetEditor({ sheet, questions }: SheetEditorProps) {
         setSelectedQuestion,
     };
 
+    function deleteSheetHandleResponse(response: NextResponse) {
+        if (response.status !== 200) {
+            console.log("Failed to delete sheet!");
+        }
+        redirect("/vocab");
+    }
+
+    function deleteSheet() {
+        setPending(true);
+        fetch(`/vocab/${sheet.id}/delete-sheet`, { method: "DELETE" }).then(
+            deleteSheetHandleResponse,
+        );
+    }
+
     return (
         <editSheetContext.Provider value={context}>
             <EditSheetHeader>{sheet.sheetName}</EditSheetHeader>
@@ -72,7 +89,7 @@ export default function SheetEditor({ sheet, questions }: SheetEditorProps) {
             </div>
             <div className={styles.bottombuttons}>
                 <div className={styles.alignbuttons}>
-                    <Button>Delete</Button>
+                    <Button onClick={deleteSheet}>Delete</Button>
                     <Button href="/vocab">Back</Button>
                 </div>
             </div>
