@@ -9,7 +9,7 @@ module.exports = {
                 primaryKey: true,
                 type: Sequelize.INTEGER,
             },
-            translateFrom: {
+            nativeTongueId: {
                 type: Sequelize.INTEGER,
                 references: {
                     model: "Tongues",
@@ -19,7 +19,7 @@ module.exports = {
                 onDelete: "CASCADE",
                 onUpdate: "CASCADE",
             },
-            translateTo: {
+            studyingTongueId: {
                 type: Sequelize.INTEGER,
                 references: {
                     model: "Tongues",

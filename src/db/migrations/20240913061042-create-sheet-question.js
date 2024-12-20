@@ -9,7 +9,7 @@ module.exports = {
                 primaryKey: true,
                 type: Sequelize.INTEGER,
             },
-            sheet: {
+            sheetId: {
                 type: Sequelize.INTEGER,
                 references: {
                     model: "Sheets",
@@ -19,7 +19,7 @@ module.exports = {
                 onDelete: "CASCADE",
                 onUpdate: "CASCADE",
             },
-            question: {
+            questionId: {
                 type: Sequelize.INTEGER,
                 references: {
                     model: "Questions",

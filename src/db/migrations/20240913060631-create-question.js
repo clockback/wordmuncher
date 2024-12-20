@@ -13,11 +13,7 @@ module.exports = {
                 type: Sequelize.STRING,
                 allowNull: false,
             },
-            answer: {
-                type: Sequelize.STRING,
-                allowNull: false,
-            },
-            tonguePair: {
+            tonguePairId: {
                 type: Sequelize.INTEGER,
                 references: {
                     model: "TonguePairs",
