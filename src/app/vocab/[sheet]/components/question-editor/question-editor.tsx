@@ -37,6 +37,7 @@ export default function QuestionEditor() {
         setPending,
         setQuestionFormValid,
         setSavePossible,
+        setSelectedQuestion,
         sheetId,
     } = useContext(editSheetContext);
 
@@ -151,6 +152,38 @@ export default function QuestionEditor() {
         }
     }
 
+    const clickDeleteQuestionHandleResponse = (response: NextResponse) => {
+        response.json().then((contents) => {
+            setPending(false);
+
+            if (contents.error) {
+                setPending(false);
+                return;
+            }
+
+            const updatedQuestions = allQuestions.filter(
+                (question) => question.id !== selectedQuestion.id,
+            );
+            setAllQuestions(updatedQuestions);
+            setSelectedQuestion(null);
+        });
+    };
+
+    const clickDeleteQuestion = () => {
+        setPending(true);
+        fetch("/vocab/delete-question", {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: selectedQuestion.id }),
+        }).then(clickDeleteQuestionHandleResponse);
+    };
+
+    const deleteButton = isAddingNewQuestion ? null : (
+        <Button disabled={pending} onClick={clickDeleteQuestion}>
+            Delete question
+        </Button>
+    );
+
     return (
         <form action={clickSaveQuestion}>
             <QuestionHeader></QuestionHeader>
@@ -159,6 +192,7 @@ export default function QuestionEditor() {
             <h3>Other accepted answers:</h3>
             <OtherAnswersTable></OtherAnswersTable>
             <div className={styles.padsavebutton}>
+                {deleteButton}
                 <Button
                     disabled={!savePossible || pending || !questionFormValid}
                 >
