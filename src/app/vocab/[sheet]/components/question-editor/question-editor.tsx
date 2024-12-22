@@ -31,6 +31,7 @@ export default function QuestionEditor() {
         selectedQuestion,
         setAllQuestions,
         setIsEditingQuestionText,
+        setOtherAnswers,
         setPending,
         setQuestionFormValid,
         setSavePossible,
@@ -46,12 +47,24 @@ export default function QuestionEditor() {
         setQuestionFormValid(e.target.value.length > 0);
         setAnswerEntryValue(e.target.value);
     };
+    const onBlurAnswer = () => {
+        if (!otherAnswers.includes(answerEntryValue.trim())) {
+            return;
+        }
+        const newOtherAnswers = Object.assign([], otherAnswers);
+        newOtherAnswers.splice(
+            newOtherAnswers.indexOf(answerEntryValue.trim()),
+            1,
+        );
+        setOtherAnswers(newOtherAnswers);
+    };
 
     answerEntry = (
         <input
             className={styles.answerentry}
             value={answerEntryValue}
             onChange={onChangeAnswer}
+            onBlur={onBlurAnswer}
             name="main-answer"
             disabled={pending}
         ></input>
