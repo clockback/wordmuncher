@@ -50,7 +50,7 @@ export default function QuestionHeader() {
         }
 
         if (questionText == selectedQuestion.questionText) {
-            setProposedQuestionText(inputText);
+            setProposedQuestionText(questionText);
             return;
         }
 
@@ -63,7 +63,7 @@ export default function QuestionHeader() {
         setQuestionFormValid(
             proposedQuestionText.length > 0 && answerEntryValue.length > 0,
         );
-        setProposedQuestionText(inputText);
+        setProposedQuestionText(questionText);
         setSavePossible(true);
     };
 
