@@ -7,6 +7,7 @@ export default function AddOtherAnswer() {
     const {
         isAddingOtherAnswer,
         otherAnswers,
+        answerEntryValue,
         setIsAddingOtherAnswer,
         setOtherAnswers,
         setSavePossible,
@@ -20,17 +21,19 @@ export default function AddOtherAnswer() {
     }
 
     function blurAddNewAnswer() {
+        const trimmedAnswer = currentOtherAnswer.trim();
         setIsAddingOtherAnswer(false);
 
         if (
-            currentOtherAnswer.trim().length == 0 ||
-            otherAnswers.includes(currentOtherAnswer.trim())
+            trimmedAnswer.length == 0 ||
+            otherAnswers.includes(trimmedAnswer) ||
+            answerEntryValue.trim() == trimmedAnswer
         ) {
             return;
         }
 
         const newOtherAnswers: string[] = Object.assign([], otherAnswers);
-        newOtherAnswers.push(currentOtherAnswer.trim());
+        newOtherAnswers.push(trimmedAnswer);
         setOtherAnswers(newOtherAnswers);
         setSavePossible(true);
     }
