@@ -1,8 +1,10 @@
 "use strict";
 
+const Sequelize = require("sequelize");
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-    async up(queryInterface, Sequelize) {
+    async up(queryInterface) {
         await queryInterface.sequelize.transaction(async (t) => {
             await queryInterface.createTable(
                 "Answers",
@@ -52,7 +54,7 @@ module.exports = {
         });
     },
 
-    async down(queryInterface, Sequelize) {
+    async down(queryInterface) {
         await queryInterface.sequelize.transaction(async (t) => {
             await queryInterface.removeIndex("Answers", [
                 "questionId",
