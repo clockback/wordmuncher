@@ -1,5 +1,6 @@
 {
     "private": true,
+    "type": "module",
     "scripts": {
         "build": "next build",
         "dev": "next dev",
@@ -8,13 +9,13 @@
         "lint": "next lint --max-warnings=0",
         "model:create": "sequelize-cli model:generate",
         "migration:create": "sequelize-cli migration:generate",
-        "migrate": "sequelize-cli db:migrate",
-        "migrate:rollback": "sequelize-cli db:migrate:undo",
+        "migrate": "node --loader ts-node/esm src/db/migrate.ts up",
+        "migrate:rollback": "node --loader ts-node/esm src/db/migrate.ts down",
         "seed:create": "sequelize-cli seed:generate",
-        "seed": "sequelize-cli db:seed:all",
-        "seed:rollback": "sequelize-cli db:seed:undo:all",
-        "seed-dev": "sequelize-cli --seeders-path src/db/seeders/dev-only db:seed:all",
-        "seed-dev:rollback": "sequelize-cli --seeders-path src/db/seeders/dev-only db:seed:undo:all",
+        "seed": "node --loader ts-node/esm src/db/seed.ts up",
+        "seed:rollback": "node --loader ts-node/esm src/db/seed.ts down",
+        "seed-dev": "node --loader ts-node/esm src/db/dev-seed.ts up",
+        "seed-dev:rollback": "node --loader ts-node/esm src/db/dev-seed.ts down",
         "spellcheck": "cspell --quiet \"**\""
     },
     "dependencies": {
@@ -36,7 +37,9 @@
         "eslint": "^9.16.0",
         "eslint-config-next": "^15.0.4",
         "prettier": "^3.4.2",
-        "sequelize-cli": "^6.6.2"
+        "sequelize-cli": "^6.6.2",
+        "ts-node": "^10.9.2",
+        "umzug": "^3.8.2"
     },
     "imports": {
         "#root/*.js": "./*.js",

@@ -1,6 +1,6 @@
 {
     "enabled": true,
-    "words": ["davys", "grotesk", "trivago", "wordmuncher"],
+    "words": ["davys", "grotesk", "trivago", "umzug", "wordmuncher"],
     "allowCompoundWords": true,
     "ignorePaths": ["**.svg"]
 }
