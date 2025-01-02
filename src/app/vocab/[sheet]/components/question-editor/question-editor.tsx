@@ -70,6 +70,7 @@ export default function QuestionEditor() {
             onChange={onChangeAnswer}
             onBlur={onBlurAnswer}
             name="main-answer"
+            title="Main answer"
             disabled={pending}
         ></input>
     );

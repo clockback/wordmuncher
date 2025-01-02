@@ -27,7 +27,12 @@ function makeTongueButton(
     };
 
     return (
-        <div className={styles.flagbutton} key={tongue.id} onClick={callback}>
+        <div
+            title={tongue.tongueName}
+            className={styles.flagbutton}
+            key={tongue.id}
+            onClick={callback}
+        >
             <div className={styles.flagbuttoncontents}>
                 <div className={styles.flag}>{tongue.flag}</div>
                 <div>{tongue.tongueName}</div>

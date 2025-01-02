@@ -59,6 +59,7 @@ export default function AddOtherAnswer() {
                 value={currentOtherAnswer}
                 onChange={updateNewAnswer}
                 onKeyDown={preventFormSubmission}
+                title="Other answer"
             ></input>
         );
     } else {

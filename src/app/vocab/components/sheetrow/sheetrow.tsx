@@ -15,7 +15,11 @@ export default function SheetRow({ children, href }: SheetRowProps) {
 
     return (
         <tr className={styles.sheetrow}>
-            <td className={styles.paddedcell} onClick={goToSheet}>
+            <td
+                title={`Edit ${children.toString()}`}
+                className={styles.paddedcell}
+                onClick={goToSheet}
+            >
                 {children}
             </td>
         </tr>
