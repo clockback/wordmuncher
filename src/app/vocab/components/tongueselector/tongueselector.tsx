@@ -66,7 +66,9 @@ export default function TongueSelector({
 
     return (
         <>
-            <div className={styles.header}>{learnLanguageText}</div>
+            <div className={styles.header} title="Current language">
+                {learnLanguageText}
+            </div>
             {flag}
             <div className={styles.buttonVerticalMargin}>
                 <Button onClick={() => setPopupVisible(true)}>

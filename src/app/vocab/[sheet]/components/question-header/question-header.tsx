@@ -37,7 +37,11 @@ export default function QuestionHeader() {
         };
 
         return (
-            <h1 className={styles.questionheader} onClick={editQuestion}>
+            <h1
+                className={styles.questionheader}
+                onClick={editQuestion}
+                title="Question"
+            >
                 {proposedQuestionText}
             </h1>
         );
@@ -117,6 +121,7 @@ export default function QuestionHeader() {
                 onBlur={onBlur}
                 onKeyDown={preventFormSubmission}
                 value={inputText}
+                title="Question"
             ></input>
         </h1>
     );

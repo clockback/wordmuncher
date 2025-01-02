@@ -99,6 +99,7 @@ export default function QuestionTable() {
                         className={styles.addnewquestionbutton}
                         colSpan={2}
                         onClick={clickAddNewQuestion}
+                        title="Add new question"
                     >
                         Add new question
                     </td>
