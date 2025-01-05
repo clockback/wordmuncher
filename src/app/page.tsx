@@ -6,7 +6,7 @@ export default function Home() {
     return (
         <div className={styles.vertical}>
             <div className={styles.buttonpadding}>
-                <Button>Learn</Button>
+                <Button href="/tests">Learn</Button>
             </div>
             <div className={styles.buttonpadding}>
                 <Button href="/vocab">Vocab</Button>
