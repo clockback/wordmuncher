@@ -8,7 +8,7 @@ import {
     NonAttribute,
 } from "sequelize";
 
-import { Answer, Sheet, SheetQuestion, TonguePair } from "@models";
+import { Answer, Result, Sheet, SheetQuestion, TonguePair } from "@models";
 
 import sequelize from "./db-connection";
 
@@ -24,6 +24,7 @@ export class Question extends Model<
 
     declare answers?: NonAttribute<Answer[]>;
     declare sheets?: NonAttribute<Sheet[]>;
+    declare result?: NonAttribute<Result>;
 
     declare createdAt: CreationOptional<Date>;
     declare updatedAt: CreationOptional<Date>;
@@ -44,6 +45,8 @@ export class Question extends Model<
         });
 
         Question.hasMany(Answer, { foreignKey: "questionId", as: "answers" });
+
+        Question.hasOne(Result, { foreignKey: "questionId", as: "result" });
     }
 }
 
