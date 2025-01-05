@@ -5,6 +5,7 @@ import {
     InferAttributes,
     InferCreationAttributes,
     Model,
+    NonAttribute,
 } from "sequelize";
 
 import { TonguePair } from "@models";
@@ -12,12 +13,15 @@ import { TonguePair } from "@models";
 import sequelize from "./db-connection";
 
 export class Tongue extends Model<
-    InferAttributes<Tongue>,
-    InferCreationAttributes<Tongue>
+    InferAttributes<Tongue, { omit: "studies" | "learnedBy" }>,
+    InferCreationAttributes<Tongue, { omit: "studies" | "learnedBy" }>
 > {
     declare id: CreationOptional<number>;
     declare tongueName: string;
     declare flag: string;
+
+    declare studies: NonAttribute<Tongue[]>;
+    declare learnedBy: NonAttribute<Tongue[]>;
 
     declare createdAt: CreationOptional<Date>;
     declare updatedAt: CreationOptional<Date>;
@@ -37,12 +41,12 @@ export class Tongue extends Model<
         Tongue.belongsToMany(Tongue, {
             through: TonguePair,
             foreignKey: "nativeTongueId",
-            as: "studyingTongueId",
+            as: "studies",
         });
         Tongue.belongsToMany(Tongue, {
             through: TonguePair,
             foreignKey: "studyingTongueId",
-            as: "nativeTongueId",
+            as: "learnedBy",
         });
     }
 }

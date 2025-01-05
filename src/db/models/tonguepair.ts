@@ -13,11 +13,8 @@ import { Sheet, Tongue } from "@models";
 import sequelize from "./db-connection";
 
 export class TonguePair extends Model<
-    InferAttributes<TonguePair, { omit: "nativeTongue" | "studyingTongue" }>,
-    InferCreationAttributes<
-        TonguePair,
-        { omit: "nativeTongue" | "studyingTongue" }
-    >
+    InferAttributes<TonguePair, { omit: "native" | "studying" }>,
+    InferCreationAttributes<TonguePair, { omit: "native" | "studying" }>
 > {
     declare id: CreationOptional<number>;
 
