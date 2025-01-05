@@ -40,7 +40,8 @@ export class Question extends Model<
 
         Question.belongsToMany(Sheet, {
             through: SheetQuestion,
-            foreignKey: "sheetId",
+            foreignKey: "questionId",
+            otherKey: "sheetId",
             as: "sheets",
         });
 
