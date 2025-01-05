@@ -1,10 +1,20 @@
-import { Association, CreationOptional, DataTypes, Model } from "sequelize";
+import {
+    Association,
+    CreationOptional,
+    DataTypes,
+    InferAttributes,
+    InferCreationAttributes,
+    Model,
+} from "sequelize";
 
 import { TonguePair } from "@models";
 
 import sequelize from "./db-connection";
 
-export class Tongue extends Model {
+export class Tongue extends Model<
+    InferAttributes<Tongue>,
+    InferCreationAttributes<Tongue>
+> {
     declare id: CreationOptional<number>;
     declare tongueName: string;
     declare flag: string;
@@ -53,6 +63,8 @@ Tongue.init(
             type: DataTypes.STRING,
             allowNull: false,
         },
+        createdAt: DataTypes.DATE,
+        updatedAt: DataTypes.DATE,
     },
     {
         sequelize,
