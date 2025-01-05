@@ -27,7 +27,10 @@ export class Answer extends Model<
     declare updatedAt: CreationOptional<Date>;
 
     static associate() {
-        Answer.belongsTo(Question, { foreignKey: "questionId", as: "answers" });
+        Answer.belongsTo(Question, {
+            foreignKey: "questionId",
+            as: "question",
+        });
     }
 }
 

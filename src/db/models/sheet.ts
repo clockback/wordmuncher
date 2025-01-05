@@ -23,6 +23,8 @@ export class Sheet extends Model<
     declare tonguePairId: ForeignKey<TonguePair["id"]>;
     declare tonguePair: NonAttribute<TonguePair>;
 
+    declare questions?: NonAttribute<Question[]>;
+
     declare createdAt: CreationOptional<Date>;
     declare updatedAt: CreationOptional<Date>;
 
@@ -51,7 +53,7 @@ export class Sheet extends Model<
         Sheet.belongsToMany(Question, {
             through: SheetQuestion,
             foreignKey: "questionId",
-            as: "sheetId",
+            as: "questions",
         });
     }
 }
