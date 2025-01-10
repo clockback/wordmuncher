@@ -1,5 +1,6 @@
 import { Question, Result, Sheet, SheetQuestion } from "@models";
 
+import TestSheetRow from "./components/test-sheet-row/test-sheet-row";
 import styles from "./tests.module.css";
 import { getSettings } from "src/db/helpers/settings";
 
@@ -58,10 +59,7 @@ export default async function Tests() {
 
     for (let sheet of allSheets) {
         tableRows.push(
-            <tr key={sheet.id}>
-                <td>{sheet.sheetName}</td>
-                <td>{sheet.progress * 100}%</td>
-            </tr>,
+            <TestSheetRow key={sheet.id} sheet={sheet}></TestSheetRow>,
         );
     }
 
