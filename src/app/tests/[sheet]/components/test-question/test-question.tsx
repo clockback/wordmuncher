@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 import { useEffect, useRef, useState } from "react";
 import { JSX } from "react";
 
-import { Question, Sheet } from "@models";
+import { Question, Result, Sheet } from "@models";
 
 import Correct from "../../assets/images/correct.svg";
 import Incomplete from "../../assets/images/incomplete.svg";
@@ -15,6 +15,13 @@ import styles from "./test-question.module.css";
 interface TestQuestionProps {
     sheet: Sheet;
     initialQuestion: Question;
+}
+
+interface SubmitAnswerContents {
+    correct: boolean;
+    result: Result;
+    nextQuestion: Question;
+    lastQuestions: number[];
 }
 
 function allStars(question: Question): JSX.Element[] {
@@ -29,19 +36,19 @@ function allStars(question: Question): JSX.Element[] {
     return stars;
 }
 
-function progressBar(question: Question): JSX.Element[] {
+function progressBar(result: Result): JSX.Element[] {
     const bars = [];
     let i = 0;
-    for (; i < question.result.current; i++) {
+    for (; i < result.current; i++) {
         bars.push(<Correct key={i}></Correct>);
     }
 
-    if (question.result.goal === 2) {
-        for (; i < question.result.goal; i++) {
+    if (result.goal === 2) {
+        for (; i < result.goal; i++) {
             bars.push(<Incomplete key={i}></Incomplete>);
         }
     } else {
-        for (; i < question.result.goal; i++) {
+        for (; i < result.goal; i++) {
             bars.push(<Incorrect key={i}></Incorrect>);
         }
     }
@@ -65,16 +72,23 @@ export default function TestQuestion({
         }
     });
 
+    function setNewAnswer(contents: SubmitAnswerContents) {
+        setPending(false);
+        setQuestion(contents.nextQuestion);
+        setCurrentAnswer("");
+    }
+
     function checkHitEnterHandleResponse(response: NextResponse) {
         if (response.status !== 202) {
             console.log("Failed to submit answer!");
             return;
         }
-        response.json().then((contents) => {
-            setPending(false);
+        response.json().then((contents: SubmitAnswerContents) => {
+            const newQuestion = structuredClone(question);
+            newQuestion.result = contents.result;
+            setQuestion(newQuestion);
             setLastQuestions(contents.lastQuestions);
-            setQuestion(contents.nextQuestion);
-            setCurrentAnswer("");
+            setTimeout(() => setNewAnswer(contents), 1000);
         });
     }
 
@@ -114,7 +128,9 @@ export default function TestQuestion({
         <>
             <div className={styles.question}>{question.questionText}</div>
             <div className={styles.starbox}>{allStars(question)}</div>
-            <div className={styles.progressbar}>{progressBar(question)}</div>
+            <div className={styles.progressbar}>
+                {progressBar(question.result)}
+            </div>
             <textarea
                 className={styles.answerbox}
                 onKeyDown={checkHitEnter}

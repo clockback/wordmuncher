@@ -76,6 +76,7 @@ export async function POST(
     return NextResponse.json(
         {
             correct: correct,
+            result: question.result,
             nextQuestion: nextQuestion.toJSON(),
             lastQuestions: lastQuestions,
         },
