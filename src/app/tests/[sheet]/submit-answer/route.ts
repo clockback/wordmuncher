@@ -45,7 +45,7 @@ export async function POST(
     const requestJSON = await request.json();
     const questionId = requestJSON.questionId;
     const submittedAnswer = requestJSON.submittedAnswer;
-    let lastQuestions = requestJSON.lastQuestions;
+    const lastQuestions = requestJSON.lastQuestions;
     const sheetId = parseInt((await params).sheet);
 
     const question = await Question.findByPk(questionId, {
@@ -55,7 +55,7 @@ export async function POST(
         ],
     });
     let correct = false;
-    for (let answer of question.answers) {
+    for (const answer of question.answers) {
         if (submittedAnswer === answer.answerText) {
             correct = true;
             break;

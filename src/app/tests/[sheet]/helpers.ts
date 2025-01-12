@@ -67,7 +67,7 @@ export async function getQuestion(
     sheet: Sheet,
     lastQuestions: number[],
 ): Promise<Question> {
-    let question =
+    const question =
         (await getPartiallySolvedQuestion(sheet, lastQuestions)) ??
         (await getNonSolvedQuestion(sheet, lastQuestions)) ??
         (await getSolvedQuestion(sheet, lastQuestions));

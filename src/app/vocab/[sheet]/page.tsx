@@ -21,7 +21,7 @@ export default async function Page({
 
     const questions = await sheet.getQuestions();
     const questionsJson = [];
-    for (let question of questions) {
+    for (const question of questions) {
         questionsJson.push(question.toJSON());
     }
 

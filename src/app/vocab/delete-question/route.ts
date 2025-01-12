@@ -6,7 +6,7 @@ export async function DELETE(request: NextRequest) {
     const requestJSON = await request.json();
     const questionId = requestJSON.id;
 
-    let noDeleted = await Question.destroy({ where: { id: questionId } });
+    const noDeleted = await Question.destroy({ where: { id: questionId } });
 
     if (noDeleted === 0) {
         return NextResponse.json(

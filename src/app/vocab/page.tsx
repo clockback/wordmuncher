@@ -22,7 +22,7 @@ async function pickTongue(tongueId: number): Promise<TonguePair> {
 
     // If there is a tongue pair, swaps the tongues.
     else {
-        const [createdTonguePair, created] = await TonguePair.findOrCreate({
+        const [createdTonguePair] = await TonguePair.findOrCreate({
             where: {
                 nativeTongueId: oldTonguePair.nativeTongueId,
                 studyingTongueId: tongueId,
@@ -39,7 +39,7 @@ async function getTonguePairSheetsAsJson(
     tonguePair: TonguePair,
 ): Promise<{ sheetId: number; sheetName: string }[]> {
     const sheets = [];
-    for (let sheet of await tonguePair.getSheets()) {
+    for (const sheet of await tonguePair.getSheets()) {
         sheets.push({ sheetId: sheet.id, sheetName: sheet.sheetName });
     }
     return sheets;
@@ -53,9 +53,9 @@ async function pickTongueAndGetBack(tongueId: number): Promise<{
 }> {
     "use server";
 
-    let tonguePair = await pickTongue(tongueId);
-    let studyingTongue = await tonguePair.studyingTongue();
-    let sheets = await getTonguePairSheetsAsJson(tonguePair);
+    const tonguePair = await pickTongue(tongueId);
+    const studyingTongue = await tonguePair.studyingTongue();
+    const sheets = await getTonguePairSheetsAsJson(tonguePair);
     return {
         id: studyingTongue.id,
         tongueName: studyingTongue.tongueName,
@@ -68,11 +68,11 @@ async function fetchAllTongues(): Promise<
     { id: number; tongueName: string; flag: string }[]
 > {
     "use server";
-    let allTongues = await Tongue.findAll({
+    const allTongues = await Tongue.findAll({
         attributes: ["id", "tongueName", "flag"],
     });
-    let tongueJSON = [];
-    for (let tongue of allTongues) {
+    const tongueJSON = [];
+    for (const tongue of allTongues) {
         tongueJSON.push(tongue.toJSON());
     }
 

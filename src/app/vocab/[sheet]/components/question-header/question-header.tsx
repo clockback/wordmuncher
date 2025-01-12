@@ -6,7 +6,7 @@ import editSheetContext from "../../context";
 import styles from "./question-header.module.css";
 
 function questionAlreadyExists(questionText: string, allQuestions: Question[]) {
-    for (let question of allQuestions) {
+    for (const question of allQuestions) {
         if (question.questionText == questionText) {
             return true;
         }

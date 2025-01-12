@@ -10,7 +10,7 @@ export default function SheetsList({ sheets }: SheetsListProps) {
         return null;
     }
     const sheetElements = [];
-    for (let sheet of sheets) {
+    for (const sheet of sheets) {
         sheetElements.push(
             <SheetRow key={sheet.sheetId} href={`/vocab/${sheet.sheetId}`}>
                 {sheet.sheetName}

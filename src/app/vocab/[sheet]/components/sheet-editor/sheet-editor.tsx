@@ -1,7 +1,6 @@
 "use client";
 
 import { redirect } from "next/navigation";
-import { useRouter } from "next/router";
 import { NextResponse } from "next/server";
 import { useState } from "react";
 

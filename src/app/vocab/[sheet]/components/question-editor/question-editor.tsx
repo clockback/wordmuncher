@@ -80,7 +80,7 @@ export default function QuestionEditor() {
         contents: clickSaveQuestionResponseProps,
     ) {
         question.questionText = contents.questionText;
-        for (let answer of question.answers) {
+        for (const answer of question.answers) {
             if (answer.isMainAnswer) {
                 answer.answerText = contents.mainAnswer;
             }
@@ -115,7 +115,7 @@ export default function QuestionEditor() {
         response.json().then((contents) => {
             const questionId = contents.questionId;
             const updatedQuestions = structuredClone(allQuestions);
-            for (let question of updatedQuestions) {
+            for (const question of updatedQuestions) {
                 if (question.id == questionId) {
                     updateQuestion(question, contents);
                 }
