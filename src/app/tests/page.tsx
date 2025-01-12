@@ -1,4 +1,4 @@
-import { Question, Result, Sheet, SheetQuestion } from "@models";
+import { Question, Result, Sheet } from "@models";
 
 import TestSheetRow from "./components/test-sheet-row/test-sheet-row";
 import styles from "./tests.module.css";
@@ -26,11 +26,11 @@ async function getSheetsByProgress(): Promise<
     "use server";
     const sheetsWithoutProgress = await getAllSheets();
     const sheets = [];
-    for (let sheet of sheetsWithoutProgress) {
+    for (const sheet of sheetsWithoutProgress) {
         let progressTotal = 0;
-        let questionCount = sheet.questions.length;
+        const questionCount = sheet.questions.length;
         console.log(questionCount);
-        for (let question of sheet.questions) {
+        for (const question of sheet.questions) {
             const result = question.result;
             if (result === null) {
                 continue;
@@ -57,7 +57,7 @@ export default async function Tests() {
 
     const tableRows = [];
 
-    for (let sheet of allSheets) {
+    for (const sheet of allSheets) {
         tableRows.push(
             <TestSheetRow key={sheet.id} sheet={sheet}></TestSheetRow>,
         );

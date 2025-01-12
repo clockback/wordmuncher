@@ -7,7 +7,7 @@ export async function DELETE(
     { params }: { params: Promise<{ sheet: string }> },
 ) {
     const sheet = parseInt((await params).sheet);
-    let noDeleted = await Sheet.destroy({ where: { id: sheet } });
+    const noDeleted = await Sheet.destroy({ where: { id: sheet } });
 
     if (noDeleted === 0) {
         return NextResponse.json(

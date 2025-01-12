@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { UpdatedAt } from "sequelize-typescript";
 
 import { Answer, Question, Sheet, SheetQuestion } from "@models";
 
@@ -46,7 +45,7 @@ export async function POST(
                 isMainAnswer: true,
                 answerText: proposedMainAnswer,
             });
-            for (let proposedOtherAnswer of proposedOtherAnswers) {
+            for (const proposedOtherAnswer of proposedOtherAnswers) {
                 answers.push({
                     questionId: newQuestion.id,
                     isMainAnswer: false,
@@ -54,7 +53,7 @@ export async function POST(
                 });
             }
 
-            for (let createdAnswer of await Answer.bulkCreate(answers, {
+            for (const createdAnswer of await Answer.bulkCreate(answers, {
                 transaction: t,
             })) {
                 createdAnswers.push(createdAnswer.toJSON());

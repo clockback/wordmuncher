@@ -41,7 +41,7 @@ export default function TongueSelector({
         setCurrentTongue(await onChangeTongue(tongueId));
     };
 
-    let popup = popupVisible ? (
+    const popup = popupVisible ? (
         <TonguesPopup
             allTongues={allTongues}
             onClose={() => setPopupVisible(false)}

@@ -30,7 +30,7 @@ export default function QuestionTable() {
         let mainAnswer: string | null = null;
         const otherAnswers: string[] = [];
 
-        for (let answer of question.answers) {
+        for (const answer of question.answers) {
             if (answer.isMainAnswer) {
                 mainAnswer = answer.answerText;
             } else {
@@ -43,10 +43,10 @@ export default function QuestionTable() {
         setOtherAnswers(otherAnswers);
     }
 
-    for (let question of allQuestions) {
+    for (const question of allQuestions) {
         let mainAnswer = "";
         if (question.answers) {
-            for (let answer of question.answers) {
+            for (const answer of question.answers) {
                 if (answer.isMainAnswer) {
                     mainAnswer = answer.answerText;
                 }

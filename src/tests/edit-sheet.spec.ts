@@ -60,7 +60,7 @@ test("Delete question", async ({ page }) => {
     await page.getByTitle("Edit Sheet 1").click();
     await expect(page).toHaveURL("/vocab/1");
     await expect(page.getByRole("heading")).toHaveText("Sheet 1");
-    let tableRow = page
+    const tableRow = page
         .locator("table tr", { hasText: "Question 1" })
         .locator("td", { hasText: "hello world" });
     await tableRow.click();

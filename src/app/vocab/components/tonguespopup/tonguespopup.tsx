@@ -47,8 +47,8 @@ export default function TonguesPopup({
     onChangeTongue,
 }: TonguesPopupProps) {
     // Create array of buttons with flags for each tongue.
-    let allTongueButtons = [];
-    for (let tongue of allTongues) {
+    const allTongueButtons = [];
+    for (const tongue of allTongues) {
         allTongueButtons.push(
             makeTongueButton(tongue, onClose, onChangeTongue),
         );

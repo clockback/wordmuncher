@@ -7,7 +7,7 @@ setup("Set up database", async ({}) => {
     try {
         await unlink("/tmp/wordmuncher.sqlite");
         console.log("Deleted existing database file.");
-    } catch (e) {
+    } catch {
         console.log("No database file to delete.");
     }
 

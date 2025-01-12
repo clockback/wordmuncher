@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
         isMainAnswer: boolean;
         answerText: string;
     }[] = [];
-    for (let proposedOtherAnswer of proposedOtherAnswers) {
+    for (const proposedOtherAnswer of proposedOtherAnswers) {
         allOtherAnswers.push({
             questionId: questionId,
             isMainAnswer: false,

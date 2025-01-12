@@ -41,19 +41,23 @@ export async function up({ context: queryInterface }) {
                     type: DATE,
                 },
             },
-            {},
+            {
+                transaction: t,
+            },
         );
         await queryInterface.addIndex("Answers", ["questionId", "answerText"], {
             unique: true,
+            transaction: t,
         });
     });
 }
 export async function down({ context: queryInterface }) {
     await queryInterface.sequelize.transaction(async (t) => {
-        await queryInterface.removeIndex("Answers", [
-            "questionId",
-            "answerText",
-        ]);
-        await queryInterface.dropTable("Answers");
+        await queryInterface.removeIndex(
+            "Answers",
+            ["questionId", "answerText"],
+            { transaction: t },
+        );
+        await queryInterface.dropTable("Answers", { transaction: t });
     });
 }

@@ -30,7 +30,7 @@ async function settingsGetter(): Promise<Settings> {
     return settings;
 }
 
-var cachedSettingsGetter = cache(settingsGetter);
+let cachedSettingsGetter = cache(settingsGetter);
 
 export async function getSettings(): Promise<Settings> {
     return await cachedSettingsGetter();

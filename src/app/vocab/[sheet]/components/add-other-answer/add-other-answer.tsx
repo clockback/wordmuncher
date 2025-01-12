@@ -1,4 +1,4 @@
-import { FormEventHandler, useContext, useState } from "react";
+import { useContext, useState } from "react";
 
 import editSheetContext from "../../context";
 import styles from "./add-other-answer.module.css";
