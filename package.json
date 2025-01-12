@@ -21,7 +21,7 @@
     "dependencies": {
         "@playwright/test": "^1.49.1",
         "@types/node": "^22.10.2",
-        "next": "^15.0.4",
+        "next": "^15.1.4",
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
         "sequelize": "^6.37.5",
