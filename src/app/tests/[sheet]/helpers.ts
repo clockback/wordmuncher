@@ -1,4 +1,4 @@
-import { Op, col } from "sequelize";
+import { Op } from "sequelize";
 
 import { Question, Result, Sheet } from "@models";
 
@@ -11,11 +11,7 @@ async function getPartiallySolvedQuestion(
     const [question] = await Question.findAll({
         where: { id: { [Op.notIn]: lastQuestions } },
         include: [
-            {
-                model: Result,
-                where: { [Op.not]: { current: col("goal") } },
-                as: "result",
-            },
+            { model: Result, where: { goal: { [Op.gt]: 2 } }, as: "result" },
             { model: Sheet, where: { id: sheet.id }, as: "sheets" },
         ],
         order: sequelize.random(),
@@ -32,11 +28,7 @@ async function getNonSolvedQuestion(
     const [question] = await Question.findAll({
         where: { id: { [Op.notIn]: lastQuestions } },
         include: [
-            {
-                model: Result,
-                where: { [Op.not]: { current: 0 } },
-                as: "result",
-            },
+            { model: Result, where: { current: { [Op.lt]: 2 } }, as: "result" },
             { model: Sheet, where: { id: sheet.id }, as: "sheets" },
         ],
         order: sequelize.random(),
