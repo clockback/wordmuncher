@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { Answer, Question, Sheet, SheetQuestion } from "@models";
+import { Answer, Question, Result, Sheet, SheetQuestion } from "@models";
 
 import sequelize from "src/db/models/db-connection";
 
@@ -32,6 +32,11 @@ export async function POST(
                     tonguePairId: sheet.tonguePairId,
                     questionText: proposedQuestionText,
                 },
+                { transaction: t },
+            );
+
+            newQuestion.result = await Result.create(
+                { questionId: newQuestion.id, stars: 0, current: 0, goal: 2 },
                 { transaction: t },
             );
 
