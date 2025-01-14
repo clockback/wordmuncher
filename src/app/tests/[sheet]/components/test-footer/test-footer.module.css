@@ -1,0 +1,8 @@
+.footer {
+    height: 100px;
+    left: var(--sidebar-width);
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    border-top: 2px solid grey;
+}

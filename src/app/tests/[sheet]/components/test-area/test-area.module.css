@@ -1,0 +1,16 @@
+.centre {
+    text-align: center;
+    top: 50px;
+    bottom: 100px;
+    left: var(--sidebar-width);
+    right: 0;
+    position: absolute;
+    overflow-y: auto;
+}
+
+.verticalcentre {
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}

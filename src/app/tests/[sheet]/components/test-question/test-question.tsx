@@ -1,27 +1,24 @@
 "use client";
 
 import { NextResponse } from "next/server";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { JSX } from "react";
 
-import { Question, Result, Sheet } from "@models";
+import { Answer, Question, Result } from "@models";
 
 import Correct from "../../assets/images/correct.svg";
 import Incomplete from "../../assets/images/incomplete.svg";
 import Incorrect from "../../assets/images/incorrect.svg";
+import testSheetContext from "../../context";
 import Star from "../star/star";
 import styles from "./test-question.module.css";
-
-interface TestQuestionProps {
-    sheet: Sheet;
-    initialQuestion: Question;
-}
 
 interface SubmitAnswerContents {
     correct: boolean;
     result: Result;
     nextQuestion: Question;
     lastQuestions: number[];
+    expectedAnswer: Answer | null;
 }
 
 function allStars(question: Question): JSX.Element[] {
@@ -56,14 +53,13 @@ function progressBar(result: Result): JSX.Element[] {
     return bars;
 }
 
-export default function TestQuestion({
-    sheet,
-    initialQuestion,
-}: TestQuestionProps) {
-    const [question, setQuestion] = useState(initialQuestion);
+export default function TestQuestion() {
     const [lastQuestions, setLastQuestions] = useState([]);
     const [pending, setPending] = useState(false);
     const [currentAnswer, setCurrentAnswer] = useState("");
+
+    const { question, setExpectedAnswer, setQuestion, sheet } =
+        useContext(testSheetContext);
 
     const textareaRef = useRef(null);
     useEffect(() => {
@@ -76,6 +72,7 @@ export default function TestQuestion({
         setPending(false);
         setQuestion(contents.nextQuestion);
         setCurrentAnswer("");
+        setExpectedAnswer(null);
     }
 
     function checkHitEnterHandleResponse(response: NextResponse) {
@@ -88,6 +85,7 @@ export default function TestQuestion({
             newQuestion.result = contents.result;
             setQuestion(newQuestion);
             setLastQuestions(contents.lastQuestions);
+            setExpectedAnswer(contents.expectedAnswer);
             setTimeout(() => setNewAnswer(contents), 1000);
         });
     }
