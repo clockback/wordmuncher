@@ -20,7 +20,7 @@ export default function TestSheetRow({ sheet }: TestSheetRowProps) {
     return (
         <tr onClick={clickSheet}>
             <td>{sheet.sheetName}</td>
-            <td>{sheet.progress * 100}%</td>
+            <td>{Math.floor(sheet.progress * 100)}%</td>
         </tr>
     );
 }
