@@ -1,23 +1,6 @@
-.centre {
-    text-align: center;
-    top: 50px;
-    bottom: 0;
-    left: var(--sidebar-width);
-    right: 0;
-    position: absolute;
-    overflow-y: auto;
-}
-
 .sheetname {
     margin-block: 0;
     padding: 10px;
     font-size: 30px;
     line-height: 30px;
-}
-
-.verticalcentre {
-    position: relative;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
 }

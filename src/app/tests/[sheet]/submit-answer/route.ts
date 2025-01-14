@@ -55,10 +55,14 @@ export async function POST(
         ],
     });
     let correct = false;
+    let expectedAnswer = null;
     for (const answer of question.answers) {
         if (submittedAnswer === answer.answerText) {
             correct = true;
             break;
+        }
+        if (answer.isMainAnswer) {
+            expectedAnswer = answer;
         }
     }
 
@@ -79,6 +83,8 @@ export async function POST(
             result: question.result,
             nextQuestion: nextQuestion.toJSON(),
             lastQuestions: lastQuestions,
+            expectedAnswer:
+                expectedAnswer && !correct ? expectedAnswer.toJSON() : null,
         },
         { status: 202 },
     );
