@@ -1,10 +1,9 @@
 "use client";
 
-import { NextResponse } from "next/server";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { JSX } from "react";
 
-import { Answer, Question, Result } from "@models";
+import { Question, Result } from "@models";
 
 import Correct from "../../assets/images/correct.svg";
 import Incomplete from "../../assets/images/incomplete.svg";
@@ -12,14 +11,6 @@ import Incorrect from "../../assets/images/incorrect.svg";
 import testSheetContext from "../../context";
 import Star from "../star/star";
 import styles from "./test-question.module.css";
-
-interface SubmitAnswerContents {
-    correct: boolean;
-    result: Result;
-    nextQuestion: Question;
-    lastQuestions: number[];
-    expectedAnswer: Answer | null;
-}
 
 function allStars(question: Question): JSX.Element[] {
     const stars = [];
@@ -53,12 +44,12 @@ function progressBar(result: Result): JSX.Element[] {
     return bars;
 }
 
-export default function TestQuestion() {
-    const [lastQuestions, setLastQuestions] = useState([]);
-    const [pending, setPending] = useState(false);
-    const [currentAnswer, setCurrentAnswer] = useState("");
+interface TestQuestionProps {
+    submitAnswer: (submittedAnswer: string) => void;
+}
 
-    const { question, setExpectedAnswer, setQuestion, sheet } =
+export default function TestQuestion({ submitAnswer }: TestQuestionProps) {
+    const { currentAnswer, pending, question, setCurrentAnswer } =
         useContext(testSheetContext);
 
     const textareaRef = useRef(null);
@@ -68,52 +59,12 @@ export default function TestQuestion() {
         }
     });
 
-    function setNewAnswer(contents: SubmitAnswerContents) {
-        setPending(false);
-        setQuestion(contents.nextQuestion);
-        setCurrentAnswer("");
-        setExpectedAnswer(null);
-    }
-
-    function checkHitEnterHandleResponse(response: NextResponse) {
-        if (response.status !== 202) {
-            console.log("Failed to submit answer!");
-            return;
-        }
-        response.json().then((contents: SubmitAnswerContents) => {
-            const newQuestion = structuredClone(question);
-            newQuestion.result = contents.result;
-            setQuestion(newQuestion);
-            setLastQuestions(contents.lastQuestions);
-            setExpectedAnswer(contents.expectedAnswer);
-            setTimeout(() => setNewAnswer(contents), 1000);
-        });
-    }
-
-    const hitEnter = (submittedAnswer: string) => {
-        if (submittedAnswer === "") {
-            return;
-        }
-
-        setPending(true);
-        fetch(`/tests/${sheet.id}/submit-answer`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                questionId: question.id,
-                submittedAnswer: submittedAnswer,
-                lastQuestions: lastQuestions,
-            }),
-        }).then(checkHitEnterHandleResponse);
-    };
-
     const checkHitEnter = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (e.key !== "Enter") {
             return;
         }
         e.preventDefault();
-        const submittedAnswer = e.currentTarget.value.trim();
-        hitEnter(submittedAnswer);
+        submitAnswer(e.currentTarget.value);
     };
 
     const onChangeCurrentAnswer = (
