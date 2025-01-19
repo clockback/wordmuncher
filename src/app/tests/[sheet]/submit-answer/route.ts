@@ -4,6 +4,8 @@ import { Answer, Question, Result, Sheet } from "@models";
 
 import { getQuestion } from "../helpers";
 
+const minimumSimilarityScore = 0.85;
+
 function markCorrect(result: Result) {
     if (result.current === 2 && result.goal === 2) {
         return;
@@ -38,6 +40,48 @@ function updateLastQuestions(lastQuestions: number[], questionId: number) {
     lastQuestions.push(questionId);
 }
 
+function editDistance(longerString: string, shorterString: string): number {
+    const costs = [];
+
+    for (let shortI = 0; shortI <= longerString.length; shortI++) {
+        let lastValue = shortI;
+        for (let longI = 0; longI <= shorterString.length; longI++) {
+            if (shortI == 0) {
+                costs[longI] = longI;
+            } else if (longI > 0) {
+                let newValue = costs[longI - 1];
+                if (longerString[shortI - 1] != shorterString[longI - 1]) {
+                    newValue = Math.min(newValue, lastValue, costs[longI]) + 1;
+                }
+                costs[longI - 1] = lastValue;
+                lastValue = newValue;
+            }
+        }
+        if (shortI > 0) {
+            costs[shorterString.length] = lastValue;
+        }
+    }
+
+    return costs[shorterString.length];
+}
+
+function stringSimilarity(string1: string, string2: string): number {
+    let longer: string;
+    let shorter: string;
+    if (string1.length > string2.length) {
+        longer = string1;
+        shorter = string2;
+    } else {
+        longer = string2;
+        shorter = string1;
+    }
+
+    if (longer.length === 0) {
+        return 1.0;
+    }
+    return (longer.length - editDistance(longer, shorter)) / longer.length;
+}
+
 export async function POST(
     request: NextRequest,
     { params }: { params: Promise<{ sheet: string }> },
@@ -46,6 +90,7 @@ export async function POST(
     const questionId = requestJSON.questionId;
     const submittedAnswer = requestJSON.submittedAnswer;
     const lastQuestions = requestJSON.lastQuestions;
+    const attemptedAlready = requestJSON.attemptedAlready;
     const sheetId = parseInt((await params).sheet);
 
     const question = await Question.findByPk(questionId, {
@@ -55,27 +100,53 @@ export async function POST(
         ],
     });
     let correct = false;
-    let expectedAnswer = null;
+    let closest = null;
+    let closestScore = null;
+    let mainAnswer = null;
     for (const answer of question.answers) {
         if (submittedAnswer === answer.answerText) {
             correct = true;
+            closest = answer;
+            closestScore = 1.0;
             break;
         }
+
+        const score = stringSimilarity(submittedAnswer, answer.answerText);
+        if (score > closestScore) {
+            closestScore = score;
+            closest = answer;
+        }
+
         if (answer.isMainAnswer) {
-            expectedAnswer = answer;
+            mainAnswer = answer;
         }
     }
 
     if (correct) {
         markCorrect(question.result);
-    } else {
+    } else if (closestScore < minimumSimilarityScore || attemptedAlready) {
         markIncorrect(question.result);
+    } else {
+        return NextResponse.json(
+            {
+                correct: false,
+                reattemptAvailable: true,
+                closest: closest,
+            },
+            { status: 202 },
+        );
     }
 
     updateLastQuestions(lastQuestions, questionId);
 
     const sheet = await Sheet.findByPk(sheetId);
     const nextQuestion = await getQuestion(sheet, lastQuestions);
+    let expectedAnswer: Answer;
+    if (correct || closestScore > minimumSimilarityScore) {
+        expectedAnswer = closest.toJSON();
+    } else {
+        expectedAnswer = mainAnswer.toJSON();
+    }
 
     return NextResponse.json(
         {
@@ -83,8 +154,8 @@ export async function POST(
             result: question.result,
             nextQuestion: nextQuestion.toJSON(),
             lastQuestions: lastQuestions,
-            expectedAnswer:
-                expectedAnswer && !correct ? expectedAnswer.toJSON() : null,
+            expectedAnswer: expectedAnswer,
+            reattemptAvailable: false,
         },
         { status: 202 },
     );

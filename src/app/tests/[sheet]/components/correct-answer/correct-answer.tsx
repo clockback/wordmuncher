@@ -4,7 +4,17 @@ import testSheetContext from "../../context";
 import styles from "./correct-answer.module.css";
 
 export default function CorrectAnswer() {
-    const { expectedAnswer } = useContext(testSheetContext);
+    const { expectedAnswer, attemptedAlready } = useContext(testSheetContext);
+
+    if (attemptedAlready) {
+        return (
+            <div className={styles.correctanswer}>
+                <span className={styles.correctanswerlabel}>
+                    Close, but try again!
+                </span>
+            </div>
+        );
+    }
 
     if (expectedAnswer === null) {
         return <></>;

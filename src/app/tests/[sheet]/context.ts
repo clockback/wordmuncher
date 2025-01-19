@@ -3,6 +3,7 @@ import { createContext } from "react";
 import { Answer, Question, Sheet } from "@models";
 
 interface TestSheetContextType {
+    attemptedAlready: boolean;
     currentAnswer: string;
     expectedAnswer: Answer | null;
     lastQuestions: number[];

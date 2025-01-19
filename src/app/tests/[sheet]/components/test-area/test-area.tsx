@@ -21,6 +21,7 @@ interface SubmitAnswerContents {
     nextQuestion: Question;
     lastQuestions: number[];
     expectedAnswer: Answer | null;
+    reattemptAvailable: boolean;
 }
 
 export default function TestArea({ initialQuestion, sheet }: TestAreaProps) {
@@ -30,6 +31,7 @@ export default function TestArea({ initialQuestion, sheet }: TestAreaProps) {
     const [pending, setPending] = useState(false);
     const [currentAnswer, setCurrentAnswer] = useState("");
     const [nextQuestion, setNextQuestion] = useState(null);
+    const [attemptedAlready, setAttemptedAlready] = useState(false);
 
     function prepareNewAnswer(contents: SubmitAnswerContents) {
         setPending(false);
@@ -39,21 +41,36 @@ export default function TestArea({ initialQuestion, sheet }: TestAreaProps) {
         setNextQuestion(null);
     }
 
+    function allowReattempt() {
+        setAttemptedAlready(true);
+        setPending(false);
+    }
+
+    function markAnswer(contents: SubmitAnswerContents) {
+        setAttemptedAlready(contents.reattemptAvailable);
+        const newQuestion = structuredClone(question);
+        newQuestion.result = contents.result;
+        setQuestion(newQuestion);
+        setLastQuestions(contents.lastQuestions);
+        setExpectedAnswer(contents.correct ? null : contents.expectedAnswer);
+        if (contents.correct) {
+            setTimeout(() => prepareNewAnswer(contents), 1000);
+        } else {
+            setNextQuestion(contents.nextQuestion);
+        }
+    }
+
     const submitAnswerHandleResponse = async (response: NextResponse) => {
         if (response.status !== 202) {
             console.log("Failed to submit answer!");
             return;
         }
         response.json().then((contents: SubmitAnswerContents) => {
-            const newQuestion = structuredClone(question);
-            newQuestion.result = contents.result;
-            setQuestion(newQuestion);
-            setLastQuestions(contents.lastQuestions);
-            setExpectedAnswer(contents.expectedAnswer);
-            if (contents.correct) {
-                setTimeout(() => prepareNewAnswer(contents), 1000);
+            if (contents.reattemptAvailable) {
+                console.log("Reattempt available!");
+                allowReattempt();
             } else {
-                setNextQuestion(contents.nextQuestion);
+                markAnswer(contents);
             }
         });
     };
@@ -72,11 +89,13 @@ export default function TestArea({ initialQuestion, sheet }: TestAreaProps) {
                 questionId: question.id,
                 submittedAnswer: trimmedAnswer,
                 lastQuestions: lastQuestions,
+                attemptedAlready: attemptedAlready,
             }),
         }).then(submitAnswerHandleResponse);
     };
 
     const context = {
+        attemptedAlready,
         currentAnswer,
         expectedAnswer,
         lastQuestions,
