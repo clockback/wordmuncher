@@ -29,7 +29,11 @@ async function getSheetsByProgress(): Promise<
     for (const sheet of sheetsWithoutProgress) {
         let progressTotal = 0;
         const questionCount = sheet.questions.length;
-        console.log(questionCount);
+
+        if (questionCount === 0) {
+            continue;
+        }
+
         for (const question of sheet.questions) {
             const result = question.result;
             if (result === null) {
