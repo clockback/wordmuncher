@@ -15,6 +15,12 @@ export async function up({ context: queryInterface }) {
             createdAt: new Date(),
             updatedAt: new Date(),
         },
+        {
+            sheetId: 3,
+            questionId: 3,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        },
     ]);
 }
 export async function down({ context: queryInterface }) {

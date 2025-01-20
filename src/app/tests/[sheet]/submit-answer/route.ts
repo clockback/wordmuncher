@@ -17,12 +17,17 @@ function markCorrect(result: Result) {
         result.goal = 2;
     }
 
+    if (result.gotStarAt === null) {
+        result.gotStarAt = new Date();
+    }
+
     result.save();
 }
 
 function markIncorrect(result: Result) {
     result.current = 0;
     result.goal = Math.min(5, result.goal + 1);
+    result.gotStarAt = null;
 
     result.save();
 }

@@ -24,6 +24,7 @@ export class Result extends Model<
     declare stars: number;
     declare goal: number;
     declare current: number;
+    declare gotStarAt: CreationOptional<Date | null>;
 
     declare createdAt: CreationOptional<Date>;
     declare updatedAt: CreationOptional<Date>;
@@ -64,6 +65,7 @@ Result.init(
             type: DataTypes.INTEGER,
             allowNull: false,
         },
+        gotStarAt: DataTypes.DATE,
         createdAt: DataTypes.DATE,
         updatedAt: DataTypes.DATE,
     },

@@ -17,10 +17,16 @@ To install:
 npm i
 ```
 
-To run (at port 3000):
+To run (at port 3000), one shell should run:
 
 ```bash
 npm run dev
+```
+
+While the other should run:
+
+```bash
+npm run cron
 ```
 
 Quality checks:
