@@ -34,6 +34,9 @@ export async function up({ context: queryInterface }) {
             allowNull: false,
             type: INTEGER,
         },
+        gotStarAt: {
+            type: DATE,
+        },
         createdAt: {
             allowNull: false,
             type: DATE,
