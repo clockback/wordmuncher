@@ -9,9 +9,8 @@ export async function POST(
     { params }: { params: Promise<{ sheet: string }> },
 ) {
     const requestJSON = await request.json();
-    const proposedQuestionText = requestJSON.proposedQuestionText;
-    const proposedMainAnswer = requestJSON.proposedMainAnswer;
-    const proposedOtherAnswers = requestJSON.proposedOtherAnswers;
+    const { proposedQuestionText, proposedMainAnswer, proposedOtherAnswers } =
+        requestJSON;
 
     const sheetId = parseInt((await params).sheet);
     const sheet = await Sheet.findByPk(sheetId);

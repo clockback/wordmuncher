@@ -6,10 +6,12 @@ import sequelize from "src/db/models/db-connection";
 
 export async function POST(request: NextRequest) {
     const requestJSON = await request.json();
-    const proposedQuestionText = requestJSON.proposedQuestionText;
-    const proposedMainAnswer = requestJSON.proposedMainAnswer;
-    const proposedOtherAnswers = requestJSON.proposedOtherAnswers;
-    const questionId = requestJSON.id;
+    const {
+        proposedQuestionText,
+        proposedMainAnswer,
+        proposedOtherAnswers,
+        id,
+    } = requestJSON;
 
     const allOtherAnswers: {
         questionId: number;
@@ -18,7 +20,7 @@ export async function POST(request: NextRequest) {
     }[] = [];
     for (const proposedOtherAnswer of proposedOtherAnswers) {
         allOtherAnswers.push({
-            questionId: questionId,
+            questionId: id,
             isMainAnswer: false,
             answerText: proposedOtherAnswer,
         });
@@ -29,18 +31,18 @@ export async function POST(request: NextRequest) {
             await Question.update(
                 { questionText: proposedQuestionText },
                 {
-                    where: { id: questionId },
+                    where: { id: id },
                     transaction: t,
                 },
             );
             await Answer.destroy({
-                where: { isMainAnswer: false, questionId: questionId },
+                where: { isMainAnswer: false, questionId: id },
                 transaction: t,
             });
             await Answer.update(
                 { answerText: proposedMainAnswer },
                 {
-                    where: { questionId: questionId },
+                    where: { questionId: id },
                     transaction: t,
                 },
             );
@@ -53,7 +55,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(
         {
-            questionId: questionId,
+            questionId: id,
             questionText: proposedQuestionText,
             mainAnswer: proposedMainAnswer,
             otherAnswers: proposedOtherAnswers,
