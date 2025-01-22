@@ -15,10 +15,7 @@ function markCorrect(result: Result) {
     if (result.current === result.goal) {
         result.current = 2;
         result.goal = 2;
-    }
-
-    if (result.gotStarAt === null) {
-        result.gotStarAt = new Date();
+        result.gotStarAt ??= new Date();
     }
 
     result.save();
