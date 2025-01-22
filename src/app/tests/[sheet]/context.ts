@@ -16,7 +16,9 @@ interface TestSheetContextType {
     setNextQuestion: (value: Question) => void;
     setPending: (value: boolean) => void;
     setQuestion: (value: Question) => void;
+    setShowMessageToFinish: (value: boolean) => void;
     sheet: Sheet;
+    showMessageToFinish: boolean;
 }
 
 const testSheetContext = createContext<TestSheetContextType | undefined>(

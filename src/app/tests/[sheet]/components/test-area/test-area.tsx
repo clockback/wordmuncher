@@ -1,7 +1,7 @@
 "use client";
 
 import { NextResponse } from "next/server";
-import { useState } from "react";
+import { JSX, useState } from "react";
 
 import { Answer, Question, Result, Sheet } from "@models";
 
@@ -22,6 +22,7 @@ interface SubmitAnswerContents {
     lastQuestions: number[];
     expectedAnswer: Answer | null;
     reattemptAvailable: boolean;
+    done?: boolean;
 }
 
 export default function TestArea({ initialQuestion, sheet }: TestAreaProps) {
@@ -32,6 +33,8 @@ export default function TestArea({ initialQuestion, sheet }: TestAreaProps) {
     const [currentAnswer, setCurrentAnswer] = useState("");
     const [nextQuestion, setNextQuestion] = useState(null);
     const [attemptedAlready, setAttemptedAlready] = useState(false);
+    const [promptOnCompletion, setPromptOnCompletion] = useState(true);
+    const [showMessageToFinish, setShowMessageToFinish] = useState(false);
 
     function prepareNewAnswer(contents: SubmitAnswerContents) {
         setPending(false);
@@ -39,6 +42,10 @@ export default function TestArea({ initialQuestion, sheet }: TestAreaProps) {
         setCurrentAnswer("");
         setExpectedAnswer(null);
         setNextQuestion(null);
+        if (contents.done && promptOnCompletion) {
+            setShowMessageToFinish(true);
+            setPromptOnCompletion(false);
+        }
     }
 
     function allowReattempt() {
@@ -56,6 +63,7 @@ export default function TestArea({ initialQuestion, sheet }: TestAreaProps) {
         if (contents.correct) {
             setTimeout(() => prepareNewAnswer(contents), 1000);
         } else {
+            setPromptOnCompletion(true);
             setNextQuestion(contents.nextQuestion);
         }
     }
@@ -94,6 +102,15 @@ export default function TestArea({ initialQuestion, sheet }: TestAreaProps) {
         }).then(submitAnswerHandleResponse);
     };
 
+    let testAreaContents: JSX.Element;
+    if (showMessageToFinish) {
+        testAreaContents = <h1>Sheet completed!</h1>;
+    } else {
+        testAreaContents = (
+            <TestQuestion submitAnswer={submitAnswer}></TestQuestion>
+        );
+    }
+
     const context = {
         attemptedAlready,
         currentAnswer,
@@ -108,14 +125,14 @@ export default function TestArea({ initialQuestion, sheet }: TestAreaProps) {
         setNextQuestion,
         setPending,
         setQuestion,
+        setShowMessageToFinish,
         sheet,
+        showMessageToFinish,
     };
     return (
         <testSheetContext.Provider value={context}>
             <div className={styles.centre}>
-                <div className={styles.verticalcentre}>
-                    <TestQuestion submitAnswer={submitAnswer}></TestQuestion>
-                </div>
+                <div className={styles.verticalcentre}>{testAreaContents}</div>
             </div>
             <TestFooter submitAnswer={submitAnswer}></TestFooter>
         </testSheetContext.Provider>

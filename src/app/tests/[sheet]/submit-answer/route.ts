@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { Op } from "sequelize";
 
 import { Answer, Question, Result, Sheet } from "@models";
 
@@ -84,6 +85,27 @@ function stringSimilarity(string1: string, string2: string): number {
     return (longer.length - editDistance(longer, shorter)) / longer.length;
 }
 
+async function finishedSheet(
+    sheet: Sheet,
+    lastQuestion: Question,
+): Promise<boolean> {
+    if (lastQuestion.result.gotStarAt === null) {
+        return false;
+    }
+
+    const incompleteQuestion = await Question.findOne({
+        where: {
+            id: { [Op.not]: lastQuestion.id },
+        },
+        include: [
+            { model: Result, as: "result", where: { gotStarAt: null } },
+            { model: Sheet, where: { id: sheet.id }, as: "sheets" },
+        ],
+    });
+
+    return incompleteQuestion === null;
+}
+
 export async function POST(
     request: NextRequest,
     { params }: { params: Promise<{ sheet: string }> },
@@ -141,6 +163,7 @@ export async function POST(
 
     const sheet = await Sheet.findByPk(sheetId);
     const nextQuestion = await getQuestion(sheet, lastQuestions);
+    const done = correct && (await finishedSheet(sheet, question));
     let expectedAnswer: Answer;
     if (correct || closestScore > minimumSimilarityScore) {
         expectedAnswer = closest.toJSON();
@@ -156,6 +179,7 @@ export async function POST(
             lastQuestions: lastQuestions,
             expectedAnswer: expectedAnswer,
             reattemptAvailable: false,
+            done,
         },
         { status: 202 },
     );

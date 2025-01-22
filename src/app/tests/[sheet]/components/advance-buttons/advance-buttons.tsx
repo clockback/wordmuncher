@@ -3,13 +3,13 @@ import { JSX, useContext } from "react";
 import Button from "@components/button/button";
 
 import testSheetContext from "../../context";
-import styles from "./advance-button.module.css";
+import styles from "./advance-buttons.module.css";
 
-interface AdvanceButtonProps {
+interface AdvanceButtonsProps {
     submitAnswer: (submittedAnswer: string) => void;
 }
 
-export default function AdvanceButton({ submitAnswer }: AdvanceButtonProps) {
+export default function AdvanceButtons({ submitAnswer }: AdvanceButtonsProps) {
     const {
         currentAnswer,
         expectedAnswer,
@@ -20,6 +20,8 @@ export default function AdvanceButton({ submitAnswer }: AdvanceButtonProps) {
         setNextQuestion,
         setPending,
         setQuestion,
+        setShowMessageToFinish,
+        showMessageToFinish,
     } = useContext(testSheetContext);
 
     const curriedSubmitAnswer = () => {
@@ -37,6 +39,17 @@ export default function AdvanceButton({ submitAnswer }: AdvanceButtonProps) {
     let button: JSX.Element;
     if (expectedAnswer) {
         button = <Button onClick={prepareNewAnswer}>Next</Button>;
+    } else if (showMessageToFinish) {
+        const keepGoingCallback = () => {
+            setShowMessageToFinish(false);
+        };
+
+        button = (
+            <>
+                <Button href="/tests">Finish</Button>
+                <Button onClick={keepGoingCallback}>Keep going</Button>
+            </>
+        );
     } else {
         button = (
             <Button
