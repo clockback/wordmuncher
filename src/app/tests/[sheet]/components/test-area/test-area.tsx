@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { NextResponse } from "next/server";
 import { JSX, useState } from "react";
 
@@ -9,6 +8,7 @@ import { Answer, Question, Result, Sheet } from "@models";
 import testSheetContext from "../../context";
 import TestFooter from "../test-footer/test-footer";
 import TestQuestion from "../test-question/test-question";
+import TestResults from "../test-results/test-results";
 import styles from "./test-area.module.css";
 
 interface TestAreaProps {
@@ -42,8 +42,9 @@ export default function TestArea({
     const [promptOnCompletion, setPromptOnCompletion] = useState(true);
     const [showMessageToFinish, setShowMessageToFinish] = useState(false);
     const [questionNumber, setQuestionNumber] = useState(1);
-
-    const router = useRouter();
+    const [showResults, setShowResults] = useState(false);
+    const [numberCorrect, setNumberCorrect] = useState(0);
+    const [numberIncorrect, setNumberIncorrect] = useState(0);
 
     function prepareNewAnswer(contents: SubmitAnswerContents) {
         setPending(false);
@@ -67,7 +68,8 @@ export default function TestArea({
 
     function markAnswer(contents: SubmitAnswerContents) {
         if (contents.correct && questionNumber === numberOfQuestions) {
-            setTimeout(() => router.push("/tests"), 1000);
+            setNumberCorrect(numberCorrect + 1);
+            setTimeout(() => setShowResults(true), 1000);
             return;
         }
 
@@ -78,8 +80,10 @@ export default function TestArea({
         setLastQuestions(contents.lastQuestions);
         setExpectedAnswer(contents.correct ? null : contents.expectedAnswer);
         if (contents.correct) {
+            setNumberCorrect(numberCorrect + 1);
             setTimeout(() => prepareNewAnswer(contents), 1000);
         } else {
+            setNumberIncorrect(numberIncorrect + 1);
             setPromptOnCompletion(true);
             if (contents.nextQuestion !== null) {
                 setNextQuestion(contents.nextQuestion);
@@ -124,20 +128,30 @@ export default function TestArea({
         }).then(submitAnswerHandleResponse);
     };
 
+    let progressHeader: JSX.Element;
+    if (showResults) {
+        progressHeader = null;
+    } else if (numberOfQuestions === null) {
+        progressHeader = (
+            <h2 className={styles.questionheader}>Question {questionNumber}</h2>
+        );
+    } else {
+        progressHeader = (
+            <h2 className={styles.questionheader}>
+                Question {questionNumber}/{numberOfQuestions}
+            </h2>
+        );
+    }
+
     let testAreaContents: JSX.Element;
-    if (showMessageToFinish) {
+    if (showResults) {
+        testAreaContents = <TestResults></TestResults>;
+    } else if (showMessageToFinish) {
         testAreaContents = <h1>Sheet completed!</h1>;
     } else {
         testAreaContents = (
             <TestQuestion submitAnswer={submitAnswer}></TestQuestion>
         );
-    }
-
-    let questionNumberText: string;
-    if (numberOfQuestions === null) {
-        questionNumberText = `Question ${questionNumber}`;
-    } else {
-        questionNumberText = `Question ${questionNumber}/${numberOfQuestions}`;
     }
 
     const context = {
@@ -146,6 +160,8 @@ export default function TestArea({
         expectedAnswer,
         lastQuestions,
         nextQuestion,
+        numberCorrect,
+        numberIncorrect,
         numberOfQuestions,
         pending,
         question,
@@ -155,15 +171,19 @@ export default function TestArea({
         setExpectedAnswer,
         setLastQuestions,
         setNextQuestion,
+        setNumberCorrect,
+        setNumberIncorrect,
         setPending,
         setQuestion,
         setShowMessageToFinish,
+        setShowResults,
         sheet,
         showMessageToFinish,
+        showResults,
     };
     return (
         <testSheetContext.Provider value={context}>
-            <h2 className={styles.questionheader}>{questionNumberText}</h2>
+            {progressHeader}
             <div className={styles.centre}>
                 <div className={styles.verticalcentre}>{testAreaContents}</div>
             </div>
