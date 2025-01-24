@@ -1,4 +1,4 @@
-import { createContext } from "react";
+import { Dispatch, SetStateAction, createContext } from "react";
 
 import { Answer, Question, Sheet } from "@models";
 
@@ -12,14 +12,14 @@ interface TestSheetContextType {
     pending: boolean;
     question: Question;
     questionNumber: number;
-    setCurrentAnswer: (value: string) => void;
-    setExpectedAnswer: (value: Answer | null) => void;
-    setLastQuestions: (value: number[]) => void;
-    setNextQuestion: (value: Question) => void;
-    setPending: (value: boolean) => void;
-    setQuestion: (value: Question) => void;
-    setQuestionNumber: (value: number) => void;
-    setShowMessageToFinish: (value: boolean) => void;
+    setCurrentAnswer: Dispatch<SetStateAction<string>>;
+    setExpectedAnswer: Dispatch<SetStateAction<Answer | null>>;
+    setLastQuestions: Dispatch<SetStateAction<number[]>>;
+    setNextQuestion: Dispatch<SetStateAction<Question>>;
+    setPending: Dispatch<SetStateAction<boolean>>;
+    setQuestion: Dispatch<SetStateAction<Question>>;
+    setQuestionNumber: Dispatch<SetStateAction<number>>;
+    setShowMessageToFinish: Dispatch<SetStateAction<boolean>>;
     sheet: Sheet;
     showMessageToFinish: boolean;
 }

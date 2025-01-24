@@ -1,4 +1,5 @@
-import { createContext } from "react";
+import { SetStateAction, createContext } from "react";
+import { Dispatch } from "react";
 
 import { Question } from "@models";
 
@@ -13,20 +14,20 @@ interface EditSheetContextType {
     pending: boolean;
     proposedQuestionText: string;
     questionFormValid: boolean;
-    setAnswerEntryValue: (value: string) => void;
+    setAnswerEntryValue: Dispatch<SetStateAction<string>>;
     savePossible: boolean;
     selectedQuestion: Question | null;
-    setAllQuestions: (value: Question[]) => void;
-    setEditingOtherAnswerI: (value: number | null) => void;
-    setIsAddingNewQuestion: (value: boolean) => void;
-    setIsAddingOtherAnswer: (value: boolean) => void;
-    setIsEditingQuestionText: (value: boolean) => void;
-    setOtherAnswers: (value: string[]) => void;
-    setPending: (value: boolean) => void;
-    setProposedQuestionText: (value: string) => void;
-    setQuestionFormValid: (value: boolean) => void;
-    setSavePossible: (value: boolean) => void;
-    setSelectedQuestion: (value: Question | null) => void;
+    setAllQuestions: Dispatch<SetStateAction<Question[]>>;
+    setEditingOtherAnswerI: Dispatch<SetStateAction<number | null>>;
+    setIsAddingNewQuestion: Dispatch<SetStateAction<boolean>>;
+    setIsAddingOtherAnswer: Dispatch<SetStateAction<boolean>>;
+    setIsEditingQuestionText: Dispatch<SetStateAction<boolean>>;
+    setOtherAnswers: Dispatch<SetStateAction<string[]>>;
+    setPending: Dispatch<SetStateAction<boolean>>;
+    setProposedQuestionText: Dispatch<SetStateAction<string>>;
+    setQuestionFormValid: Dispatch<SetStateAction<boolean>>;
+    setSavePossible: Dispatch<SetStateAction<boolean>>;
+    setSelectedQuestion: Dispatch<SetStateAction<Question | null>>;
     sheetId: number;
 }
 
