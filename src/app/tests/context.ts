@@ -1,8 +1,8 @@
-import { createContext } from "react";
+import { Dispatch, SetStateAction, createContext } from "react";
 
 interface TestsContextType {
     selectedRowId: number;
-    setSelectedRowId: (value: number) => void;
+    setSelectedRowId: Dispatch<SetStateAction<number>>;
 }
 
 const testsContext = createContext<TestsContextType | undefined>(undefined);
