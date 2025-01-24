@@ -111,8 +111,13 @@ export async function POST(
     { params }: { params: Promise<{ sheet: string }> },
 ) {
     const requestJSON = await request.json();
-    const { questionId, submittedAnswer, lastQuestions, attemptedAlready } =
-        requestJSON;
+    const {
+        questionId,
+        submittedAnswer,
+        lastQuestions,
+        attemptedAlready,
+        retrieveNextAnswer,
+    } = requestJSON;
     const sheetId = parseInt((await params).sheet);
 
     const question = await Question.findByPk(questionId, {
@@ -162,7 +167,9 @@ export async function POST(
     updateLastQuestions(lastQuestions, questionId);
 
     const sheet = await Sheet.findByPk(sheetId);
-    const nextQuestion = await getQuestion(sheet, lastQuestions);
+    const nextQuestion = retrieveNextAnswer
+        ? await getQuestion(sheet, lastQuestions)
+        : null;
     const done = correct && (await finishedSheet(sheet, question));
     let expectedAnswer: Answer;
     if (correct || closestScore > minimumSimilarityScore) {
@@ -175,7 +182,7 @@ export async function POST(
         {
             correct: correct,
             result: question.result,
-            nextQuestion: nextQuestion.toJSON(),
+            nextQuestion: nextQuestion ? nextQuestion.toJSON() : null,
             lastQuestions: lastQuestions,
             expectedAnswer: expectedAnswer,
             reattemptAvailable: false,

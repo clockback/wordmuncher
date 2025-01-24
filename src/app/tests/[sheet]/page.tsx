@@ -8,12 +8,29 @@ import styles from "./test-page.module.css";
 
 export default async function TestSheet({
     params,
+    searchParams,
 }: {
-    params: Promise<{ sheet: number }>;
+    params: Promise<{ sheet: number; testLength: string }>;
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
     const loadParams = await params;
     if (loadParams === undefined) {
         return notFound();
+    }
+
+    const noQuestionsString = (await searchParams).questions;
+    let numberOfQuestions: number | null;
+    if (noQuestionsString === "all") {
+        numberOfQuestions = null;
+    } else if (typeof noQuestionsString !== "string") {
+        return notFound();
+    } else {
+        numberOfQuestions = parseInt(noQuestionsString);
+        if (Number.isNaN(numberOfQuestions)) {
+            return notFound();
+        } else if (numberOfQuestions < 1) {
+            return notFound();
+        }
     }
 
     const sheet = await Sheet.findByPk(loadParams.sheet);
@@ -29,6 +46,7 @@ export default async function TestSheet({
             <TestArea
                 initialQuestion={question.toJSON()}
                 sheet={sheet.toJSON()}
+                numberOfQuestions={numberOfQuestions}
             ></TestArea>
         </>
     );
