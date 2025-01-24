@@ -14,12 +14,15 @@ export default function AdvanceButtons({ submitAnswer }: AdvanceButtonsProps) {
         currentAnswer,
         expectedAnswer,
         nextQuestion,
+        numberOfQuestions,
         pending,
+        questionNumber,
         setCurrentAnswer,
         setExpectedAnswer,
         setNextQuestion,
         setPending,
         setQuestion,
+        setQuestionNumber,
         setShowMessageToFinish,
         showMessageToFinish,
     } = useContext(testSheetContext);
@@ -34,15 +37,14 @@ export default function AdvanceButtons({ submitAnswer }: AdvanceButtonsProps) {
         setCurrentAnswer("");
         setExpectedAnswer(null);
         setNextQuestion(null);
+        setQuestionNumber(questionNumber + 1);
     }
 
     let button: JSX.Element;
-    if (expectedAnswer) {
-        button = <Button onClick={prepareNewAnswer}>Next</Button>;
+    if (questionNumber === numberOfQuestions) {
+        button = <Button href="/tests">Finish</Button>;
     } else if (showMessageToFinish) {
-        const keepGoingCallback = () => {
-            setShowMessageToFinish(false);
-        };
+        const keepGoingCallback = () => setShowMessageToFinish(false);
 
         button = (
             <>
@@ -50,6 +52,8 @@ export default function AdvanceButtons({ submitAnswer }: AdvanceButtonsProps) {
                 <Button onClick={keepGoingCallback}>Keep going</Button>
             </>
         );
+    } else if (expectedAnswer) {
+        button = <Button onClick={prepareNewAnswer}>Next</Button>;
     } else {
         button = (
             <Button

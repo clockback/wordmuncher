@@ -1,6 +1,6 @@
 import { Question, Result, Sheet } from "@models";
 
-import TestSheetRow from "./components/test-sheet-row/test-sheet-row";
+import TestSheetTable from "./components/test-sheet-table/test-sheet-table";
 import styles from "./tests.module.css";
 import { getSettings } from "src/db/helpers/settings";
 
@@ -59,26 +59,10 @@ async function getSheetsByProgress(): Promise<
 export default async function Tests() {
     const allSheets = await getSheetsByProgress();
 
-    const tableRows = [];
-
-    for (const sheet of allSheets) {
-        tableRows.push(
-            <TestSheetRow key={sheet.id} sheet={sheet}></TestSheetRow>,
-        );
-    }
-
     return (
         <div className={styles.centre}>
             <h1>Select a sheet</h1>
-            <table className={styles.allsheets}>
-                <thead>
-                    <tr>
-                        <th>Sheet name</th>
-                        <th>Progress</th>
-                    </tr>
-                </thead>
-                <tbody>{tableRows}</tbody>
-            </table>
+            <TestSheetTable sheets={allSheets}></TestSheetTable>
         </div>
     );
 }

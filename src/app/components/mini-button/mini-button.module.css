@@ -1,0 +1,30 @@
+.centre {
+    background-color: rgb(var(--colour-word-muncher));
+    color: rgb(var(--colour-pearl));
+    padding: 10px;
+    font-weight: bold;
+    font-size: 20px;
+    display: inline-block;
+    margin-inline: 5px;
+    border-radius: 5px;
+    text-align: center;
+    text-decoration: none;
+    font-family: inherit;
+    border: none;
+}
+
+button.centre:enabled {
+    cursor: pointer;
+}
+
+button.centre:disabled {
+    cursor: not-allowed;
+}
+
+.centre:hover {
+    opacity: 0.8;
+}
+
+.centre:active {
+    opacity: 0.7;
+}
