@@ -66,13 +66,7 @@ export default function TestArea({
     }
 
     function markAnswer(contents: SubmitAnswerContents) {
-        if (
-            contents.correct &&
-            (numberOfQuestions === null || questionNumber < numberOfQuestions)
-        ) {
-            setTimeout(() => prepareNewAnswer(contents), 1000);
-            return;
-        } else if (contents.correct) {
+        if (contents.correct && questionNumber === numberOfQuestions) {
             setTimeout(() => router.push("/tests"), 1000);
             return;
         }
@@ -83,13 +77,8 @@ export default function TestArea({
         setQuestion(newQuestion);
         setLastQuestions(contents.lastQuestions);
         setExpectedAnswer(contents.correct ? null : contents.expectedAnswer);
-        if (
-            contents.correct &&
-            (numberOfQuestions === null || questionNumber < numberOfQuestions)
-        ) {
+        if (contents.correct) {
             setTimeout(() => prepareNewAnswer(contents), 1000);
-        } else if (contents.correct) {
-            setTimeout(() => router.push("/tests"), 1000);
         } else {
             setPromptOnCompletion(true);
             if (contents.nextQuestion !== null) {
