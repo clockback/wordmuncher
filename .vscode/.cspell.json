@@ -2,5 +2,5 @@
     "enabled": true,
     "words": ["davys", "grotesk", "trivago", "umzug", "wordmuncher"],
     "allowCompoundWords": true,
-    "ignorePaths": ["**.svg"]
+    "ignorePaths": ["playwright-report/", "test-results/", "**.svg"]
 }
