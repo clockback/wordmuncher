@@ -9,6 +9,7 @@ interface TestSheetContextType {
     lastQuestions: number[];
     nextQuestion: Question;
     numberOfQuestions: number;
+    numberOfStars: number;
     pending: boolean;
     question: Question;
     questionNumber: number;
@@ -28,6 +29,7 @@ interface TestSheetContextType {
     sheet: Sheet;
     showMessageToFinish: boolean;
     showResults: boolean;
+    startingNumberOfStars: number;
 }
 
 const testSheetContext = createContext<TestSheetContextType | undefined>(
