@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { Sheet } from "@models";
 
 import TestArea from "./components/test-area/test-area";
-import { getQuestion } from "./helpers";
+import { getNumberOfStars, getQuestion } from "./helpers";
 import styles from "./test-page.module.css";
 
 export default async function TestSheet({
@@ -39,6 +39,7 @@ export default async function TestSheet({
     }
 
     const question = await getQuestion(sheet, []);
+    const startingNumberOfStars = await getNumberOfStars(sheet);
 
     return (
         <>
@@ -47,6 +48,7 @@ export default async function TestSheet({
                 initialQuestion={question.toJSON()}
                 sheet={sheet.toJSON()}
                 numberOfQuestions={numberOfQuestions}
+                startingNumberOfStars={startingNumberOfStars}
             ></TestArea>
         </>
     );

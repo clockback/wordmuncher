@@ -15,6 +15,7 @@ interface TestAreaProps {
     initialQuestion: Question;
     sheet: Sheet;
     numberOfQuestions: number | null;
+    startingNumberOfStars: number;
 }
 
 interface SubmitAnswerContents {
@@ -24,6 +25,7 @@ interface SubmitAnswerContents {
     lastQuestions: number[];
     expectedAnswer: Answer | null;
     reattemptAvailable: boolean;
+    totalStars?: number;
     done?: boolean;
 }
 
@@ -31,6 +33,7 @@ export default function TestArea({
     initialQuestion,
     sheet,
     numberOfQuestions,
+    startingNumberOfStars,
 }: TestAreaProps) {
     const [question, setQuestion] = useState(initialQuestion);
     const [expectedAnswer, setExpectedAnswer] = useState(null);
@@ -45,6 +48,7 @@ export default function TestArea({
     const [showResults, setShowResults] = useState(false);
     const [numberCorrect, setNumberCorrect] = useState(0);
     const [numberIncorrect, setNumberIncorrect] = useState(0);
+    const [numberOfStars, setNumberOfStars] = useState(0);
 
     function prepareNewAnswer(contents: SubmitAnswerContents) {
         setPending(false);
@@ -67,6 +71,7 @@ export default function TestArea({
     }
 
     function markAnswer(contents: SubmitAnswerContents) {
+        setNumberOfStars(contents.totalStars);
         if (contents.correct && questionNumber === numberOfQuestions) {
             setNumberCorrect(numberCorrect + 1);
             setTimeout(() => setShowResults(true), 1000);
@@ -163,6 +168,7 @@ export default function TestArea({
         numberCorrect,
         numberIncorrect,
         numberOfQuestions,
+        numberOfStars,
         pending,
         question,
         questionNumber,
@@ -180,6 +186,7 @@ export default function TestArea({
         sheet,
         showMessageToFinish,
         showResults,
+        startingNumberOfStars,
     };
     return (
         <testSheetContext.Provider value={context}>

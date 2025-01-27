@@ -77,3 +77,28 @@ export async function getQuestion(
         });
     }
 }
+
+export async function getNumberOfStars(sheet: Sheet): Promise<number> {
+    const results = await Result.findAll({
+        include: [
+            {
+                model: Question,
+                as: "question",
+                include: [
+                    {
+                        model: Sheet,
+                        where: { id: sheet.id },
+                        as: "sheets",
+                    },
+                ],
+            },
+        ],
+    });
+
+    let numberOfStars = 0;
+    for (const result of results) {
+        numberOfStars += result.stars;
+    }
+
+    return numberOfStars;
+}

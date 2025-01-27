@@ -3,7 +3,7 @@ import { Op } from "sequelize";
 
 import { Answer, Question, Result, Sheet } from "@models";
 
-import { getQuestion } from "../helpers";
+import { getNumberOfStars, getQuestion } from "../helpers";
 
 const minimumSimilarityScore = 0.85;
 
@@ -170,6 +170,7 @@ export async function POST(
     const nextQuestion = retrieveNextAnswer
         ? await getQuestion(sheet, lastQuestions)
         : null;
+    const totalStars = await getNumberOfStars(sheet);
     const done = correct && (await finishedSheet(sheet, question));
     let expectedAnswer: Answer;
     if (correct || closestScore > minimumSimilarityScore) {
@@ -186,6 +187,7 @@ export async function POST(
             lastQuestions: lastQuestions,
             expectedAnswer: expectedAnswer,
             reattemptAvailable: false,
+            totalStars,
             done,
         },
         { status: 202 },
