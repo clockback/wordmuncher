@@ -1,0 +1,27 @@
+.starpadding {
+    padding-block: 50px;
+}
+
+.starslabel {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.numberofstars {
+    font-size: 30px;
+    padding-inline: 10px;
+}
+
+.gainstars {
+    color: lightgreen;
+}
+
+.losestars {
+    color: lightcoral;
+}
+
+.starinfo {
+    display: inline-block;
+    width: 400px;
+    padding-block: 10px;
+}
