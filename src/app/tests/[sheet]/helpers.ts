@@ -98,6 +98,9 @@ export async function getNumberOfStars(sheet: Sheet): Promise<number> {
     let numberOfStars = 0;
     for (const result of results) {
         numberOfStars += result.stars;
+        if (result.current === 2 && result.goal === 2) {
+            numberOfStars++;
+        }
     }
 
     return numberOfStars;
