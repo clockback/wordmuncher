@@ -52,7 +52,10 @@ export default function AdvanceButtons({ submitAnswer }: AdvanceButtonsProps) {
     } else if (questionNumber === numberOfQuestions) {
         button = <Button onClick={finishTest}>Finish</Button>;
     } else if (showMessageToFinish) {
-        const keepGoingCallback = () => setShowMessageToFinish(false);
+        const keepGoingCallback = () => {
+            setShowMessageToFinish(false);
+            setQuestionNumber(questionNumber + 1);
+        };
 
         button = (
             <>
