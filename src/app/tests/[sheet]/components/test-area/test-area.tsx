@@ -58,10 +58,11 @@ export default function TestArea({
         setCurrentAnswer("");
         setExpectedAnswer(null);
         setNextQuestion(null);
-        setQuestionNumber(questionNumber + 1);
         if (contents.done && promptOnCompletion) {
             setShowMessageToFinish(true);
             setPromptOnCompletion(false);
+        } else {
+            setQuestionNumber(questionNumber + 1);
         }
     }
 
