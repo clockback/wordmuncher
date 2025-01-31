@@ -24,6 +24,11 @@ export default function TestResults() {
         [styles.losestars]: changeStars < 0,
     });
 
+    const scoreText =
+        totalQuestions === 0
+            ? "You answered 1/1 question correctly!"
+            : `You answered ${numberCorrect}/${totalQuestions} questions correctly!`;
+
     return (
         <>
             <div className={styles.starpadding}>
@@ -50,10 +55,7 @@ export default function TestResults() {
                     <Star></Star>
                 </div>
             </div>
-            <div>
-                You answered {numberCorrect}/{totalQuestions} questions
-                correctly!
-            </div>
+            <div>{scoreText}</div>
         </>
     );
 }
