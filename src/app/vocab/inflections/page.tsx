@@ -1,0 +1,48 @@
+import { JSX } from "react";
+
+import Button from "@components/button/button";
+
+import { InflectionType } from "@models";
+
+import InflectionTable from "./components/inflection-tables";
+import styles from "./inflection.module.css";
+import { getSettings } from "src/db/helpers/settings";
+
+async function fetchInflectionTypes(): Promise<InflectionType[]> {
+    const settings = await getSettings();
+    const tonguePairId = settings.tonguePairId;
+    return await InflectionType.findAll({ where: { tonguePairId } });
+}
+
+async function inflectionTypesAsTable(): Promise<JSX.Element[]> {
+    const inflectionTypes = await fetchInflectionTypes();
+    const allRows = [];
+
+    for (const inflectionType of inflectionTypes) {
+        allRows.push(
+            <tr key={inflectionType.id}>
+                <td>{inflectionType.typeName}</td>
+            </tr>,
+        );
+    }
+
+    return allRows;
+}
+
+export default async function Inflections() {
+    const rows = await inflectionTypesAsTable();
+    return (
+        <div className={styles.centre}>
+            <div className={styles.verticalcentre}>
+                <h1>Inflections</h1>
+                <InflectionTable>{rows}</InflectionTable>
+                <div className={styles.padbutton}>
+                    <Button>Add inflection table</Button>
+                </div>
+                <div className={styles.padbutton}>
+                    <Button href="/vocab">Back</Button>
+                </div>
+            </div>
+        </div>
+    );
+}

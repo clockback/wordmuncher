@@ -1,0 +1,19 @@
+.centre {
+    text-align: center;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--sidebar-width);
+    right: 0;
+}
+
+.verticalcentre {
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.padbutton {
+    padding-block: 10px;
+}

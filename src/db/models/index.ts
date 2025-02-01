@@ -1,4 +1,5 @@
 import { Answer } from "./answer";
+import { InflectionType } from "./inflection-type";
 import { Question } from "./question";
 import { Result } from "./result";
 import { Settings } from "./settings";
@@ -10,6 +11,7 @@ import { TonguePair } from "./tonguepair";
 for (const model of [
     Answer,
     Result,
+    InflectionType,
     Tongue,
     TonguePair,
     Settings,
@@ -21,6 +23,7 @@ for (const model of [
 }
 
 export { Answer } from "./answer";
+export { InflectionType } from "./inflection-type";
 export { Result } from "./result";
 export { Tongue } from "./tongue";
 export { TonguePair } from "./tonguepair";
