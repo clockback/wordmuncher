@@ -1,0 +1,18 @@
+.margintable {
+    margin-block: 15px;
+}
+
+.inlinetable {
+    margin-inline: auto;
+}
+
+.inlinetable > tbody > tr > td {
+    cursor: pointer;
+    min-width: 300px;
+}
+
+.inlinetable td {
+    font-size: 25px;
+    padding: 5px 10px;
+    background-color: rgb(var(--colour-dark-charcoal));
+}
