@@ -4,7 +4,8 @@ import Button from "@components/button/button";
 
 import { InflectionType } from "@models";
 
-import InflectionTable from "./components/inflection-tables";
+import InflectionTable from "./components/inflection-table/inflection-table";
+import InflectionTables from "./components/inflection-tables/inflection-tables";
 import styles from "./inflection.module.css";
 import { getSettings } from "src/db/helpers/settings";
 
@@ -21,7 +22,9 @@ async function inflectionTypesAsTable(): Promise<JSX.Element[]> {
     for (const inflectionType of inflectionTypes) {
         allRows.push(
             <tr key={inflectionType.id}>
-                <td>{inflectionType.typeName}</td>
+                <InflectionTable
+                    inflectionType={inflectionType.toJSON()}
+                ></InflectionTable>
             </tr>,
         );
     }
@@ -35,7 +38,7 @@ export default async function Inflections() {
         <div className={styles.centre}>
             <div className={styles.verticalcentre}>
                 <h1>Inflections</h1>
-                <InflectionTable>{rows}</InflectionTable>
+                <InflectionTables>{rows}</InflectionTables>
                 <div className={styles.padbutton}>
                     <Button>Add inflection table</Button>
                 </div>

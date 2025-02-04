@@ -1,0 +1,33 @@
+.singleaxis,
+.doubleaxis {
+    font-size: 25px;
+    display: inline-block;
+    margin-inline: auto;
+    display: inline-table;
+    border: 1px white solid;
+}
+
+.singleaxis th,
+.singleaxis td,
+.doubleaxis td,
+.doubleaxis th {
+    padding: 5px;
+}
+
+.singleaxis td {
+    background-color: rgb(var(--colour-davys-grey));
+}
+
+.singleaxis td:empty::before {
+    content: "";
+    display: inline-block;
+}
+
+.doubleaxis tr:nth-child(odd) td {
+    background-color: rgb(var(--colour-davys-grey));
+}
+
+.doubleaxis tr:nth-child(even) td {
+    background-color: green;
+    background-color: rgb(var(--colour-dark-charcoal));
+}
