@@ -1,6 +1,6 @@
 import styles from "./inflection-tables.module.css";
 
-export default function InflectionTable({ children }) {
+export default function InflectionTables({ children }) {
     return (
         <div className={styles.margintable}>
             <table className={styles.inlinetable}>
