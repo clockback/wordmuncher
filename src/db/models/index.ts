@@ -1,4 +1,5 @@
 import { Answer } from "./answer";
+import { InflectionAnswer } from "./inflection-answer";
 import { InflectionCategory } from "./inflection-category";
 import { InflectionFeature } from "./inflection-feature";
 import { InflectionType } from "./inflection-type";
@@ -13,6 +14,7 @@ import { TonguePair } from "./tonguepair";
 for (const model of [
     Answer,
     Result,
+    InflectionAnswer,
     InflectionCategory,
     InflectionFeature,
     InflectionType,
@@ -27,6 +29,7 @@ for (const model of [
 }
 
 export { Answer } from "./answer";
+export { InflectionAnswer } from "./inflection-answer";
 export { InflectionCategory } from "./inflection-category";
 export { InflectionFeature } from "./inflection-feature";
 export { InflectionType } from "./inflection-type";

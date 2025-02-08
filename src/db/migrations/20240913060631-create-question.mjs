@@ -25,6 +25,16 @@ export async function up({ context: queryInterface }) {
             onDelete: "CASCADE",
             onUpdate: "CASCADE",
         },
+        inflectionTypeId: {
+            type: INTEGER,
+            references: {
+                model: "InflectionTypes",
+                key: "id",
+            },
+            allowNull: true,
+            onDelete: "CASCADE",
+            onUpdate: "CASCADE",
+        },
         createdAt: {
             allowNull: false,
             type: DATE,

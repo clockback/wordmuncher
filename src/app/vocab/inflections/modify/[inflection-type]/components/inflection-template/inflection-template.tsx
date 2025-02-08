@@ -1,21 +1,30 @@
-import { InflectionType } from "@models";
+import { InflectionType, Question } from "@models";
 
 import styles from "./inflection-template.module.css";
 
 interface InflectionTemplateProps {
     inflectionType: InflectionType;
+    representativeQuestion: Question;
 }
 
 function SingleAxisInflectionTemplate({
     inflectionType,
+    representativeQuestion,
 }: InflectionTemplateProps) {
     const [category] = inflectionType.categories;
 
     const headers = [];
-    const emptyCells = [];
+    const answerCells = [];
     for (const feature of category.features) {
+        let text = "";
+        for (const answer of representativeQuestion.inflectionAnswers) {
+            if (answer.primaryFeatureId === feature.id) {
+                text = answer.answerText;
+                break;
+            }
+        }
         headers.push(<th key={feature.id}>{feature.featureName}</th>);
-        emptyCells.push(<td key={feature.id}></td>);
+        answerCells.push(<td key={feature.id}>{text}</td>);
     }
 
     return (
@@ -29,7 +38,7 @@ function SingleAxisInflectionTemplate({
             </thead>
             <tbody>
                 <tr>{headers}</tr>
-                <tr>{emptyCells}</tr>
+                <tr>{answerCells}</tr>
             </tbody>
         </table>
     );
@@ -37,6 +46,7 @@ function SingleAxisInflectionTemplate({
 
 function DoubleAxisInflectionTemplate({
     inflectionType,
+    representativeQuestion,
 }: InflectionTemplateProps) {
     let [firstCategory, secondCategory] = inflectionType.categories;
     if (!firstCategory.isPrimary) {
@@ -57,15 +67,25 @@ function DoubleAxisInflectionTemplate({
         </th>
     );
     for (const secondaryFeature of secondCategory.features) {
-        const emptyCells = [];
+        const answerCells = [];
         for (const primaryFeature of firstCategory.features) {
-            emptyCells.push(<td key={primaryFeature.id}></td>);
+            let text = "";
+            for (const answer of representativeQuestion.inflectionAnswers) {
+                if (
+                    answer.primaryFeatureId === primaryFeature.id &&
+                    answer.secondaryFeatureId === secondaryFeature.id
+                ) {
+                    text = answer.answerText;
+                    break;
+                }
+            }
+            answerCells.push(<td key={primaryFeature.id}>{text}</td>);
         }
         rows.push(
             <tr key={secondaryFeature.id}>
                 {leftHeader}
                 <th>{secondaryFeature.featureName}</th>
-                {emptyCells}
+                {answerCells}
             </tr>,
         );
         leftHeader = null;
@@ -89,18 +109,21 @@ function DoubleAxisInflectionTemplate({
 
 export default function InflectionTemplate({
     inflectionType,
+    representativeQuestion,
 }: InflectionTemplateProps) {
     const noAxes = inflectionType.categories.length;
     if (noAxes === 1) {
         return (
             <SingleAxisInflectionTemplate
                 inflectionType={inflectionType}
+                representativeQuestion={representativeQuestion}
             ></SingleAxisInflectionTemplate>
         );
     } else if (noAxes === 2) {
         return (
             <DoubleAxisInflectionTemplate
                 inflectionType={inflectionType}
+                representativeQuestion={representativeQuestion}
             ></DoubleAxisInflectionTemplate>
         );
     } else {

@@ -8,7 +8,7 @@ import {
     NonAttribute,
 } from "sequelize";
 
-import { InflectionCategory, TonguePair } from "@models";
+import { InflectionCategory, Question, TonguePair } from "@models";
 
 import sequelize from "./db-connection";
 
@@ -26,12 +26,17 @@ export class InflectionType extends Model<
     declare createdAt: CreationOptional<Date>;
     declare updatedAt: CreationOptional<Date>;
 
+    declare questions?: NonAttribute<Question[]>;
     declare categories?: NonAttribute<InflectionCategory[]>;
 
     static associate() {
         InflectionType.belongsTo(TonguePair, {
             foreignKey: "tonguePairId",
             as: "tonguePair",
+        });
+        InflectionType.hasMany(Question, {
+            foreignKey: "inflectionTypeId",
+            as: "questions",
         });
         InflectionType.hasMany(InflectionCategory, {
             foreignKey: "inflectionTypeId",

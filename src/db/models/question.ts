@@ -8,13 +8,21 @@ import {
     NonAttribute,
 } from "sequelize";
 
-import { Answer, Result, Sheet, SheetQuestion, TonguePair } from "@models";
+import {
+    Answer,
+    InflectionAnswer,
+    InflectionType,
+    Result,
+    Sheet,
+    SheetQuestion,
+    TonguePair,
+} from "@models";
 
 import sequelize from "./db-connection";
 
 export class Question extends Model<
-    InferAttributes<Question, { omit: "tonguePair" }>,
-    InferCreationAttributes<Question, { omit: "tonguePair" }>
+    InferAttributes<Question, { omit: "tonguePair" | "inflectionType" }>,
+    InferCreationAttributes<Question, { omit: "tonguePair" | "inflectionType" }>
 > {
     declare id: number;
     declare questionText: string;
@@ -22,7 +30,11 @@ export class Question extends Model<
     declare tonguePairId: ForeignKey<TonguePair["id"]>;
     declare tonguePair: NonAttribute<TonguePair>;
 
+    declare inflectionTypeId: ForeignKey<InflectionType["id"] | null>;
+    declare inflectionType?: NonAttribute<InflectionType | null>;
+
     declare answers?: NonAttribute<Answer[]>;
+    declare inflectionAnswers?: NonAttribute<InflectionAnswer[]>;
     declare sheets?: NonAttribute<Sheet[]>;
     declare result?: NonAttribute<Result>;
 
@@ -36,6 +48,16 @@ export class Question extends Model<
 
         Question.belongsTo(TonguePair, {
             foreignKey: "tonguePairId",
+        });
+
+        Question.belongsTo(InflectionType, {
+            foreignKey: "inflectionTypeId",
+            as: "inflectionType",
+        });
+
+        Question.hasMany(InflectionAnswer, {
+            foreignKey: "questionId",
+            as: "inflectionAnswers",
         });
 
         Question.belongsToMany(Sheet, {
