@@ -4,13 +4,22 @@ import { NextResponse } from "next/server";
 import { JSX, useContext } from "react";
 
 import Button from "@components/button/button";
+import EditableHeader from "@components/editable-header/editable-header";
 
 import { Question } from "@models";
 
 import editSheetContext from "../../context";
 import OtherAnswersTable from "../other-answers-table/other-answers-table";
-import QuestionHeader from "../question-header/question-header";
 import styles from "./question-editor.module.css";
+
+function questionAlreadyExists(questionText: string, allQuestions: Question[]) {
+    for (const question of allQuestions) {
+        if (question.questionText == questionText) {
+            return true;
+        }
+    }
+    return false;
+}
 
 interface clickSaveQuestionResponseProps {
     questionId: number;
@@ -23,6 +32,7 @@ export default function QuestionEditor() {
         allQuestions,
         answerEntryValue,
         isAddingNewQuestion,
+        isEditingQuestionText,
         otherAnswers,
         pending,
         proposedQuestionText,
@@ -35,6 +45,7 @@ export default function QuestionEditor() {
         setIsEditingQuestionText,
         setOtherAnswers,
         setPending,
+        setProposedQuestionText,
         setQuestionFormValid,
         setSavePossible,
         setSelectedQuestion,
@@ -185,9 +196,62 @@ export default function QuestionEditor() {
         </Button>
     );
 
+    const onBlurIsAddingNewQuestion = (inputText: string) => {
+        const alreadyExists = questionAlreadyExists(inputText, allQuestions);
+
+        if (
+            (inputText.length > 0 && !alreadyExists) ||
+            proposedQuestionText.length > 0
+        ) {
+            setIsEditingQuestionText(false);
+        }
+
+        if (inputText.length == 0 || alreadyExists) {
+            return;
+        }
+
+        setQuestionFormValid(
+            proposedQuestionText.length > 0 && answerEntryValue.length > 0,
+        );
+        setProposedQuestionText(inputText);
+        setSavePossible(true);
+    };
+
+    const onBlurIsEditingQuestion = (inputText: string) => {
+        setIsEditingQuestionText(false);
+        if (inputText.length == 0) {
+            return;
+        }
+
+        if (inputText == selectedQuestion.questionText) {
+            setProposedQuestionText(inputText);
+            return;
+        }
+
+        if (questionAlreadyExists(inputText, allQuestions)) {
+            return;
+        }
+
+        setQuestionFormValid(
+            proposedQuestionText.length > 0 && answerEntryValue.length > 0,
+        );
+        setProposedQuestionText(inputText);
+        setSavePossible(true);
+    };
+
+    const onBlur = isAddingNewQuestion
+        ? onBlurIsAddingNewQuestion
+        : onBlurIsEditingQuestion;
+
     return (
         <form action={clickSaveQuestion}>
-            <QuestionHeader></QuestionHeader>
+            <EditableHeader
+                currentProposal={proposedQuestionText}
+                isEditing={isEditingQuestionText}
+                onBlur={onBlur}
+                setIsEditing={setIsEditingQuestionText}
+                title="Question"
+            ></EditableHeader>
             <h2>Answer</h2>
             {answerEntry}
             <h3>Other accepted answers:</h3>
