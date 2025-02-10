@@ -6,6 +6,7 @@ interface EditableHeaderProps {
     currentProposal: string;
     isEditing: boolean;
     onBlur: (inputText: string) => void;
+    isPending: boolean;
     setIsEditing: Dispatch<SetStateAction<boolean>>;
     title: string;
 }
@@ -13,6 +14,7 @@ interface EditableHeaderProps {
 export default function EditableHeader({
     currentProposal,
     isEditing,
+    isPending = false,
     onBlur,
     setIsEditing,
     title,
@@ -21,6 +23,9 @@ export default function EditableHeader({
 
     if (!isEditing) {
         const edit = () => {
+            if (isPending) {
+                return;
+            }
             setInputText(currentProposal);
             setIsEditing(true);
         };
