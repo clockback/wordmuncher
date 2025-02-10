@@ -1,7 +1,5 @@
 import { notFound } from "next/navigation";
-import { col } from "sequelize";
-
-import Button from "@components/button/button";
+import { Op, col } from "sequelize";
 
 import {
     InflectionAnswer,
@@ -11,8 +9,7 @@ import {
     Question,
 } from "@models";
 
-import InflectionTemplate from "./components/inflection-template/inflection-template";
-import styles from "./inflection-type.module.css";
+import EditInflectionArea from "./components/edit-inflection-area/edit-inflection-area";
 
 async function getInflectionType(
     inflectionType: number,
@@ -30,6 +27,19 @@ async function getInflectionType(
             ],
         },
     });
+}
+
+async function getAllOtherInflectionTypeNames(
+    inflectionType: number,
+): Promise<string[]> {
+    const types = await InflectionType.findAll({
+        where: { id: { [Op.not]: inflectionType } },
+    });
+    const names = [];
+    for (const type of types) {
+        names.push(type.typeName);
+    }
+    return names;
 }
 
 function getNumberOfAnsweredFeaturesInQuestion(question: Question): number {
@@ -89,24 +99,22 @@ export default async function ModifyInflectionType({
         return notFound();
     }
 
+    const otherInflectionNames = await getAllOtherInflectionTypeNames(
+        loadParams["inflection-type"],
+    );
     const representativeQuestion = await getMostRepresentativeQuestion(
         loadParams["inflection-type"],
     );
 
     return (
-        <>
-            <div className={styles.leftmargin}>
-                <h1>{inflectionType.typeName}</h1>
-            </div>
-            <div style={{ textAlign: "center" }}>
-                <InflectionTemplate
-                    inflectionType={inflectionType}
-                    representativeQuestion={representativeQuestion}
-                ></InflectionTemplate>
-                <div className={styles.buttonmargin}>
-                    <Button href="/vocab/inflections">Back</Button>
-                </div>
-            </div>
-        </>
+        <EditInflectionArea
+            inflectionType={inflectionType.toJSON()}
+            otherInflectionNames={otherInflectionNames}
+            representativeQuestion={
+                representativeQuestion === null
+                    ? null
+                    : representativeQuestion.toJSON()
+            }
+        ></EditInflectionArea>
     );
 }
