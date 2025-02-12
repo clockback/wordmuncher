@@ -3,12 +3,12 @@
 import { useState } from "react";
 
 import Button from "@components/button/button";
+import InflectionTemplate from "@components/inflection-template/inflection-template";
 
 import { InflectionType, Question } from "@models";
 
 import editInflectionContext from "../../context";
 import InflectionHeader from "../inflection-header/inflection-header";
-import InflectionTemplate from "../inflection-template/inflection-template";
 import styles from "./edit-inflection-area.module.css";
 
 interface EditInflectionAreaProps {
