@@ -4,7 +4,7 @@ import styles from "./inflection-template.module.css";
 
 interface InflectionTemplateProps {
     inflectionType: InflectionType;
-    representativeQuestion: Question;
+    representativeQuestion: Question | null;
 }
 
 function SingleAxisInflectionTemplate({
@@ -15,9 +15,12 @@ function SingleAxisInflectionTemplate({
 
     const headers = [];
     const answerCells = [];
+    const answers = representativeQuestion
+        ? representativeQuestion.inflectionAnswers
+        : [];
     for (const feature of category.features) {
         let text = "";
-        for (const answer of representativeQuestion.inflectionAnswers) {
+        for (const answer of answers) {
             if (answer.primaryFeatureId === feature.id) {
                 text = answer.answerText;
                 break;
@@ -66,11 +69,16 @@ function DoubleAxisInflectionTemplate({
             {secondCategory.categoryName}
         </th>
     );
+
+    const answers = representativeQuestion
+        ? representativeQuestion.inflectionAnswers
+        : [];
+
     for (const secondaryFeature of secondCategory.features) {
         const answerCells = [];
         for (const primaryFeature of firstCategory.features) {
             let text = "";
-            for (const answer of representativeQuestion.inflectionAnswers) {
+            for (const answer of answers) {
                 if (
                     answer.primaryFeatureId === primaryFeature.id &&
                     answer.secondaryFeatureId === secondaryFeature.id
