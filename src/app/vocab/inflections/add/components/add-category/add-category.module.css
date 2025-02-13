@@ -1,0 +1,49 @@
+.float {
+    width: 300px;
+    margin: 10px 10px 10px 0px;
+    padding: 10px;
+    background-color: rgb(var(--colour-dark-charcoal));
+    border-radius: 5px;
+    display: inline-block;
+}
+
+.featurestable {
+    width: 100%;
+    border-collapse: collapse;
+    cursor: pointer;
+}
+
+.featurestable tr {
+    background-color: rgb(var(--colour-davys-grey));
+}
+
+.controlpanel {
+    text-align: center;
+}
+
+.featureinput {
+    width: 100%;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: inherit;
+}
+
+.selected {
+    font-weight: bold;
+    font-style: italic;
+}
+
+.featurestable td {
+    padding: 7px;
+}
+
+.featurestable td:hover {
+    background-color: rgba(var(--colour-dim-grey));
+}
+
+.categorynameinput {
+    width: 100%;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: inherit;
+}
