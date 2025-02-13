@@ -40,7 +40,9 @@ export default async function Inflections() {
                 <h1>Inflections</h1>
                 <InflectionTables>{rows}</InflectionTables>
                 <div className={styles.padbutton}>
-                    <Button>Add inflection table</Button>
+                    <Button href="/vocab/inflections/add">
+                        Add inflection table
+                    </Button>
                 </div>
                 <div className={styles.padbutton}>
                     <Button href="/vocab">Back</Button>
