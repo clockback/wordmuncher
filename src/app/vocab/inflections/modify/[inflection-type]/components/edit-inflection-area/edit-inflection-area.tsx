@@ -1,5 +1,7 @@
 "use client";
 
+import { redirect } from "next/navigation";
+import { NextResponse } from "next/server";
 import { useState } from "react";
 
 import Button from "@components/button/button";
@@ -25,6 +27,23 @@ export default function EditInflectionArea({
     const [isPending, setIsPending] = useState(false);
     const context = { isPending, setIsPending };
 
+    const deleteInflectionHandleResponse = (response: NextResponse) => {
+        if (response.status !== 204) {
+            console.error("Failed to delete inflection type.");
+            setIsPending(false);
+            return;
+        }
+        redirect("/vocab/inflections");
+    };
+
+    const deleteInflection = () => {
+        setIsPending(true);
+        fetch(`/vocab/inflections/delete/${inflectionType.id}`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+        }).then(deleteInflectionHandleResponse);
+    };
+
     return (
         <editInflectionContext.Provider value={context}>
             <InflectionHeader
@@ -36,6 +55,11 @@ export default function EditInflectionArea({
                     inflectionType={inflectionType}
                     representativeQuestion={representativeQuestion}
                 ></InflectionTemplate>
+                <div className={styles.buttonmargin}>
+                    <Button onClick={deleteInflection} disabled={isPending}>
+                        Delete
+                    </Button>
+                </div>
                 <div className={styles.buttonmargin}>
                     <Button href="/vocab/inflections">Back</Button>
                 </div>
