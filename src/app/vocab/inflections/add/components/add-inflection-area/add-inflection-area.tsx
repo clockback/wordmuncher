@@ -136,7 +136,7 @@ export default function AddInflectionArea() {
     const saveInflectionHandleResponse = (response: NextResponse) => {
         setIsPending(false);
         if (response.status !== 204) {
-            console.error("Failed to rename inflection type!");
+            console.error("Failed to create inflection type!");
             return;
         }
 
