@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 import { useState } from "react";
 
 import Button from "@components/button/button";
-import AddCategory from "@components/define-category/define-category";
+import DefineCategory from "@components/define-category/define-category";
 import EditableHeader from "@components/editable-header/editable-header";
 import InflectionTemplateProposal from "@components/inflection-template-proposal/inflection-template-proposal";
 
@@ -179,13 +179,13 @@ export default function AddInflectionArea() {
 
     const secondaryAddCategory =
         numberOfCategories === 2 ? (
-            <AddCategory
+            <DefineCategory
                 isPending={isPending}
                 category={secondaryCategory}
                 setCategory={setSecondaryCategory}
                 features={secondaryFeatures}
                 setFeatures={setSecondaryFeatures}
-            ></AddCategory>
+            ></DefineCategory>
         ) : null;
     return (
         <>
@@ -202,13 +202,13 @@ export default function AddInflectionArea() {
                 {numberOfCategories === 1 ? "Add rows" : "Remove rows"}
             </Button>
             <div>
-                <AddCategory
+                <DefineCategory
                     isPending={isPending}
                     category={primaryCategory}
                     setCategory={setPrimaryCategory}
                     features={primaryFeatures}
                     setFeatures={setPrimaryFeatures}
-                ></AddCategory>
+                ></DefineCategory>
                 {secondaryAddCategory}
             </div>
             <ValidityAssessment
