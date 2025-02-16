@@ -20,18 +20,26 @@ interface SheetEditorProps {
 }
 
 export default function SheetEditor({ sheet, questions }: SheetEditorProps) {
-    const [selectedQuestion, setSelectedQuestion] = useState(null);
-    const [answerEntryValue, setAnswerEntryValue] = useState("");
-    const [pending, setPending] = useState(false);
-    const [savePossible, setSavePossible] = useState(false);
-    const [allQuestions, setAllQuestions] = useState(questions);
-    const [proposedQuestionText, setProposedQuestionText] = useState("");
-    const [isEditingQuestionText, setIsEditingQuestionText] = useState(false);
-    const [questionFormValid, setQuestionFormValid] = useState(true);
-    const [otherAnswers, setOtherAnswers] = useState([]);
-    const [isAddingOtherAnswer, setIsAddingOtherAnswer] = useState(false);
-    const [editingOtherAnswerI, setEditingOtherAnswerI] = useState(null);
-    const [isAddingNewQuestion, setIsAddingNewQuestion] = useState(false);
+    const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(
+        null,
+    );
+    const [answerEntryValue, setAnswerEntryValue] = useState<string>("");
+    const [pending, setPending] = useState<boolean>(false);
+    const [savePossible, setSavePossible] = useState<boolean>(false);
+    const [allQuestions, setAllQuestions] = useState<Question[]>(questions);
+    const [proposedQuestionText, setProposedQuestionText] =
+        useState<string>("");
+    const [isEditingQuestionText, setIsEditingQuestionText] =
+        useState<boolean>(false);
+    const [questionFormValid, setQuestionFormValid] = useState<boolean>(true);
+    const [otherAnswers, setOtherAnswers] = useState<string[]>([]);
+    const [isAddingOtherAnswer, setIsAddingOtherAnswer] =
+        useState<boolean>(false);
+    const [editingOtherAnswerI, setEditingOtherAnswerI] = useState<
+        number | null
+    >(null);
+    const [isAddingNewQuestion, setIsAddingNewQuestion] =
+        useState<boolean>(false);
     const sheetId = sheet.id;
 
     const context = {

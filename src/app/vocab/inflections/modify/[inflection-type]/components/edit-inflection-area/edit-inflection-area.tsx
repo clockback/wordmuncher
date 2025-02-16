@@ -24,7 +24,7 @@ export default function EditInflectionArea({
     otherInflectionNames,
     representativeQuestion,
 }: EditInflectionAreaProps) {
-    const [isPending, setIsPending] = useState(false);
+    const [isPending, setIsPending] = useState<boolean>(false);
     const context = { isPending, setIsPending };
 
     const deleteInflectionHandleResponse = (response: NextResponse) => {

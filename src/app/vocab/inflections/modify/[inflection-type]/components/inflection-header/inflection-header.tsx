@@ -21,11 +21,11 @@ export default function InflectionHeader({
 }: InflectionHeaderProps) {
     const { isPending, setIsPending } = useContext(editInflectionContext);
 
-    const [inflectionName, setInflectionName] = useState(
+    const [inflectionName, setInflectionName] = useState<string>(
         inflectionType.typeName,
     );
     const [isEditingInflectionName, setIsEditingInflectionName] =
-        useState(false);
+        useState<boolean>(false);
 
     const onBlurHandleResponse = (
         response: NextResponse,

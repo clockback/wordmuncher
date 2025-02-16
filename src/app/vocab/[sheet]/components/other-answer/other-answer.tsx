@@ -22,7 +22,7 @@ export default function EditOtherAnswer({
         setSavePossible,
     } = useContext(editSheetContext);
 
-    const [currentOtherAnswer, setCurrentOtherAnswer] = useState("");
+    const [currentOtherAnswer, setCurrentOtherAnswer] = useState<string>("");
 
     function preventFormSubmission(e: React.KeyboardEvent<HTMLInputElement>) {
         if (e.code == "Enter") {

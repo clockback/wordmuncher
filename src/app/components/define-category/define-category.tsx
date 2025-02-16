@@ -31,10 +31,11 @@ export default function DefineCategory({
     setFeatures,
     isPending,
 }: AddCategoryProps) {
-    const [isAddingFeature, setIsAddingFeature] = useState(false);
-    const [isModifyingFeature, setIsModifyingFeature] = useState(false);
-    const [editingText, setEditingText] = useState("");
-    const [selectedI, setSelectedI] = useState(null);
+    const [isAddingFeature, setIsAddingFeature] = useState<boolean>(false);
+    const [isModifyingFeature, setIsModifyingFeature] =
+        useState<boolean>(false);
+    const [editingText, setEditingText] = useState<string>("");
+    const [selectedI, setSelectedI] = useState<number | null>(null);
 
     const onChangeEditingText = (e: React.ChangeEvent<HTMLInputElement>) => {
         setEditingText(e.target.value);

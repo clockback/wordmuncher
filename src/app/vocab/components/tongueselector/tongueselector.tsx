@@ -34,8 +34,13 @@ export default function TongueSelector({
     allTongues,
     initialTongue,
 }: TongueSelectorProps) {
-    const [currentTongue, setCurrentTongue] = useState(initialTongue);
-    const [popupVisible, setPopupVisible] = useState(false);
+    const [currentTongue, setCurrentTongue] = useState<{
+        id: number;
+        tongueName: string;
+        flag: string;
+        sheets: { sheetId: number; sheetName: string }[];
+    } | null>(initialTongue);
+    const [popupVisible, setPopupVisible] = useState<boolean>(false);
 
     const updateCurrentTongue = async (tongueId: number) => {
         setCurrentTongue(await onChangeTongue(tongueId));

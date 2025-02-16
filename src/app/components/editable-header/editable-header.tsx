@@ -19,7 +19,7 @@ export default function EditableHeader({
     setIsEditing,
     title,
 }: EditableHeaderProps) {
-    const [inputText, setInputText] = useState("");
+    const [inputText, setInputText] = useState<string>("");
 
     if (!isEditing) {
         const edit = () => {

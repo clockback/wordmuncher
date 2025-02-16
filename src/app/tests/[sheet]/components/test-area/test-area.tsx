@@ -35,20 +35,21 @@ export default function TestArea({
     numberOfQuestions,
     startingNumberOfStars,
 }: TestAreaProps) {
-    const [question, setQuestion] = useState(initialQuestion);
-    const [expectedAnswer, setExpectedAnswer] = useState(null);
-    const [lastQuestions, setLastQuestions] = useState([]);
-    const [pending, setPending] = useState(false);
-    const [currentAnswer, setCurrentAnswer] = useState("");
-    const [nextQuestion, setNextQuestion] = useState(null);
-    const [attemptedAlready, setAttemptedAlready] = useState(false);
-    const [promptOnCompletion, setPromptOnCompletion] = useState(true);
-    const [showMessageToFinish, setShowMessageToFinish] = useState(false);
-    const [questionNumber, setQuestionNumber] = useState(1);
-    const [showResults, setShowResults] = useState(false);
-    const [numberCorrect, setNumberCorrect] = useState(0);
-    const [numberIncorrect, setNumberIncorrect] = useState(0);
-    const [numberOfStars, setNumberOfStars] = useState(0);
+    const [question, setQuestion] = useState<Question>(initialQuestion);
+    const [expectedAnswer, setExpectedAnswer] = useState<Answer | null>(null);
+    const [lastQuestions, setLastQuestions] = useState<number[]>([]);
+    const [pending, setPending] = useState<boolean>(false);
+    const [currentAnswer, setCurrentAnswer] = useState<string>("");
+    const [nextQuestion, setNextQuestion] = useState<Question | null>(null);
+    const [attemptedAlready, setAttemptedAlready] = useState<boolean>(false);
+    const [promptOnCompletion, setPromptOnCompletion] = useState<boolean>(true);
+    const [showMessageToFinish, setShowMessageToFinish] =
+        useState<boolean>(false);
+    const [questionNumber, setQuestionNumber] = useState<number>(1);
+    const [showResults, setShowResults] = useState<boolean>(false);
+    const [numberCorrect, setNumberCorrect] = useState<number>(0);
+    const [numberIncorrect, setNumberIncorrect] = useState<number>(0);
+    const [numberOfStars, setNumberOfStars] = useState<number>(0);
 
     function prepareNewAnswer(contents: SubmitAnswerContents) {
         setPending(false);
