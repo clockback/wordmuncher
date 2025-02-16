@@ -5,11 +5,11 @@ import { NextResponse } from "next/server";
 import { useState } from "react";
 
 import Button from "@components/button/button";
+import AddCategory from "@components/define-category/define-category";
 import EditableHeader from "@components/editable-header/editable-header";
+import InflectionTemplateProposal from "@components/inflection-template-proposal/inflection-template-proposal";
 
 import { InflectionValidity } from "../../helpers/helpers";
-import AddCategory from "../add-category/add-category";
-import EmptyInflectionTemplate from "../empty-inflection-template/empty-inflection-template";
 import ValidityAssessment from "../validity-assessment/validity-assessment";
 import styles from "./add-inflection-area.module.css";
 
@@ -81,14 +81,20 @@ export default function AddInflectionArea() {
     const [numberOfCategories, setNumberOfCategories] = useState(1);
     const [primaryFeatures, setPrimaryFeatures] = useState([]);
     const [secondaryFeatures, setSecondaryFeatures] = useState([]);
-    const [primaryCategory, setPrimaryCategory] = useState("");
-    const [secondaryCategory, setSecondaryCategory] = useState("");
+    const [primaryCategory, setPrimaryCategory] = useState({
+        name: "",
+        id: null,
+    });
+    const [secondaryCategory, setSecondaryCategory] = useState({
+        name: "",
+        id: null,
+    });
 
     const inflectionTemplateValidlyFormed = isValid(
         proposedName,
         numberOfCategories,
-        primaryCategory,
-        secondaryCategory,
+        primaryCategory.name,
+        secondaryCategory.name,
         primaryFeatures,
         secondaryFeatures,
     );
@@ -145,15 +151,27 @@ export default function AddInflectionArea() {
 
     const saveInflection = () => {
         setIsPending(true);
+
+        const primaryFeatureNames = [];
+        for (const primaryFeature of primaryFeatures) {
+            primaryFeatureNames.push(primaryFeature.name);
+        }
+        const secondaryFeatureNames = [];
+        if (numberOfCategories === 2) {
+            for (const secondaryFeature of secondaryFeatures) {
+                secondaryFeatureNames.push(secondaryFeature.name);
+            }
+        }
+
         fetch("/vocab/inflections/add/submit", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: generateJSONRepresentation(
                 proposedName,
-                primaryCategory,
-                primaryFeatures,
-                secondaryCategory,
-                secondaryFeatures,
+                primaryCategory.name,
+                primaryFeatureNames,
+                secondaryCategory.name,
+                secondaryFeatureNames,
                 numberOfCategories,
             ),
         }).then(saveInflectionHandleResponse);
@@ -163,8 +181,8 @@ export default function AddInflectionArea() {
         numberOfCategories === 2 ? (
             <AddCategory
                 isPending={isPending}
-                categoryName={secondaryCategory}
-                setCategoryName={setSecondaryCategory}
+                category={secondaryCategory}
+                setCategory={setSecondaryCategory}
                 features={secondaryFeatures}
                 setFeatures={setSecondaryFeatures}
             ></AddCategory>
@@ -186,8 +204,8 @@ export default function AddInflectionArea() {
             <div>
                 <AddCategory
                     isPending={isPending}
-                    categoryName={primaryCategory}
-                    setCategoryName={setPrimaryCategory}
+                    category={primaryCategory}
+                    setCategory={setPrimaryCategory}
                     features={primaryFeatures}
                     setFeatures={setPrimaryFeatures}
                 ></AddCategory>
@@ -196,7 +214,7 @@ export default function AddInflectionArea() {
             <ValidityAssessment
                 isValid={inflectionTemplateValidlyFormed}
             ></ValidityAssessment>
-            <EmptyInflectionTemplate
+            <InflectionTemplateProposal
                 isValid={inflectionTemplateValidlyFormed}
                 proposedName={proposedName}
                 numberOfCategories={numberOfCategories}
@@ -204,7 +222,7 @@ export default function AddInflectionArea() {
                 secondaryCategory={secondaryCategory}
                 primaryFeatures={primaryFeatures}
                 secondaryFeatures={secondaryFeatures}
-            ></EmptyInflectionTemplate>
+            ></InflectionTemplateProposal>
             <div className={styles.savemargin}>
                 <Button
                     onClick={saveInflection}

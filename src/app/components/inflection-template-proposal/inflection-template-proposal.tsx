@@ -4,19 +4,19 @@ import InflectionTemplate from "@components/inflection-template/inflection-templ
 
 import { InflectionType } from "@models";
 
-import { InflectionValidity } from "../../helpers/helpers";
+import { InflectionValidity } from "../../vocab/inflections/add/helpers/helpers";
 
-interface EmptyInflectionTemplateProps {
+interface InflectionTemplateProposalProps {
     isValid: InflectionValidity;
     proposedName: string | null;
     numberOfCategories: number;
-    primaryCategory: string;
-    secondaryCategory: string;
-    primaryFeatures: string[];
-    secondaryFeatures: string[];
+    primaryCategory: { name: string; id: number | null };
+    secondaryCategory: { name: string; id: number | null };
+    primaryFeatures: { name: string; id: number | null }[];
+    secondaryFeatures: { name: string; id: number | null }[];
 }
 
-export default function EmptyInflectionTemplate({
+export default function InflectionTemplateProposal({
     isValid,
     proposedName,
     numberOfCategories,
@@ -24,7 +24,7 @@ export default function EmptyInflectionTemplate({
     secondaryCategory,
     primaryFeatures,
     secondaryFeatures,
-}: EmptyInflectionTemplateProps) {
+}: InflectionTemplateProposalProps) {
     if (isValid !== InflectionValidity.Valid) {
         return null;
     }
@@ -33,9 +33,9 @@ export default function EmptyInflectionTemplate({
     for (let featureI = 0; featureI < primaryFeatures.length; featureI++) {
         const feature = primaryFeatures[featureI];
         primaryFeaturesModels.push({
-            id: featureI,
-            inflectionCategoryId: 1,
-            featureName: feature,
+            id: feature.id ?? -featureI,
+            inflectionCategoryId: primaryCategory.id ?? -1,
+            featureName: feature.name,
             orderInCategory: featureI,
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -44,9 +44,9 @@ export default function EmptyInflectionTemplate({
 
     const categories = [
         {
-            id: 1,
+            id: primaryCategory.id ?? -1,
             inflectionTypeId: 1,
-            categoryName: primaryCategory,
+            categoryName: primaryCategory.name,
             isPrimary: true,
             features: primaryFeaturesModels,
             createdAt: new Date(),
@@ -63,9 +63,9 @@ export default function EmptyInflectionTemplate({
         ) {
             const feature = secondaryFeatures[featureI];
             secondaryFeaturesModels.push({
-                id: featureI,
-                inflectionCategoryId: 1,
-                featureName: feature,
+                id: feature.id ?? -featureI,
+                inflectionCategoryId: secondaryCategory.id ?? -2,
+                featureName: feature.name,
                 orderInCategory: featureI,
                 createdAt: new Date(),
                 updatedAt: new Date(),
@@ -73,9 +73,9 @@ export default function EmptyInflectionTemplate({
         }
 
         categories.push({
-            id: 2,
+            id: secondaryCategory.id ?? -2,
             inflectionTypeId: 1,
-            categoryName: secondaryCategory,
+            categoryName: secondaryCategory.name,
             isPrimary: true,
             features: secondaryFeaturesModels,
             createdAt: new Date(),

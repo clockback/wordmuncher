@@ -1,18 +1,32 @@
 import { Dispatch, JSX, SetStateAction, useState } from "react";
 
-import styles from "./add-category.module.css";
+import styles from "./define-category.module.css";
 
 interface AddCategoryProps {
-    categoryName: string;
-    setCategoryName: Dispatch<SetStateAction<string>>;
-    features: string[];
-    setFeatures: Dispatch<SetStateAction<string[]>>;
+    category: { name: string; id: number | null };
+    setCategory: Dispatch<SetStateAction<{ name: string; id: number | null }>>;
+    features: { name: string; id: number | null }[];
+    setFeatures: Dispatch<
+        SetStateAction<{ name: string; id: number | null }[]>
+    >;
     isPending: boolean;
 }
 
+function featuresIncludeName(
+    features: { name: string; id: number | null }[],
+    name: string,
+) {
+    for (const feature of features) {
+        if (feature.name === name) {
+            return true;
+        }
+    }
+    return false;
+}
+
 export default function AddCategory({
-    categoryName,
-    setCategoryName,
+    category,
+    setCategory,
     features,
     setFeatures,
     isPending,
@@ -31,12 +45,15 @@ export default function AddCategory({
         const trimEditingText = editingText.trim();
         if (
             trimEditingText.length === 0 ||
-            features.includes(trimEditingText)
+            featuresIncludeName(features, trimEditingText)
         ) {
             return;
         }
         const copyFeatures = [].concat(features);
-        copyFeatures[selectedI] = editingText;
+        copyFeatures[selectedI] = {
+            name: editingText,
+            id: features[selectedI].id,
+        };
         setFeatures(copyFeatures);
     };
 
@@ -47,7 +64,7 @@ export default function AddCategory({
         const onClickFeature = () => {
             if (!isModifyingFeature && selectedI === featureI) {
                 setIsModifyingFeature(true);
-                setEditingText(feature);
+                setEditingText(feature.name);
             } else {
                 setSelectedI(featureI);
             }
@@ -66,7 +83,7 @@ export default function AddCategory({
                 ></input>
             );
         } else {
-            cellContents = feature;
+            cellContents = feature.name;
         }
         rows.push(
             <tr key={featureI}>
@@ -96,7 +113,7 @@ export default function AddCategory({
     }
 
     const onChangeCategoryName = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setCategoryName(e.target.value);
+        setCategory({ name: e.target.value, id: category.id });
     };
 
     const onBlurAddFeatureInput = () => {
@@ -104,12 +121,14 @@ export default function AddCategory({
         const trimEditingText = editingText.trim();
         if (
             trimEditingText.length === 0 ||
-            features.includes(trimEditingText)
+            featuresIncludeName(features, trimEditingText)
         ) {
             return;
         }
-        const copyFeatures = [].concat(features);
-        copyFeatures.push(editingText);
+        const copyFeatures: { name: string; id: number | null }[] = [].concat(
+            features,
+        );
+        copyFeatures.push({ name: editingText, id: null });
         setSelectedI(features.length);
         setFeatures(copyFeatures);
     };
@@ -143,7 +162,10 @@ export default function AddCategory({
             selectedI === null || isPending
                 ? null
                 : () => {
-                      const copyFeatures = [].concat(features);
+                      const copyFeatures: {
+                          name: string;
+                          id: number | null;
+                      }[] = [].concat(features);
                       copyFeatures.splice(selectedI, 1);
                       setFeatures(copyFeatures);
                       setSelectedI(null);
@@ -153,7 +175,10 @@ export default function AddCategory({
             selectedI === null || selectedI === 0 || isPending
                 ? null
                 : () => {
-                      const copyFeatures = [].concat(features);
+                      const copyFeatures: {
+                          name: string;
+                          id: number | null;
+                      }[] = [].concat(features);
                       const [feature] = copyFeatures.splice(selectedI, 1);
                       copyFeatures.splice(selectedI - 1, 0, feature);
                       setFeatures(copyFeatures);
@@ -164,7 +189,10 @@ export default function AddCategory({
             selectedI === null || selectedI === features.length - 1 || isPending
                 ? null
                 : () => {
-                      const copyFeatures = [].concat(features);
+                      const copyFeatures: {
+                          name: string;
+                          id: number | null;
+                      }[] = [].concat(features);
                       const [feature] = copyFeatures.splice(selectedI, 1);
                       copyFeatures.splice(selectedI + 1, 0, feature);
                       setFeatures(copyFeatures);
@@ -188,7 +216,7 @@ export default function AddCategory({
             <h3>Category name:</h3>
             <input
                 className={styles.categorynameinput}
-                value={categoryName}
+                value={category.name}
                 onKeyDown={categoryPreventFormSubmission}
                 onChange={onChangeCategoryName}
                 disabled={isPending}
