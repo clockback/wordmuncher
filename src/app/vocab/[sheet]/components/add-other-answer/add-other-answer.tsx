@@ -13,7 +13,7 @@ export default function AddOtherAnswer() {
         setSavePossible,
     } = useContext(editSheetContext);
 
-    const [currentOtherAnswer, setCurrentOtherAnswer] = useState("");
+    const [currentOtherAnswer, setCurrentOtherAnswer] = useState<string>("");
 
     function clickAddNewAnswer() {
         setCurrentOtherAnswer("");

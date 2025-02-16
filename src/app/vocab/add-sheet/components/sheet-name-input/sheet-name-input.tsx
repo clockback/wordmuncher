@@ -15,9 +15,10 @@ export default function SheetNameInput({
     onChange,
     pending,
 }: SheetNameInputProps) {
-    const [sheetInputEmpty, setSheetInputEmpty] = useState(true);
-    const [showSheetInputEmpty, setShowSheetInputEmpty] = useState(false);
-    const [sheetFound, setSheetFound] = useState(false);
+    const [sheetInputEmpty, setSheetInputEmpty] = useState<boolean>(true);
+    const [showSheetInputEmpty, setShowSheetInputEmpty] =
+        useState<boolean>(false);
+    const [sheetFound, setSheetFound] = useState<boolean>(false);
 
     const inputOnChange = async (input: React.FormEvent<HTMLInputElement>) => {
         const proposedName = input.currentTarget.value.trim();

@@ -75,17 +75,27 @@ function isValid(
 }
 
 export default function AddInflectionArea() {
-    const [proposedName, setProposedName] = useState(null);
-    const [isEditing, setIsEditing] = useState(true);
-    const [isPending, setIsPending] = useState(false);
-    const [numberOfCategories, setNumberOfCategories] = useState(1);
-    const [primaryFeatures, setPrimaryFeatures] = useState([]);
-    const [secondaryFeatures, setSecondaryFeatures] = useState([]);
-    const [primaryCategory, setPrimaryCategory] = useState({
+    const [proposedName, setProposedName] = useState<string | null>(null);
+    const [isEditing, setIsEditing] = useState<boolean>(true);
+    const [isPending, setIsPending] = useState<boolean>(false);
+    const [numberOfCategories, setNumberOfCategories] = useState<number>(1);
+    const [primaryFeatures, setPrimaryFeatures] = useState<
+        { name: string; id: number | null }[]
+    >([]);
+    const [secondaryFeatures, setSecondaryFeatures] = useState<
+        { name: string; id: number | null }[]
+    >([]);
+    const [primaryCategory, setPrimaryCategory] = useState<{
+        name: string;
+        id: number | null;
+    }>({
         name: "",
         id: null,
     });
-    const [secondaryCategory, setSecondaryCategory] = useState({
+    const [secondaryCategory, setSecondaryCategory] = useState<{
+        name: string;
+        id: number | null;
+    }>({
         name: "",
         id: null,
     });

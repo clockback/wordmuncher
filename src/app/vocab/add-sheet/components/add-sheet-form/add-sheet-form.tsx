@@ -11,7 +11,7 @@ interface AddSheetFormProps {
 }
 
 export default function AddSheetForm({ validateSheetName }: AddSheetFormProps) {
-    const [pending, setPending] = useState(false);
+    const [pending, setPending] = useState<boolean>(false);
     const router = useRouter();
 
     function addSheetHandleResponse(response: NextResponse) {

@@ -11,7 +11,7 @@ interface TestSheetTableProps {
 }
 
 export default function TestSheetTable({ sheets }: TestSheetTableProps) {
-    const [selectedRowId, setSelectedRowId] = useState(null);
+    const [selectedRowId, setSelectedRowId] = useState<number | null>(null);
 
     const tableRows = [];
     for (const sheet of sheets) {
