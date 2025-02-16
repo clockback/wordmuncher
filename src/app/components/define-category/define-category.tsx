@@ -24,7 +24,7 @@ function featuresIncludeName(
     return false;
 }
 
-export default function AddCategory({
+export default function DefineCategory({
     category,
     setCategory,
     features,
