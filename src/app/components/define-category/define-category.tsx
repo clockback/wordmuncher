@@ -174,7 +174,10 @@ export default function DefineCategory({
                       const copyFeatures: FeatureInterface[] = [].concat(
                           features,
                       );
-                      copyFeatures.splice(selectedId, 1);
+                      copyFeatures.splice(
+                          getIndexOfFeatureById(features, selectedId),
+                          1,
+                      );
                       setFeatures(copyFeatures);
                       setSelectedId(null);
                   };
