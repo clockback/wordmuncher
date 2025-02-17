@@ -23,6 +23,19 @@ function featuresIncludeName(features: FeatureInterface[], name: string) {
     return false;
 }
 
+function getIndexOfFeatureById(
+    features: FeatureInterface[],
+    id: number,
+): number {
+    for (let featureI = 0; featureI < features.length; featureI++) {
+        if (features[featureI].id === id) {
+            return featureI;
+        }
+    }
+
+    throw new Error(`Feature with ID ${id} not found in list.`);
+}
+
 export default function DefineCategory({
     category,
     setCategory,
@@ -34,7 +47,7 @@ export default function DefineCategory({
     const [isModifyingFeature, setIsModifyingFeature] =
         useState<boolean>(false);
     const [editingText, setEditingText] = useState<string>("");
-    const [selectedI, setSelectedI] = useState<number | null>(null);
+    const [selectedId, setSelectedId] = useState<number | null>(null);
 
     const onChangeEditingText = (e: React.ChangeEvent<HTMLInputElement>) => {
         setEditingText(e.target.value);
@@ -50,27 +63,26 @@ export default function DefineCategory({
             return;
         }
         const copyFeatures = [].concat(features);
-        copyFeatures[selectedI] = {
+        copyFeatures[selectedId] = {
             name: editingText,
-            id: features[selectedI].id,
+            id: features[selectedId].id,
         };
         setFeatures(copyFeatures);
     };
 
     const rows = [];
-    let featureI = 0;
     for (const feature of features) {
-        const className = featureI === selectedI ? styles.selected : null;
+        const className = feature.id === selectedId ? styles.selected : null;
         const onClickFeature = () => {
-            if (!isModifyingFeature && selectedI === featureI) {
+            if (!isModifyingFeature && selectedId === feature.id) {
                 setIsModifyingFeature(true);
                 setEditingText(feature.name);
             } else {
-                setSelectedI(featureI);
+                setSelectedId(feature.id);
             }
         };
         let cellContents: JSX.Element | string;
-        if (isModifyingFeature && selectedI === featureI) {
+        if (isModifyingFeature && selectedId === feature.id) {
             cellContents = (
                 <input
                     className={styles.featureinput}
@@ -86,13 +98,12 @@ export default function DefineCategory({
             cellContents = feature.name;
         }
         rows.push(
-            <tr key={featureI}>
+            <tr key={feature.id}>
                 <td colSpan={4} onClick={onClickFeature} className={className}>
                     {cellContents}
                 </td>
             </tr>,
         );
-        featureI++;
     }
 
     function categoryPreventFormSubmission(
@@ -126,14 +137,14 @@ export default function DefineCategory({
             return;
         }
         const copyFeatures: FeatureInterface[] = [].concat(features);
-        copyFeatures.push({ name: editingText, id: null });
-        setSelectedI(features.length);
+        copyFeatures.push({ name: editingText, id: -(features.length + 1) });
+        setSelectedId(features.length);
         setFeatures(copyFeatures);
     };
 
     if (isAddingFeature) {
         rows.push(
-            <tr key={-1}>
+            <tr key={-(features.length + 1)}>
                 <td colSpan={4}>
                     <input
                         className={styles.featureinput}
@@ -151,53 +162,59 @@ export default function DefineCategory({
         const addFeature = isPending
             ? null
             : () => {
-                  setSelectedI(null);
+                  setSelectedId(null);
                   setEditingText("");
                   setIsAddingFeature(true);
               };
 
         const removeFeature =
-            selectedI === null || isPending
+            selectedId === null || isPending
                 ? null
                 : () => {
                       const copyFeatures: FeatureInterface[] = [].concat(
                           features,
                       );
-                      copyFeatures.splice(selectedI, 1);
+                      copyFeatures.splice(selectedId, 1);
                       setFeatures(copyFeatures);
-                      setSelectedI(null);
+                      setSelectedId(null);
                   };
 
         const moveFeatureUp =
-            selectedI === null || selectedI === 0 || isPending
+            selectedId === null || selectedId === features.at(0).id || isPending
                 ? null
                 : () => {
                       const copyFeatures: FeatureInterface[] = [].concat(
                           features,
                       );
-                      const [feature] = copyFeatures.splice(selectedI, 1);
-                      copyFeatures.splice(selectedI - 1, 0, feature);
+                      const featureIndex = getIndexOfFeatureById(
+                          features,
+                          selectedId,
+                      );
+                      const [feature] = copyFeatures.splice(featureIndex, 1);
+                      copyFeatures.splice(featureIndex - 1, 0, feature);
                       setFeatures(copyFeatures);
-                      setSelectedI(Math.max(0, selectedI - 1));
                   };
 
         const moveFeatureDown =
-            selectedI === null || selectedI === features.length - 1 || isPending
+            selectedId === null ||
+            selectedId === features.at(-1).id ||
+            isPending
                 ? null
                 : () => {
                       const copyFeatures: FeatureInterface[] = [].concat(
                           features,
                       );
-                      const [feature] = copyFeatures.splice(selectedI, 1);
-                      copyFeatures.splice(selectedI + 1, 0, feature);
-                      setFeatures(copyFeatures);
-                      setSelectedI(
-                          Math.min(features.length - 1, selectedI + 1),
+                      const featureIndex = getIndexOfFeatureById(
+                          features,
+                          selectedId,
                       );
+                      const [feature] = copyFeatures.splice(featureIndex, 1);
+                      copyFeatures.splice(featureIndex + 1, 0, feature);
+                      setFeatures(copyFeatures);
                   };
 
         rows.push(
-            <tr key={-1} className={styles.controlpanel}>
+            <tr key={-(features.length + 1)} className={styles.controlpanel}>
                 <td onClick={addFeature}>+</td>
                 <td onClick={removeFeature}>🗑️</td>
                 <td onClick={moveFeatureUp}>↑</td>
