@@ -5,15 +5,19 @@ import InflectionTemplate from "@components/inflection-template/inflection-templ
 import { InflectionType } from "@models";
 
 import { InflectionValidity } from "../../vocab/inflections/add/helpers/helpers";
+import {
+    CategoryInterface,
+    FeatureInterface,
+} from "src/app/vocab/inflections/helpers/interfaces";
 
 interface InflectionTemplateProposalProps {
     isValid: InflectionValidity;
     proposedName: string | null;
     numberOfCategories: number;
-    primaryCategory: { name: string; id: number | null };
-    secondaryCategory: { name: string; id: number | null };
-    primaryFeatures: { name: string; id: number | null }[];
-    secondaryFeatures: { name: string; id: number | null }[];
+    primaryCategory: CategoryInterface;
+    secondaryCategory: CategoryInterface;
+    primaryFeatures: FeatureInterface[];
+    secondaryFeatures: FeatureInterface[];
 }
 
 export default function InflectionTemplateProposal({

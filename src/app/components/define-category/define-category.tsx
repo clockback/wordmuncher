@@ -1,21 +1,20 @@
 import { Dispatch, JSX, SetStateAction, useState } from "react";
 
 import styles from "./define-category.module.css";
+import {
+    CategoryInterface,
+    FeatureInterface,
+} from "src/app/vocab/inflections/helpers/interfaces";
 
 interface AddCategoryProps {
-    category: { name: string; id: number | null };
-    setCategory: Dispatch<SetStateAction<{ name: string; id: number | null }>>;
-    features: { name: string; id: number | null }[];
-    setFeatures: Dispatch<
-        SetStateAction<{ name: string; id: number | null }[]>
-    >;
+    category: CategoryInterface;
+    setCategory: Dispatch<SetStateAction<CategoryInterface>>;
+    features: FeatureInterface[];
+    setFeatures: Dispatch<SetStateAction<FeatureInterface[]>>;
     isPending: boolean;
 }
 
-function featuresIncludeName(
-    features: { name: string; id: number | null }[],
-    name: string,
-) {
+function featuresIncludeName(features: FeatureInterface[], name: string) {
     for (const feature of features) {
         if (feature.name === name) {
             return true;
@@ -126,9 +125,7 @@ export default function DefineCategory({
         ) {
             return;
         }
-        const copyFeatures: { name: string; id: number | null }[] = [].concat(
-            features,
-        );
+        const copyFeatures: FeatureInterface[] = [].concat(features);
         copyFeatures.push({ name: editingText, id: null });
         setSelectedI(features.length);
         setFeatures(copyFeatures);
@@ -163,10 +160,9 @@ export default function DefineCategory({
             selectedI === null || isPending
                 ? null
                 : () => {
-                      const copyFeatures: {
-                          name: string;
-                          id: number | null;
-                      }[] = [].concat(features);
+                      const copyFeatures: FeatureInterface[] = [].concat(
+                          features,
+                      );
                       copyFeatures.splice(selectedI, 1);
                       setFeatures(copyFeatures);
                       setSelectedI(null);
@@ -176,10 +172,9 @@ export default function DefineCategory({
             selectedI === null || selectedI === 0 || isPending
                 ? null
                 : () => {
-                      const copyFeatures: {
-                          name: string;
-                          id: number | null;
-                      }[] = [].concat(features);
+                      const copyFeatures: FeatureInterface[] = [].concat(
+                          features,
+                      );
                       const [feature] = copyFeatures.splice(selectedI, 1);
                       copyFeatures.splice(selectedI - 1, 0, feature);
                       setFeatures(copyFeatures);
@@ -190,10 +185,9 @@ export default function DefineCategory({
             selectedI === null || selectedI === features.length - 1 || isPending
                 ? null
                 : () => {
-                      const copyFeatures: {
-                          name: string;
-                          id: number | null;
-                      }[] = [].concat(features);
+                      const copyFeatures: FeatureInterface[] = [].concat(
+                          features,
+                      );
                       const [feature] = copyFeatures.splice(selectedI, 1);
                       copyFeatures.splice(selectedI + 1, 0, feature);
                       setFeatures(copyFeatures);
