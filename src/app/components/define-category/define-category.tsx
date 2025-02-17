@@ -63,9 +63,9 @@ export default function DefineCategory({
             return;
         }
         const copyFeatures = [].concat(features);
-        copyFeatures[selectedId] = {
+        copyFeatures[getIndexOfFeatureById(features, selectedId)] = {
             name: editingText,
-            id: features[selectedId].id,
+            id: selectedId,
         };
         setFeatures(copyFeatures);
     };
