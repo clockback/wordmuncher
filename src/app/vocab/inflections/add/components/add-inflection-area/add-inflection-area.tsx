@@ -9,6 +9,10 @@ import DefineCategory from "@components/define-category/define-category";
 import EditableHeader from "@components/editable-header/editable-header";
 import InflectionTemplateProposal from "@components/inflection-template-proposal/inflection-template-proposal";
 
+import {
+    CategoryInterface,
+    FeatureInterface,
+} from "../../../helpers/interfaces";
 import { InflectionValidity } from "../../helpers/helpers";
 import ValidityAssessment from "../validity-assessment/validity-assessment";
 import styles from "./add-inflection-area.module.css";
@@ -79,26 +83,21 @@ export default function AddInflectionArea() {
     const [isEditing, setIsEditing] = useState<boolean>(true);
     const [isPending, setIsPending] = useState<boolean>(false);
     const [numberOfCategories, setNumberOfCategories] = useState<number>(1);
-    const [primaryFeatures, setPrimaryFeatures] = useState<
-        { name: string; id: number | null }[]
-    >([]);
+    const [primaryFeatures, setPrimaryFeatures] = useState<FeatureInterface[]>(
+        [],
+    );
     const [secondaryFeatures, setSecondaryFeatures] = useState<
-        { name: string; id: number | null }[]
+        FeatureInterface[]
     >([]);
-    const [primaryCategory, setPrimaryCategory] = useState<{
-        name: string;
-        id: number | null;
-    }>({
+    const [primaryCategory, setPrimaryCategory] = useState<CategoryInterface>({
         name: "",
         id: null,
     });
-    const [secondaryCategory, setSecondaryCategory] = useState<{
-        name: string;
-        id: number | null;
-    }>({
-        name: "",
-        id: null,
-    });
+    const [secondaryCategory, setSecondaryCategory] =
+        useState<CategoryInterface>({
+            name: "",
+            id: null,
+        });
 
     const inflectionTemplateValidlyFormed = isValid(
         proposedName,
