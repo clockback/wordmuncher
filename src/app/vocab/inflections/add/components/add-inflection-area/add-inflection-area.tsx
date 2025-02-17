@@ -49,8 +49,8 @@ function isValid(
     numberOfCategories: number,
     primaryCategory: string,
     secondaryCategory: string,
-    primaryFeatures: string[],
-    secondaryFeatures: string[],
+    primaryFeaturesLength: number,
+    secondaryFeaturesLength: number,
 ): InflectionValidity {
     if (proposedName === "") {
         return InflectionValidity.InflectionNotNamed;
@@ -65,8 +65,8 @@ function isValid(
     ) {
         return InflectionValidity.MatchingCategoryNames;
     } else if (
-        primaryFeatures.length === 0 ||
-        (numberOfCategories === 2 && secondaryFeatures.length === 0)
+        primaryFeaturesLength === 0 ||
+        (numberOfCategories === 2 && secondaryFeaturesLength === 0)
     ) {
         return InflectionValidity.MissingFeatures;
     } else {
@@ -95,8 +95,8 @@ export default function AddInflectionArea() {
         numberOfCategories,
         primaryCategory.name,
         secondaryCategory.name,
-        primaryFeatures,
-        secondaryFeatures,
+        primaryFeatures.length,
+        secondaryFeatures.length,
     );
 
     const onBlurHandleResponse = (
