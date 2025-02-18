@@ -30,6 +30,22 @@ export async function up({ context: queryInterface }) {
             createdAt: new Date(),
             updatedAt: new Date(),
         },
+        {
+            questionId: 4,
+            stars: 0,
+            goal: 2,
+            current: 0,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        },
+        {
+            questionId: 5,
+            stars: 0,
+            goal: 2,
+            current: 0,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        },
     ]);
 }
 export async function down({ context: queryInterface }) {
