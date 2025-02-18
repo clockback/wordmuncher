@@ -88,7 +88,7 @@ export default function DefineCategory({
                     className={styles.featureinput}
                     autoFocus
                     onBlur={onBlurModifyFeatureInput}
-                    onKeyDown={featurePreventFormSubmission}
+                    onKeyDown={modifyFeaturePreventFormSubmission}
                     value={editingText}
                     onChange={onChangeEditingText}
                     disabled={isPending}
@@ -114,7 +114,16 @@ export default function DefineCategory({
         }
     }
 
-    function featurePreventFormSubmission(
+    function modifyFeaturePreventFormSubmission(
+        e: React.KeyboardEvent<HTMLInputElement>,
+    ) {
+        if (e.code == "Enter") {
+            e.preventDefault();
+            onBlurModifyFeatureInput();
+        }
+    }
+
+    function addFeaturePreventFormSubmission(
         e: React.KeyboardEvent<HTMLInputElement>,
     ) {
         if (e.code == "Enter") {
@@ -150,7 +159,7 @@ export default function DefineCategory({
                         className={styles.featureinput}
                         autoFocus
                         onBlur={onBlurAddFeatureInput}
-                        onKeyDown={featurePreventFormSubmission}
+                        onKeyDown={addFeaturePreventFormSubmission}
                         value={editingText}
                         onChange={onChangeEditingText}
                         disabled={isPending}
