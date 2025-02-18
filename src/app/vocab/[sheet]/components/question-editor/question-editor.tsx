@@ -248,6 +248,7 @@ export default function QuestionEditor() {
             <EditableHeader
                 currentProposal={proposedQuestionText}
                 isEditing={isEditingQuestionText}
+                isPending={false}
                 onBlur={onBlur}
                 setIsEditing={setIsEditingQuestionText}
                 title="Question"
