@@ -19,11 +19,9 @@ export default function InflectionHeader({
     inflectionType,
     inflectionTypeNames,
 }: InflectionHeaderProps) {
-    const { isPending, setIsPending } = useContext(editInflectionContext);
+    const { isPending, setIsPending, inflectionName, setInflectionName } =
+        useContext(editInflectionContext);
 
-    const [inflectionName, setInflectionName] = useState<string>(
-        inflectionType.typeName,
-    );
     const [isEditingInflectionName, setIsEditingInflectionName] =
         useState<boolean>(false);
 

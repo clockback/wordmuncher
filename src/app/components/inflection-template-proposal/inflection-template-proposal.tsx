@@ -2,7 +2,7 @@
 
 import InflectionTemplate from "@components/inflection-template/inflection-template";
 
-import { InflectionType } from "@models";
+import { InflectionType, Question } from "@models";
 
 import { InflectionValidity } from "../../vocab/inflections/add/helpers/helpers";
 import {
@@ -18,6 +18,7 @@ interface InflectionTemplateProposalProps {
     secondaryCategory: CategoryInterface;
     primaryFeatures: FeatureInterface[];
     secondaryFeatures: FeatureInterface[];
+    representativeQuestion: Question | null;
 }
 
 export default function InflectionTemplateProposal({
@@ -28,6 +29,7 @@ export default function InflectionTemplateProposal({
     secondaryCategory,
     primaryFeatures,
     secondaryFeatures,
+    representativeQuestion = null,
 }: InflectionTemplateProposalProps) {
     if (isValid !== InflectionValidity.Valid) {
         return null;
@@ -100,7 +102,7 @@ export default function InflectionTemplateProposal({
         <>
             <InflectionTemplate
                 inflectionType={inflectionType as InflectionType}
-                representativeQuestion={null}
+                representativeQuestion={representativeQuestion}
             ></InflectionTemplate>
         </>
     );
