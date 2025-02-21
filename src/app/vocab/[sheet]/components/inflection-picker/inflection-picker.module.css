@@ -1,0 +1,50 @@
+.inflectionpicker {
+    display: inline-block;
+    width: 300px;
+    cursor: pointer;
+    margin-block: 10px;
+}
+
+.selected {
+    padding: 10px;
+}
+
+.options {
+    position: absolute;
+    width: 300px;
+    max-height: 300px;
+    display: inline-block;
+    overflow-y: scroll;
+}
+
+.inflectionpicker > :first-child {
+    padding: 10px;
+}
+
+.inflectionpicker > :first-child:hover {
+    background-color: rgb(var(--colour-dim-grey));
+}
+
+.inflectionpicker > :first-child:not(:hover) {
+    background-color: rgb(var(--colour-davys-grey));
+}
+
+.inflectionpicker:not(:hover) .options {
+    display: none;
+}
+
+.options > div {
+    padding: 10px;
+}
+
+.options > div:nth-child(even):not(:hover) {
+    background-color: rgb(var(--colour-davys-grey));
+}
+
+.options > div:nth-child(odd):not(:hover) {
+    background-color: rgb(var(--colour-dark-charcoal));
+}
+
+.options > div:hover {
+    background-color: rgb(var(--colour-dim-grey));
+}
