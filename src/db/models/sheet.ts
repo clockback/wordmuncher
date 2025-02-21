@@ -8,7 +8,13 @@ import {
     NonAttribute,
 } from "sequelize";
 
-import { Answer, Question, SheetQuestion, TonguePair } from "@models";
+import {
+    Answer,
+    InflectionAnswer,
+    Question,
+    SheetQuestion,
+    TonguePair,
+} from "@models";
 
 import sequelize from "./db-connection";
 
@@ -35,6 +41,11 @@ export class Sheet extends Model<
                 {
                     model: Answer,
                     as: "answers",
+                    required: false,
+                },
+                {
+                    model: InflectionAnswer,
+                    as: "inflectionAnswers",
                     required: false,
                 },
             ],

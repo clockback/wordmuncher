@@ -6,7 +6,7 @@ import { useState } from "react";
 
 import Button from "@components/button/button";
 
-import { Question, Sheet } from "@models";
+import { InflectionType, Question, Sheet } from "@models";
 
 import editSheetContext from "../../context";
 import EditSheetHeader from "../edit-sheet-header/edit-sheet-header";
@@ -17,9 +17,14 @@ import styles from "./sheet-editor.module.css";
 interface SheetEditorProps {
     sheet: Sheet;
     questions: Question[];
+    inflectionTypes: InflectionType[];
 }
 
-export default function SheetEditor({ sheet, questions }: SheetEditorProps) {
+export default function SheetEditor({
+    sheet,
+    questions,
+    inflectionTypes,
+}: SheetEditorProps) {
     const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(
         null,
     );
@@ -39,17 +44,26 @@ export default function SheetEditor({ sheet, questions }: SheetEditorProps) {
     >(null);
     const [isAddingNewQuestion, setIsAddingNewQuestion] =
         useState<boolean>(false);
+    const [proposedInflectionType, setProposedInflectionType] =
+        useState<InflectionType | null>(null);
+    const [proposedInflectionAnswers, setProposedInflectionAnswers] = useState<
+        Map<string, string>
+    >(new Map());
+
     const sheetId = sheet.id;
 
     const context = {
         allQuestions,
         answerEntryValue,
         editingOtherAnswerI,
+        inflectionTypes,
         isAddingNewQuestion,
         isAddingOtherAnswer,
         isEditingQuestionText,
         otherAnswers,
         pending,
+        proposedInflectionAnswers,
+        proposedInflectionType,
         proposedQuestionText,
         setAnswerEntryValue,
         savePossible,
@@ -61,6 +75,8 @@ export default function SheetEditor({ sheet, questions }: SheetEditorProps) {
         setIsEditingQuestionText,
         setOtherAnswers,
         setPending,
+        setProposedInflectionAnswers,
+        setProposedInflectionType,
         setProposedQuestionText,
         setSavePossible,
         setSelectedQuestion,

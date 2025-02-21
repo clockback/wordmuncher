@@ -1,8 +1,78 @@
 import { NextRequest, NextResponse } from "next/server";
+import { Transaction } from "sequelize";
 
-import { Answer, Question } from "@models";
+import { Answer, InflectionAnswer, Question } from "@models";
 
 import sequelize from "src/db/models/db-connection";
+
+async function processPlainAnswers(
+    questionId: number,
+    mainAnswer: string,
+    otherAnswers: string[],
+    createdAnswers: Answer[],
+    transaction: Transaction,
+) {
+    const answers = [];
+
+    for (const proposedOtherAnswer of otherAnswers) {
+        answers.push({
+            questionId: questionId,
+            isMainAnswer: false,
+            answerText: proposedOtherAnswer,
+        });
+    }
+
+    await Answer.destroy({
+        where: { isMainAnswer: false, questionId },
+        transaction,
+    });
+    await Answer.update(
+        { answerText: mainAnswer },
+        { where: { questionId }, transaction },
+    );
+    await Answer.bulkCreate(answers, { transaction });
+
+    for (const createdAnswer of await Answer.findAll({
+        where: { questionId: questionId },
+        transaction,
+    })) {
+        createdAnswers.push(createdAnswer.toJSON());
+    }
+
+    return createdAnswers;
+}
+
+async function processInflectionAnswers(
+    questionId: number,
+    inflectionAnswers: {
+        primaryFeature: number;
+        secondaryFeature?: number;
+        answer: string;
+    }[],
+    createdAnswers: InflectionAnswer[],
+    transaction: Transaction,
+) {
+    const answers = [];
+
+    await InflectionAnswer.destroy({ where: { questionId }, transaction });
+
+    for (const inflectionAnswer of inflectionAnswers) {
+        answers.push({
+            questionId,
+            primaryFeatureId: inflectionAnswer.primaryFeature,
+            secondaryFeatureId: inflectionAnswer.secondaryFeature ?? null,
+            answerText: inflectionAnswer.answer,
+        });
+    }
+
+    for (const createdAnswer of await InflectionAnswer.bulkCreate(answers, {
+        transaction,
+    })) {
+        createdAnswers.push(createdAnswer.toJSON());
+    }
+
+    return createdAnswers;
+}
 
 export async function POST(request: NextRequest) {
     const requestJSON = await request.json();
@@ -10,20 +80,22 @@ export async function POST(request: NextRequest) {
         proposedQuestionText,
         proposedMainAnswer,
         proposedOtherAnswers,
+        proposedInflectionType,
+        proposedInflectionAnswers,
         id,
     } = requestJSON;
 
-    const allOtherAnswers: {
-        questionId: number;
-        isMainAnswer: boolean;
-        answerText: string;
-    }[] = [];
-    for (const proposedOtherAnswer of proposedOtherAnswers) {
-        allOtherAnswers.push({
-            questionId: id,
-            isMainAnswer: false,
-            answerText: proposedOtherAnswer,
-        });
+    let usesInflections: boolean;
+    const createdAnswers: Answer[] | InflectionAnswer[] = [];
+    if (proposedMainAnswer && proposedOtherAnswers !== undefined) {
+        usesInflections = false;
+    } else if (
+        proposedInflectionType &&
+        proposedInflectionAnswers !== undefined
+    ) {
+        usesInflections = true;
+    } else {
+        return NextResponse.json({}, { status: 422 });
     }
 
     try {
@@ -35,18 +107,23 @@ export async function POST(request: NextRequest) {
                     transaction: t,
                 },
             );
-            await Answer.destroy({
-                where: { isMainAnswer: false, questionId: id },
-                transaction: t,
-            });
-            await Answer.update(
-                { answerText: proposedMainAnswer },
-                {
-                    where: { questionId: id },
-                    transaction: t,
-                },
-            );
-            await Answer.bulkCreate(allOtherAnswers, { transaction: t });
+
+            if (usesInflections) {
+                await processInflectionAnswers(
+                    id,
+                    proposedInflectionAnswers,
+                    createdAnswers as InflectionAnswer[],
+                    t,
+                );
+            } else {
+                await processPlainAnswers(
+                    id,
+                    proposedMainAnswer,
+                    proposedOtherAnswers,
+                    createdAnswers as Answer[],
+                    t,
+                );
+            }
         });
     } catch (error) {
         console.log(`error: ${error}`);
@@ -57,8 +134,8 @@ export async function POST(request: NextRequest) {
         {
             questionId: id,
             questionText: proposedQuestionText,
-            mainAnswer: proposedMainAnswer,
-            otherAnswers: proposedOtherAnswers,
+            answers: usesInflections ? [] : createdAnswers,
+            inflectionAnswers: usesInflections ? createdAnswers : [],
         },
         { status: 200 },
     );

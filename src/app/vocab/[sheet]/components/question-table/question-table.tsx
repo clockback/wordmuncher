@@ -9,19 +9,52 @@ export default function QuestionTable() {
     const questionRows = [];
     const {
         allQuestions,
+        inflectionTypes,
+        setProposedInflectionAnswers,
         savePossible,
         selectedQuestion,
         setAnswerEntryValue,
         setIsAddingNewQuestion,
         setIsEditingQuestionText,
         setOtherAnswers,
+        setProposedInflectionType,
         setProposedQuestionText,
         setSavePossible,
         setSelectedQuestion,
     } = useContext(editSheetContext);
 
+    function updateInflectionAnswersForSelectedQuestion(question: Question) {
+        const currentInflectionAnswers = new Map<string, string>();
+        for (const inflectionAnswer of question.inflectionAnswers) {
+            let inflectionAnswerKey: string;
+            if (inflectionAnswer.secondaryFeatureId === null) {
+                inflectionAnswerKey =
+                    inflectionAnswer.primaryFeatureId.toString();
+            } else {
+                inflectionAnswerKey = `${inflectionAnswer.primaryFeatureId},${inflectionAnswer.secondaryFeatureId}`;
+            }
+            currentInflectionAnswers.set(
+                inflectionAnswerKey,
+                inflectionAnswer.answerText,
+            );
+        }
+        setProposedInflectionAnswers(currentInflectionAnswers);
+    }
+
     function selectQuestion(question: Question) {
         setSelectedQuestion(question);
+        updateInflectionAnswersForSelectedQuestion(question);
+
+        if (question.inflectionTypeId === null) {
+            setProposedInflectionType(null);
+        } else {
+            for (const inflectionType of inflectionTypes) {
+                if (question.inflectionTypeId === inflectionType.id) {
+                    setProposedInflectionType(inflectionType);
+                }
+            }
+        }
+
         setSavePossible(false);
         setIsEditingQuestionText(false);
         setProposedQuestionText(question.questionText);
@@ -82,6 +115,8 @@ export default function QuestionTable() {
         setProposedQuestionText("");
         setAnswerEntryValue("");
         setIsEditingQuestionText(true);
+        setProposedInflectionAnswers(new Map());
+        setProposedInflectionType(null);
     };
 
     return (

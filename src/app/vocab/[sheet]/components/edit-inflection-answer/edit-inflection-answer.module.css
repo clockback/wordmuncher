@@ -1,0 +1,13 @@
+.select {
+    cursor: pointer;
+}
+
+.select:empty::after {
+    content: "\200B";
+    visibility: hidden;
+}
+
+.edit {
+    font-family: inherit;
+    font-size: inherit;
+}

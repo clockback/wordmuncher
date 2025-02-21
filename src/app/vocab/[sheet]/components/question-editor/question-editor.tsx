@@ -6,7 +6,7 @@ import { useContext } from "react";
 import Button from "@components/button/button";
 import EditableHeader from "@components/editable-header/editable-header";
 
-import { Answer, Question } from "@models";
+import { Answer, InflectionAnswer, InflectionType, Question } from "@models";
 
 import editSheetContext from "../../context";
 import AnswerSection from "../answer-section/answer-section";
@@ -23,20 +23,43 @@ function questionAlreadyExists(questionText: string, allQuestions: Question[]) {
 
 interface clickSaveQuestionResponseProps {
     questionId: number;
-    mainAnswer: string;
     questionText: string;
-    otherAnswers: string[];
+    answers: Answer[];
+    inflectionAnswers: InflectionAnswer[];
 }
 
-function questionIsValid(question: string, answerText: string | null): boolean {
+function questionIsValid(
+    question: string,
+    answerText: string | null,
+    inflectionType: InflectionType | null,
+    inflectionAnswers: Map<string, string>,
+): boolean {
     if (question.length === 0) {
         return false;
-    }
-    if (answerText.length === 0) {
-        return false;
+    } else if (inflectionType === null) {
+        return answerText.length > 0;
     }
 
-    return true;
+    for (const primaryFeature of inflectionType.categories[0].features) {
+        if (inflectionType.categories.length === 1) {
+            if (inflectionAnswers.get(primaryFeature.id.toString())) {
+                return true;
+            }
+        } else {
+            const secondaryCategory = inflectionType.categories[1];
+            for (const secondaryFeature of secondaryCategory.features) {
+                if (
+                    inflectionAnswers.get(
+                        `${primaryFeature.id},${secondaryFeature.id}`,
+                    )
+                ) {
+                    return true;
+                }
+            }
+        }
+    }
+
+    return false;
 }
 
 export default function QuestionEditor() {
@@ -47,6 +70,8 @@ export default function QuestionEditor() {
         isEditingQuestionText,
         otherAnswers,
         pending,
+        proposedInflectionAnswers,
+        proposedInflectionType,
         proposedQuestionText,
         savePossible,
         selectedQuestion,
@@ -69,29 +94,8 @@ export default function QuestionEditor() {
         contents: clickSaveQuestionResponseProps,
     ) {
         question.questionText = contents.questionText;
-        const newAnswers: Answer[] = [];
-
-        for (const answer of question.answers) {
-            if (answer.isMainAnswer) {
-                newAnswers.push({
-                    id: answer.id,
-                    isMainAnswer: true,
-                    answerText: contents.mainAnswer,
-                    questionId: answer.questionId,
-                } as Answer);
-                break;
-            }
-        }
-
-        for (const answer of contents.otherAnswers) {
-            newAnswers.push({
-                isMainAnswer: false,
-                answerText: answer,
-                questionId: newAnswers[0].id,
-            } as Answer);
-        }
-
-        question.answers = newAnswers;
+        question.answers = contents.answers.slice();
+        question.inflectionAnswers = contents.inflectionAnswers.slice();
     }
 
     function clickSaveNewQuestionHandleResponse(response: NextResponse) {
@@ -105,16 +109,58 @@ export default function QuestionEditor() {
         });
     }
 
-    function clickSaveNewQuestion(mainAnswer: string) {
+    function getAnswerBody() {
+        const answerBody = {};
+        if (proposedInflectionType === null) {
+            answerBody["proposedMainAnswer"] = answerEntryValue.trim();
+            answerBody["proposedOtherAnswers"] = otherAnswers;
+        } else {
+            answerBody["proposedInflectionType"] = proposedInflectionType.id;
+            answerBody["proposedInflectionAnswers"] = [];
+
+            const primaryCategory = proposedInflectionType.categories[0];
+            for (const primaryFeature of primaryCategory.features) {
+                if (proposedInflectionType.categories.length === 1) {
+                    const answerKey = primaryFeature.id.toString();
+                    const submitAnswer =
+                        proposedInflectionAnswers.get(answerKey);
+                    if (submitAnswer) {
+                        answerBody["proposedInflectionAnswers"].push({
+                            primaryFeature: primaryFeature.id,
+                            answer: submitAnswer,
+                        });
+                    }
+                } else {
+                    const secondaryCategory =
+                        proposedInflectionType.categories[1];
+                    for (const secondaryFeature of secondaryCategory.features) {
+                        const answerKey = `${primaryFeature.id},${secondaryFeature.id}`;
+                        const submitAnswer =
+                            proposedInflectionAnswers.get(answerKey);
+                        if (submitAnswer) {
+                            answerBody["proposedInflectionAnswers"].push({
+                                primaryFeature: primaryFeature.id,
+                                secondaryFeature: secondaryFeature.id,
+                                answer: submitAnswer,
+                            });
+                        }
+                    }
+                }
+            }
+        }
+        return answerBody;
+    }
+
+    function clickSaveNewQuestion() {
+        const body = {
+            sheetId: sheetId,
+            proposedQuestionText: proposedQuestionText.trim(),
+            ...getAnswerBody(),
+        };
         fetch(`/vocab/${sheetId}/add-question`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                sheetId: sheetId,
-                proposedQuestionText: proposedQuestionText.trim(),
-                proposedMainAnswer: mainAnswer,
-                proposedOtherAnswers: otherAnswers,
-            }),
+            body: JSON.stringify(body),
         }).then(clickSaveNewQuestionHandleResponse);
     }
 
@@ -133,30 +179,27 @@ export default function QuestionEditor() {
         });
     }
 
-    function clickSaveEditQuestion(mainAnswer: string) {
+    function clickSaveEditQuestion() {
+        const body = {
+            id: selectedQuestion.id,
+            proposedQuestionText: proposedQuestionText.trim(),
+            ...getAnswerBody(),
+        };
         fetch("/vocab/update-question", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                id: selectedQuestion.id,
-                proposedQuestionText: proposedQuestionText.trim(),
-                proposedMainAnswer: mainAnswer,
-                proposedOtherAnswers: otherAnswers,
-            }),
+            body: JSON.stringify(body),
         }).then(clickSaveEditQuestionHandleResponse);
     }
 
-    function clickSaveQuestion(formData: FormData) {
+    function clickSaveQuestion() {
         setPending(true);
         setIsEditingQuestionText(false);
 
-        const proposedMainAnswer = formData.get("main-answer") as string;
-        const mainAnswer = proposedMainAnswer.trim();
-
         if (isAddingNewQuestion) {
-            clickSaveNewQuestion(mainAnswer);
+            clickSaveNewQuestion();
         } else {
-            clickSaveEditQuestion(mainAnswer);
+            clickSaveEditQuestion();
         }
     }
 
@@ -250,7 +293,12 @@ export default function QuestionEditor() {
                     disabled={
                         !savePossible ||
                         pending ||
-                        !questionIsValid(proposedQuestionText, answerEntryValue)
+                        !questionIsValid(
+                            proposedQuestionText,
+                            answerEntryValue,
+                            proposedInflectionType,
+                            proposedInflectionAnswers,
+                        )
                     }
                 >
                     Save question
