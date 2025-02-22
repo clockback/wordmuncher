@@ -1,5 +1,7 @@
 "use client";
 
+import { JSX } from "react";
+
 import InflectionTemplate from "@components/inflection-template/inflection-template";
 
 import { InflectionType, Question } from "@models";
@@ -98,11 +100,23 @@ export default function InflectionTemplateProposal({
         categories,
     };
 
+    const cellContents = new Map<string, () => JSX.Element>();
+    for (const answer of representativeQuestion.inflectionAnswers) {
+        const answerCellGenerator = () => <>{answer.answerText}</>;
+        let keyForAnswerCell: string;
+        if (answer.secondaryFeatureId === null) {
+            keyForAnswerCell = answer.primaryFeatureId.toString();
+        } else {
+            keyForAnswerCell = `${answer.primaryFeatureId},${answer.secondaryFeatureId}`;
+        }
+        cellContents.set(keyForAnswerCell, answerCellGenerator);
+    }
+
     return (
         <>
             <InflectionTemplate
                 inflectionType={inflectionType as InflectionType}
-                representativeQuestion={representativeQuestion}
+                cellContents={cellContents}
             ></InflectionTemplate>
         </>
     );

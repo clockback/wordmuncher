@@ -1,33 +1,33 @@
-import { InflectionType, Question } from "@models";
+import { JSX } from "react";
+
+import { InflectionType } from "@models";
 
 import styles from "./inflection-template.module.css";
 
 interface InflectionTemplateProps {
     inflectionType: InflectionType;
-    representativeQuestion: Question | null;
+    cellContents: Map<string, () => JSX.Element> | null;
 }
 
 function SingleAxisInflectionTemplate({
     inflectionType,
-    representativeQuestion,
+    cellContents,
 }: InflectionTemplateProps) {
     const [category] = inflectionType.categories;
 
     const headers = [];
     const answerCells = [];
-    const answers = representativeQuestion
-        ? representativeQuestion.inflectionAnswers
-        : [];
+    const finalCellContents = cellContents
+        ? cellContents
+        : new Map<string, () => JSX.Element>();
+
     for (const feature of category.features) {
-        let text = "";
-        for (const answer of answers) {
-            if (answer.primaryFeatureId === feature.id) {
-                text = answer.answerText;
-                break;
-            }
-        }
         headers.push(<th key={feature.id}>{feature.featureName}</th>);
-        answerCells.push(<td key={feature.id}>{text}</td>);
+        const cellContentGenerator = finalCellContents.get(
+            feature.id.toString(),
+        );
+        const contents = cellContentGenerator ? cellContentGenerator() : null;
+        answerCells.push(<td key={feature.id}>{contents}</td>);
     }
 
     return (
@@ -49,7 +49,7 @@ function SingleAxisInflectionTemplate({
 
 function DoubleAxisInflectionTemplate({
     inflectionType,
-    representativeQuestion,
+    cellContents,
 }: InflectionTemplateProps) {
     let [firstCategory, secondCategory] = inflectionType.categories;
     if (!firstCategory.isPrimary) {
@@ -70,24 +70,20 @@ function DoubleAxisInflectionTemplate({
         </th>
     );
 
-    const answers = representativeQuestion
-        ? representativeQuestion.inflectionAnswers
-        : [];
+    const finalCellContents = cellContents
+        ? cellContents
+        : new Map<string, () => JSX.Element>();
 
     for (const secondaryFeature of secondCategory.features) {
         const answerCells = [];
         for (const primaryFeature of firstCategory.features) {
-            let text = "";
-            for (const answer of answers) {
-                if (
-                    answer.primaryFeatureId === primaryFeature.id &&
-                    answer.secondaryFeatureId === secondaryFeature.id
-                ) {
-                    text = answer.answerText;
-                    break;
-                }
-            }
-            answerCells.push(<td key={primaryFeature.id}>{text}</td>);
+            const cellContentGenerator = finalCellContents.get(
+                `${primaryFeature.id},${secondaryFeature.id}`,
+            );
+            const contents = cellContentGenerator
+                ? cellContentGenerator()
+                : null;
+            answerCells.push(<td key={primaryFeature.id}>{contents}</td>);
         }
         rows.push(
             <tr key={secondaryFeature.id}>
@@ -117,21 +113,21 @@ function DoubleAxisInflectionTemplate({
 
 export default function InflectionTemplate({
     inflectionType,
-    representativeQuestion,
+    cellContents,
 }: InflectionTemplateProps) {
     const noAxes = inflectionType.categories.length;
     if (noAxes === 1) {
         return (
             <SingleAxisInflectionTemplate
                 inflectionType={inflectionType}
-                representativeQuestion={representativeQuestion}
+                cellContents={cellContents}
             ></SingleAxisInflectionTemplate>
         );
     } else if (noAxes === 2) {
         return (
             <DoubleAxisInflectionTemplate
                 inflectionType={inflectionType}
-                representativeQuestion={representativeQuestion}
+                cellContents={cellContents}
             ></DoubleAxisInflectionTemplate>
         );
     } else {
