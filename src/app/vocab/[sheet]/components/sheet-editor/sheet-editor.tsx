@@ -31,7 +31,6 @@ export default function SheetEditor({ sheet, questions }: SheetEditorProps) {
         useState<string>("");
     const [isEditingQuestionText, setIsEditingQuestionText] =
         useState<boolean>(false);
-    const [questionFormValid, setQuestionFormValid] = useState<boolean>(true);
     const [otherAnswers, setOtherAnswers] = useState<string[]>([]);
     const [isAddingOtherAnswer, setIsAddingOtherAnswer] =
         useState<boolean>(false);
@@ -52,7 +51,6 @@ export default function SheetEditor({ sheet, questions }: SheetEditorProps) {
         otherAnswers,
         pending,
         proposedQuestionText,
-        questionFormValid,
         setAnswerEntryValue,
         savePossible,
         selectedQuestion,
@@ -64,7 +62,6 @@ export default function SheetEditor({ sheet, questions }: SheetEditorProps) {
         setOtherAnswers,
         setPending,
         setProposedQuestionText,
-        setQuestionFormValid,
         setSavePossible,
         setSelectedQuestion,
         sheetId,
