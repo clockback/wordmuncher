@@ -11,14 +11,12 @@ export default function AnswerSection() {
         pending,
         setAnswerEntryValue,
         setOtherAnswers,
-        setQuestionFormValid,
         setSavePossible,
     } = useContext(editSheetContext);
 
     let answerEntry: JSX.Element | null = null;
     const onChangeAnswer = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSavePossible(true);
-        setQuestionFormValid(e.target.value.length > 0);
         setAnswerEntryValue(e.target.value);
     };
     const onBlurAnswer = () => {

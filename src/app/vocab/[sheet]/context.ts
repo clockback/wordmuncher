@@ -13,7 +13,6 @@ interface EditSheetContextType {
     otherAnswers: string[];
     pending: boolean;
     proposedQuestionText: string;
-    questionFormValid: boolean;
     setAnswerEntryValue: Dispatch<SetStateAction<string>>;
     savePossible: boolean;
     selectedQuestion: Question | null;
@@ -25,7 +24,6 @@ interface EditSheetContextType {
     setOtherAnswers: Dispatch<SetStateAction<string[]>>;
     setPending: Dispatch<SetStateAction<boolean>>;
     setProposedQuestionText: Dispatch<SetStateAction<string>>;
-    setQuestionFormValid: Dispatch<SetStateAction<boolean>>;
     setSavePossible: Dispatch<SetStateAction<boolean>>;
     setSelectedQuestion: Dispatch<SetStateAction<Question | null>>;
     sheetId: number;

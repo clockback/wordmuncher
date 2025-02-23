@@ -27,6 +27,17 @@ interface clickSaveQuestionResponseProps {
     questionText: string;
 }
 
+function questionIsValid(question: string, answerText: string | null): boolean {
+    if (question.length === 0) {
+        return false;
+    }
+    if (answerText.length === 0) {
+        return false;
+    }
+
+    return true;
+}
+
 export default function QuestionEditor() {
     const {
         allQuestions,
@@ -36,7 +47,6 @@ export default function QuestionEditor() {
         otherAnswers,
         pending,
         proposedQuestionText,
-        questionFormValid,
         savePossible,
         selectedQuestion,
         setAllQuestions,
@@ -44,7 +54,6 @@ export default function QuestionEditor() {
         setIsEditingQuestionText,
         setPending,
         setProposedQuestionText,
-        setQuestionFormValid,
         setSavePossible,
         setSelectedQuestion,
         sheetId,
@@ -178,9 +187,6 @@ export default function QuestionEditor() {
             return;
         }
 
-        setQuestionFormValid(
-            proposedQuestionText.length > 0 && answerEntryValue.length > 0,
-        );
         setProposedQuestionText(inputText);
         setSavePossible(true);
     };
@@ -200,9 +206,6 @@ export default function QuestionEditor() {
             return;
         }
 
-        setQuestionFormValid(
-            proposedQuestionText.length > 0 && answerEntryValue.length > 0,
-        );
         setProposedQuestionText(inputText);
         setSavePossible(true);
     };
@@ -225,7 +228,11 @@ export default function QuestionEditor() {
             <div className={styles.padsavebutton}>
                 {deleteButton}
                 <Button
-                    disabled={!savePossible || pending || !questionFormValid}
+                    disabled={
+                        !savePossible ||
+                        pending ||
+                        !questionIsValid(proposedQuestionText, answerEntryValue)
+                    }
                 >
                     Save question
                 </Button>
