@@ -6,7 +6,7 @@ import { useContext } from "react";
 import Button from "@components/button/button";
 import EditableHeader from "@components/editable-header/editable-header";
 
-import { Question } from "@models";
+import { Answer, Question } from "@models";
 
 import editSheetContext from "../../context";
 import AnswerSection from "../answer-section/answer-section";
@@ -25,6 +25,7 @@ interface clickSaveQuestionResponseProps {
     questionId: number;
     mainAnswer: string;
     questionText: string;
+    otherAnswers: string[];
 }
 
 function questionIsValid(question: string, answerText: string | null): boolean {
@@ -68,11 +69,29 @@ export default function QuestionEditor() {
         contents: clickSaveQuestionResponseProps,
     ) {
         question.questionText = contents.questionText;
+        const newAnswers: Answer[] = [];
+
         for (const answer of question.answers) {
             if (answer.isMainAnswer) {
-                answer.answerText = contents.mainAnswer;
+                newAnswers.push({
+                    id: answer.id,
+                    isMainAnswer: true,
+                    answerText: contents.mainAnswer,
+                    questionId: answer.questionId,
+                } as Answer);
+                break;
             }
         }
+
+        for (const answer of contents.otherAnswers) {
+            newAnswers.push({
+                isMainAnswer: false,
+                answerText: answer,
+                questionId: newAnswers[0].id,
+            } as Answer);
+        }
+
+        question.answers = newAnswers;
     }
 
     function clickSaveNewQuestionHandleResponse(response: NextResponse) {
