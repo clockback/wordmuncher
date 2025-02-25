@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useEffect, useRef } from "react";
+import { useContext } from "react";
 import { JSX } from "react";
 
 import { Question, Result } from "@models";
@@ -9,6 +9,7 @@ import Correct from "../../assets/images/correct.svg";
 import Incomplete from "../../assets/images/incomplete.svg";
 import Incorrect from "../../assets/images/incorrect.svg";
 import testSheetContext from "../../context";
+import AnswerSection from "../answer-section/answer-section";
 import Star from "../star/star";
 import styles from "./test-question.module.css";
 
@@ -49,29 +50,7 @@ interface TestQuestionProps {
 }
 
 export default function TestQuestion({ submitAnswer }: TestQuestionProps) {
-    const { currentAnswer, pending, question, setCurrentAnswer } =
-        useContext(testSheetContext);
-
-    const textareaRef = useRef(null);
-    useEffect(() => {
-        if (!pending) {
-            textareaRef.current.focus();
-        }
-    });
-
-    const checkHitEnter = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-        if (e.key !== "Enter") {
-            return;
-        }
-        e.preventDefault();
-        submitAnswer(e.currentTarget.value);
-    };
-
-    const onChangeCurrentAnswer = (
-        e: React.ChangeEvent<HTMLTextAreaElement>,
-    ) => {
-        setCurrentAnswer(e.target.value);
-    };
+    const { question } = useContext(testSheetContext);
 
     return (
         <>
@@ -80,14 +59,7 @@ export default function TestQuestion({ submitAnswer }: TestQuestionProps) {
             <div className={styles.progressbar}>
                 {progressBar(question.result)}
             </div>
-            <textarea
-                className={styles.answerbox}
-                onKeyDown={checkHitEnter}
-                disabled={pending}
-                value={currentAnswer}
-                onChange={onChangeCurrentAnswer}
-                ref={textareaRef}
-            ></textarea>
+            <AnswerSection submitAnswer={submitAnswer}></AnswerSection>
         </>
     );
 }

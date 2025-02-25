@@ -1,0 +1,9 @@
+.answerbox {
+    background-color: rgb(var(--colour-ash));
+    color: rgb(var(--colour-pearl));
+    resize: none;
+    font-size: 40px;
+    font-family: inherit;
+    width: 800px;
+    height: 200px;
+}
