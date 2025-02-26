@@ -3,12 +3,8 @@ import { useContext, useEffect, useRef } from "react";
 import testSheetContext from "../../context";
 import styles from "./answer-section.module.css";
 
-interface AnswerSectionProps {
-    submitAnswer: (submittedAnswer: string) => void;
-}
-
-export default function AnswerSection({ submitAnswer }: AnswerSectionProps) {
-    const { currentAnswer, pending, setCurrentAnswer } =
+export default function AnswerSection() {
+    const { currentAnswer, pending, setCurrentAnswer, submitAnswer } =
         useContext(testSheetContext);
 
     const textareaRef = useRef(null);
@@ -23,7 +19,7 @@ export default function AnswerSection({ submitAnswer }: AnswerSectionProps) {
             return;
         }
         e.preventDefault();
-        submitAnswer(e.currentTarget.value);
+        submitAnswer();
     };
 
     const onChangeCurrentAnswer = (

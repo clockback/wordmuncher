@@ -45,11 +45,7 @@ function progressBar(result: Result): JSX.Element[] {
     return bars;
 }
 
-interface TestQuestionProps {
-    submitAnswer: (submittedAnswer: string) => void;
-}
-
-export default function TestQuestion({ submitAnswer }: TestQuestionProps) {
+export default function TestQuestion() {
     const { question } = useContext(testSheetContext);
 
     return (
@@ -59,7 +55,7 @@ export default function TestQuestion({ submitAnswer }: TestQuestionProps) {
             <div className={styles.progressbar}>
                 {progressBar(question.result)}
             </div>
-            <AnswerSection submitAnswer={submitAnswer}></AnswerSection>
+            <AnswerSection></AnswerSection>
         </>
     );
 }

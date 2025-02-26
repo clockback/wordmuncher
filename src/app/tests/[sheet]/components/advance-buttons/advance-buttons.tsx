@@ -5,11 +5,7 @@ import Button from "@components/button/button";
 import testSheetContext from "../../context";
 import styles from "./advance-buttons.module.css";
 
-interface AdvanceButtonsProps {
-    submitAnswer: (submittedAnswer: string) => void;
-}
-
-export default function AdvanceButtons({ submitAnswer }: AdvanceButtonsProps) {
+export default function AdvanceButtons() {
     const {
         currentAnswer,
         expectedAnswer,
@@ -27,11 +23,8 @@ export default function AdvanceButtons({ submitAnswer }: AdvanceButtonsProps) {
         setShowResults,
         showMessageToFinish,
         showResults,
+        submitAnswer,
     } = useContext(testSheetContext);
-
-    const curriedSubmitAnswer = () => {
-        submitAnswer(currentAnswer);
-    };
 
     function prepareNewAnswer() {
         setPending(false);
@@ -68,7 +61,7 @@ export default function AdvanceButtons({ submitAnswer }: AdvanceButtonsProps) {
     } else {
         button = (
             <Button
-                onClick={curriedSubmitAnswer}
+                onClick={submitAnswer}
                 disabled={pending || currentAnswer.length == 0}
             >
                 Submit
