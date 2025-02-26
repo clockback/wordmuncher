@@ -113,8 +113,8 @@ export default function TestArea({
         });
     };
 
-    const submitAnswer = (submittedAnswer: string) => {
-        const trimmedAnswer = submittedAnswer.trim();
+    const submitAnswer = () => {
+        const trimmedAnswer = currentAnswer.trim();
         if (trimmedAnswer === "") {
             return;
         }
@@ -156,9 +156,7 @@ export default function TestArea({
     } else if (showMessageToFinish) {
         testAreaContents = <h1>Sheet completed!</h1>;
     } else {
-        testAreaContents = (
-            <TestQuestion submitAnswer={submitAnswer}></TestQuestion>
-        );
+        testAreaContents = <TestQuestion></TestQuestion>;
     }
 
     const context = {
@@ -189,6 +187,7 @@ export default function TestArea({
         showMessageToFinish,
         showResults,
         startingNumberOfStars,
+        submitAnswer,
     };
     return (
         <testSheetContext.Provider value={context}>
@@ -196,7 +195,7 @@ export default function TestArea({
             <div className={styles.centre}>
                 <div className={styles.verticalcentre}>{testAreaContents}</div>
             </div>
-            <TestFooter submitAnswer={submitAnswer}></TestFooter>
+            <TestFooter></TestFooter>
         </testSheetContext.Provider>
     );
 }

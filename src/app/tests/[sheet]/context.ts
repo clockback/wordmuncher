@@ -30,6 +30,7 @@ interface TestSheetContextType {
     showMessageToFinish: boolean;
     showResults: boolean;
     startingNumberOfStars: number;
+    submitAnswer: () => void;
 }
 
 const testSheetContext = createContext<TestSheetContextType | undefined>(
