@@ -2,19 +2,21 @@ import { JSX, useContext } from "react";
 
 import Button from "@components/button/button";
 
+import { leftUnanswered } from "../../client-helpers";
 import testSheetContext from "../../context";
 import styles from "./advance-buttons.module.css";
 
 export default function AdvanceButtons() {
     const {
         currentAnswer,
-        expectedAnswer,
+        inflectionAnswers,
         nextQuestion,
         numberOfQuestions,
         pending,
         questionNumber,
         setCurrentAnswer,
         setExpectedAnswer,
+        setInflectionAnswers,
         setNextQuestion,
         setPending,
         setQuestion,
@@ -30,6 +32,17 @@ export default function AdvanceButtons() {
         setPending(false);
         setQuestion(nextQuestion);
         setCurrentAnswer("");
+        const newInflectionAnswers = new Map<string, string>();
+        for (const answer of nextQuestion.inflectionAnswers) {
+            let featureKey: string;
+            if (answer.secondaryFeatureId === null) {
+                featureKey = answer.primaryFeatureId.toString();
+            } else {
+                featureKey = `${answer.primaryFeatureId},${answer.secondaryFeatureId}`;
+            }
+            newInflectionAnswers.set(featureKey, "");
+        }
+        setInflectionAnswers(newInflectionAnswers);
         setExpectedAnswer(null);
         setNextQuestion(null);
         setQuestionNumber(questionNumber + 1);
@@ -56,14 +69,20 @@ export default function AdvanceButtons() {
                 <Button onClick={keepGoingCallback}>Keep going</Button>
             </>
         );
-    } else if (expectedAnswer) {
+    } else if (nextQuestion !== null) {
         button = <Button onClick={prepareNewAnswer}>Next</Button>;
     } else {
+        let shouldDisable: boolean;
+        if (
+            pending ||
+            (currentAnswer.length === 0 && leftUnanswered(inflectionAnswers))
+        ) {
+            shouldDisable = true;
+        } else {
+            shouldDisable = false;
+        }
         button = (
-            <Button
-                onClick={submitAnswer}
-                disabled={pending || currentAnswer.length == 0}
-            >
+            <Button onClick={submitAnswer} disabled={shouldDisable}>
                 Submit
             </Button>
         );

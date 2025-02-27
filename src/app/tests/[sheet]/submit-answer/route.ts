@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Op } from "sequelize";
 
-import { Answer, Question, Result, Sheet } from "@models";
+import { Answer, InflectionAnswer, Question, Result, Sheet } from "@models";
 
-import { getNumberOfStars, getQuestion } from "../helpers";
-import { SubmitAnswerRequestAPI, SubmitAnswerResponseAPI } from "./api";
+import { getNumberOfStars, getQuestion } from "../server-helpers";
+import {
+    SubmitAnswerRequestAPI,
+    SubmitAnswerResponseAPI,
+    SubmitAnswerResponseAPICorrectOrIncorrect,
+} from "./api";
 
 const minimumSimilarityScore = 0.85;
 
@@ -107,11 +111,14 @@ async function finishedSheet(
     return incompleteQuestion === null;
 }
 
-export async function POST(
-    request: NextRequest,
-    { params }: { params: Promise<{ sheet: string }> },
-) {
-    const requestJSON: SubmitAnswerRequestAPI = await request.json();
+async function submitPlainAnswer(
+    requestJSON: SubmitAnswerRequestAPI,
+    sheet: Sheet,
+    question: Question,
+): Promise<{
+    body: SubmitAnswerResponseAPI;
+    status: number;
+}> {
     const {
         questionId,
         submittedAnswer,
@@ -119,14 +126,7 @@ export async function POST(
         attemptedAlready,
         retrieveNextAnswer,
     } = requestJSON;
-    const sheetId = parseInt((await params).sheet);
 
-    const question = await Question.findByPk(questionId, {
-        include: [
-            { model: Answer, as: "answers" },
-            { model: Result, as: "result" },
-        ],
-    });
     let correct = false;
     let closest = null;
     let closestScore = null;
@@ -160,12 +160,11 @@ export async function POST(
             reattemptAvailable: true,
             closest,
         };
-        return NextResponse.json(body, { status: 202 });
+        return { body, status: 202 };
     }
 
     updateLastQuestions(lastQuestions, questionId);
 
-    const sheet = await Sheet.findByPk(sheetId);
     const nextQuestion = retrieveNextAnswer
         ? await getQuestion(sheet, lastQuestions)
         : null;
@@ -188,5 +187,93 @@ export async function POST(
         totalStars,
         done,
     };
-    return NextResponse.json(body, { status: 202 });
+    return { body, status: 202 };
+}
+
+async function submitInflectionAnswers(
+    requestJSON: SubmitAnswerRequestAPI,
+    sheet: Sheet,
+    question: Question,
+): Promise<{
+    body: SubmitAnswerResponseAPICorrectOrIncorrect;
+    status: number;
+}> {
+    const { submittedInflectionAnswers, lastQuestions, retrieveNextAnswer } =
+        requestJSON;
+
+    let correct = true;
+
+    for (const answer of question.inflectionAnswers) {
+        let featureKey: string;
+        if (answer.secondaryFeatureId === null) {
+            featureKey = answer.primaryFeatureId.toString();
+        } else {
+            featureKey = `${answer.primaryFeatureId},${answer.secondaryFeatureId}`;
+        }
+        if (answer.answerText !== submittedInflectionAnswers[featureKey]) {
+            correct = false;
+            break;
+        }
+    }
+
+    updateLastQuestions(lastQuestions, requestJSON.questionId);
+
+    const markFunc = correct ? markCorrect : markIncorrect;
+    markFunc(question.result);
+    const nextQuestion = retrieveNextAnswer
+        ? await getQuestion(sheet, lastQuestions)
+        : null;
+    const totalStars = await getNumberOfStars(sheet);
+    const done = correct && (await finishedSheet(sheet, question));
+
+    return {
+        body: {
+            correct,
+            result: question.result,
+            nextQuestion: nextQuestion ? nextQuestion.toJSON() : null,
+            lastQuestions,
+            expectedAnswer: null,
+            reattemptAvailable: false,
+            totalStars,
+            done,
+        },
+        status: 202,
+    };
+}
+
+export async function POST(
+    request: NextRequest,
+    { params }: { params: Promise<{ sheet: string }> },
+) {
+    const requestJSON: SubmitAnswerRequestAPI = await request.json();
+    const sheetId = parseInt((await params).sheet);
+    const sheet = await Sheet.findByPk(sheetId);
+    const { questionId } = requestJSON;
+
+    const question = await Question.findByPk(questionId, {
+        include: [
+            { model: Answer, as: "answers" },
+            { model: InflectionAnswer, as: "inflectionAnswers" },
+            { model: Result, as: "result" },
+        ],
+    });
+
+    let body: SubmitAnswerResponseAPI;
+    let status: number;
+
+    if (question.inflectionTypeId === null) {
+        ({ body, status } = await submitPlainAnswer(
+            requestJSON,
+            sheet,
+            question,
+        ));
+    } else {
+        ({ body, status } = await submitInflectionAnswers(
+            requestJSON,
+            sheet,
+            question,
+        ));
+    }
+
+    return NextResponse.json(body, { status: status });
 }

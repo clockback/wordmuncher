@@ -16,6 +16,21 @@ import TestQuestion from "../test-question/test-question";
 import TestResults from "../test-results/test-results";
 import styles from "./test-area.module.css";
 
+function defaultInflectionAnswers(
+    initialQuestion: Question,
+): Map<string, string> {
+    const inflectionAnswers = new Map<string, string>();
+    for (const answer of initialQuestion.inflectionAnswers) {
+        const key =
+            answer.secondaryFeatureId === null
+                ? answer.primaryFeatureId.toString()
+                : `${answer.primaryFeatureId},${answer.secondaryFeatureId}`;
+
+        inflectionAnswers.set(key, "");
+    }
+    return inflectionAnswers;
+}
+
 interface TestAreaProps {
     initialQuestion: Question;
     sheet: Sheet;
@@ -55,10 +70,24 @@ export default function TestArea({
     const [numberCorrect, setNumberCorrect] = useState<number>(0);
     const [numberIncorrect, setNumberIncorrect] = useState<number>(0);
     const [numberOfStars, setNumberOfStars] = useState<number>(0);
+    const [inflectionAnswers, setInflectionAnswers] = useState<
+        Map<string, string>
+    >(defaultInflectionAnswers(initialQuestion));
 
     function prepareNewAnswer(contents: SubmitAnswerContents) {
         setPending(false);
         if (contents.nextQuestion !== null) {
+            const newInflectionAnswers = new Map<string, string>();
+            for (const answer of contents.nextQuestion.inflectionAnswers) {
+                let featureKey: string;
+                if (answer.secondaryFeatureId === null) {
+                    featureKey = answer.primaryFeatureId.toString();
+                } else {
+                    featureKey = `${answer.primaryFeatureId},${answer.secondaryFeatureId}`;
+                }
+                newInflectionAnswers.set(featureKey, "");
+            }
+            setInflectionAnswers(newInflectionAnswers);
             setQuestion(contents.nextQuestion);
         }
         setCurrentAnswer("");
@@ -95,6 +124,7 @@ export default function TestArea({
         setExpectedAnswer(
             responseJSON.correct ? null : responseJSON.expectedAnswer,
         );
+
         if (responseJSON.correct) {
             setNumberCorrect(numberCorrect + 1);
             setTimeout(() => prepareNewAnswer(responseJSON), 1000);
@@ -125,17 +155,21 @@ export default function TestArea({
     };
 
     const submitAnswer = () => {
-        const trimmedAnswer = currentAnswer.trim();
-        if (trimmedAnswer === "") {
-            return;
-        }
+        const submitAnswer =
+            question.inflectionTypeId === null ? currentAnswer.trim() : null;
+
+        const submitInflectionAnswers =
+            question.inflectionTypeId === null
+                ? null
+                : Object.fromEntries(inflectionAnswers);
 
         setPending(true);
         const retrieveNextAnswer =
             numberOfQuestions === null || questionNumber < numberOfQuestions;
         const body: SubmitAnswerRequestAPI = {
             questionId: question.id,
-            submittedAnswer: trimmedAnswer,
+            submittedAnswer: submitAnswer,
+            submittedInflectionAnswers: submitInflectionAnswers,
             lastQuestions: lastQuestions,
             attemptedAlready: attemptedAlready,
             retrieveNextAnswer,
@@ -175,6 +209,7 @@ export default function TestArea({
         attemptedAlready,
         currentAnswer,
         expectedAnswer,
+        inflectionAnswers,
         lastQuestions,
         nextQuestion,
         numberCorrect,
@@ -184,6 +219,7 @@ export default function TestArea({
         pending,
         question,
         questionNumber,
+        setInflectionAnswers,
         setQuestionNumber,
         setCurrentAnswer,
         setExpectedAnswer,

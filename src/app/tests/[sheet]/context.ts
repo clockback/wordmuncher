@@ -6,6 +6,7 @@ interface TestSheetContextType {
     attemptedAlready: boolean;
     currentAnswer: string;
     expectedAnswer: Answer | null;
+    inflectionAnswers: Map<string, string>;
     lastQuestions: number[];
     nextQuestion: Question;
     numberOfQuestions: number;
@@ -17,8 +18,9 @@ interface TestSheetContextType {
     numberIncorrect: number;
     setCurrentAnswer: Dispatch<SetStateAction<string>>;
     setExpectedAnswer: Dispatch<SetStateAction<Answer | null>>;
+    setInflectionAnswers: Dispatch<SetStateAction<Map<string, string>>>;
     setLastQuestions: Dispatch<SetStateAction<number[]>>;
-    setNextQuestion: Dispatch<SetStateAction<Question>>;
+    setNextQuestion: Dispatch<SetStateAction<Question | null>>;
     setNumberCorrect: Dispatch<SetStateAction<number>>;
     setNumberIncorrect: Dispatch<SetStateAction<number>>;
     setPending: Dispatch<SetStateAction<boolean>>;

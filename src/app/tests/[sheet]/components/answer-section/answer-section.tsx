@@ -1,41 +1,15 @@
-import { useContext, useEffect, useRef } from "react";
+import { useContext } from "react";
 
 import testSheetContext from "../../context";
-import styles from "./answer-section.module.css";
+import AnswerSectionInflectionTable from "../answer-section-inflection-table/answer-section-inflection-table";
+import AnswerSectionText from "../answer-section-text/answer-section-text";
 
 export default function AnswerSection() {
-    const { currentAnswer, pending, setCurrentAnswer, submitAnswer } =
-        useContext(testSheetContext);
+    const { question } = useContext(testSheetContext);
 
-    const textareaRef = useRef(null);
-    useEffect(() => {
-        if (!pending) {
-            textareaRef.current.focus();
-        }
-    });
-
-    const checkHitEnter = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-        if (e.key !== "Enter") {
-            return;
-        }
-        e.preventDefault();
-        submitAnswer();
-    };
-
-    const onChangeCurrentAnswer = (
-        e: React.ChangeEvent<HTMLTextAreaElement>,
-    ) => {
-        setCurrentAnswer(e.target.value);
-    };
-
-    return (
-        <textarea
-            className={styles.answerbox}
-            onKeyDown={checkHitEnter}
-            disabled={pending}
-            value={currentAnswer}
-            onChange={onChangeCurrentAnswer}
-            ref={textareaRef}
-        ></textarea>
-    );
+    if (question.inflectionTypeId === null) {
+        return <AnswerSectionText></AnswerSectionText>;
+    } else {
+        return <AnswerSectionInflectionTable></AnswerSectionInflectionTable>;
+    }
 }

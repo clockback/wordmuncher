@@ -3,6 +3,7 @@ import { Answer, Question, Result } from "@models";
 export interface SubmitAnswerRequestAPI {
     questionId: number;
     submittedAnswer: string;
+    submittedInflectionAnswers: { [key: string]: string } | null;
     lastQuestions: number[];
     attemptedAlready: boolean;
     retrieveNextAnswer: boolean;
@@ -13,7 +14,7 @@ export interface SubmitAnswerResponseAPICorrectOrIncorrect {
     result: Result;
     nextQuestion: Question | null;
     lastQuestions: number[];
-    expectedAnswer: Answer;
+    expectedAnswer: Answer | null;
     reattemptAvailable: false;
     totalStars: number;
     done: boolean;

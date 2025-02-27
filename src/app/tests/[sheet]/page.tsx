@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { Sheet } from "@models";
 
 import TestArea from "./components/test-area/test-area";
-import { getNumberOfStars, getQuestion } from "./helpers";
+import { getNumberOfStars, getQuestion } from "./server-helpers";
 import styles from "./test-page.module.css";
 
 export default async function TestSheet({
