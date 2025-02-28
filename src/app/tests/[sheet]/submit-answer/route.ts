@@ -169,8 +169,10 @@ async function submitPlainAnswer(
         : null;
     const totalStars = await getNumberOfStars(sheet);
     const done = correct && (await finishedSheet(sheet, question));
-    let expectedAnswer: string;
-    if (correct || closestScore > minimumSimilarityScore) {
+    let expectedAnswer: string | null;
+    if (correct) {
+        expectedAnswer = null;
+    } else if (closestScore > minimumSimilarityScore) {
         expectedAnswer = closest.answerText;
     } else {
         expectedAnswer = mainAnswer;

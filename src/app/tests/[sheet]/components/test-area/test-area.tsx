@@ -112,9 +112,7 @@ export default function TestArea({
         newQuestion.result = responseJSON.result;
         setQuestion(newQuestion);
         setLastQuestions(responseJSON.lastQuestions);
-        setExpectedAnswer(
-            responseJSON.correct ? null : responseJSON.expectedAnswer,
-        );
+        setExpectedAnswer(responseJSON.expectedAnswer);
 
         if (responseJSON.correct) {
             setNumberCorrect(numberCorrect + 1);
