@@ -14,7 +14,7 @@ export interface SubmitAnswerResponseAPICorrectOrIncorrect {
     result: Result;
     nextQuestion: Question | null;
     lastQuestions: number[];
-    expectedAnswer: Answer | null;
+    expectedAnswer: string | null;
     reattemptAvailable: false;
     totalStars: number;
     done: boolean;

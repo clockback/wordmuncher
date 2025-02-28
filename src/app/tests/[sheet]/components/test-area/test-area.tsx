@@ -3,7 +3,7 @@
 import { NextResponse } from "next/server";
 import { JSX, useState } from "react";
 
-import { Answer, Question, Result, Sheet } from "@models";
+import { Question, Sheet } from "@models";
 
 import testSheetContext from "../../context";
 import {
@@ -38,17 +38,6 @@ interface TestAreaProps {
     startingNumberOfStars: number;
 }
 
-interface SubmitAnswerContents {
-    correct: boolean;
-    result: Result;
-    nextQuestion: Question | null;
-    lastQuestions: number[];
-    expectedAnswer: Answer | null;
-    reattemptAvailable: boolean;
-    totalStars?: number;
-    done?: boolean;
-}
-
 export default function TestArea({
     initialQuestion,
     sheet,
@@ -56,7 +45,7 @@ export default function TestArea({
     startingNumberOfStars,
 }: TestAreaProps) {
     const [question, setQuestion] = useState<Question>(initialQuestion);
-    const [expectedAnswer, setExpectedAnswer] = useState<Answer | null>(null);
+    const [expectedAnswer, setExpectedAnswer] = useState<string | null>(null);
     const [lastQuestions, setLastQuestions] = useState<number[]>([]);
     const [pending, setPending] = useState<boolean>(false);
     const [currentAnswer, setCurrentAnswer] = useState<string>("");
@@ -74,7 +63,9 @@ export default function TestArea({
         Map<string, string>
     >(defaultInflectionAnswers(initialQuestion));
 
-    function prepareNewAnswer(contents: SubmitAnswerContents) {
+    function prepareNewAnswer(
+        contents: SubmitAnswerResponseAPICorrectOrIncorrect,
+    ) {
         setPending(false);
         if (contents.nextQuestion !== null) {
             const newInflectionAnswers = new Map<string, string>();

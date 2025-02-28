@@ -1,11 +1,11 @@
 import { Dispatch, SetStateAction, createContext } from "react";
 
-import { Answer, Question, Sheet } from "@models";
+import { Question, Sheet } from "@models";
 
 interface TestSheetContextType {
     attemptedAlready: boolean;
     currentAnswer: string;
-    expectedAnswer: Answer | null;
+    expectedAnswer: string | null;
     inflectionAnswers: Map<string, string>;
     lastQuestions: number[];
     nextQuestion: Question;
@@ -17,7 +17,7 @@ interface TestSheetContextType {
     numberCorrect: number;
     numberIncorrect: number;
     setCurrentAnswer: Dispatch<SetStateAction<string>>;
-    setExpectedAnswer: Dispatch<SetStateAction<Answer | null>>;
+    setExpectedAnswer: Dispatch<SetStateAction<string | null>>;
     setInflectionAnswers: Dispatch<SetStateAction<Map<string, string>>>;
     setLastQuestions: Dispatch<SetStateAction<number[]>>;
     setNextQuestion: Dispatch<SetStateAction<Question | null>>;
