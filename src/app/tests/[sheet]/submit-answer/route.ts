@@ -130,7 +130,7 @@ async function submitPlainAnswer(
     let correct = false;
     let closest = null;
     let closestScore = null;
-    let mainAnswer = null;
+    let mainAnswer: string | null = null;
     for (const answer of question.answers) {
         if (submittedAnswer === answer.answerText) {
             correct = true;
@@ -146,7 +146,7 @@ async function submitPlainAnswer(
         }
 
         if (answer.isMainAnswer) {
-            mainAnswer = answer;
+            mainAnswer = answer.answerText;
         }
     }
 
@@ -170,11 +170,11 @@ async function submitPlainAnswer(
         : null;
     const totalStars = await getNumberOfStars(sheet);
     const done = correct && (await finishedSheet(sheet, question));
-    let expectedAnswer: Answer;
+    let expectedAnswer: string;
     if (correct || closestScore > minimumSimilarityScore) {
-        expectedAnswer = closest.toJSON();
+        expectedAnswer = closest.answerText;
     } else {
-        expectedAnswer = mainAnswer.toJSON();
+        expectedAnswer = mainAnswer;
     }
 
     const body: SubmitAnswerResponseAPI = {
@@ -182,7 +182,7 @@ async function submitPlainAnswer(
         result: question.result,
         nextQuestion: nextQuestion ? nextQuestion.toJSON() : null,
         lastQuestions: lastQuestions,
-        expectedAnswer: expectedAnswer,
+        expectedAnswer,
         reattemptAvailable: false,
         totalStars,
         done,

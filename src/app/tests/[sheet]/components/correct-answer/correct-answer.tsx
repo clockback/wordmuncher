@@ -23,9 +23,7 @@ export default function CorrectAnswer() {
     return (
         <div className={styles.correctanswer}>
             <span className={styles.correctanswerlabel}>Correct answer:</span>
-            <span className={styles.correctanswervalue}>
-                {expectedAnswer.answerText}
-            </span>
+            <span className={styles.correctanswervalue}>{expectedAnswer}</span>
         </div>
     );
 }
