@@ -62,6 +62,9 @@ export default function TestArea({
     const [inflectionAnswers, setInflectionAnswers] = useState<
         Map<string, string>
     >(defaultInflectionAnswers(initialQuestion));
+    const [inflectionCorrections, setInflectionCorrections] = useState<
+        Map<string, string>
+    >(new Map());
 
     function prepareNewAnswer(
         contents: SubmitAnswerResponseAPICorrectOrIncorrect,
@@ -113,6 +116,10 @@ export default function TestArea({
         setQuestion(newQuestion);
         setLastQuestions(responseJSON.lastQuestions);
         setExpectedAnswer(responseJSON.expectedAnswer);
+        const newInflectionCorrections = Object.entries(
+            responseJSON.inflectionCorrections ?? {},
+        );
+        setInflectionCorrections(new Map(newInflectionCorrections));
 
         if (responseJSON.correct) {
             setNumberCorrect(numberCorrect + 1);
@@ -199,6 +206,7 @@ export default function TestArea({
         currentAnswer,
         expectedAnswer,
         inflectionAnswers,
+        inflectionCorrections,
         lastQuestions,
         nextQuestion,
         numberCorrect,
@@ -212,6 +220,7 @@ export default function TestArea({
         setQuestionNumber,
         setCurrentAnswer,
         setExpectedAnswer,
+        setInflectionCorrections,
         setLastQuestions,
         setNextQuestion,
         setNumberCorrect,

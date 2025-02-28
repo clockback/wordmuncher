@@ -17,6 +17,7 @@ export default function AdvanceButtons() {
         setCurrentAnswer,
         setExpectedAnswer,
         setInflectionAnswers,
+        setInflectionCorrections,
         setNextQuestion,
         setPending,
         setQuestion,
@@ -42,6 +43,7 @@ export default function AdvanceButtons() {
             }
             newInflectionAnswers.set(featureKey, "");
         }
+        setInflectionCorrections(new Map());
         setInflectionAnswers(newInflectionAnswers);
         setExpectedAnswer(null);
         setNextQuestion(null);

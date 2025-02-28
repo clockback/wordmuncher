@@ -15,6 +15,7 @@ export interface SubmitAnswerResponseAPICorrectOrIncorrect {
     nextQuestion: Question | null;
     lastQuestions: number[];
     expectedAnswer: string | null;
+    inflectionCorrections: { [key: string]: string } | null;
     reattemptAvailable: false;
     totalStars: number;
     done: boolean;
