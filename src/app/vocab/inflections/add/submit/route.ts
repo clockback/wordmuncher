@@ -2,11 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { InflectionCategory, InflectionFeature, InflectionType } from "@models";
 
+import { AddInflectionsRequestAPI } from "./api";
 import { getSettings } from "src/db/helpers/settings";
 import sequelize from "src/db/models/db-connection";
 
 export async function POST(request: NextRequest) {
-    const requestJSON = await request.json();
+    const requestJSON: AddInflectionsRequestAPI = await request.json();
     const { inflectionName, categories } = requestJSON;
 
     const tonguePairId = (await getSettings()).tonguePairId;

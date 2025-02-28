@@ -3,12 +3,17 @@ import { Op, literal } from "sequelize";
 
 import { InflectionCategory, InflectionFeature } from "@models";
 
+import {
+    RestructureInflectionsRequestAPI,
+    RestructureInflectionsResponseAPI,
+} from "./api";
+
 export async function POST(
     request: NextRequest,
     { params }: { params: Promise<{ "inflection-type": string }> },
 ) {
     const inflectionTypeId = parseInt((await params)["inflection-type"]);
-    const requestJSON = await request.json();
+    const requestJSON: RestructureInflectionsRequestAPI = await request.json();
     const {
         primaryCategory,
         secondaryCategory,
@@ -117,7 +122,8 @@ export async function POST(
         );
     } catch (error) {
         console.log(`error: ${error}`);
-        return NextResponse.json({}, { status: 409 });
+        const body: RestructureInflectionsResponseAPI = {};
+        return NextResponse.json(body, { status: 409 });
     }
 
     return new Response(null, { status: 204 });

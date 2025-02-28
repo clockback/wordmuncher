@@ -4,6 +4,7 @@ import { Op } from "sequelize";
 import { Answer, Question, Result, Sheet } from "@models";
 
 import { getNumberOfStars, getQuestion } from "../helpers";
+import { SubmitAnswerRequestAPI, SubmitAnswerResponseAPI } from "./api";
 
 const minimumSimilarityScore = 0.85;
 
@@ -110,7 +111,7 @@ export async function POST(
     request: NextRequest,
     { params }: { params: Promise<{ sheet: string }> },
 ) {
-    const requestJSON = await request.json();
+    const requestJSON: SubmitAnswerRequestAPI = await request.json();
     const {
         questionId,
         submittedAnswer,
@@ -154,14 +155,12 @@ export async function POST(
     } else if (closestScore < minimumSimilarityScore || attemptedAlready) {
         markIncorrect(question.result);
     } else {
-        return NextResponse.json(
-            {
-                correct: false,
-                reattemptAvailable: true,
-                closest: closest,
-            },
-            { status: 202 },
-        );
+        const body: SubmitAnswerResponseAPI = {
+            correct: false,
+            reattemptAvailable: true,
+            closest,
+        };
+        return NextResponse.json(body, { status: 202 });
     }
 
     updateLastQuestions(lastQuestions, questionId);
@@ -179,17 +178,15 @@ export async function POST(
         expectedAnswer = mainAnswer.toJSON();
     }
 
-    return NextResponse.json(
-        {
-            correct: correct,
-            result: question.result,
-            nextQuestion: nextQuestion ? nextQuestion.toJSON() : null,
-            lastQuestions: lastQuestions,
-            expectedAnswer: expectedAnswer,
-            reattemptAvailable: false,
-            totalStars,
-            done,
-        },
-        { status: 202 },
-    );
+    const body: SubmitAnswerResponseAPI = {
+        correct: correct,
+        result: question.result,
+        nextQuestion: nextQuestion ? nextQuestion.toJSON() : null,
+        lastQuestions: lastQuestions,
+        expectedAnswer: expectedAnswer,
+        reattemptAvailable: false,
+        totalStars,
+        done,
+    };
+    return NextResponse.json(body, { status: 202 });
 }

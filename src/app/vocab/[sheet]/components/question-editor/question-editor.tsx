@@ -6,11 +6,20 @@ import { useContext } from "react";
 import Button from "@components/button/button";
 import EditableHeader from "@components/editable-header/editable-header";
 
-import { Answer, InflectionAnswer, InflectionType, Question } from "@models";
+import { InflectionType, Question } from "@models";
 
+import {
+    AddQuestionRequestAPI,
+    AddQuestionResponseAPI,
+} from "../../add-question/api";
 import editSheetContext from "../../context";
 import AnswerSection from "../answer-section/answer-section";
 import styles from "./question-editor.module.css";
+import { DeleteQuestionRequestAPI } from "src/app/vocab/delete-question/api";
+import {
+    UpdateQuestionRequestAPI,
+    UpdateQuestionResponseAPISuccess,
+} from "src/app/vocab/update-question/api";
 
 function questionAlreadyExists(questionText: string, allQuestions: Question[]) {
     for (const question of allQuestions) {
@@ -19,13 +28,6 @@ function questionAlreadyExists(questionText: string, allQuestions: Question[]) {
         }
     }
     return false;
-}
-
-interface clickSaveQuestionResponseProps {
-    questionId: number;
-    questionText: string;
-    answers: Answer[];
-    inflectionAnswers: InflectionAnswer[];
 }
 
 function questionIsValid(
@@ -91,71 +93,139 @@ export default function QuestionEditor() {
 
     function updateQuestion(
         question: Question,
-        contents: clickSaveQuestionResponseProps,
+        contents: UpdateQuestionResponseAPISuccess,
     ) {
         question.questionText = contents.questionText;
         question.answers = contents.answers.slice();
         question.inflectionAnswers = contents.inflectionAnswers.slice();
     }
 
-    function clickSaveNewQuestionHandleResponse(response: NextResponse) {
-        response.json().then((contents) => {
-            const updatedQuestions = structuredClone(allQuestions);
-            updatedQuestions.push(contents);
-            setAllQuestions(updatedQuestions);
-            setSavePossible(false);
-            setPending(false);
-            setIsAddingNewQuestion(false);
-        });
+    async function clickSaveNewQuestionHandleResponse(response: NextResponse) {
+        const responseJSON: AddQuestionResponseAPI = await response.json();
+        const updatedQuestions = structuredClone(allQuestions);
+        updatedQuestions.push(responseJSON as Question);
+        setAllQuestions(updatedQuestions);
+        setSavePossible(false);
+        setPending(false);
+        setIsAddingNewQuestion(false);
     }
 
-    function getAnswerBody() {
-        const answerBody = {};
-        if (proposedInflectionType === null) {
-            answerBody["proposedMainAnswer"] = answerEntryValue.trim();
-            answerBody["proposedOtherAnswers"] = otherAnswers;
-        } else {
-            answerBody["proposedInflectionType"] = proposedInflectionType.id;
-            answerBody["proposedInflectionAnswers"] = [];
+    function getPlainAnswerBody(): {
+        proposedMainAnswer: string;
+        proposedOtherAnswers: string[];
+    } {
+        return {
+            proposedMainAnswer: answerEntryValue.trim(),
+            proposedOtherAnswers: otherAnswers,
+        };
+    }
 
-            const primaryCategory = proposedInflectionType.categories[0];
-            for (const primaryFeature of primaryCategory.features) {
-                if (proposedInflectionType.categories.length === 1) {
-                    const answerKey = primaryFeature.id.toString();
+    function getInflectionAnswerBody(inflectionId: number): {
+        proposedInflectionType: number;
+        proposedInflectionAnswers: {
+            primaryFeature: number;
+            secondaryFeature?: number;
+            answer: string;
+        }[];
+    };
+    function getInflectionAnswerBody(inflectionId?: undefined): {
+        proposedInflectionType: undefined;
+        proposedInflectionAnswers: {
+            primaryFeature: number;
+            secondaryFeature?: number;
+            answer: string;
+        }[];
+    };
+    function getInflectionAnswerBody(inflectionId?: number): {
+        proposedInflectionType: number;
+        proposedInflectionAnswers: {
+            primaryFeature: number;
+            secondaryFeature?: number;
+            answer: string;
+        }[];
+    } {
+        const answers = [];
+
+        const primaryCategory = proposedInflectionType.categories[0];
+        for (const primaryFeature of primaryCategory.features) {
+            if (proposedInflectionType.categories.length === 1) {
+                const answerKey = primaryFeature.id.toString();
+                const submitAnswer = proposedInflectionAnswers.get(answerKey);
+                if (submitAnswer) {
+                    answers.push({
+                        primaryFeature: primaryFeature.id,
+                        answer: submitAnswer,
+                    });
+                }
+            } else {
+                const secondaryCategory = proposedInflectionType.categories[1];
+                for (const secondaryFeature of secondaryCategory.features) {
+                    const answerKey = `${primaryFeature.id},${secondaryFeature.id}`;
                     const submitAnswer =
                         proposedInflectionAnswers.get(answerKey);
                     if (submitAnswer) {
-                        answerBody["proposedInflectionAnswers"].push({
+                        answers.push({
                             primaryFeature: primaryFeature.id,
+                            secondaryFeature: secondaryFeature.id,
                             answer: submitAnswer,
                         });
-                    }
-                } else {
-                    const secondaryCategory =
-                        proposedInflectionType.categories[1];
-                    for (const secondaryFeature of secondaryCategory.features) {
-                        const answerKey = `${primaryFeature.id},${secondaryFeature.id}`;
-                        const submitAnswer =
-                            proposedInflectionAnswers.get(answerKey);
-                        if (submitAnswer) {
-                            answerBody["proposedInflectionAnswers"].push({
-                                primaryFeature: primaryFeature.id,
-                                secondaryFeature: secondaryFeature.id,
-                                answer: submitAnswer,
-                            });
-                        }
                     }
                 }
             }
         }
-        return answerBody;
+
+        return {
+            proposedInflectionAnswers: answers,
+            proposedInflectionType: inflectionId,
+        };
+    }
+
+    function getAnswerBody(inflectionId: number): {
+        proposedInflectionType: number;
+        proposedInflectionAnswers: {
+            primaryFeature: number;
+            secondaryFeature?: number;
+            answer: string;
+        }[];
+    };
+    function getAnswerBody(inflectionId?: undefined):
+        | {
+              proposedMainAnswer: string;
+              proposedOtherAnswers: string[];
+          }
+        | {
+              proposedInflectionType: undefined;
+              proposedInflectionAnswers: {
+                  primaryFeature: number;
+                  secondaryFeature?: number;
+                  answer: string;
+              }[];
+          };
+    function getAnswerBody(inflectionId?: number):
+        | {
+              proposedMainAnswer: string;
+              proposedOtherAnswers: string[];
+          }
+        | {
+              proposedInflectionType: number | undefined;
+              proposedInflectionAnswers: {
+                  primaryFeature: number;
+                  secondaryFeature?: number;
+                  answer: string;
+              }[];
+          } {
+        if (inflectionId !== undefined)
+            return getInflectionAnswerBody(inflectionId);
+        if (proposedInflectionType === null) return getPlainAnswerBody();
+        return getInflectionAnswerBody();
     }
 
     function clickSaveNewQuestion() {
-        const body = {
-            sheetId: sheetId,
+        const body: AddQuestionRequestAPI = {
             proposedQuestionText: proposedQuestionText.trim(),
-            ...getAnswerBody(),
+            ...getAnswerBody(
+                proposedInflectionType ? proposedInflectionType.id : undefined,
+            ),
         };
         fetch(`/vocab/${sheetId}/add-question`, {
             method: "POST",
@@ -164,26 +234,32 @@ export default function QuestionEditor() {
         }).then(clickSaveNewQuestionHandleResponse);
     }
 
-    function clickSaveEditQuestionHandleResponse(response: NextResponse) {
-        response.json().then((contents) => {
-            const questionId = contents.questionId;
-            const updatedQuestions = structuredClone(allQuestions);
-            for (const question of updatedQuestions) {
-                if (question.id == questionId) {
-                    updateQuestion(question, contents);
-                }
+    async function clickSaveEditQuestionHandleResponse(response: NextResponse) {
+        if (!response.ok) {
+            console.error("Updating question failed.");
+            return;
+        }
+        const responseJSON: UpdateQuestionResponseAPISuccess =
+            await response.json();
+        const questionId = responseJSON.questionId;
+        const updatedQuestions = structuredClone(allQuestions);
+        for (const question of updatedQuestions) {
+            if (question.id == questionId) {
+                updateQuestion(question, responseJSON);
             }
-            setAllQuestions(updatedQuestions);
-            setSavePossible(false);
-            setPending(false);
-        });
+        }
+        setAllQuestions(updatedQuestions);
+        setSavePossible(false);
+        setPending(false);
     }
 
     function clickSaveEditQuestion() {
-        const body = {
+        const body: UpdateQuestionRequestAPI = {
             id: selectedQuestion.id,
             proposedQuestionText: proposedQuestionText.trim(),
-            ...getAnswerBody(),
+            ...getAnswerBody(
+                proposedInflectionType ? proposedInflectionType.id : undefined,
+            ),
         };
         fetch("/vocab/update-question", {
             method: "POST",
@@ -204,28 +280,26 @@ export default function QuestionEditor() {
     }
 
     const clickDeleteQuestionHandleResponse = (response: NextResponse) => {
-        response.json().then((contents) => {
-            setPending(false);
+        setPending(false);
 
-            if (contents.error) {
-                setPending(false);
-                return;
-            }
+        if (!response.ok) {
+            return;
+        }
 
-            const updatedQuestions = allQuestions.filter(
-                (question) => question.id !== selectedQuestion.id,
-            );
-            setAllQuestions(updatedQuestions);
-            setSelectedQuestion(null);
-        });
+        const updatedQuestions = allQuestions.filter(
+            (question) => question.id !== selectedQuestion.id,
+        );
+        setAllQuestions(updatedQuestions);
+        setSelectedQuestion(null);
     };
 
     const clickDeleteQuestion = () => {
         setPending(true);
+        const body: DeleteQuestionRequestAPI = { id: selectedQuestion.id };
         fetch("/vocab/delete-question", {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id: selectedQuestion.id }),
+            body: JSON.stringify(body),
         }).then(clickDeleteQuestionHandleResponse);
     };
 

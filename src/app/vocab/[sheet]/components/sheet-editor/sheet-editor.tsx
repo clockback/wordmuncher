@@ -84,8 +84,8 @@ export default function SheetEditor({
     };
 
     function deleteSheetHandleResponse(response: NextResponse) {
-        if (response.status !== 200) {
-            console.log("Failed to delete sheet!");
+        if (!response.ok) {
+            console.error("Failed to delete sheet!");
         }
         redirect("/vocab");
     }
