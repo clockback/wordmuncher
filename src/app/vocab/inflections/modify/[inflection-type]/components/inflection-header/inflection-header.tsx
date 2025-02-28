@@ -8,6 +8,7 @@ import EditableHeader from "@components/editable-header/editable-header";
 import { InflectionType } from "@models";
 
 import editInflectionContext from "../../context";
+import { RenameInflectionRequestAPI } from "../../rename/api";
 import styles from "./inflection-header.module.css";
 
 interface InflectionHeaderProps {
@@ -30,7 +31,7 @@ export default function InflectionHeader({
         inflectionName: string,
     ) => {
         setIsPending(false);
-        if (response.status !== 204) {
+        if (!response.ok) {
             console.error("Failed to rename inflection type!");
             setInflectionName(inflectionName);
             return;
@@ -49,10 +50,13 @@ export default function InflectionHeader({
         setIsEditingInflectionName(false);
         setIsPending(true);
         setInflectionName(inputText);
+        const body: RenameInflectionRequestAPI = {
+            proposedInflectionTypeName: inputText,
+        };
         fetch(`/vocab/inflections/modify/${inflectionType.id}/rename`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ proposedInflectionTypeName: inputText }),
+            body: JSON.stringify(body),
         }).then((response: NextResponse) =>
             onBlurHandleResponse(response, inflectionName),
         );

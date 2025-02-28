@@ -6,6 +6,11 @@ import { JSX, useState } from "react";
 import { Answer, Question, Result, Sheet } from "@models";
 
 import testSheetContext from "../../context";
+import {
+    SubmitAnswerRequestAPI,
+    SubmitAnswerResponseAPI,
+    SubmitAnswerResponseAPICorrectOrIncorrect,
+} from "../../submit-answer/api";
 import TestFooter from "../test-footer/test-footer";
 import TestQuestion from "../test-question/test-question";
 import TestResults from "../test-results/test-results";
@@ -72,45 +77,51 @@ export default function TestArea({
         setPending(false);
     }
 
-    function markAnswer(contents: SubmitAnswerContents) {
-        setNumberOfStars(contents.totalStars);
-        if (contents.correct && questionNumber === numberOfQuestions) {
+    function markAnswer(
+        responseJSON: SubmitAnswerResponseAPICorrectOrIncorrect,
+    ) {
+        setNumberOfStars(responseJSON.totalStars);
+        if (responseJSON.correct && questionNumber === numberOfQuestions) {
             setNumberCorrect(numberCorrect + 1);
             setTimeout(() => setShowResults(true), 1000);
             return;
         }
 
-        setAttemptedAlready(contents.reattemptAvailable);
+        setAttemptedAlready(responseJSON.reattemptAvailable);
         const newQuestion = structuredClone(question);
-        newQuestion.result = contents.result;
+        newQuestion.result = responseJSON.result;
         setQuestion(newQuestion);
-        setLastQuestions(contents.lastQuestions);
-        setExpectedAnswer(contents.correct ? null : contents.expectedAnswer);
-        if (contents.correct) {
+        setLastQuestions(responseJSON.lastQuestions);
+        setExpectedAnswer(
+            responseJSON.correct ? null : responseJSON.expectedAnswer,
+        );
+        if (responseJSON.correct) {
             setNumberCorrect(numberCorrect + 1);
-            setTimeout(() => prepareNewAnswer(contents), 1000);
+            setTimeout(() => prepareNewAnswer(responseJSON), 1000);
         } else {
             setNumberIncorrect(numberIncorrect + 1);
             setPromptOnCompletion(true);
-            if (contents.nextQuestion !== null) {
-                setNextQuestion(contents.nextQuestion);
+            if (responseJSON.nextQuestion !== null) {
+                setNextQuestion(responseJSON.nextQuestion);
             }
         }
     }
 
     const submitAnswerHandleResponse = async (response: NextResponse) => {
-        if (response.status !== 202) {
-            console.log("Failed to submit answer!");
+        if (!response.ok) {
+            console.error("Failed to submit answer!");
             return;
         }
-        response.json().then((contents: SubmitAnswerContents) => {
-            if (contents.reattemptAvailable) {
-                console.log("Reattempt available!");
-                allowReattempt();
-            } else {
-                markAnswer(contents);
-            }
-        });
+
+        const responseJSON: SubmitAnswerResponseAPI = await response.json();
+
+        if (responseJSON.reattemptAvailable) {
+            allowReattempt();
+        } else {
+            markAnswer(
+                responseJSON as SubmitAnswerResponseAPICorrectOrIncorrect,
+            );
+        }
     };
 
     const submitAnswer = () => {
@@ -122,16 +133,17 @@ export default function TestArea({
         setPending(true);
         const retrieveNextAnswer =
             numberOfQuestions === null || questionNumber < numberOfQuestions;
+        const body: SubmitAnswerRequestAPI = {
+            questionId: question.id,
+            submittedAnswer: trimmedAnswer,
+            lastQuestions: lastQuestions,
+            attemptedAlready: attemptedAlready,
+            retrieveNextAnswer,
+        };
         fetch(`/tests/${sheet.id}/submit-answer`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                questionId: question.id,
-                submittedAnswer: trimmedAnswer,
-                lastQuestions: lastQuestions,
-                attemptedAlready: attemptedAlready,
-                retrieveNextAnswer,
-            }),
+            body: JSON.stringify(body),
         }).then(submitAnswerHandleResponse);
     };
 

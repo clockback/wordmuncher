@@ -11,6 +11,7 @@ import InflectionTemplateProposal from "@components/inflection-template-proposal
 import { InflectionType, Question } from "@models";
 
 import editInflectionContext from "../../context";
+import { RestructureInflectionsRequestAPI } from "../../restructure/api";
 import InflectionHeader from "../inflection-header/inflection-header";
 import styles from "./edit-inflection-area.module.css";
 import { InflectionValidity } from "src/app/vocab/inflections/add/helpers/helpers";
@@ -80,7 +81,7 @@ export default function EditInflectionArea({
     };
 
     const saveInflectionHandleResponse = (response: NextResponse) => {
-        if (response.status !== 204) {
+        if (!response.ok) {
             console.error("Failed to save inflection type.");
             setIsPending(false);
             return;
@@ -90,20 +91,21 @@ export default function EditInflectionArea({
 
     const saveInflection = () => {
         setIsPending(true);
+        const body: RestructureInflectionsRequestAPI = {
+            primaryCategory,
+            secondaryCategory,
+            primaryFeatures,
+            secondaryFeatures,
+        };
         fetch(`/vocab/inflections/modify/${inflectionType.id}/restructure`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                primaryCategory,
-                secondaryCategory,
-                primaryFeatures,
-                secondaryFeatures,
-            }),
+            body: JSON.stringify(body),
         }).then(saveInflectionHandleResponse);
     };
 
     const deleteInflectionHandleResponse = (response: NextResponse) => {
-        if (response.status !== 204) {
+        if (!response.ok) {
             console.error("Failed to delete inflection type.");
             setIsPending(false);
             return;

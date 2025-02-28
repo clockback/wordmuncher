@@ -14,12 +14,9 @@ import {
     FeatureInterface,
 } from "../../../helpers/interfaces";
 import { InflectionValidity } from "../../helpers/helpers";
+import { AddInflectionsRequestAPI } from "../../submit/api";
 import ValidityAssessment from "../validity-assessment/validity-assessment";
 import styles from "./add-inflection-area.module.css";
-
-interface InflectionTypeExistsContent {
-    exists: boolean;
-}
 
 function generateJSONRepresentation(
     inflectionName: string,
@@ -28,7 +25,7 @@ function generateJSONRepresentation(
     secondaryCategory: string,
     secondaryFeatures: string[],
     numberOfCategories: number,
-): string {
+): AddInflectionsRequestAPI {
     const categories = [
         {
             categoryName: primaryCategory,
@@ -42,10 +39,10 @@ function generateJSONRepresentation(
         });
     }
 
-    return JSON.stringify({
+    return {
         inflectionName,
         categories,
-    });
+    };
 }
 
 function isValid(
@@ -108,19 +105,25 @@ export default function AddInflectionArea() {
         secondaryFeatures.length,
     );
 
-    const onBlurHandleResponse = (
+    const onBlurHandleResponse = async (
         response: NextResponse,
         previousName: string,
     ) => {
-        response.json().then((contents: InflectionTypeExistsContent) => {
-            setIsPending(false);
-            if (contents.exists) {
-                setProposedName(previousName);
-                setIsEditing(proposedName === null);
-            } else {
-                setIsEditing(false);
-            }
-        });
+        setIsPending(false);
+        if (!response.ok) {
+            console.error(
+                `Failed to check for inflection with name "${previousName}".`,
+            );
+            return;
+        }
+
+        const responseJSON = await response.json();
+        if (responseJSON.exists) {
+            setProposedName(previousName);
+            setIsEditing(proposedName === null);
+        } else {
+            setIsEditing(false);
+        }
     };
 
     const onBlur = (inputText: string) => {
@@ -149,8 +152,8 @@ export default function AddInflectionArea() {
     };
 
     const saveInflectionHandleResponse = (response: NextResponse) => {
-        setIsPending(false);
-        if (response.status !== 204) {
+        if (!response.ok) {
+            setIsPending(false);
             console.error("Failed to create inflection type!");
             return;
         }
@@ -175,13 +178,15 @@ export default function AddInflectionArea() {
         fetch("/vocab/inflections/add/submit", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: generateJSONRepresentation(
-                proposedName,
-                primaryCategory.name,
-                primaryFeatureNames,
-                secondaryCategory.name,
-                secondaryFeatureNames,
-                numberOfCategories,
+            body: JSON.stringify(
+                generateJSONRepresentation(
+                    proposedName,
+                    primaryCategory.name,
+                    primaryFeatureNames,
+                    secondaryCategory.name,
+                    secondaryFeatureNames,
+                    numberOfCategories,
+                ),
             ),
         }).then(saveInflectionHandleResponse);
     };
@@ -231,6 +236,7 @@ export default function AddInflectionArea() {
                 secondaryCategory={secondaryCategory}
                 primaryFeatures={primaryFeatures}
                 secondaryFeatures={secondaryFeatures}
+                representativeQuestion={null}
             ></InflectionTemplateProposal>
             <div className={styles.savemargin}>
                 <Button

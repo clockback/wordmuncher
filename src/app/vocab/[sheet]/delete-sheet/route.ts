@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { Sheet } from "@models";
 
+import { DeleteSheetResponseAPI } from "./api";
+
 export async function DELETE(
     _request: NextRequest,
     { params }: { params: Promise<{ sheet: string }> },
@@ -9,12 +11,16 @@ export async function DELETE(
     const sheet = parseInt((await params).sheet);
     const noDeleted = await Sheet.destroy({ where: { id: sheet } });
 
+    let body: DeleteSheetResponseAPI;
+    let status: number;
+
     if (noDeleted === 0) {
-        return NextResponse.json(
-            { error: `Sheet does not exist with id ${sheet}` },
-            { status: 409 },
-        );
+        body = { error: `Sheet does not exist with id ${sheet}` };
+        status = 409;
+    } else {
+        body = {};
+        status = 200;
     }
 
-    return NextResponse.json({}, { status: 200 });
+    return NextResponse.json(body, { status });
 }

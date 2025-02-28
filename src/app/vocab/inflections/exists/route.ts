@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { InflectionType } from "@models";
 
+import { InterfaceExistsResponseAPI } from "./api";
 import { getSettings } from "src/db/helpers/settings";
 
 export async function GET(request: NextRequest) {
@@ -14,8 +15,8 @@ export async function GET(request: NextRequest) {
         },
     });
 
-    return NextResponse.json(
-        { exists: inflectionType !== null },
-        { status: 200 },
-    );
+    const body: InterfaceExistsResponseAPI = {
+        exists: inflectionType !== null,
+    };
+    return NextResponse.json(body, { status: 200 });
 }

@@ -3,6 +3,12 @@ import { Transaction } from "sequelize";
 
 import { Answer, InflectionAnswer, Question } from "@models";
 
+import {
+    UpdateQuestionRequestAPI,
+    UpdateQuestionRequestAPIWithAnswers,
+    UpdateQuestionRequestAPIWithInflectionAnswers,
+    UpdateQuestionResponseAPI,
+} from "./api";
 import sequelize from "src/db/models/db-connection";
 
 async function processPlainAnswers(
@@ -74,29 +80,20 @@ async function processInflectionAnswers(
     return createdAnswers;
 }
 
-export async function POST(request: NextRequest) {
-    const requestJSON = await request.json();
+async function updateQuestionWithAnswers(
+    requestJSON: UpdateQuestionRequestAPIWithAnswers,
+): Promise<{
+    body: UpdateQuestionResponseAPI;
+    status: number;
+}> {
     const {
+        id,
         proposedQuestionText,
         proposedMainAnswer,
         proposedOtherAnswers,
-        proposedInflectionType,
-        proposedInflectionAnswers,
-        id,
     } = requestJSON;
 
-    let usesInflections: boolean;
-    const createdAnswers: Answer[] | InflectionAnswer[] = [];
-    if (proposedMainAnswer && proposedOtherAnswers !== undefined) {
-        usesInflections = false;
-    } else if (
-        proposedInflectionType &&
-        proposedInflectionAnswers !== undefined
-    ) {
-        usesInflections = true;
-    } else {
-        return NextResponse.json({}, { status: 422 });
-    }
+    const createdAnswers: Answer[] = [];
 
     try {
         await sequelize.transaction(async (t) => {
@@ -107,36 +104,94 @@ export async function POST(request: NextRequest) {
                     transaction: t,
                 },
             );
-
-            if (usesInflections) {
-                await processInflectionAnswers(
-                    id,
-                    proposedInflectionAnswers,
-                    createdAnswers as InflectionAnswer[],
-                    t,
-                );
-            } else {
-                await processPlainAnswers(
-                    id,
-                    proposedMainAnswer,
-                    proposedOtherAnswers,
-                    createdAnswers as Answer[],
-                    t,
-                );
-            }
+            await processPlainAnswers(
+                id,
+                proposedMainAnswer,
+                proposedOtherAnswers,
+                createdAnswers,
+                t,
+            );
         });
     } catch (error) {
         console.log(`error: ${error}`);
-        return NextResponse.json({}, { status: 409 });
+        return { body: {} as UpdateQuestionResponseAPI, status: 409 };
     }
 
-    return NextResponse.json(
-        {
+    return {
+        body: {
             questionId: id,
             questionText: proposedQuestionText,
-            answers: usesInflections ? [] : createdAnswers,
-            inflectionAnswers: usesInflections ? createdAnswers : [],
+            answers: createdAnswers,
+            inflectionAnswers: [],
         },
-        { status: 200 },
-    );
+        status: 200,
+    };
+}
+
+async function updateQuestionWithInflectionAnswers(
+    requestJSON: UpdateQuestionRequestAPIWithInflectionAnswers,
+): Promise<{
+    body: UpdateQuestionResponseAPI;
+    status: number;
+}> {
+    const { id, proposedQuestionText, proposedInflectionAnswers } = requestJSON;
+
+    const createdAnswers: InflectionAnswer[] = [];
+
+    try {
+        await sequelize.transaction(async (t) => {
+            await Question.update(
+                { questionText: proposedQuestionText },
+                {
+                    where: { id: id },
+                    transaction: t,
+                },
+            );
+            await processInflectionAnswers(
+                id,
+                proposedInflectionAnswers,
+                createdAnswers,
+                t,
+            );
+        });
+    } catch (error) {
+        console.log(`error: ${error}`);
+        return { body: {} as UpdateQuestionResponseAPI, status: 409 };
+    }
+
+    return {
+        body: {
+            questionId: id,
+            questionText: proposedQuestionText,
+            answers: [],
+            inflectionAnswers: createdAnswers,
+        },
+        status: 200,
+    };
+}
+
+export async function POST(request: NextRequest) {
+    const requestJSON: UpdateQuestionRequestAPI = await request.json();
+
+    let body: UpdateQuestionResponseAPI;
+    let status: number;
+    if (
+        "proposedMainAnswer" in requestJSON &&
+        "proposedOtherAnswers" in requestJSON &&
+        !("proposedInflectionAnswers" in requestJSON)
+    ) {
+        ({ body, status } = await updateQuestionWithAnswers(requestJSON));
+    } else if (
+        "proposedInflectionAnswers" in requestJSON &&
+        !("proposedMainAnswer" in requestJSON) &&
+        !("proposedOtherAnswers" in requestJSON)
+    ) {
+        ({ body, status } =
+            await updateQuestionWithInflectionAnswers(requestJSON));
+    } else {
+        body = {};
+        status = 422;
+    }
+
+    return NextResponse.json(body, { status });
 }

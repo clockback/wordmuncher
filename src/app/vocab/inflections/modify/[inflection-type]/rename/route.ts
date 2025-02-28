@@ -2,12 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { InflectionType } from "@models";
 
+import { RenameInflectionResponseAPI } from "./api";
+
 export async function PATCH(
     request: NextRequest,
     { params }: { params: Promise<{ "inflection-type": string }> },
 ) {
     const requestJSON = await request.json();
-    const proposedInflectionTypeName = requestJSON.proposedInflectionTypeName;
+    const { proposedInflectionTypeName } = requestJSON;
     const inflectionTypeId = parseInt((await params)["inflection-type"]);
 
     try {
@@ -17,7 +19,8 @@ export async function PATCH(
         );
     } catch (error) {
         console.log(`error: ${error}`);
-        return NextResponse.json({}, { status: 409 });
+        const body: RenameInflectionResponseAPI = {};
+        return NextResponse.json(body, { status: 409 });
     }
 
     return new Response(null, { status: 204 });
