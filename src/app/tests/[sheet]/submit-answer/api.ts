@@ -1,4 +1,4 @@
-import { Answer, Question, Result } from "@models";
+import { Question, Result } from "@models";
 
 export interface SubmitAnswerRequestAPI {
     questionId: number;
@@ -23,7 +23,6 @@ export interface SubmitAnswerResponseAPICorrectOrIncorrect {
 export interface SubmitAnswerResponseAPIClose {
     correct: boolean;
     reattemptAvailable: boolean;
-    closest: Answer;
 }
 
 export type SubmitAnswerResponseAPI =

@@ -158,7 +158,6 @@ async function submitPlainAnswer(
         const body: SubmitAnswerResponseAPI = {
             correct: false,
             reattemptAvailable: true,
-            closest,
         };
         return { body, status: 202 };
     }
