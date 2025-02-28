@@ -11,8 +11,28 @@ interface InflectionAnswerEntryProps {
 export default function InflectionAnswerEntry({
     featureKey,
 }: InflectionAnswerEntryProps) {
-    const { pending, inflectionAnswers, setInflectionAnswers, submitAnswer } =
-        useContext(testSheetContext);
+    const {
+        pending,
+        inflectionAnswers,
+        inflectionCorrections,
+        setInflectionAnswers,
+        submitAnswer,
+    } = useContext(testSheetContext);
+
+    console.log(inflectionCorrections);
+    console.log(featureKey);
+
+    const correction = inflectionCorrections.get(featureKey) ?? null;
+    if (correction !== null) {
+        return (
+            <div>
+                <span className={styles.correction}>{correction}</span>
+                <span className={styles.incorrect}>
+                    {inflectionAnswers.get(featureKey)}
+                </span>
+            </div>
+        );
+    }
 
     const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key !== "Enter") {

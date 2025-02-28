@@ -1,3 +1,13 @@
+.correction {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.incorrect {
+    text-decoration: line-through;
+    color: red;
+}
+
 .answerentry {
     font-size: inherit;
     font-family: inherit;

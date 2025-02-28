@@ -178,12 +178,13 @@ async function submitPlainAnswer(
         expectedAnswer = mainAnswer;
     }
 
-    const body: SubmitAnswerResponseAPI = {
+    const body: SubmitAnswerResponseAPICorrectOrIncorrect = {
         correct: correct,
         result: question.result,
         nextQuestion: nextQuestion ? nextQuestion.toJSON() : null,
         lastQuestions: lastQuestions,
         expectedAnswer,
+        inflectionCorrections: null,
         reattemptAvailable: false,
         totalStars,
         done,
@@ -204,6 +205,7 @@ async function submitInflectionAnswers(
 
     let correct = true;
 
+    const inflectionCorrections = {};
     for (const answer of question.inflectionAnswers) {
         let featureKey: string;
         if (answer.secondaryFeatureId === null) {
@@ -212,8 +214,8 @@ async function submitInflectionAnswers(
             featureKey = `${answer.primaryFeatureId},${answer.secondaryFeatureId}`;
         }
         if (answer.answerText !== submittedInflectionAnswers[featureKey]) {
+            inflectionCorrections[featureKey] = answer.answerText;
             correct = false;
-            break;
         }
     }
 
@@ -234,6 +236,7 @@ async function submitInflectionAnswers(
             nextQuestion: nextQuestion ? nextQuestion.toJSON() : null,
             lastQuestions,
             expectedAnswer: null,
+            inflectionCorrections,
             reattemptAvailable: false,
             totalStars,
             done,
