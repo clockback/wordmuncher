@@ -1,3 +1,5 @@
+import { notFound } from "next/navigation";
+
 import { Question, Result, Sheet } from "@models";
 
 import TestSheetTable from "./components/test-sheet-table/test-sheet-table";
@@ -57,7 +59,12 @@ async function getSheetsByProgress(): Promise<
 }
 
 export default async function Tests() {
-    const allSheets = await getSheetsByProgress();
+    let allSheets: { id: number; sheetName: string; progress: number }[];
+    try {
+        allSheets = await getSheetsByProgress();
+    } catch {
+        return notFound();
+    }
 
     return (
         <div className={styles.centre}>
@@ -66,3 +73,5 @@ export default async function Tests() {
         </div>
     );
 }
+
+export const dynamic = "force-dynamic";

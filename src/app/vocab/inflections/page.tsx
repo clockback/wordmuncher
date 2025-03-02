@@ -1,3 +1,4 @@
+import { notFound } from "next/navigation";
 import { JSX } from "react";
 
 import Button from "@components/button/button";
@@ -33,7 +34,13 @@ async function inflectionTypesAsTable(): Promise<JSX.Element[]> {
 }
 
 export default async function Inflections() {
-    const rows = await inflectionTypesAsTable();
+    let rows: JSX.Element[];
+    try {
+        rows = await inflectionTypesAsTable();
+    } catch {
+        return notFound();
+    }
+
     return (
         <div className={styles.centre}>
             <div className={styles.verticalcentre}>
@@ -51,3 +58,5 @@ export default async function Inflections() {
         </div>
     );
 }
+
+export const dynamic = "force-dynamic";
