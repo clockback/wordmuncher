@@ -1,6 +1,6 @@
-"use server";
+import { notFound } from "next/navigation";
 
-import { Tongue, TonguePair } from "@models";
+import { Settings, Tongue, TonguePair } from "@models";
 
 import TongueSelector from "./components/tongueselector/tongueselector";
 import styles from "./vocab.module.css";
@@ -80,12 +80,18 @@ async function fetchAllTongues(): Promise<
 }
 
 export default async function Home() {
-    const allTongues = await fetchAllTongues();
-    const settings = await getSettings();
-    const tonguePair = settings.tonguePair;
-    const sheets = tonguePair
-        ? await getTonguePairSheetsAsJson(tonguePair)
-        : [];
+    let allTongues: { id: number; tongueName: string; flag: string }[];
+    let settings: Settings;
+    let tonguePair: TonguePair;
+    let sheets: { sheetName: string; sheetId: number }[];
+    try {
+        allTongues = await fetchAllTongues();
+        settings = await getSettings();
+        tonguePair = settings.tonguePair;
+        sheets = tonguePair ? await getTonguePairSheetsAsJson(tonguePair) : [];
+    } catch {
+        return notFound();
+    }
     const initialTongueModel = tonguePair ? tonguePair.studying : null;
     const initialTongue = initialTongueModel
         ? {
@@ -106,3 +112,5 @@ export default async function Home() {
         </div>
     );
 }
+
+export const dynamic = "force-dynamic";

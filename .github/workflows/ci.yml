@@ -19,7 +19,9 @@ jobs:
         run: npm run lint
       - name: Check spelling
         run: npm run spellcheck
+      - name: Build Word Muncher
+        run: npm run build
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
       - name: Run Playwright tests
-        run: npm run dev & sleep 5 && npx playwright test
+        run: npm run start & sleep 5 && npx playwright test
