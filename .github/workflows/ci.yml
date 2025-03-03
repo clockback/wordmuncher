@@ -24,4 +24,4 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
       - name: Run Playwright tests
-        run: npm run start & sleep 5 && npx playwright test
+        run: npm run start & sleep 5 && NODE_ENV=production npx playwright test
