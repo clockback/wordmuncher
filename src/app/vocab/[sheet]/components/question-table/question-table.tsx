@@ -114,6 +114,7 @@ export default function QuestionTable() {
         setIsAddingNewQuestion(true);
         setProposedQuestionText("");
         setAnswerEntryValue("");
+        setOtherAnswers([]);
         setIsEditingQuestionText(true);
         setProposedInflectionAnswers(new Map());
         setProposedInflectionType(null);
