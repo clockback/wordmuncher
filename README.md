@@ -51,7 +51,7 @@ sudo sh -c "iptables-save > /etc/iptables/rules.v4"
 You can then run your server:
 
 ```sh
-npm run cron & npm run start
+NODE_ENV=production npm run cron & npm run start
 ```
 
 ## Development
