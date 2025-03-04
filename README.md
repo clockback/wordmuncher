@@ -26,10 +26,11 @@ nvm install 18
 nvm use 18
 ```
 
-Run a clean installation:
+Run a clean installation and build the application:
 
 ```sh
 npm ci
+npm run build
 ```
 
 You then need to set up the database.
