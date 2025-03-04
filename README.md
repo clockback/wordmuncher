@@ -2,49 +2,81 @@
 
 ## About
 
-Word Muncher is an open-source web-application to help you create and
-learn with vocabulary sheets.
+Word Muncher is an open-source web-application to help you create and learn with vocabulary sheets.
 
-[//]: # "TODO v0.1.0: Remove notice of no releases."
+## Installation
 
-There are no releases yet of Word Muncher.
+To set up a Word Muncher instance, you will need to have [Node Version Manager](https://github.com/nvm-sh/nvm) already installed. You can then clone the [repository](https://github.com/clockback/wordmuncher/):
+
+```sh
+git clone https://github.com/clockback/wordmuncher.git
+```
+
+You must know [which version](https://github.com/clockback/wordmuncher/releases) of Word Muncher you wish to use, and check this out in a detached head state:
+
+```sh
+cd wordmuncher
+git switch --detach v0.1.0
+```
+
+You can then use the correct version of NVM (specified in `.nvmrc`):
+
+```sh
+nvm install 18
+nvm use 18
+```
+
+Run a clean installation:
+
+```sh
+npm ci
+```
+
+You then need to set up the database.
+
+```sh
+NODE_ENV=production npm run migrate
+NODE_ENV=production npm run seed
+```
+
+Before you run your server, if you want Word Muncher to be accessible to other computers on your network, you must make the server accessible on port 80 (it is presently hosted at port 3000). How you do this is up to you, but a simple solution is to use `iptables`:
+
+```sh
+sudo apt-get install iptables
+sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 3000
+sudo sh -c "iptables-save > /etc/iptables/rules.v4"
+```
+
+You can then run your server:
+
+```sh
+npm run cron & npm run start
+```
 
 ## Development
 
-To install:
+To run in development (at port 3000), one run:
 
-```bash
-npm i
+```sh
+npm run cron & npm run dev
 ```
 
-To run (at port 3000), one shell should run:
+Before opening a pull request, ensure your code passes the following quality checks:
 
-```bash
-npm run dev
-```
-
-While the other should run:
-
-```bash
-npm run cron
-```
-
-Quality checks:
-
-```bash
+```sh
 npm run lint
 npm run spellcheck
 ```
 
-Format:
+And that it is correctly formatted:
 
-```bash
+```sh
 npm run format
 ```
 
 ## License
 
-Copyright The Wordmuncher Contributors.
+Copyright The Word Muncher Contributors.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as
