@@ -1,6 +1,13 @@
 {
     "enabled": true,
-    "words": ["davys", "grotesk", "trivago", "umzug", "wordmuncher"],
+    "words": [
+        "davys",
+        "dport", // destination port
+        "grotesk",
+        "trivago",
+        "umzug",
+        "wordmuncher"
+    ],
     "allowCompoundWords": true,
     "ignorePaths": ["playwright-report/", "test-results/", "**.svg"]
 }
