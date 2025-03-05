@@ -7,6 +7,7 @@ import {
     RestructureInflectionsRequestAPI,
     RestructureInflectionsResponseAPI,
 } from "./api";
+import sequelize from "src/db/models/db-connection";
 
 export async function POST(
     request: NextRequest,
@@ -27,99 +28,128 @@ export async function POST(
         secondaryCategory;
 
     try {
-        await InflectionCategory.update(
-            { categoryName: primaryCategoryName },
-            { where: { id: primaryCategoryId, inflectionTypeId } },
-        );
-        await InflectionCategory.update(
-            { categoryName: secondaryCategoryName },
-            { where: { id: secondaryCategoryId, inflectionTypeId } },
-        );
+        await sequelize.transaction(async (t) => {
+            await InflectionCategory.update(
+                { categoryName: primaryCategoryName },
+                {
+                    where: { id: primaryCategoryId, inflectionTypeId },
+                    transaction: t,
+                },
+            );
+            await InflectionCategory.update(
+                { categoryName: secondaryCategoryName },
+                {
+                    where: { id: secondaryCategoryId, inflectionTypeId },
+                    transaction: t,
+                },
+            );
 
-        const persistPrimaryIds = [];
-        for (const { id } of primaryFeatures) {
-            if (id > 0) {
-                persistPrimaryIds.push(id);
+            const persistPrimaryIds = [];
+            for (const { id } of primaryFeatures) {
+                if (id > 0) {
+                    persistPrimaryIds.push(id);
+                }
             }
-        }
 
-        await InflectionFeature.destroy({
-            where: {
-                inflectionCategoryId: primaryCategoryId,
-                id: { [Op.notIn]: persistPrimaryIds },
-            },
-        });
-
-        for (const [
-            primaryFeatureIndex,
-            { name, id },
-        ] of primaryFeatures.entries()) {
-            if (id > 0) {
-                await InflectionFeature.update(
-                    {
-                        featureName: name,
-                        orderInCategory: -(primaryFeatureIndex + 1),
-                    },
-                    { where: { id, inflectionCategoryId: primaryCategoryId } },
-                );
-            } else {
-                await InflectionFeature.create({
+            await InflectionFeature.destroy({
+                where: {
                     inflectionCategoryId: primaryCategoryId,
-                    featureName: name,
-                    orderInCategory: -(primaryFeatureIndex + 1),
-                });
-            }
-        }
+                    id: { [Op.notIn]: persistPrimaryIds },
+                },
+                transaction: t,
+            });
 
-        await InflectionFeature.update(
-            { orderInCategory: literal("orderInCategory * -1") },
-            { where: { inflectionCategoryId: primaryCategoryId } },
-        );
-
-        const persistSecondaryIds = [];
-        for (const { id } of secondaryFeatures) {
-            if (id > 0) {
-                persistSecondaryIds.push(id);
-            }
-        }
-
-        await InflectionFeature.destroy({
-            where: {
-                inflectionCategoryId: secondaryCategoryId,
-                id: { [Op.notIn]: persistSecondaryIds },
-            },
-        });
-
-        for (const [
-            secondaryFeatureIndex,
-            { name, id },
-        ] of secondaryFeatures.entries()) {
-            if (id > 0) {
-                await InflectionFeature.update(
-                    {
-                        featureName: name,
-                        orderInCategory: -(secondaryFeatureIndex + 1),
-                    },
-                    {
-                        where: {
-                            id,
-                            inflectionCategoryId: secondaryCategoryId,
+            for (const [
+                primaryFeatureIndex,
+                { name, id },
+            ] of primaryFeatures.entries()) {
+                if (id > 0) {
+                    await InflectionFeature.update(
+                        {
+                            featureName: name,
+                            orderInCategory: -(primaryFeatureIndex + 1),
                         },
-                    },
-                );
-            } else {
-                await InflectionFeature.create({
-                    inflectionCategoryId: secondaryCategoryId,
-                    featureName: name,
-                    orderInCategory: -(secondaryFeatureIndex + 1),
-                });
+                        {
+                            where: {
+                                id,
+                                inflectionCategoryId: primaryCategoryId,
+                            },
+                            transaction: t,
+                        },
+                    );
+                } else {
+                    await InflectionFeature.create(
+                        {
+                            inflectionCategoryId: primaryCategoryId,
+                            featureName: name,
+                            orderInCategory: -(primaryFeatureIndex + 1),
+                        },
+                        { transaction: t },
+                    );
+                }
             }
-        }
 
-        await InflectionFeature.update(
-            { orderInCategory: literal("orderInCategory * -1") },
-            { where: { inflectionCategoryId: secondaryCategoryId } },
-        );
+            await InflectionFeature.update(
+                { orderInCategory: literal("orderInCategory * -1") },
+                {
+                    where: { inflectionCategoryId: primaryCategoryId },
+                    transaction: t,
+                },
+            );
+
+            const persistSecondaryIds = [];
+            for (const { id } of secondaryFeatures) {
+                if (id > 0) {
+                    persistSecondaryIds.push(id);
+                }
+            }
+
+            await InflectionFeature.destroy({
+                where: {
+                    inflectionCategoryId: secondaryCategoryId,
+                    id: { [Op.notIn]: persistSecondaryIds },
+                },
+                transaction: t,
+            });
+
+            for (const [
+                secondaryFeatureIndex,
+                { name, id },
+            ] of secondaryFeatures.entries()) {
+                if (id > 0) {
+                    await InflectionFeature.update(
+                        {
+                            featureName: name,
+                            orderInCategory: -(secondaryFeatureIndex + 1),
+                        },
+                        {
+                            where: {
+                                id,
+                                inflectionCategoryId: secondaryCategoryId,
+                            },
+                            transaction: t,
+                        },
+                    );
+                } else {
+                    await InflectionFeature.create(
+                        {
+                            inflectionCategoryId: secondaryCategoryId,
+                            featureName: name,
+                            orderInCategory: -(secondaryFeatureIndex + 1),
+                        },
+                        { transaction: t },
+                    );
+                }
+            }
+
+            await InflectionFeature.update(
+                { orderInCategory: literal("orderInCategory * -1") },
+                {
+                    where: { inflectionCategoryId: secondaryCategoryId },
+                    transaction: t,
+                },
+            );
+        });
     } catch (error) {
         console.log(`error: ${error}`);
         const body: RestructureInflectionsResponseAPI = {};
