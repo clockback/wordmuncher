@@ -101,7 +101,10 @@ export default function InflectionTemplateProposal({
     };
 
     const cellContents = new Map<string, () => JSX.Element>();
-    for (const answer of representativeQuestion.inflectionAnswers) {
+    const answers = representativeQuestion
+        ? representativeQuestion.inflectionAnswers
+        : [];
+    for (const answer of answers) {
         const answerCellGenerator = () => <>{answer.answerText}</>;
         let keyForAnswerCell: string;
         if (answer.secondaryFeatureId === null) {
