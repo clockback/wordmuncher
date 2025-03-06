@@ -17,6 +17,12 @@
     background-color: rgb(var(--colour-ash));
 }
 
+@media (max-width: 1000px) {
+    .sidebar {
+        display: none;
+    }
+}
+
 .mainpage {
     width: 100%;
     height: 100%;
