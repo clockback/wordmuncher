@@ -2,17 +2,21 @@
 
 ## About
 
-Word Muncher is an open-source web-application to help you create and learn with vocabulary sheets.
+Word Muncher is an open-source web-application to help you create and learn with
+vocabulary sheets.
 
 ## Installation
 
-To set up a Word Muncher instance, you will need to have [Node Version Manager](https://github.com/nvm-sh/nvm) already installed. You can then clone the [repository](https://github.com/clockback/wordmuncher/):
+To set up a Word Muncher instance, you will need to have
+[Node Version Manager](https://github.com/nvm-sh/nvm) already installed. You can
+then clone the [repository](https://github.com/clockback/wordmuncher/):
 
 ```sh
 git clone https://github.com/clockback/wordmuncher.git
 ```
 
-You must know [which version](https://github.com/clockback/wordmuncher/releases) of Word Muncher you wish to use, and check this out in a detached head state:
+You must know [which version](https://github.com/clockback/wordmuncher/releases)
+of Word Muncher you wish to use, and check this out in a detached head state:
 
 ```sh
 cd wordmuncher
@@ -40,7 +44,10 @@ NODE_ENV=production npm run migrate
 NODE_ENV=production npm run seed
 ```
 
-Before you run your server, if you want Word Muncher to be accessible to other computers on your network, you must make the server accessible on port 80 (it is presently hosted at port 3000). How you do this is up to you, but a simple solution is to use `iptables`:
+Before you run your server, if you want Word Muncher to be accessible to other
+computers on your network, you must make the server accessible on port 80 (it is
+presently hosted at port 3000). How you do this is up to you, but a simple solution
+is to use `iptables`:
 
 ```sh
 sudo apt-get install iptables
