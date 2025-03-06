@@ -1,5 +1,18 @@
 # Changelog
 
+## Version 0.1.2
+
+### Bug fixes
+
+- In the version prior, if someone tried creating a new inflection table, or if
+  they tried editing an existing unused inflection table, as soon as the proposed
+  definition for the table was sufficient to render the table, a rendering issue
+  would arise.
+
+### Other changes
+
+- Using markdownlint-cli to lint Markdown files. This is included in GitHub Actions.
+
 ## Version 0.1.1
 
 ### Bug fixes
