@@ -1,4 +1,6 @@
-# Word Muncher
+<h1 align="center"><img width="300" alt="Word Muncher logo" src="./src/app/assets/images/logo.svg"/></h1>
+
+# Word Muncher: learning made easy
 
 ## About
 
