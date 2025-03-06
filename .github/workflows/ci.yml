@@ -16,7 +16,7 @@ jobs:
       - name: Check formatting
         run: npx prettier --check .
       - name: Check linting
-        run: npm run lint
+        run: npm run lint && npx markdownlint '**/*.md'
       - name: Check spelling
         run: npm run spellcheck
       - name: Build Word Muncher
