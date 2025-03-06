@@ -1,5 +1,7 @@
 import { notFound } from "next/navigation";
 
+import Button from "@components/button/button";
+
 import { Settings, Tongue, TonguePair } from "@models";
 
 import TongueSelector from "./components/tongueselector/tongueselector";
@@ -109,6 +111,7 @@ export default async function Home() {
                 allTongues={allTongues}
                 initialTongue={initialTongue}
             ></TongueSelector>
+            <Button href="/">Back</Button>
         </div>
     );
 }

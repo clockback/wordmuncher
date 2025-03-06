@@ -51,6 +51,7 @@ export default function SheetNameInput({
                 >
                     Create
                 </Button>
+                <Button href="/vocab">Back</Button>
             </div>
         </>
     );

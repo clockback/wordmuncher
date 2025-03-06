@@ -4,3 +4,7 @@ div.centre {
     display: block;
     text-align: center;
 }
+
+.buttonmargin {
+    margin: 10px;
+}

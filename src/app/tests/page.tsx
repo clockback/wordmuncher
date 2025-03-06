@@ -1,5 +1,7 @@
 import { notFound } from "next/navigation";
 
+import Button from "@components/button/button";
+
 import { Question, Result, Sheet } from "@models";
 
 import TestSheetTable from "./components/test-sheet-table/test-sheet-table";
@@ -70,6 +72,9 @@ export default async function Tests() {
         <div className={styles.centre}>
             <h1>Select a sheet</h1>
             <TestSheetTable sheets={allSheets}></TestSheetTable>
+            <div className={styles.buttonmargin}>
+                <Button href="/">Back</Button>
+            </div>
         </div>
     );
 }
