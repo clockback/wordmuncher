@@ -249,6 +249,7 @@ export default function AddInflectionArea() {
                 >
                     Save
                 </Button>
+                <Button href="/vocab/inflections">Back</Button>
             </div>
         </>
     );
