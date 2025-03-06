@@ -38,7 +38,7 @@ export default function EditableHeader({
     }
 
     const onBlurWithInputText = () => {
-        onBlur(inputText.trim());
+        if (document.hasFocus()) onBlur(inputText.trim());
     };
 
     function preventFormSubmission(e: React.KeyboardEvent<HTMLInputElement>) {
