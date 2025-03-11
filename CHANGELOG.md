@@ -1,5 +1,26 @@
 # Changelog
 
+## Version 0.2.0
+
+### Features
+
+- Adding "Back" buttons to "/vocab", "/tests", "/vocab/add-sheet", and "/vocab/inflections/add".
+- Making an editable header lose focus by making the containing document lose focus
+  no longer results in the onblur callback being called. This allows users to, for
+  example, switch their keyboard's language settings without the callback being triggered.
+
+### Bug fixes
+
+- In the version prior, if someone edited the question text in a question, and
+  then tried creating a new question, the question text for the new question was
+  already partly filled in with the text from the previous question.
+
+### Other changes
+
+- Using Word Muncher logo in README.md as header.
+- Hiding sidebar on smaller screens. This is a small step in the direction of responsive
+  design.
+
 ## Version 0.1.2
 
 ### Bug fixes
