@@ -353,6 +353,7 @@ export default function QuestionEditor() {
     return (
         <form action={clickSaveQuestion}>
             <EditableHeader
+                key={selectedQuestion !== null ? selectedQuestion.id : null}
                 currentProposal={proposedQuestionText}
                 isEditing={isEditingQuestionText}
                 isPending={false}
