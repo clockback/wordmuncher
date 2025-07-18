@@ -1,5 +1,17 @@
 # Changelog
 
+## Version 0.2.1
+
+### Bug fixes
+
+- In the version prior, if someone completed more than three questions in a test,
+  the list of recently completed questions would stop being modified, unexpectedly
+  subverting the order of the test.
+
+### Other changes
+
+- Bumping various dependencies.
+
 ## Version 0.2.0
 
 ### Features
