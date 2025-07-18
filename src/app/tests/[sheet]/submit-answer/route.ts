@@ -37,13 +37,11 @@ function markIncorrect(result: Result) {
 
 function updateLastQuestions(lastQuestions: number[], questionId: number) {
     if (lastQuestions.length > 2) {
-        lastQuestions = lastQuestions.slice(1, 3);
+        lastQuestions.shift();
     }
     const index = lastQuestions.indexOf(questionId);
     if (index !== -1) {
         lastQuestions.splice(index, 1);
-    }
-    if (!lastQuestions.includes(questionId)) {
     }
     lastQuestions.push(questionId);
 }
