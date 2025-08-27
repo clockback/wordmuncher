@@ -1,5 +1,16 @@
 # Changelog
 
+## Version 0.2.2
+
+### Bug fixes
+
+- In the version prior, if someone attempted to view a two-category inflection
+  table where the first category defined in the database was not the primary category,
+
+### Other changes
+
+- Bumping various dependencies.
+
 ## Version 0.2.1
 
 ### Bug fixes
