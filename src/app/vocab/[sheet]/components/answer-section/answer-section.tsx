@@ -15,7 +15,13 @@ function generateCellContents(
     proposedInflectionAnswers: Map<string, string>,
 ): Map<string, () => JSX.Element> {
     const cellContents = new Map<string, () => JSX.Element>();
-    for (const primaryFeature of categories[0].features) {
+
+    let [firstCategory, secondCategory] = categories;
+    if (!firstCategory.isPrimary) {
+        [secondCategory, firstCategory] = categories;
+    }
+
+    for (const primaryFeature of firstCategory.features) {
         if (categories.length === 1) {
             const answerKey = primaryFeature.id.toString();
             const answer = proposedInflectionAnswers.get(answerKey) ?? null;
@@ -27,7 +33,7 @@ function generateCellContents(
             );
             cellContents.set(answerKey, answerCellGenerator);
         } else {
-            for (const secondaryFeature of categories[1].features) {
+            for (const secondaryFeature of secondCategory.features) {
                 const answerKey = `${primaryFeature.id},${secondaryFeature.id}`;
                 const answer = proposedInflectionAnswers.get(answerKey) ?? null;
                 const answerCellGenerator = () => (
