@@ -18,12 +18,14 @@ interface SheetEditorProps {
     sheet: Sheet;
     questions: Question[];
     inflectionTypes: InflectionType[];
+    otherSheetNames: string[];
 }
 
 export default function SheetEditor({
     sheet,
     questions,
     inflectionTypes,
+    otherSheetNames,
 }: SheetEditorProps) {
     const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(
         null,
@@ -49,6 +51,8 @@ export default function SheetEditor({
     const [proposedInflectionAnswers, setProposedInflectionAnswers] = useState<
         Map<string, string>
     >(new Map());
+
+    const [sheetName, setSheetName] = useState<string>(sheet.sheetName);
 
     const sheetId = sheet.id;
 
@@ -80,7 +84,9 @@ export default function SheetEditor({
         setProposedQuestionText,
         setSavePossible,
         setSelectedQuestion,
+        setSheetName,
         sheetId,
+        sheetName,
     };
 
     function deleteSheetHandleResponse(response: NextResponse) {
@@ -99,7 +105,10 @@ export default function SheetEditor({
 
     return (
         <editSheetContext.Provider value={context}>
-            <EditSheetHeader>{sheet.sheetName}</EditSheetHeader>
+            <EditSheetHeader
+                sheetId={sheet.id}
+                otherSheetNames={otherSheetNames}
+            />
             <div className={styles.allcolumns}>
                 <div className={styles.lefthalf}>
                     <div className={styles.pad}>
