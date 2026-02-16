@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { col } from "sequelize";
+import { Op, col } from "sequelize";
 
 import {
     InflectionCategory,
@@ -10,6 +10,23 @@ import {
 
 import SheetEditor from "./components/sheet-editor/sheet-editor";
 import { getSettings } from "src/db/helpers/settings";
+
+async function getOtherSheetNames(
+    sheetId: number,
+    tonguePairId: number,
+): Promise<string[]> {
+    const sheets = await Sheet.findAll({
+        where: {
+            id: { [Op.not]: sheetId },
+            tonguePairId,
+        },
+    });
+    const names = [];
+    for (const sheet of sheets) {
+        names.push(sheet.sheetName);
+    }
+    return names;
+}
 
 export default async function Page({
     params,
@@ -55,11 +72,17 @@ export default async function Page({
         inflectionTypesJSON.push(inflectionType.toJSON());
     }
 
+    const otherSheetNames = await getOtherSheetNames(
+        sheet.id,
+        settings.tonguePairId,
+    );
+
     return (
         <SheetEditor
             sheet={sheet.toJSON()}
             questions={questionsJson}
             inflectionTypes={inflectionTypesJSON}
+            otherSheetNames={otherSheetNames}
         ></SheetEditor>
     );
 }

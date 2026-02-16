@@ -31,7 +31,9 @@ interface EditSheetContextType {
     setProposedQuestionText: Dispatch<SetStateAction<string>>;
     setSavePossible: Dispatch<SetStateAction<boolean>>;
     setSelectedQuestion: Dispatch<SetStateAction<Question | null>>;
+    setSheetName: Dispatch<SetStateAction<string>>;
     sheetId: number;
+    sheetName: string;
 }
 
 const editSheetContext = createContext<EditSheetContextType | undefined>(
