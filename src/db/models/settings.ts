@@ -21,6 +21,8 @@ export class Settings extends Model<
     declare tonguePairId?: ForeignKey<TonguePair["id"]>;
     declare tonguePair?: NonAttribute<TonguePair>;
 
+    declare ignoreDiacritics: CreationOptional<boolean>;
+
     declare createdAt: CreationOptional<Date>;
     declare updatedAt: CreationOptional<Date>;
 
@@ -47,6 +49,11 @@ Settings.init(
             },
             onUpdate: "CASCADE",
             allowNull: true,
+        },
+        ignoreDiacritics: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: true,
         },
         createdAt: DataTypes.DATE,
         updatedAt: DataTypes.DATE,
