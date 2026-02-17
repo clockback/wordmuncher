@@ -9,8 +9,13 @@ import {
     SubmitAnswerResponseAPI,
     SubmitAnswerResponseAPICorrectOrIncorrect,
 } from "./api";
+import { getSettings } from "src/db/helpers/settings";
 
 const minimumSimilarityScore = 0.85;
+
+function stripDiacritics(str: string): string {
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
 
 function markCorrect(result: Result) {
     if (result.current === 2 && result.goal === 2) {
@@ -113,6 +118,7 @@ async function submitPlainAnswer(
     requestJSON: SubmitAnswerRequestAPI,
     sheet: Sheet,
     question: Question,
+    normalize: (str: string) => string,
 ): Promise<{
     body: SubmitAnswerResponseAPI;
     status: number;
@@ -129,15 +135,17 @@ async function submitPlainAnswer(
     let closest = null;
     let closestScore = null;
     let mainAnswer: string | null = null;
+    const normalizedSubmission = normalize(submittedAnswer);
     for (const answer of question.answers) {
-        if (submittedAnswer === answer.answerText) {
+        const normalizedAnswer = normalize(answer.answerText);
+        if (normalizedSubmission === normalizedAnswer) {
             correct = true;
             closest = answer;
             closestScore = 1.0;
             break;
         }
 
-        const score = stringSimilarity(submittedAnswer, answer.answerText);
+        const score = stringSimilarity(normalizedSubmission, normalizedAnswer);
         if (score > closestScore) {
             closestScore = score;
             closest = answer;
@@ -194,6 +202,7 @@ async function submitInflectionAnswers(
     requestJSON: SubmitAnswerRequestAPI,
     sheet: Sheet,
     question: Question,
+    normalize: (str: string) => string,
 ): Promise<{
     body: SubmitAnswerResponseAPICorrectOrIncorrect;
     status: number;
@@ -211,7 +220,10 @@ async function submitInflectionAnswers(
         } else {
             featureKey = `${answer.primaryFeatureId},${answer.secondaryFeatureId}`;
         }
-        if (answer.answerText !== submittedInflectionAnswers[featureKey]) {
+        if (
+            normalize(answer.answerText) !==
+            normalize(submittedInflectionAnswers[featureKey])
+        ) {
             inflectionCorrections[featureKey] = answer.answerText;
             correct = false;
         }
@@ -260,6 +272,11 @@ export async function POST(
         ],
     });
 
+    const settings = await getSettings();
+    const normalize = settings.ignoreDiacritics
+        ? stripDiacritics
+        : (str: string) => str;
+
     let body: SubmitAnswerResponseAPI;
     let status: number;
 
@@ -268,12 +285,14 @@ export async function POST(
             requestJSON,
             sheet,
             question,
+            normalize,
         ));
     } else {
         ({ body, status } = await submitInflectionAnswers(
             requestJSON,
             sheet,
             question,
+            normalize,
         ));
     }
 
