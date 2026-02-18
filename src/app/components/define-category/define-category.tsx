@@ -54,6 +54,7 @@ export default function DefineCategory({
     };
 
     const onBlurModifyFeatureInput = () => {
+        if (!document.hasFocus()) return;
         setIsModifyingFeature(false);
         const trimEditingText = editingText.trim();
         if (
@@ -137,6 +138,7 @@ export default function DefineCategory({
     };
 
     const onBlurAddFeatureInput = () => {
+        if (!document.hasFocus()) return;
         setIsAddingFeature(false);
         const trimEditingText = editingText.trim();
         if (

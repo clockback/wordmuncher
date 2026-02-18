@@ -21,6 +21,7 @@ export default function AddOtherAnswer() {
     }
 
     function blurAddNewAnswer() {
+        if (!document.hasFocus()) return;
         const trimmedAnswer = currentOtherAnswer.trim();
         setIsAddingOtherAnswer(false);
 

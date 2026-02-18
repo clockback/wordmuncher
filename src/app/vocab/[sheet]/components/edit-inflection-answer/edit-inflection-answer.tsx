@@ -25,6 +25,7 @@ export default function EditInflectionAnswer({
 
     if (isEditing) {
         const onBlur = () => {
+            if (!document.hasFocus()) return;
             setIsEditing(false);
 
             if (editingText === proposedAnswer) {
