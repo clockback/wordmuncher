@@ -14,6 +14,7 @@ import {
 } from "../../add-question/api";
 import editSheetContext from "../../context";
 import AnswerSection from "../answer-section/answer-section";
+import CreateInvertedEntry from "../create-inverted-entry/create-inverted-entry";
 import styles from "./question-editor.module.css";
 import { DeleteQuestionRequestAPI } from "src/app/vocab/delete-question/api";
 import {
@@ -68,6 +69,7 @@ export default function QuestionEditor() {
     const {
         allQuestions,
         answerEntryValue,
+        createInvertedEntry,
         isAddingNewQuestion,
         isEditingQuestionText,
         otherAnswers,
@@ -78,8 +80,11 @@ export default function QuestionEditor() {
         savePossible,
         selectedQuestion,
         setAllQuestions,
+        setAnswerEntryValue,
+        setCreateInvertedEntry,
         setIsAddingNewQuestion,
         setIsEditingQuestionText,
+        setOtherAnswers,
         setPending,
         setProposedQuestionText,
         setSavePossible,
@@ -105,9 +110,22 @@ export default function QuestionEditor() {
         const updatedQuestions = structuredClone(allQuestions);
         updatedQuestions.push(responseJSON as Question);
         setAllQuestions(updatedQuestions);
-        setSavePossible(false);
         setPending(false);
-        setIsAddingNewQuestion(false);
+
+        if (createInvertedEntry) {
+            const oldQuestion = proposedQuestionText.trim();
+            const oldAnswer = answerEntryValue.trim();
+            setProposedQuestionText(oldAnswer);
+            setAnswerEntryValue(oldQuestion);
+            setOtherAnswers([]);
+            setSavePossible(
+                !questionAlreadyExists(oldAnswer, updatedQuestions),
+            );
+            setCreateInvertedEntry(false);
+        } else {
+            setSavePossible(false);
+            setIsAddingNewQuestion(false);
+        }
     }
 
     function getPlainAnswerBody(): {
@@ -362,6 +380,7 @@ export default function QuestionEditor() {
                 title="Question"
             ></EditableHeader>
             <AnswerSection></AnswerSection>
+            <CreateInvertedEntry />
             <div className={styles.padsavebutton}>
                 {deleteButton}
                 <Button
