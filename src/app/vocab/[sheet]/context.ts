@@ -6,6 +6,7 @@ import { InflectionType, Question } from "@models";
 interface EditSheetContextType {
     allQuestions: Question[];
     answerEntryValue: string;
+    createInvertedEntry: boolean;
     editingOtherAnswerI: number | null;
     inflectionTypes: InflectionType[];
     isAddingNewQuestion: boolean;
@@ -17,6 +18,7 @@ interface EditSheetContextType {
     proposedInflectionType: InflectionType | null;
     proposedQuestionText: string;
     setAnswerEntryValue: Dispatch<SetStateAction<string>>;
+    setCreateInvertedEntry: Dispatch<SetStateAction<boolean>>;
     savePossible: boolean;
     selectedQuestion: Question | null;
     setAllQuestions: Dispatch<SetStateAction<Question[]>>;

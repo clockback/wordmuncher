@@ -44,6 +44,8 @@ export default function SheetEditor({
     const [editingOtherAnswerI, setEditingOtherAnswerI] = useState<
         number | null
     >(null);
+    const [createInvertedEntry, setCreateInvertedEntry] =
+        useState<boolean>(false);
     const [isAddingNewQuestion, setIsAddingNewQuestion] =
         useState<boolean>(false);
     const [proposedInflectionType, setProposedInflectionType] =
@@ -59,6 +61,7 @@ export default function SheetEditor({
     const context = {
         allQuestions,
         answerEntryValue,
+        createInvertedEntry,
         editingOtherAnswerI,
         inflectionTypes,
         isAddingNewQuestion,
@@ -70,6 +73,7 @@ export default function SheetEditor({
         proposedInflectionType,
         proposedQuestionText,
         setAnswerEntryValue,
+        setCreateInvertedEntry,
         savePossible,
         selectedQuestion,
         setAllQuestions,

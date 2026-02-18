@@ -14,6 +14,7 @@ export default function QuestionTable() {
         savePossible,
         selectedQuestion,
         setAnswerEntryValue,
+        setCreateInvertedEntry,
         setIsAddingNewQuestion,
         setIsEditingQuestionText,
         setOtherAnswers,
@@ -56,6 +57,7 @@ export default function QuestionTable() {
         }
 
         setSavePossible(false);
+        setCreateInvertedEntry(false);
         setIsEditingQuestionText(false);
         setProposedQuestionText(question.questionText);
         setIsAddingNewQuestion(false);
@@ -111,6 +113,7 @@ export default function QuestionTable() {
 
     const clickAddNewQuestion = () => {
         setSelectedQuestion(null);
+        setCreateInvertedEntry(false);
         setIsAddingNewQuestion(true);
         setProposedQuestionText("");
         setAnswerEntryValue("");
