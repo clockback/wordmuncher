@@ -43,6 +43,7 @@ export default function EditOtherAnswer({
     };
 
     const blurEditOtherAnswer = () => {
+        if (!document.hasFocus()) return;
         if (currentOtherAnswer.trim().length == 0) {
             const newOtherAnswers: string[] = Object.assign([], otherAnswers);
             newOtherAnswers.splice(answerI, 1);
