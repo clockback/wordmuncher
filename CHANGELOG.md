@@ -1,5 +1,23 @@
 # Changelog
 
+## Version 0.3.0
+
+### Features
+
+- Using the editable header so that the user can modify a vocabulary sheet's
+  name.
+- Accepting answer submissions with different diacritics. This means that
+  stress can be shown on a word, but it is not necessary for someone to type
+  unicode markers as a requirement to submit a correct answer.
+- Creating checkbox in user interface for when the user creates a new
+  vocabulary entry which, when the user saves their new entry, drafts a new
+  entry with the question and answer inverted, rather than closing the new
+  entry interface.
+
+### Other changes
+
+- Bumping various dependencies.
+
 ## Version 0.2.2
 
 ### Bug fixes
