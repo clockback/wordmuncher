@@ -1,5 +1,34 @@
 import { expect, test } from "@playwright/test";
 
+import { ExportSheetJSON } from "../app/vocab/[sheet]/export-sheet/api";
+
+test("Export sheet", async ({ page }) => {
+    await page.goto("/vocab");
+    await expect(page.getByTitle("Current language")).toHaveText(
+        "Learning Chinese!",
+    );
+    await page.getByTitle("Edit Sheet 1").click();
+    await expect(page).toHaveURL("/vocab/1");
+    await expect(page.getByRole("heading")).toHaveText("Sheet 1");
+
+    const downloadPromise = page.waitForEvent("download");
+    await page.getByRole("button", { name: "Export" }).click();
+    const download = await downloadPromise;
+
+    expect(download.suggestedFilename()).toBe("Sheet 1.json");
+
+    const content = await download.path();
+    const fs = await import("fs/promises");
+    const json: ExportSheetJSON = JSON.parse(
+        await fs.readFile(content, "utf-8"),
+    );
+
+    expect(json.sheetName).toBe("Sheet 1");
+    expect(json.nativeTongue).toBe("English");
+    expect(json.studyingTongue).toBe("Chinese");
+    expect(json.questions.length).toBeGreaterThan(0);
+});
+
 test("Delete sheet", async ({ page }) => {
     await page.goto("/vocab");
     await expect(page.getByTitle("Current language")).toHaveText(

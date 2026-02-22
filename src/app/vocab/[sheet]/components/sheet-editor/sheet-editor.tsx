@@ -107,6 +107,26 @@ export default function SheetEditor({
         );
     }
 
+    async function exportSheet() {
+        setPending(true);
+        const response = await fetch(`/vocab/${sheet.id}/export-sheet`);
+        if (!response.ok) {
+            console.error("Failed to export sheet!");
+            setPending(false);
+            return;
+        }
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `${sheetName}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        setPending(false);
+    }
+
     return (
         <editSheetContext.Provider value={context}>
             <EditSheetHeader
@@ -127,6 +147,7 @@ export default function SheetEditor({
             </div>
             <div className={styles.bottombuttons}>
                 <div className={styles.alignbuttons}>
+                    <Button onClick={exportSheet}>Export</Button>
                     <Button onClick={deleteSheet}>Delete</Button>
                     <Button href="/vocab">Back</Button>
                 </div>
