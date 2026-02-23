@@ -1,10 +1,11 @@
 "use client";
 
-import { JSX, useState } from "react";
+import { JSX, useRef, useState } from "react";
 
 import Button from "@components/button/button";
 import Flag from "@components/flag/flag";
 
+import { ImportSheetResponseAPI } from "../../import-sheet/api";
 import SheetsList from "../sheetslist/sheetslist";
 import TonguesPopup from "../tonguespopup/tonguespopup";
 import styles from "./tongueselector.module.css";
@@ -41,10 +42,46 @@ export default function TongueSelector({
         sheets: { sheetId: number; sheetName: string }[];
     } | null>(initialTongue);
     const [popupVisible, setPopupVisible] = useState<boolean>(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const updateCurrentTongue = async (tongueId: number) => {
         setCurrentTongue(await onChangeTongue(tongueId));
     };
+
+    function importSheet() {
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+            fileInputRef.current.click();
+        }
+    }
+
+    async function handleFileSelected(e: React.ChangeEvent<HTMLInputElement>) {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        let data: unknown;
+        try {
+            data = JSON.parse(await file.text());
+        } catch {
+            alert("Invalid JSON file.");
+            return;
+        }
+
+        const response = await fetch("/vocab/import-sheet", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+        });
+
+        const result: ImportSheetResponseAPI = await response.json();
+
+        if (!response.ok) {
+            alert(result.error || "Failed to import sheet.");
+            return;
+        }
+
+        window.location.href = `/vocab/${result.sheetId}`;
+    }
 
     const popup = popupVisible ? (
         <TonguesPopup
@@ -67,6 +104,9 @@ export default function TongueSelector({
                 <Button href="/vocab/add-sheet">Add sheet</Button>
             </div>,
             <div key={2} className={styles.buttonVerticalMargin}>
+                <Button onClick={importSheet}>Import</Button>
+            </div>,
+            <div key={3} className={styles.buttonVerticalMargin}>
                 <Button href="/vocab/inflections">Inflection tables</Button>
             </div>,
         ];
@@ -87,6 +127,13 @@ export default function TongueSelector({
                 sheets={currentTongue ? currentTongue.sheets : []}
             ></SheetsList>
             {tonguePairButtons}
+            <input
+                type="file"
+                accept=".json"
+                ref={fileInputRef}
+                style={{ display: "none" }}
+                onChange={handleFileSelected}
+            />
             {popup}
         </>
     );
