@@ -66,3 +66,31 @@ test("Create a new tongue", async () => {
     await page.getByText("Create").click();
     await expect(page).toHaveURL("/settings");
 });
+
+test("Delete a tongue", async () => {
+    await page.goto("/settings");
+    await page.getByText("Change native language").click({ delay: 500 });
+
+    // Verify TestLanguage exists in the popup.
+    await expect(page.getByTitle("TestLanguage")).toBeVisible();
+
+    // Click the delete button on TestLanguage.
+    const tongueButton = page.getByTitle("TestLanguage");
+    await tongueButton.locator("div").first().click();
+
+    // Verify TestLanguage is removed from the popup.
+    await expect(page.getByTitle("TestLanguage")).not.toBeVisible();
+});
+
+test("Cannot delete tongue in use", async () => {
+    await page.goto("/settings");
+    await page.getByText("Change native language").click({ delay: 500 });
+
+    // Try to delete English (current native language).
+    const tongueButton = page.getByTitle("English");
+    page.on("dialog", (dialog) => dialog.accept());
+    await tongueButton.locator("div").first().click();
+
+    // English should still be visible (deletion prevented).
+    await expect(page.getByTitle("English")).toBeVisible();
+});

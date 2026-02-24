@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 import styles from "./tongues-popup.module.css";
 
 interface TonguesPopupProps {
@@ -14,47 +16,54 @@ interface TonguesPopupProps {
     context?: "native" | "studying";
 }
 
-function makeTongueButton(
-    tongue: {
-        id: number;
-        tongueName: string;
-        flag: string;
-    },
-    onClose: () => void,
-    onChangeTongue: (tongueId: number) => void,
-) {
-    const callback = () => {
-        onChangeTongue(tongue.id);
-        onClose();
-    };
-
-    return (
-        <div
-            title={tongue.tongueName}
-            className={styles.flagbutton}
-            key={tongue.id}
-            onClick={callback}
-        >
-            <div className={styles.flagbuttoncontents}>
-                <div className={styles.flag}>{tongue.flag}</div>
-                <div>{tongue.tongueName}</div>
-            </div>
-        </div>
-    );
-}
-
 export default function TonguesPopup({
-    allTongues,
+    allTongues: initialTongues,
     onClose,
     onChangeTongue,
     title = "What language do you want to learn?",
     context,
 }: TonguesPopupProps) {
-    // Create array of buttons with flags for each tongue.
+    const [tongues, setTongues] = useState(initialTongues);
+
+    async function deleteTongue(event: React.MouseEvent, tongueId: number) {
+        event.stopPropagation();
+
+        const response = await fetch(`/settings/delete-tongue/${tongueId}`, {
+            method: "DELETE",
+        });
+
+        if (!response.ok) {
+            const result = await response.json();
+            alert(result.error || "Failed to delete language.");
+            return;
+        }
+
+        setTongues(tongues.filter((t) => t.id !== tongueId));
+    }
+
     const allTongueButtons = [];
-    for (const tongue of allTongues) {
+    for (const tongue of tongues) {
         allTongueButtons.push(
-            makeTongueButton(tongue, onClose, onChangeTongue),
+            <div
+                title={tongue.tongueName}
+                className={styles.flagbutton}
+                key={tongue.id}
+                onClick={() => {
+                    onChangeTongue(tongue.id);
+                    onClose();
+                }}
+            >
+                <div
+                    className={styles.deletebutton}
+                    onClick={(e) => deleteTongue(e, tongue.id)}
+                >
+                    ×
+                </div>
+                <div className={styles.flagbuttoncontents}>
+                    <div className={styles.flag}>{tongue.flag}</div>
+                    <div>{tongue.tongueName}</div>
+                </div>
+            </div>,
         );
     }
 
