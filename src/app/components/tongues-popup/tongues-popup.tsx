@@ -11,6 +11,7 @@ interface TonguesPopupProps {
     onClose: () => void;
     onChangeTongue: (tongueId: number) => void;
     title?: string;
+    context?: "native" | "studying";
 }
 
 function makeTongueButton(
@@ -47,6 +48,7 @@ export default function TonguesPopup({
     onClose,
     onChangeTongue,
     title = "What language do you want to learn?",
+    context,
 }: TonguesPopupProps) {
     // Create array of buttons with flags for each tongue.
     const allTongueButtons = [];
@@ -66,7 +68,13 @@ export default function TonguesPopup({
                     </div>
                 </div>
                 {allTongueButtons}
-                <div className={styles.flagbutton}>
+                <div
+                    className={styles.flagbutton}
+                    onClick={() => {
+                        const params = context ? `?for=${context}` : "";
+                        window.location.href = `/settings/add-tongue${params}`;
+                    }}
+                >
                     <div className={styles.flagbuttoncontents}>
                         <div className={styles.flag}>🏳️</div>
                         <div>Add new language!</div>

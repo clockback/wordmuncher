@@ -1,0 +1,22 @@
+.centreinput {
+    width: 700px;
+    font-size: 40px;
+    border: none;
+    border-radius: 5px;
+    background-color: rgb(var(--colour-pearl));
+    padding: 5px;
+    margin-block: 10px 10px;
+    font-family: inherit;
+}
+
+.warning {
+    font-size: 20px;
+    height: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+    color: lightcoral;
+}
+
+.centrebutton {
+    text-align: center;
+}
