@@ -5,6 +5,7 @@ export async function up({ context: queryInterface }) {
     await queryInterface.bulkInsert("Settings", [
         {
             tonguePairId: 1,
+            nativeTongueId: 1,
             createdAt: new Date(),
             updatedAt: new Date(),
         },

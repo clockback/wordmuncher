@@ -1,0 +1,64 @@
+"use client";
+
+import { useState } from "react";
+
+import Button from "@components/button/button";
+import Flag from "@components/flag/flag";
+import TonguesPopup from "@components/tongues-popup/tongues-popup";
+
+import styles from "./native-tongue-selector.module.css";
+
+interface NativeTongueSelectorProps {
+    onChangeNativeTongue: (tongueId: number) => Promise<{
+        id: number;
+        tongueName: string;
+        flag: string;
+    }>;
+    allTongues: { id: number; tongueName: string; flag: string }[];
+    initialNativeTongue: {
+        id: number;
+        tongueName: string;
+        flag: string;
+    };
+}
+
+export default function NativeTongueSelector({
+    onChangeNativeTongue,
+    allTongues,
+    initialNativeTongue,
+}: NativeTongueSelectorProps) {
+    const [nativeTongue, setNativeTongue] = useState(initialNativeTongue);
+    const [popupVisible, setPopupVisible] = useState(false);
+
+    const updateNativeTongue = async (tongueId: number) => {
+        setNativeTongue(await onChangeNativeTongue(tongueId));
+    };
+
+    const popup = popupVisible ? (
+        <TonguesPopup
+            allTongues={allTongues}
+            onClose={() => setPopupVisible(false)}
+            onChangeTongue={updateNativeTongue}
+            title="What is your native language?"
+        ></TonguesPopup>
+    ) : null;
+
+    return (
+        <>
+            <div className={styles.header} title="Settings">
+                Settings
+            </div>
+            <div className={styles.section} title="Native language">
+                Native language: {nativeTongue.tongueName}
+            </div>
+            <Flag flag={nativeTongue.flag}></Flag>
+            <div className={styles.buttonVerticalMargin}>
+                <Button onClick={() => setPopupVisible(true)}>
+                    Change native language
+                </Button>
+            </div>
+            <Button href="/">Back</Button>
+            {popup}
+        </>
+    );
+}

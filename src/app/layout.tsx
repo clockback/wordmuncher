@@ -26,6 +26,14 @@ export default function RootLayout({ children }) {
                                     width="100%"
                                 />
                             </Link>
+                            <div className={styles.sidebarLink}>
+                                <Link
+                                    className={styles.inline}
+                                    href="/settings"
+                                >
+                                    Settings
+                                </Link>
+                            </div>
                             <a
                                 className={styles.inline}
                                 href="https://github.com/clockback/wordmuncher"

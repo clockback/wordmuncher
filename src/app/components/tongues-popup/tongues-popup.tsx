@@ -1,6 +1,6 @@
 "use client";
 
-import styles from "./tonguespopup.module.css";
+import styles from "./tongues-popup.module.css";
 
 interface TonguesPopupProps {
     allTongues: {
@@ -10,6 +10,7 @@ interface TonguesPopupProps {
     }[];
     onClose: () => void;
     onChangeTongue: (tongueId: number) => void;
+    title?: string;
 }
 
 function makeTongueButton(
@@ -45,6 +46,7 @@ export default function TonguesPopup({
     allTongues,
     onClose,
     onChangeTongue,
+    title = "What language do you want to learn?",
 }: TonguesPopupProps) {
     // Create array of buttons with flags for each tongue.
     const allTongueButtons = [];
@@ -58,9 +60,7 @@ export default function TonguesPopup({
         <div className={styles.backdrop}>
             <div className={styles.popup}>
                 <div className={styles.popupbar}>
-                    <span className={styles.popupbartext}>
-                        What language do you want to learn?
-                    </span>
+                    <span className={styles.popupbartext}>{title}</span>
                     <div className={styles.popupbarclose} onClick={onClose}>
                         ×
                     </div>

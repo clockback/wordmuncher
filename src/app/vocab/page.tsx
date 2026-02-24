@@ -11,27 +11,15 @@ import { getSettings, setSettings } from "src/db/helpers/settings";
 async function pickTongue(tongueId: number): Promise<TonguePair> {
     "use server";
 
-    const oldTonguePair = (await getSettings()).tonguePair;
-    let newTonguePair: TonguePair;
+    const settings = await getSettings();
+    const nativeTongueId = settings.nativeTongueId;
 
-    // If there is no tongue pair currently, creates one.
-    if (oldTonguePair === null) {
-        newTonguePair = await TonguePair.create({
-            nativeTongueId: 1,
+    const [newTonguePair] = await TonguePair.findOrCreate({
+        where: {
+            nativeTongueId: nativeTongueId,
             studyingTongueId: tongueId,
-        });
-    }
-
-    // If there is a tongue pair, swaps the tongues.
-    else {
-        const [createdTonguePair] = await TonguePair.findOrCreate({
-            where: {
-                nativeTongueId: oldTonguePair.nativeTongueId,
-                studyingTongueId: tongueId,
-            },
-        });
-        newTonguePair = createdTonguePair;
-    }
+        },
+    });
 
     setSettings({ tonguePair: newTonguePair });
     return newTonguePair;
