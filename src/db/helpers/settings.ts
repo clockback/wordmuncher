@@ -7,12 +7,14 @@ interface SettingsSetter {
     tonguePairId?: number;
     tonguePair?: TonguePair;
     nativeTongueId?: number;
+    ignoreDiacritics?: boolean;
 }
 
 // The particular settings that can be modified in the Settings object.
 interface SettingsSubset {
     tonguePairId?: number;
     nativeTongueId?: number;
+    ignoreDiacritics?: boolean;
 }
 
 async function settingsGetter(): Promise<Settings> {
@@ -60,6 +62,10 @@ export async function setSettings(options: SettingsSetter) {
 
     if ("nativeTongueId" in options) {
         updateSettings.nativeTongueId = options.nativeTongueId;
+    }
+
+    if ("ignoreDiacritics" in options) {
+        updateSettings.ignoreDiacritics = options.ignoreDiacritics;
     }
 
     await Settings.update(updateSettings, { where: {} });

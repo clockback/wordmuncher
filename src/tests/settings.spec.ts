@@ -82,6 +82,29 @@ test("Delete a tongue", async () => {
     await expect(page.getByTitle("TestLanguage")).not.toBeVisible();
 });
 
+test("Toggle ignore diacritics", async () => {
+    await page.goto("/settings");
+    const checkbox = page.getByTitle("Diacritics").getByRole("checkbox");
+
+    // Default is checked (ignore diacritics = true).
+    await expect(checkbox).toBeChecked();
+
+    // Uncheck it.
+    await checkbox.uncheck();
+    await expect(checkbox).not.toBeChecked();
+
+    // Verify persistence across reload.
+    await page.reload();
+    const reloadedCheckbox = page
+        .getByTitle("Diacritics")
+        .getByRole("checkbox");
+    await expect(reloadedCheckbox).not.toBeChecked();
+
+    // Reset back to checked.
+    await reloadedCheckbox.check();
+    await expect(reloadedCheckbox).toBeChecked();
+});
+
 test("Cannot delete tongue in use", async () => {
     await page.goto("/settings");
     await page.getByText("Change native language").click({ delay: 500 });
