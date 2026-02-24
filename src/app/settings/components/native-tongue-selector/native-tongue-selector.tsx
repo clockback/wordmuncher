@@ -14,21 +14,28 @@ interface NativeTongueSelectorProps {
         tongueName: string;
         flag: string;
     }>;
+    onChangeIgnoreDiacritics: (value: boolean) => Promise<void>;
     allTongues: { id: number; tongueName: string; flag: string }[];
     initialNativeTongue: {
         id: number;
         tongueName: string;
         flag: string;
     };
+    initialIgnoreDiacritics: boolean;
 }
 
 export default function NativeTongueSelector({
     onChangeNativeTongue,
+    onChangeIgnoreDiacritics,
     allTongues,
     initialNativeTongue,
+    initialIgnoreDiacritics,
 }: NativeTongueSelectorProps) {
     const [nativeTongue, setNativeTongue] = useState(initialNativeTongue);
     const [popupVisible, setPopupVisible] = useState(false);
+    const [ignoreDiacritics, setIgnoreDiacritics] = useState(
+        initialIgnoreDiacritics,
+    );
 
     const updateNativeTongue = async (tongueId: number) => {
         setNativeTongue(await onChangeNativeTongue(tongueId));
@@ -57,6 +64,20 @@ export default function NativeTongueSelector({
                 <Button onClick={() => setPopupVisible(true)}>
                     Change native language
                 </Button>
+            </div>
+            <div className={styles.section} title="Diacritics">
+                <label className={styles.toggle}>
+                    <input
+                        type="checkbox"
+                        checked={ignoreDiacritics}
+                        onChange={async (e) => {
+                            const value = e.target.checked;
+                            setIgnoreDiacritics(value);
+                            await onChangeIgnoreDiacritics(value);
+                        }}
+                    />
+                    Ignore diacritics when testing
+                </label>
             </div>
             <Button href="/">Back</Button>
             {popup}
