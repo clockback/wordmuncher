@@ -88,6 +88,7 @@ export default function TongueSelector({
             allTongues={allTongues}
             onClose={() => setPopupVisible(false)}
             onChangeTongue={updateCurrentTongue}
+            context="studying"
         ></TonguesPopup>
     ) : null;
 
