@@ -8,18 +8,21 @@ import {
     NonAttribute,
 } from "sequelize";
 
-import { TonguePair } from "@models";
+import { Tongue, TonguePair } from "@models";
 
 import sequelize from "./db-connection";
 
 export class Settings extends Model<
-    InferAttributes<Settings, { omit: "tonguePair" }>,
-    InferCreationAttributes<Settings, { omit: "tonguePair" }>
+    InferAttributes<Settings, { omit: "tonguePair" | "nativeTongue" }>,
+    InferCreationAttributes<Settings, { omit: "tonguePair" | "nativeTongue" }>
 > {
     declare id: CreationOptional<number>;
 
     declare tonguePairId?: ForeignKey<TonguePair["id"]>;
     declare tonguePair?: NonAttribute<TonguePair>;
+
+    declare nativeTongueId: ForeignKey<Tongue["id"]>;
+    declare nativeTongue?: NonAttribute<Tongue>;
 
     declare ignoreDiacritics: CreationOptional<boolean>;
 
@@ -30,6 +33,10 @@ export class Settings extends Model<
         Settings.belongsTo(TonguePair, {
             foreignKey: "tonguePairId",
             as: "tonguePair",
+        });
+        Settings.belongsTo(Tongue, {
+            foreignKey: "nativeTongueId",
+            as: "nativeTongue",
         });
     }
 }
@@ -45,6 +52,15 @@ Settings.init(
             type: DataTypes.INTEGER,
             references: {
                 model: "TonguePairs",
+                key: "id",
+            },
+            onUpdate: "CASCADE",
+            allowNull: true,
+        },
+        nativeTongueId: {
+            type: DataTypes.INTEGER,
+            references: {
+                model: "Tongues",
                 key: "id",
             },
             onUpdate: "CASCADE",

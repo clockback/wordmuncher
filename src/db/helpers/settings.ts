@@ -6,11 +6,13 @@ import { Settings, TonguePair } from "@models";
 interface SettingsSetter {
     tonguePairId?: number;
     tonguePair?: TonguePair;
+    nativeTongueId?: number;
 }
 
 // The particular settings that can be modified in the Settings object.
 interface SettingsSubset {
     tonguePairId?: number;
+    nativeTongueId?: number;
 }
 
 async function settingsGetter(): Promise<Settings> {
@@ -18,11 +20,20 @@ async function settingsGetter(): Promise<Settings> {
         where: {},
         defaults: {
             tonguePairId: null,
+            nativeTongueId: 1,
         },
-        include: {
-            association: "tonguePair",
-            include: [{ association: "native" }, { association: "studying" }],
-        },
+        include: [
+            {
+                association: "tonguePair",
+                include: [
+                    { association: "native" },
+                    { association: "studying" },
+                ],
+            },
+            {
+                association: "nativeTongue",
+            },
+        ],
     });
     if (created) {
         settings.tonguePair = null;
@@ -45,6 +56,10 @@ export async function setSettings(options: SettingsSetter) {
         updateSettings.tonguePairId = options.tonguePair.id;
     } else if ("tonguePairId" in options) {
         updateSettings.tonguePairId = options.tonguePairId;
+    }
+
+    if ("nativeTongueId" in options) {
+        updateSettings.nativeTongueId = options.nativeTongueId;
     }
 
     await Settings.update(updateSettings, { where: {} });

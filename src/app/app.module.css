@@ -47,6 +47,10 @@ div.buttonpadding {
     text-align: center;
 }
 
+div.sidebarLink {
+    padding-block: 5px;
+}
+
 svg.padded {
     padding-block: 20px;
 }

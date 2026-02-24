@@ -4,10 +4,10 @@ import { JSX, useRef, useState } from "react";
 
 import Button from "@components/button/button";
 import Flag from "@components/flag/flag";
+import TonguesPopup from "@components/tongues-popup/tongues-popup";
 
 import { ImportSheetResponseAPI } from "../../import-sheet/api";
 import SheetsList from "../sheetslist/sheetslist";
-import TonguesPopup from "../tonguespopup/tonguespopup";
 import styles from "./tongueselector.module.css";
 
 interface TongueSelectorProps {
