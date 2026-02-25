@@ -1,6 +1,5 @@
-import { expect, test } from "@playwright/test";
-
 import { ExportSheetJSON } from "../app/vocab/[sheet]/export-sheet/api";
+import { expect, test } from "./fixtures";
 
 test("Import sheet (round-trip)", async ({ page }) => {
     // Export Sheet 1.

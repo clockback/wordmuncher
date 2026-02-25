@@ -1,5 +1,4 @@
-import { expect, test } from "@playwright/test";
-
+import { expect, test } from "./fixtures";
 import { updateResultStars } from "src/cron/update-db";
 
 test("Star promotion", async ({ page }) => {

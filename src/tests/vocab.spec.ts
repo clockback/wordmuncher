@@ -1,14 +1,4 @@
-import { Page, expect, test } from "@playwright/test";
-
-test.describe.configure({ mode: "serial" });
-
-let page: Page;
-test.beforeAll(async ({ browser }) => {
-    page = await browser.newPage();
-});
-test.afterAll(async () => {
-    await page.close();
-});
+import { expect, test } from "./fixtures";
 
 test("Change language", async ({ page }) => {
     await page.goto("/vocab");
@@ -24,11 +14,6 @@ test("Change language", async ({ page }) => {
     await page.reload();
     await expect(page.getByTitle("Current language")).toHaveText(
         "Learning German!",
-    );
-    await page.getByText("Change language").click({ delay: 500 });
-    await page.getByTitle("Chinese").click();
-    await expect(page.getByTitle("Current language")).toHaveText(
-        "Learning Chinese!",
     );
 });
 
