@@ -17,6 +17,7 @@ export default function QuestionTable() {
         setCreateInvertedEntry,
         setIsAddingNewQuestion,
         setIsEditingQuestionText,
+        setIsStudyingLanguage,
         setOtherAnswers,
         setProposedInflectionType,
         setProposedQuestionText,
@@ -59,6 +60,7 @@ export default function QuestionTable() {
         setSavePossible(false);
         setCreateInvertedEntry(false);
         setIsEditingQuestionText(false);
+        setIsStudyingLanguage(question.isStudyingLanguage);
         setProposedQuestionText(question.questionText);
         setIsAddingNewQuestion(false);
 
@@ -115,6 +117,7 @@ export default function QuestionTable() {
         setSelectedQuestion(null);
         setCreateInvertedEntry(false);
         setIsAddingNewQuestion(true);
+        setIsStudyingLanguage(true);
         setProposedQuestionText("");
         setAnswerEntryValue("");
         setOtherAnswers([]);

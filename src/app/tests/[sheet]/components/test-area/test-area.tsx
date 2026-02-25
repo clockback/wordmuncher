@@ -36,6 +36,8 @@ interface TestAreaProps {
     sheet: Sheet;
     numberOfQuestions: number | null;
     startingNumberOfStars: number;
+    tongueLanguageCodes: Record<string, string | null>;
+    speechEnabled: boolean;
 }
 
 export default function TestArea({
@@ -43,6 +45,8 @@ export default function TestArea({
     sheet,
     numberOfQuestions,
     startingNumberOfStars,
+    tongueLanguageCodes,
+    speechEnabled,
 }: TestAreaProps) {
     const [question, setQuestion] = useState<Question>(initialQuestion);
     const [expectedAnswer, setExpectedAnswer] = useState<string | null>(null);
@@ -233,7 +237,9 @@ export default function TestArea({
         showMessageToFinish,
         showResults,
         startingNumberOfStars,
+        speechEnabled,
         submitAnswer,
+        tongueLanguageCodes,
     };
     return (
         <testSheetContext.Provider value={context}>

@@ -1,6 +1,7 @@
 export interface AddTongueRequestAPI {
     proposedName: string;
     flag: string;
+    languageCode?: string;
     applyAs?: "native" | "studying";
 }
 

@@ -83,8 +83,12 @@ async function addQuestionWithAnswers(
     sheetId: number,
     requestJSON: AddQuestionRequestAPIWithAnswers,
 ): Promise<{ body: AddQuestionResponseAPI; status: number }> {
-    const { proposedQuestionText, proposedMainAnswer, proposedOtherAnswers } =
-        requestJSON;
+    const {
+        proposedQuestionText,
+        isStudyingLanguage,
+        proposedMainAnswer,
+        proposedOtherAnswers,
+    } = requestJSON;
 
     const sheet = await Sheet.findByPk(sheetId);
 
@@ -98,6 +102,7 @@ async function addQuestionWithAnswers(
                 {
                     tonguePairId: sheet.tonguePairId,
                     questionText: proposedQuestionText,
+                    isStudyingLanguage,
                     inflectionTypeId: null,
                 },
                 { transaction: t },
@@ -141,6 +146,7 @@ async function addQuestionWithInflectionAnswers(
 ): Promise<{ body: AddQuestionResponseAPI; status: number }> {
     const {
         proposedQuestionText,
+        isStudyingLanguage,
         proposedInflectionType,
         proposedInflectionAnswers,
     } = requestJSON;
@@ -157,6 +163,7 @@ async function addQuestionWithInflectionAnswers(
                 {
                     tonguePairId: sheet.tonguePairId,
                     questionText: proposedQuestionText,
+                    isStudyingLanguage,
                     inflectionTypeId: proposedInflectionType,
                 },
                 { transaction: t },

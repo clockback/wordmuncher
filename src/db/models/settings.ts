@@ -25,6 +25,7 @@ export class Settings extends Model<
     declare nativeTongue?: NonAttribute<Tongue>;
 
     declare ignoreDiacritics: CreationOptional<boolean>;
+    declare speechEnabled: CreationOptional<boolean>;
 
     declare createdAt: CreationOptional<Date>;
     declare updatedAt: CreationOptional<Date>;
@@ -67,6 +68,11 @@ Settings.init(
             allowNull: true,
         },
         ignoreDiacritics: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: true,
+        },
+        speechEnabled: {
             type: DataTypes.BOOLEAN,
             allowNull: false,
             defaultValue: true,

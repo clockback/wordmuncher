@@ -15,6 +15,7 @@ interface NativeTongueSelectorProps {
         flag: string;
     }>;
     onChangeIgnoreDiacritics: (value: boolean) => Promise<void>;
+    onChangeSpeechEnabled: (value: boolean) => Promise<void>;
     allTongues: { id: number; tongueName: string; flag: string }[];
     initialNativeTongue: {
         id: number;
@@ -22,20 +23,24 @@ interface NativeTongueSelectorProps {
         flag: string;
     };
     initialIgnoreDiacritics: boolean;
+    initialSpeechEnabled: boolean;
 }
 
 export default function NativeTongueSelector({
     onChangeNativeTongue,
     onChangeIgnoreDiacritics,
+    onChangeSpeechEnabled,
     allTongues,
     initialNativeTongue,
     initialIgnoreDiacritics,
+    initialSpeechEnabled,
 }: NativeTongueSelectorProps) {
     const [nativeTongue, setNativeTongue] = useState(initialNativeTongue);
     const [popupVisible, setPopupVisible] = useState(false);
     const [ignoreDiacritics, setIgnoreDiacritics] = useState(
         initialIgnoreDiacritics,
     );
+    const [speechEnabled, setSpeechEnabled] = useState(initialSpeechEnabled);
 
     const updateNativeTongue = async (tongueId: number) => {
         setNativeTongue(await onChangeNativeTongue(tongueId));
@@ -77,6 +82,20 @@ export default function NativeTongueSelector({
                         }}
                     />
                     Ignore diacritics when testing
+                </label>
+            </div>
+            <div className={styles.section} title="Speech">
+                <label className={styles.toggle}>
+                    <input
+                        type="checkbox"
+                        checked={speechEnabled}
+                        onChange={async (e) => {
+                            const value = e.target.checked;
+                            setSpeechEnabled(value);
+                            await onChangeSpeechEnabled(value);
+                        }}
+                    />
+                    Text-to-speech during tests
                 </label>
             </div>
             <Button href="/">Back</Button>

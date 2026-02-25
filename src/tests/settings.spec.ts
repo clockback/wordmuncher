@@ -63,6 +63,7 @@ test("Create a new tongue", async () => {
     await page.goto("/settings/add-tongue");
     await page.getByPlaceholder("Language name").fill("TestLanguage");
     await page.getByPlaceholder("Flag emoji").fill("🏴");
+    await page.getByPlaceholder("Language code, e.g.").fill("tl");
     await page.getByText("Create").click();
     await expect(page).toHaveURL("/settings");
 });

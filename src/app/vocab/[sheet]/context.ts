@@ -3,6 +3,13 @@ import { Dispatch } from "react";
 
 import { InflectionType, Question } from "@models";
 
+export interface TongueInfo {
+    id: number;
+    tongueName: string;
+    flag: string;
+    languageCode: string | null;
+}
+
 interface EditSheetContextType {
     allQuestions: Question[];
     answerEntryValue: string;
@@ -12,6 +19,8 @@ interface EditSheetContextType {
     isAddingNewQuestion: boolean;
     isAddingOtherAnswer: boolean;
     isEditingQuestionText: boolean;
+    isStudyingLanguage: boolean;
+    nativeTongue: TongueInfo;
     otherAnswers: string[];
     pending: boolean;
     proposedInflectionAnswers: Map<string, string>;
@@ -19,6 +28,7 @@ interface EditSheetContextType {
     proposedQuestionText: string;
     setAnswerEntryValue: Dispatch<SetStateAction<string>>;
     setCreateInvertedEntry: Dispatch<SetStateAction<boolean>>;
+    setIsStudyingLanguage: Dispatch<SetStateAction<boolean>>;
     savePossible: boolean;
     selectedQuestion: Question | null;
     setAllQuestions: Dispatch<SetStateAction<Question[]>>;
@@ -36,6 +46,7 @@ interface EditSheetContextType {
     setSheetName: Dispatch<SetStateAction<string>>;
     sheetId: number;
     sheetName: string;
+    studyingTongue: TongueInfo;
 }
 
 const editSheetContext = createContext<EditSheetContextType | undefined>(

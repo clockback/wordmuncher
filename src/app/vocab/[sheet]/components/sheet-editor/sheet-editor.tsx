@@ -8,7 +8,7 @@ import Button from "@components/button/button";
 
 import { InflectionType, Question, Sheet } from "@models";
 
-import editSheetContext from "../../context";
+import editSheetContext, { TongueInfo } from "../../context";
 import EditSheetHeader from "../edit-sheet-header/edit-sheet-header";
 import QuestionEditor from "../question-editor/question-editor";
 import QuestionTable from "../question-table/question-table";
@@ -19,6 +19,8 @@ interface SheetEditorProps {
     questions: Question[];
     inflectionTypes: InflectionType[];
     otherSheetNames: string[];
+    nativeTongue: TongueInfo;
+    studyingTongue: TongueInfo;
 }
 
 export default function SheetEditor({
@@ -26,6 +28,8 @@ export default function SheetEditor({
     questions,
     inflectionTypes,
     otherSheetNames,
+    nativeTongue,
+    studyingTongue,
 }: SheetEditorProps) {
     const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(
         null,
@@ -53,6 +57,7 @@ export default function SheetEditor({
     const [proposedInflectionAnswers, setProposedInflectionAnswers] = useState<
         Map<string, string>
     >(new Map());
+    const [isStudyingLanguage, setIsStudyingLanguage] = useState<boolean>(true);
 
     const [sheetName, setSheetName] = useState<string>(sheet.sheetName);
 
@@ -67,6 +72,8 @@ export default function SheetEditor({
         isAddingNewQuestion,
         isAddingOtherAnswer,
         isEditingQuestionText,
+        isStudyingLanguage,
+        nativeTongue,
         otherAnswers,
         pending,
         proposedInflectionAnswers,
@@ -74,6 +81,7 @@ export default function SheetEditor({
         proposedQuestionText,
         setAnswerEntryValue,
         setCreateInvertedEntry,
+        setIsStudyingLanguage,
         savePossible,
         selectedQuestion,
         setAllQuestions,
@@ -91,6 +99,7 @@ export default function SheetEditor({
         setSheetName,
         sheetId,
         sheetName,
+        studyingTongue,
     };
 
     function deleteSheetHandleResponse(response: NextResponse) {

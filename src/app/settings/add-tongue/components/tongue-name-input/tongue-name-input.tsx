@@ -60,6 +60,12 @@ export default function TongueNameInput({
                 type="text"
                 placeholder="Flag emoji"
             ></input>
+            <input
+                className={styles.centreinput}
+                name="language-code"
+                type="text"
+                placeholder="Language code, e.g. de, fr, es (optional)"
+            ></input>
             {warning}
             <div className={styles.centrebutton}>
                 <Button

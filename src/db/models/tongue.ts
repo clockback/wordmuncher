@@ -19,6 +19,7 @@ export class Tongue extends Model<
     declare id: CreationOptional<number>;
     declare tongueName: string;
     declare flag: string;
+    declare languageCode: CreationOptional<string | null>;
 
     declare studies: NonAttribute<Tongue[]>;
     declare learnedBy: NonAttribute<Tongue[]>;
@@ -66,6 +67,10 @@ Tongue.init(
         flag: {
             type: DataTypes.STRING,
             allowNull: false,
+        },
+        languageCode: {
+            type: DataTypes.STRING,
+            allowNull: true,
         },
         createdAt: DataTypes.DATE,
         updatedAt: DataTypes.DATE,
