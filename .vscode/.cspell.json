@@ -6,7 +6,8 @@
         "grotesk",
         "trivago",
         "umzug",
-        "wordmuncher"
+        "wordmuncher",
+        "résumé"
     ],
     "allowCompoundWords": true,
     "ignorePaths": ["playwright-report/", "test-results/", "**.svg"]

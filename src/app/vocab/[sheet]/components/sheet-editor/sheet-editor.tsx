@@ -21,6 +21,7 @@ interface SheetEditorProps {
     otherSheetNames: string[];
     nativeTongue: TongueInfo;
     studyingTongue: TongueInfo;
+    ignoreDiacritics: boolean;
 }
 
 export default function SheetEditor({
@@ -30,6 +31,7 @@ export default function SheetEditor({
     otherSheetNames,
     nativeTongue,
     studyingTongue,
+    ignoreDiacritics,
 }: SheetEditorProps) {
     const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(
         null,
@@ -68,6 +70,7 @@ export default function SheetEditor({
         answerEntryValue,
         createInvertedEntry,
         editingOtherAnswerI,
+        ignoreDiacritics,
         inflectionTypes,
         isAddingNewQuestion,
         isAddingOtherAnswer,

@@ -1,3 +1,16 @@
+.searchinput {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    font-size: 18px;
+    line-height: 30px;
+    background-color: rgb(var(--colour-light-ash));
+    color: rgb(var(--colour-pearl));
+    border: none;
+    border-bottom: 1px solid rgb(var(--colour-dark-charcoal));
+    outline: none;
+}
+
 .questiontable {
     width: 100%;
     font-size: 18px;
