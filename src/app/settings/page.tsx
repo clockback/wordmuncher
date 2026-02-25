@@ -45,6 +45,11 @@ async function changeIgnoreDiacritics(value: boolean): Promise<void> {
     await setSettings({ ignoreDiacritics: value });
 }
 
+async function changeSpeechEnabled(value: boolean): Promise<void> {
+    "use server";
+    await setSettings({ speechEnabled: value });
+}
+
 async function fetchAllTongues(): Promise<
     { id: number; tongueName: string; flag: string }[]
 > {
@@ -67,6 +72,7 @@ export default async function SettingsPage() {
         flag: string;
     };
     let initialIgnoreDiacritics: boolean;
+    let initialSpeechEnabled: boolean;
     try {
         allTongues = await fetchAllTongues();
         const settings = await getSettings();
@@ -77,6 +83,7 @@ export default async function SettingsPage() {
             flag: nativeTongue.flag,
         };
         initialIgnoreDiacritics = settings.ignoreDiacritics;
+        initialSpeechEnabled = settings.speechEnabled;
     } catch (error) {
         console.error("Failed to load settings page:", error);
         return notFound();
@@ -87,9 +94,11 @@ export default async function SettingsPage() {
             <NativeTongueSelector
                 onChangeNativeTongue={changeNativeTongue}
                 onChangeIgnoreDiacritics={changeIgnoreDiacritics}
+                onChangeSpeechEnabled={changeSpeechEnabled}
                 allTongues={allTongues}
                 initialNativeTongue={initialNativeTongue}
                 initialIgnoreDiacritics={initialIgnoreDiacritics}
+                initialSpeechEnabled={initialSpeechEnabled}
             ></NativeTongueSelector>
         </div>
     );

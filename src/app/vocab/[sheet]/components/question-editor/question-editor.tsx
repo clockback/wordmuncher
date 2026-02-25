@@ -72,6 +72,8 @@ export default function QuestionEditor() {
         createInvertedEntry,
         isAddingNewQuestion,
         isEditingQuestionText,
+        isStudyingLanguage,
+        nativeTongue,
         otherAnswers,
         pending,
         proposedInflectionAnswers,
@@ -84,12 +86,14 @@ export default function QuestionEditor() {
         setCreateInvertedEntry,
         setIsAddingNewQuestion,
         setIsEditingQuestionText,
+        setIsStudyingLanguage,
         setOtherAnswers,
         setPending,
         setProposedQuestionText,
         setSavePossible,
         setSelectedQuestion,
         sheetId,
+        studyingTongue,
     } = useContext(editSheetContext);
 
     if (selectedQuestion === null && !isAddingNewQuestion) {
@@ -117,6 +121,7 @@ export default function QuestionEditor() {
             const oldAnswer = answerEntryValue.trim();
             setProposedQuestionText(oldAnswer);
             setAnswerEntryValue(oldQuestion);
+            setIsStudyingLanguage(!isStudyingLanguage);
             setOtherAnswers([]);
             setSavePossible(
                 !questionAlreadyExists(oldAnswer, updatedQuestions),
@@ -241,6 +246,7 @@ export default function QuestionEditor() {
     function clickSaveNewQuestion() {
         const body: AddQuestionRequestAPI = {
             proposedQuestionText: proposedQuestionText.trim(),
+            isStudyingLanguage,
             ...getAnswerBody(
                 proposedInflectionType ? proposedInflectionType.id : undefined,
             ),
@@ -275,6 +281,7 @@ export default function QuestionEditor() {
         const body: UpdateQuestionRequestAPI = {
             id: selectedQuestion.id,
             proposedQuestionText: proposedQuestionText.trim(),
+            isStudyingLanguage,
             ...getAnswerBody(
                 proposedInflectionType ? proposedInflectionType.id : undefined,
             ),
@@ -379,6 +386,34 @@ export default function QuestionEditor() {
                 setIsEditing={setIsEditingQuestionText}
                 title="Question"
             ></EditableHeader>
+            <div className={styles.languagetoggle} title="Question language">
+                <span
+                    className={
+                        isStudyingLanguage ? styles.active : styles.inactive
+                    }
+                    onClick={() => {
+                        if (!isStudyingLanguage) {
+                            setIsStudyingLanguage(true);
+                            setSavePossible(true);
+                        }
+                    }}
+                >
+                    {studyingTongue.flag} {studyingTongue.tongueName}
+                </span>
+                <span
+                    className={
+                        !isStudyingLanguage ? styles.active : styles.inactive
+                    }
+                    onClick={() => {
+                        if (isStudyingLanguage) {
+                            setIsStudyingLanguage(false);
+                            setSavePossible(true);
+                        }
+                    }}
+                >
+                    {nativeTongue.flag} {nativeTongue.tongueName}
+                </span>
+            </div>
             <AnswerSection></AnswerSection>
             <CreateInvertedEntry />
             <div className={styles.padsavebutton}>

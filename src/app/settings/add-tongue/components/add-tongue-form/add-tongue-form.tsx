@@ -35,7 +35,14 @@ export default function AddTongueForm({
         setPending(true);
         const proposedName = formData.get("tongue-name") as string;
         const flag = formData.get("flag") as string;
-        const body: AddTongueRequestAPI = { proposedName, flag, applyAs };
+        const languageCode =
+            (formData.get("language-code") as string)?.trim() || undefined;
+        const body: AddTongueRequestAPI = {
+            proposedName,
+            flag,
+            languageCode,
+            applyAs,
+        };
         fetch("/settings/add-tongue/add-tongue", {
             method: "POST",
             headers: { "Content-Type": "application/json" },

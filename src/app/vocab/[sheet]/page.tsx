@@ -6,6 +6,7 @@ import {
     InflectionFeature,
     InflectionType,
     Sheet,
+    TonguePair,
 } from "@models";
 
 import SheetEditor from "./components/sheet-editor/sheet-editor";
@@ -77,12 +78,31 @@ export default async function Page({
         settings.tonguePairId,
     );
 
+    const tonguePair = await TonguePair.findByPk(settings.tonguePairId, {
+        include: [{ association: "native" }, { association: "studying" }],
+    });
+
+    const nativeTongue = {
+        id: tonguePair.native.id,
+        tongueName: tonguePair.native.tongueName,
+        flag: tonguePair.native.flag,
+        languageCode: tonguePair.native.languageCode,
+    };
+    const studyingTongue = {
+        id: tonguePair.studying.id,
+        tongueName: tonguePair.studying.tongueName,
+        flag: tonguePair.studying.flag,
+        languageCode: tonguePair.studying.languageCode,
+    };
+
     return (
         <SheetEditor
             sheet={sheet.toJSON()}
             questions={questionsJson}
             inflectionTypes={inflectionTypesJSON}
             otherSheetNames={otherSheetNames}
+            nativeTongue={nativeTongue}
+            studyingTongue={studyingTongue}
         ></SheetEditor>
     );
 }

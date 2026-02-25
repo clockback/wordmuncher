@@ -89,6 +89,7 @@ async function updateQuestionWithAnswers(
     const {
         id,
         proposedQuestionText,
+        isStudyingLanguage,
         proposedMainAnswer,
         proposedOtherAnswers,
     } = requestJSON;
@@ -98,7 +99,7 @@ async function updateQuestionWithAnswers(
     try {
         await sequelize.transaction(async (t) => {
             await Question.update(
-                { questionText: proposedQuestionText },
+                { questionText: proposedQuestionText, isStudyingLanguage },
                 {
                     where: { id: id },
                     transaction: t,
@@ -134,14 +135,19 @@ async function updateQuestionWithInflectionAnswers(
     body: UpdateQuestionResponseAPI;
     status: number;
 }> {
-    const { id, proposedQuestionText, proposedInflectionAnswers } = requestJSON;
+    const {
+        id,
+        proposedQuestionText,
+        isStudyingLanguage,
+        proposedInflectionAnswers,
+    } = requestJSON;
 
     const createdAnswers: InflectionAnswer[] = [];
 
     try {
         await sequelize.transaction(async (t) => {
             await Question.update(
-                { questionText: proposedQuestionText },
+                { questionText: proposedQuestionText, isStudyingLanguage },
                 {
                     where: { id: id },
                     transaction: t,

@@ -2,3 +2,29 @@
     padding-block: 10px;
     text-align: right;
 }
+
+div.languagetoggle {
+    display: flex;
+    gap: 8px;
+    padding-block: 8px;
+}
+
+div.languagetoggle span {
+    padding: 4px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    user-select: none;
+}
+
+span.active {
+    background-color: rgb(var(--colour-pearl));
+    font-weight: bold;
+}
+
+span.inactive {
+    opacity: 0.5;
+}
+
+span.inactive:hover {
+    opacity: 0.8;
+}

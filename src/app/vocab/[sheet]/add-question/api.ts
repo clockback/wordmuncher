@@ -2,12 +2,14 @@ import { Answer, InflectionAnswer, Result } from "@models";
 
 export interface AddQuestionRequestAPIWithAnswers {
     proposedQuestionText: string;
+    isStudyingLanguage: boolean;
     proposedMainAnswer: string;
     proposedOtherAnswers: string[];
 }
 
 export interface AddQuestionRequestAPIWithInflectionAnswers {
     proposedQuestionText: string;
+    isStudyingLanguage: boolean;
     proposedInflectionType: number;
     proposedInflectionAnswers: {
         primaryFeature: number;

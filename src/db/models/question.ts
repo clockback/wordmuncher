@@ -26,6 +26,7 @@ export class Question extends Model<
 > {
     declare id: number;
     declare questionText: string;
+    declare isStudyingLanguage: CreationOptional<boolean>;
 
     declare tonguePairId: ForeignKey<TonguePair["id"]>;
     declare tonguePair: NonAttribute<TonguePair>;
@@ -83,6 +84,11 @@ Question.init(
         questionText: {
             type: DataTypes.STRING,
             allowNull: false,
+        },
+        isStudyingLanguage: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: true,
         },
         tonguePairId: {
             type: DataTypes.INTEGER,

@@ -1,10 +1,11 @@
 import { notFound } from "next/navigation";
 
-import { Sheet } from "@models";
+import { Sheet, TonguePair } from "@models";
 
 import TestArea from "./components/test-area/test-area";
 import { getNumberOfStars, getQuestion } from "./server-helpers";
 import styles from "./test-page.module.css";
+import { getSettings } from "src/db/helpers/settings";
 
 export default async function TestSheet({
     params,
@@ -41,6 +42,18 @@ export default async function TestSheet({
     const question = await getQuestion(sheet, []);
     const startingNumberOfStars = await getNumberOfStars(sheet);
 
+    const tonguePair = await TonguePair.findByPk(sheet.tonguePairId, {
+        include: [{ association: "native" }, { association: "studying" }],
+    });
+
+    const tongueLanguageCodes: Record<string, string | null> = {
+        native: tonguePair.native.languageCode,
+        studying: tonguePair.studying.languageCode,
+    };
+
+    const settings = await getSettings();
+    const speechEnabled = settings.speechEnabled;
+
     return (
         <>
             <h1 className={styles.sheetname}>{sheet.sheetName}</h1>
@@ -49,6 +62,8 @@ export default async function TestSheet({
                 sheet={sheet.toJSON()}
                 numberOfQuestions={numberOfQuestions}
                 startingNumberOfStars={startingNumberOfStars}
+                tongueLanguageCodes={tongueLanguageCodes}
+                speechEnabled={speechEnabled}
             ></TestArea>
         </>
     );

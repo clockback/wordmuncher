@@ -3,6 +3,7 @@ import { Answer, InflectionAnswer } from "@models";
 export interface UpdateQuestionRequestAPIWithAnswers {
     id: number;
     proposedQuestionText: string;
+    isStudyingLanguage: boolean;
     proposedMainAnswer: string;
     proposedOtherAnswers: string[];
 }
@@ -10,6 +11,7 @@ export interface UpdateQuestionRequestAPIWithAnswers {
 export interface UpdateQuestionRequestAPIWithInflectionAnswers {
     id: number;
     proposedQuestionText: string;
+    isStudyingLanguage: boolean;
     proposedInflectionAnswers: {
         primaryFeature: number;
         secondaryFeature?: number;

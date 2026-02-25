@@ -10,6 +10,7 @@ export async function POST(request: NextRequest) {
     const requestJSON: AddTongueRequestAPI = await request.json();
     const proposedName = requestJSON.proposedName;
     const flag = requestJSON.flag;
+    const languageCode = requestJSON.languageCode || null;
     const applyAs = requestJSON.applyAs;
 
     let body: AddTongueResponseAPI;
@@ -19,6 +20,7 @@ export async function POST(request: NextRequest) {
         const tongue = await Tongue.create({
             tongueName: proposedName,
             flag: flag,
+            languageCode: languageCode,
         });
 
         // Apply the newly created tongue based on context.

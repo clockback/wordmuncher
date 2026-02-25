@@ -1,7 +1,9 @@
 "use client";
 
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { JSX } from "react";
+
+import { speak } from "@components/tts/speak";
 
 import { Question, Result } from "@models";
 
@@ -46,7 +48,20 @@ function progressBar(result: Result): JSX.Element[] {
 }
 
 export default function TestQuestion() {
-    const { question } = useContext(testSheetContext);
+    const { question, speechEnabled, tongueLanguageCodes } =
+        useContext(testSheetContext);
+
+    useEffect(() => {
+        if (speechEnabled && question.isStudyingLanguage) {
+            speak(question.questionText, tongueLanguageCodes.studying);
+        }
+    }, [
+        question.id,
+        question.isStudyingLanguage,
+        question.questionText,
+        speechEnabled,
+        tongueLanguageCodes.studying,
+    ]);
 
     return (
         <>
