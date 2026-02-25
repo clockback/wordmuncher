@@ -1,29 +1,19 @@
-import { Page, expect, test } from "@playwright/test";
+import { expect, test } from "./fixtures";
 
-test.describe.configure({ mode: "serial" });
-
-let page: Page;
-test.beforeAll(async ({ browser }) => {
-    page = await browser.newPage();
-});
-test.afterAll(async () => {
-    await page.close();
-});
-
-test("Navigate to settings from sidebar", async () => {
+test("Navigate to settings from sidebar", async ({ page }) => {
     await page.goto("/");
     await page.getByText("Settings").click();
     await expect(page).toHaveURL("/settings");
 });
 
-test("Settings page shows native language", async () => {
+test("Settings page shows native language", async ({ page }) => {
     await page.goto("/settings");
     await expect(page.getByTitle("Native language")).toContainText(
         "Native language: English",
     );
 });
 
-test("Change native language", async () => {
+test("Change native language", async ({ page }) => {
     await page.goto("/settings");
     await page.getByText("Change native language").click({ delay: 500 });
     await page.getByTitle("French").click();
@@ -37,29 +27,22 @@ test("Change native language", async () => {
     await expect(page.getByTitle("Native language")).toContainText(
         "Native language: French",
     );
-
-    // Reset back to English for other tests.
-    await page.getByText("Change native language").click({ delay: 500 });
-    await page.getByTitle("English").click();
-    await expect(page.getByTitle("Native language")).toContainText(
-        "Native language: English",
-    );
 });
 
-test("Navigate to add tongue page", async () => {
+test("Navigate to add tongue page", async ({ page }) => {
     await page.goto("/settings");
     await page.getByText("Change native language").click({ delay: 500 });
     await page.getByText("Add new language!").click();
     await expect(page).toHaveURL("/settings/add-tongue?for=native");
 });
 
-test("Duplicate tongue name shows warning", async () => {
+test("Duplicate tongue name shows warning", async ({ page }) => {
     await page.goto("/settings/add-tongue");
     await page.getByPlaceholder("Language name").fill("English");
     await expect(page.getByText("Tongue already exists!")).toBeVisible();
 });
 
-test("Create a new tongue", async () => {
+test("Create a new tongue", async ({ page }) => {
     await page.goto("/settings/add-tongue");
     await page.getByPlaceholder("Language name").fill("TestLanguage");
     await page.getByPlaceholder("Flag emoji").fill("🏴");
@@ -68,8 +51,14 @@ test("Create a new tongue", async () => {
     await expect(page).toHaveURL("/settings");
 });
 
-test("Delete a tongue", async () => {
-    await page.goto("/settings");
+test("Delete a tongue", async ({ page }) => {
+    // First create a tongue to delete.
+    await page.goto("/settings/add-tongue");
+    await page.getByPlaceholder("Language name").fill("TestLanguage");
+    await page.getByPlaceholder("Flag emoji").fill("🏴");
+    await page.getByText("Create").click();
+    await expect(page).toHaveURL("/settings");
+
     await page.getByText("Change native language").click({ delay: 500 });
 
     // Verify TestLanguage exists in the popup.
@@ -83,7 +72,7 @@ test("Delete a tongue", async () => {
     await expect(page.getByTitle("TestLanguage")).not.toBeVisible();
 });
 
-test("Toggle ignore diacritics", async () => {
+test("Toggle ignore diacritics", async ({ page }) => {
     await page.goto("/settings");
     const checkbox = page.getByTitle("Diacritics").getByRole("checkbox");
 
@@ -100,13 +89,9 @@ test("Toggle ignore diacritics", async () => {
         .getByTitle("Diacritics")
         .getByRole("checkbox");
     await expect(reloadedCheckbox).not.toBeChecked();
-
-    // Reset back to checked.
-    await reloadedCheckbox.check();
-    await expect(reloadedCheckbox).toBeChecked();
 });
 
-test("Cannot delete tongue in use", async () => {
+test("Cannot delete tongue in use", async ({ page }) => {
     await page.goto("/settings");
     await page.getByText("Change native language").click({ delay: 500 });
 
