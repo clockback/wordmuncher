@@ -1,14 +1,20 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 
 import { Question } from "@models";
 
 import editSheetContext from "../../context";
 import styles from "./question-table.module.css";
 
+function stripDiacritics(str: string): string {
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
 export default function QuestionTable() {
+    const [searchFilter, setSearchFilter] = useState("");
     const questionRows = [];
     const {
         allQuestions,
+        ignoreDiacritics,
         inflectionTypes,
         setProposedInflectionAnswers,
         savePossible,
@@ -80,6 +86,11 @@ export default function QuestionTable() {
         setOtherAnswers(otherAnswers);
     }
 
+    const normalize = ignoreDiacritics
+        ? (str: string) => stripDiacritics(str.toLowerCase())
+        : (str: string) => str.toLowerCase();
+    const normalizedFilter = normalize(searchFilter);
+
     for (const question of allQuestions) {
         let mainAnswer = "";
         if (question.answers) {
@@ -88,6 +99,14 @@ export default function QuestionTable() {
                     mainAnswer = answer.answerText;
                 }
             }
+        }
+
+        if (
+            searchFilter &&
+            !normalize(question.questionText).includes(normalizedFilter) &&
+            !normalize(mainAnswer).includes(normalizedFilter)
+        ) {
+            continue;
         }
 
         const questionIsSelected =
@@ -127,26 +146,36 @@ export default function QuestionTable() {
     };
 
     return (
-        <table className={styles.questiontable}>
-            <thead>
-                <tr>
-                    <th>Question</th>
-                    <th>Answer</th>
-                </tr>
-            </thead>
-            <tbody>
-                {questionRows}
-                <tr>
-                    <td
-                        className={styles.addnewquestionbutton}
-                        colSpan={2}
-                        onClick={clickAddNewQuestion}
-                        title="Add new question"
-                    >
-                        Add new question
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <>
+            <input
+                aria-label="Search"
+                className={styles.searchinput}
+                type="text"
+                placeholder="Search questions..."
+                value={searchFilter}
+                onChange={(e) => setSearchFilter(e.target.value)}
+            />
+            <table className={styles.questiontable}>
+                <thead>
+                    <tr>
+                        <th>Question</th>
+                        <th>Answer</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {questionRows}
+                    <tr>
+                        <td
+                            className={styles.addnewquestionbutton}
+                            colSpan={2}
+                            onClick={clickAddNewQuestion}
+                            title="Add new question"
+                        >
+                            Add new question
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </>
     );
 }

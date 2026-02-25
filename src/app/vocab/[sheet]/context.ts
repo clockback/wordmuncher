@@ -44,6 +44,7 @@ interface EditSheetContextType {
     setSavePossible: Dispatch<SetStateAction<boolean>>;
     setSelectedQuestion: Dispatch<SetStateAction<Question | null>>;
     setSheetName: Dispatch<SetStateAction<string>>;
+    ignoreDiacritics: boolean;
     sheetId: number;
     sheetName: string;
     studyingTongue: TongueInfo;

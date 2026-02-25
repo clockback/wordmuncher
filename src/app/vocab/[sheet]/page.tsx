@@ -103,6 +103,7 @@ export default async function Page({
             otherSheetNames={otherSheetNames}
             nativeTongue={nativeTongue}
             studyingTongue={studyingTongue}
+            ignoreDiacritics={settings.ignoreDiacritics}
         ></SheetEditor>
     );
 }

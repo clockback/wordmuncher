@@ -1,5 +1,19 @@
+import { Page } from "@playwright/test";
+
 import { ExportSheetJSON } from "../app/vocab/[sheet]/export-sheet/api";
 import { expect, test } from "./fixtures";
+
+async function addQuestion(
+    page: Page,
+    questionText: string,
+    answerText: string,
+) {
+    await page.getByTitle("Add new question").click();
+    await page.getByRole("textbox", { name: "Question" }).fill(questionText);
+    await page.getByRole("textbox", { name: "Main answer" }).fill(answerText);
+    await page.getByRole("button", { name: "Save question" }).click();
+    await page.waitForLoadState("networkidle");
+}
 
 test("Export sheet", async ({ page }) => {
     await page.goto("/vocab");
@@ -136,4 +150,49 @@ test("Modify question", async ({ page }) => {
         .locator("table tr", { hasText: "Question 2 modified" })
         .locator("td", { hasText: "why modified also" });
     await expect(tableRow).toBeVisible();
+});
+
+test("Search ignores diacritics when setting is enabled", async ({ page }) => {
+    await page.goto("/vocab");
+    await page.getByTitle("Edit Sheet 1").click();
+    await expect(page).toHaveURL("/vocab/1");
+
+    // Add a question with diacritics.
+    await addQuestion(page, "résumé", "summary");
+
+    const searchInput = page.getByRole("textbox", { name: "Search" });
+    const diacriticRow = page.locator("table tr", { hasText: "résumé" });
+
+    // Ignore diacritics is enabled by default.
+    // Searching without diacritics should still match.
+    await searchInput.fill("resume");
+    await expect(diacriticRow).toBeVisible();
+});
+
+test("Search respects diacritics when setting is disabled", async ({
+    page,
+}) => {
+    // Disable ignore diacritics.
+    await page.goto("/settings");
+    const checkbox = page.getByTitle("Diacritics").getByRole("checkbox");
+    await checkbox.uncheck();
+    await expect(checkbox).not.toBeChecked();
+
+    await page.goto("/vocab");
+    await page.getByTitle("Edit Sheet 1").click();
+    await expect(page).toHaveURL("/vocab/1");
+
+    // Add the same question with diacritics.
+    await addQuestion(page, "résumé", "summary");
+
+    const searchInput = page.getByRole("textbox", { name: "Search" });
+    const diacriticRow = page.locator("table tr", { hasText: "résumé" });
+
+    // Searching without diacritics should NOT match.
+    await searchInput.fill("resume");
+    await expect(diacriticRow).not.toBeVisible();
+
+    // Searching with diacritics should match.
+    await searchInput.fill("résumé");
+    await expect(diacriticRow).toBeVisible();
 });
