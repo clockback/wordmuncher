@@ -1,5 +1,33 @@
 # Changelog
 
+## Version 0.4.0
+
+### Features
+
+- Allow user to search within a vocabulary sheet for individual questions.
+- Allow user to both export and import individual vocabulary sheets as JSON.
+- Allow the user to set their native language.
+- Allow the user to add new languages to the application.
+- Allow the user to delete existing languages from the application.
+- Allow the user to configure the application to ignore or gatekeep diacritics
+  during vocabulary tests.
+- Allow the user to configure the application to use text-to-speech.
+
+### Bug fixes
+
+- In the version prior, someone could scroll the window's contents. Modified
+  so that only the components alone can be scrolled.
+- In the version prior, there were numerous text inputs that would disappear
+  if the user switched to another window. Changed so that the `onBlur` event
+  is ignored if the user triggered it by losing window focus.
+
+### Other changes
+
+- Shrunk the inflection tables to be better able to fit within the window
+  without the need for scrolling.
+- Preventing E2E tests from running in parallel.
+- Ensure each E2E test runs idempotently from one another.
+
 ## Version 0.3.0
 
 ### Features
