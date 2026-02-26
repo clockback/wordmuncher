@@ -1,13 +1,13 @@
 .tablecontainer {
     margin-block: 30px;
     max-height: 500px;
-    overflow-y: scroll;
+    overflow-y: auto;
     overflow-x: hidden;
 }
 
 .inlinetable {
     width: 100%;
-    overflow-y: scroll;
+    overflow-y: auto;
     text-align: left;
     font-size: 22px;
     border-spacing: 0 3px;
