@@ -31,19 +31,21 @@ function SingleAxisInflectionTemplate({
     }
 
     return (
-        <table className={styles.singleaxis}>
-            <thead>
-                <tr>
-                    <th colSpan={category.features.length}>
-                        {category.categoryName}
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>{headers}</tr>
-                <tr>{answerCells}</tr>
-            </tbody>
-        </table>
+        <div className={styles.wrapper}>
+            <table className={styles.singleaxis}>
+                <thead>
+                    <tr>
+                        <th colSpan={category.features.length}>
+                            {category.categoryName}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>{headers}</tr>
+                    <tr>{answerCells}</tr>
+                </tbody>
+            </table>
+        </div>
     );
 }
 
@@ -96,18 +98,20 @@ function DoubleAxisInflectionTemplate({
     }
 
     return (
-        <table className={styles.doubleaxis}>
-            <thead>
-                <tr>
-                    <td rowSpan={2} colSpan={2}></td>
-                    <th colSpan={firstCategory.features.length}>
-                        {firstCategory.categoryName}
-                    </th>
-                </tr>
-                <tr>{headers}</tr>
-            </thead>
-            <tbody>{rows}</tbody>
-        </table>
+        <div className={styles.wrapper}>
+            <table className={styles.doubleaxis}>
+                <thead>
+                    <tr>
+                        <td rowSpan={2} colSpan={2}></td>
+                        <th colSpan={firstCategory.features.length}>
+                            {firstCategory.categoryName}
+                        </th>
+                    </tr>
+                    <tr>{headers}</tr>
+                </thead>
+                <tbody>{rows}</tbody>
+            </table>
+        </div>
     );
 }
 

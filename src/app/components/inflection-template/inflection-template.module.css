@@ -1,9 +1,13 @@
+.wrapper {
+    max-width: 100%;
+    overflow-x: auto;
+}
+
 .singleaxis,
 .doubleaxis {
-    font-size: 25px;
-    display: inline-block;
-    margin-inline: auto;
+    font-size: 18px;
     display: inline-table;
+    margin-inline: auto;
     border: 1px white solid;
 }
 
@@ -11,7 +15,7 @@
 .singleaxis td,
 .doubleaxis td,
 .doubleaxis th {
-    padding: 5px;
+    padding: 3px 5px;
 }
 
 .singleaxis td {
@@ -28,6 +32,5 @@
 }
 
 .doubleaxis tr:nth-child(even) td {
-    background-color: green;
     background-color: rgb(var(--colour-dark-charcoal));
 }
