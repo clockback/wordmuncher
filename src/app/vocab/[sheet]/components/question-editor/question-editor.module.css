@@ -18,6 +18,7 @@ div.languagetoggle span {
 
 span.active {
     background-color: rgb(var(--colour-pearl));
+    color: rgb(var(--colour-ash));
     font-weight: bold;
 }
 
