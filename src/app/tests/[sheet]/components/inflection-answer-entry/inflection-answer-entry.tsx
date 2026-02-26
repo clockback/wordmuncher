@@ -19,9 +19,6 @@ export default function InflectionAnswerEntry({
         submitAnswer,
     } = useContext(testSheetContext);
 
-    console.log(inflectionCorrections);
-    console.log(featureKey);
-
     const correction = inflectionCorrections.get(featureKey) ?? null;
     if (correction !== null) {
         return (
