@@ -1,11 +1,11 @@
-import { Space_Grotesk } from "next/font/google";
+import { Noto_Sans } from "next/font/google";
 import Link from "next/link";
 
 import styles from "./app.module.css";
 import "./global.css";
 import Logo from "src/app/assets/images/logo.svg";
 
-const spaceGrotesk = Space_Grotesk({ subsets: ["latin"] });
+const notoSans = Noto_Sans({ subsets: ["latin"] });
 
 export const metadata = {
     title: "Word Muncher",
@@ -15,7 +15,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
     return (
         <html lang="en">
-            <body className={spaceGrotesk.className}>
+            <body className={notoSans.className}>
                 <div className={styles.container}>
                     <div className={styles.sidebar}>
                         <div>
