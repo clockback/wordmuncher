@@ -47,12 +47,28 @@ export default function EditInflectionAnswer({
             setEditingText(e.target.value);
         };
 
-        function preventFormSubmission(
+        function navigateToCell(
             e: React.KeyboardEvent<HTMLInputElement>,
+            direction: 1 | -1,
         ) {
-            if (e.code == "Enter") {
+            const currentTd = e.currentTarget.closest("td");
+            const table = e.currentTarget.closest("table");
+            if (currentTd && table) {
+                const allTds = Array.from(table.querySelectorAll("tbody td"));
+                const currentIndex = allTds.indexOf(currentTd);
+                const targetIndex = currentIndex + direction;
+                if (targetIndex >= 0 && targetIndex < allTds.length) {
+                    const targetTd = allTds[targetIndex];
+                    (targetTd.firstElementChild as HTMLElement)?.click();
+                }
+            }
+        }
+
+        function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+            if (e.code == "Enter" || e.code == "Tab") {
                 e.preventDefault();
                 onBlur();
+                navigateToCell(e, e.shiftKey ? -1 : 1);
             }
         }
 
@@ -63,7 +79,7 @@ export default function EditInflectionAnswer({
                 onBlur={onBlur}
                 onChange={editAnswer}
                 value={editingText}
-                onKeyDown={preventFormSubmission}
+                onKeyDown={onKeyDown}
             ></input>
         );
     } else {
