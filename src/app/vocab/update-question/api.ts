@@ -12,6 +12,7 @@ export interface UpdateQuestionRequestAPIWithInflectionAnswers {
     id: number;
     proposedQuestionText: string;
     isStudyingLanguage: boolean;
+    proposedInflectionType: number;
     proposedInflectionAnswers: {
         primaryFeature: number;
         secondaryFeature?: number;

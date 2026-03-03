@@ -100,6 +100,16 @@ Question.init(
             onUpdate: "CASCADE",
             allowNull: false,
         },
+        inflectionTypeId: {
+            type: DataTypes.INTEGER,
+            references: {
+                model: "InflectionTypes",
+                key: "id",
+            },
+            onDelete: "SET NULL",
+            onUpdate: "CASCADE",
+            allowNull: true,
+        },
         createdAt: DataTypes.DATE,
         updatedAt: DataTypes.DATE,
     },
