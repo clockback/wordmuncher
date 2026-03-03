@@ -109,6 +109,10 @@ async function updateQuestionWithAnswers(
                     transaction: t,
                 },
             );
+            await InflectionAnswer.destroy({
+                where: { questionId: id },
+                transaction: t,
+            });
             await processPlainAnswers(
                 id,
                 proposedMainAnswer,
@@ -162,6 +166,10 @@ async function updateQuestionWithInflectionAnswers(
                     transaction: t,
                 },
             );
+            await Answer.destroy({
+                where: { questionId: id },
+                transaction: t,
+            });
             await processInflectionAnswers(
                 id,
                 proposedInflectionAnswers,
