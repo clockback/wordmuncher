@@ -7,6 +7,10 @@ import { Question, Sheet } from "@models";
 
 import testSheetContext from "../../context";
 import {
+    SkipAnswerRequestAPI,
+    SkipAnswerResponseAPI,
+} from "../../skip-answer/api";
+import {
     SubmitAnswerRequestAPI,
     SubmitAnswerResponseAPI,
     SubmitAnswerResponseAPICorrectOrIncorrect,
@@ -181,6 +185,39 @@ export default function TestArea({
         }).then(submitAnswerHandleResponse);
     };
 
+    const skipAnswer = () => {
+        setPending(true);
+        const retrieveNextAnswer =
+            numberOfQuestions === null || questionNumber < numberOfQuestions;
+        const body: SkipAnswerRequestAPI = {
+            questionId: question.id,
+            lastQuestions: lastQuestions,
+            retrieveNextAnswer,
+        };
+        fetch(`/tests/${sheet.id}/skip-answer`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+        }).then(async (response: Response) => {
+            if (!response.ok) {
+                console.error("Failed to skip answer!");
+                return;
+            }
+
+            const responseJSON: SkipAnswerResponseAPI = await response.json();
+            setPending(false);
+            setLastQuestions(responseJSON.lastQuestions);
+            setExpectedAnswer(responseJSON.expectedAnswer);
+            const newInflectionCorrections = Object.entries(
+                responseJSON.inflectionCorrections ?? {},
+            );
+            setInflectionCorrections(new Map(newInflectionCorrections));
+            if (responseJSON.nextQuestion !== null) {
+                setNextQuestion(responseJSON.nextQuestion);
+            }
+        });
+    };
+
     let progressHeader: JSX.Element;
     if (showResults) {
         progressHeader = null;
@@ -236,6 +273,7 @@ export default function TestArea({
         sheet,
         showMessageToFinish,
         showResults,
+        skipAnswer,
         startingNumberOfStars,
         speechEnabled,
         submitAnswer,

@@ -34,6 +34,7 @@ interface TestSheetContextType {
     showMessageToFinish: boolean;
     showResults: boolean;
     startingNumberOfStars: number;
+    skipAnswer: () => void;
     speechEnabled: boolean;
     submitAnswer: () => void;
     tongueLanguageCodes: Record<string, string | null>;

@@ -13,6 +13,7 @@ export default function AdvanceButtons() {
         nextQuestion,
         numberOfQuestions,
         pending,
+        question,
         questionNumber,
         setCurrentAnswer,
         setExpectedAnswer,
@@ -26,6 +27,7 @@ export default function AdvanceButtons() {
         setShowResults,
         showMessageToFinish,
         showResults,
+        skipAnswer,
         submitAnswer,
     } = useContext(testSheetContext);
 
@@ -84,9 +86,16 @@ export default function AdvanceButtons() {
             shouldDisable = false;
         }
         button = (
-            <Button onClick={submitAnswer} disabled={shouldDisable}>
-                Submit
-            </Button>
+            <>
+                {question.result.current === 0 && (
+                    <Button onClick={skipAnswer} disabled={pending}>
+                        Skip
+                    </Button>
+                )}
+                <Button onClick={submitAnswer} disabled={shouldDisable}>
+                    Submit
+                </Button>
+            </>
         );
     }
 
