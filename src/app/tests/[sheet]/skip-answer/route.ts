@@ -4,6 +4,11 @@ import { Answer, InflectionAnswer, Question, Result, Sheet } from "@models";
 
 import { getNumberOfStars, getQuestion } from "../server-helpers";
 import { SkipAnswerRequestAPI, SkipAnswerResponseAPI } from "./api";
+import { getSettings } from "src/db/helpers/settings";
+
+function stripDiacritics(str: string): string {
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
 
 function updateLastQuestions(lastQuestions: number[], questionId: number) {
     if (lastQuestions.length > 2) {
@@ -23,7 +28,12 @@ export async function POST(
     const requestJSON: SkipAnswerRequestAPI = await request.json();
     const sheetId = parseInt((await params).sheet);
     const sheet = await Sheet.findByPk(sheetId);
-    const { questionId, lastQuestions, retrieveNextAnswer } = requestJSON;
+    const {
+        questionId,
+        submittedInflectionAnswers,
+        lastQuestions,
+        retrieveNextAnswer,
+    } = requestJSON;
 
     const question = await Question.findByPk(questionId, {
         include: [
@@ -50,6 +60,11 @@ export async function POST(
     let expectedAnswer: string | null = null;
     let inflectionCorrections: { [key: string]: string } | null = null;
 
+    const settings = await getSettings();
+    const normalize = settings.ignoreDiacritics
+        ? stripDiacritics
+        : (str: string) => str;
+
     if (question.inflectionTypeId === null) {
         for (const answer of question.answers) {
             if (answer.isMainAnswer) {
@@ -66,7 +81,12 @@ export async function POST(
             } else {
                 featureKey = `${answer.primaryFeatureId},${answer.secondaryFeatureId}`;
             }
-            inflectionCorrections[featureKey] = answer.answerText;
+            if (
+                normalize(answer.answerText) !==
+                normalize(submittedInflectionAnswers?.[featureKey] ?? "")
+            ) {
+                inflectionCorrections[featureKey] = answer.answerText;
+            }
         }
     }
 

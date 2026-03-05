@@ -2,6 +2,7 @@ import { Question, Result } from "@models";
 
 export interface SkipAnswerRequestAPI {
     questionId: number;
+    submittedInflectionAnswers: { [key: string]: string } | null;
     lastQuestions: number[];
     retrieveNextAnswer: boolean;
 }
