@@ -52,7 +52,7 @@ export default function InflectionAnswerEntry({
             className={styles.answerentry}
             value={inflectionAnswers.get(featureKey)}
             onKeyDown={onKeyDown}
-            disabled={pending}
+            disabled={pending || inflectionCorrections.size > 0}
             onChange={onChangeCurrentValue}
         ></input>
     );

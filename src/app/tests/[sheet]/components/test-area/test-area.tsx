@@ -189,8 +189,13 @@ export default function TestArea({
         setPending(true);
         const retrieveNextAnswer =
             numberOfQuestions === null || questionNumber < numberOfQuestions;
+        const submitInflectionAnswers =
+            question.inflectionTypeId === null
+                ? null
+                : Object.fromEntries(inflectionAnswers);
         const body: SkipAnswerRequestAPI = {
             questionId: question.id,
+            submittedInflectionAnswers: submitInflectionAnswers,
             lastQuestions: lastQuestions,
             retrieveNextAnswer,
         };
