@@ -1,5 +1,26 @@
 # Changelog
 
+## Version 0.5.0
+
+### Features
+
+- Allow the user to skip answering a question during tests.
+- Allow Enter or Tab to jump to the next inflection table cell.
+- Allow questions to be shared across multiple sheets within the same tongue
+  pair via autocomplete search when adding a new question.
+- Enforce unique question text per tongue pair, preventing duplicate questions.
+
+### Bug fixes
+
+- Clean up orphaned answers that were left behind when questions were deleted.
+- Fix bug when modifying a question's inflection type.
+
+### Other changes
+
+- Use a more universal font for better cross-platform compatibility.
+- Only show scroll bars when necessary.
+- Make sheet header full-width with side margins.
+
 ## Version 0.4.0
 
 ### Features
