@@ -31,8 +31,13 @@ export interface UpdateQuestionResponseAPISuccess {
     inflectionAnswers: InflectionAnswer[];
 }
 
+export interface UpdateQuestionResponseAPIError {
+    error: string;
+}
+
 export type UpdateQuestionResponseAPIFailure = Record<string, never>;
 
 export type UpdateQuestionResponseAPI =
     | UpdateQuestionResponseAPISuccess
+    | UpdateQuestionResponseAPIError
     | UpdateQuestionResponseAPIFailure;

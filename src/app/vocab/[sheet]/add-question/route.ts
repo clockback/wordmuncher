@@ -92,6 +92,27 @@ async function addQuestionWithAnswers(
 
     const sheet = await Sheet.findByPk(sheetId);
 
+    const existingQuestion = await Question.findOne({
+        where: {
+            tonguePairId: sheet.tonguePairId,
+            questionText: proposedQuestionText,
+        },
+        include: [
+            { model: Answer, as: "answers" },
+            { model: InflectionAnswer, as: "inflectionAnswers" },
+            { model: Result, as: "result" },
+        ],
+    });
+
+    if (existingQuestion) {
+        return {
+            body: {
+                error: "A question with this text already exists. Use the search to link to it.",
+            },
+            status: 409,
+        };
+    }
+
     let newQuestion: Question;
     const createdAnswers: Answer[] = [];
     let result: Result;
@@ -127,6 +148,17 @@ async function addQuestionWithAnswers(
             );
         });
     } catch (error) {
+        if (
+            error instanceof Error &&
+            error.name === "SequelizeUniqueConstraintError"
+        ) {
+            return {
+                body: {
+                    error: "A question with this text already exists. Use the search to link to it.",
+                },
+                status: 409,
+            };
+        }
         console.log(`error: ${error}`);
         return { body: {}, status: 409 };
     }
@@ -152,6 +184,27 @@ async function addQuestionWithInflectionAnswers(
     } = requestJSON;
 
     const sheet = await Sheet.findByPk(sheetId);
+
+    const existingQuestion = await Question.findOne({
+        where: {
+            tonguePairId: sheet.tonguePairId,
+            questionText: proposedQuestionText,
+        },
+        include: [
+            { model: Answer, as: "answers" },
+            { model: InflectionAnswer, as: "inflectionAnswers" },
+            { model: Result, as: "result" },
+        ],
+    });
+
+    if (existingQuestion) {
+        return {
+            body: {
+                error: "A question with this text already exists. Use the search to link to it.",
+            },
+            status: 409,
+        };
+    }
 
     let newQuestion: Question;
     const createdAnswers: InflectionAnswer[] = [];
@@ -187,6 +240,17 @@ async function addQuestionWithInflectionAnswers(
             );
         });
     } catch (error) {
+        if (
+            error instanceof Error &&
+            error.name === "SequelizeUniqueConstraintError"
+        ) {
+            return {
+                body: {
+                    error: "A question with this text already exists. Use the search to link to it.",
+                },
+                status: 409,
+            };
+        }
         console.log(`error: ${error}`);
         return { body: {}, status: 409 };
     }
