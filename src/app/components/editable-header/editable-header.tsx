@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, ReactNode, SetStateAction, useState } from "react";
 
 import styles from "./editable-header.module.css";
 
@@ -9,6 +9,8 @@ interface EditableHeaderProps {
     isPending: boolean;
     setIsEditing: Dispatch<SetStateAction<boolean>>;
     title: string;
+    onInputChange?: (text: string) => void;
+    renderDropdown?: () => ReactNode;
 }
 
 export default function EditableHeader({
@@ -18,6 +20,8 @@ export default function EditableHeader({
     onBlur,
     setIsEditing,
     title,
+    onInputChange,
+    renderDropdown,
 }: EditableHeaderProps) {
     const [inputText, setInputText] = useState<string>("");
 
@@ -49,20 +53,25 @@ export default function EditableHeader({
     }
 
     const onChangeText = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setInputText(e.target.value);
+        const newText = e.target.value;
+        setInputText(newText);
+        onInputChange?.(newText);
     };
 
     return (
         <h1 className={styles.header}>
-            <input
-                autoFocus
-                className={styles.input}
-                onChange={onChangeText}
-                onBlur={onBlurWithInputText}
-                onKeyDown={preventFormSubmission}
-                value={inputText}
-                title={title}
-            ></input>
+            <div className={styles.inputWrapper}>
+                <input
+                    autoFocus
+                    className={styles.input}
+                    onChange={onChangeText}
+                    onBlur={onBlurWithInputText}
+                    onKeyDown={preventFormSubmission}
+                    value={inputText}
+                    title={title}
+                ></input>
+                {renderDropdown?.()}
+            </div>
         </h1>
     );
 }
