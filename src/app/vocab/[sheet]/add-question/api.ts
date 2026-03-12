@@ -33,8 +33,13 @@ export interface AddQuestionResponseAPISuccess {
     result: Result;
 }
 
+export interface AddQuestionResponseAPIError {
+    error: string;
+}
+
 export type AddQuestionResponseAPIFailure = Record<string, never>;
 
 export type AddQuestionResponseAPI =
     | AddQuestionResponseAPISuccess
+    | AddQuestionResponseAPIError
     | AddQuestionResponseAPIFailure;

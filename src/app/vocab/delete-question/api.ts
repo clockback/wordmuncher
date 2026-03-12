@@ -1,7 +1,16 @@
 export interface DeleteQuestionRequestAPI {
-    id: number; // The ID of the question to delete.
+    id: number;
+    sheetId: number;
 }
 
-export interface DeleteQuestionResponseAPI {
-    error?: string; // The error message if applicable.
+export interface DeleteQuestionResponseAPISuccess {
+    deleted: boolean;
 }
+
+export interface DeleteQuestionResponseAPIFailure {
+    error: string;
+}
+
+export type DeleteQuestionResponseAPI =
+    | DeleteQuestionResponseAPISuccess
+    | DeleteQuestionResponseAPIFailure;

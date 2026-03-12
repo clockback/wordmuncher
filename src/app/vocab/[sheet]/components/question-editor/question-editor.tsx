@@ -111,6 +111,15 @@ export default function QuestionEditor() {
 
     async function clickSaveNewQuestionHandleResponse(response: NextResponse) {
         const responseJSON: AddQuestionResponseAPI = await response.json();
+
+        if (!response.ok) {
+            setPending(false);
+            if ("error" in responseJSON) {
+                alert(responseJSON.error);
+            }
+            return;
+        }
+
         const updatedQuestions = structuredClone(allQuestions);
         updatedQuestions.push(responseJSON as Question);
         setAllQuestions(updatedQuestions);
@@ -260,7 +269,11 @@ export default function QuestionEditor() {
 
     async function clickSaveEditQuestionHandleResponse(response: NextResponse) {
         if (!response.ok) {
-            console.error("Updating question failed.");
+            setPending(false);
+            const responseJSON = await response.json();
+            if ("error" in responseJSON) {
+                alert(responseJSON.error);
+            }
             return;
         }
         const responseJSON: UpdateQuestionResponseAPISuccess =
@@ -320,7 +333,10 @@ export default function QuestionEditor() {
 
     const clickDeleteQuestion = () => {
         setPending(true);
-        const body: DeleteQuestionRequestAPI = { id: selectedQuestion.id };
+        const body: DeleteQuestionRequestAPI = {
+            id: selectedQuestion.id,
+            sheetId,
+        };
         fetch("/vocab/delete-question", {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },

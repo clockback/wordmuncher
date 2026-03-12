@@ -151,6 +151,64 @@ async function resolveInflectionType(
     return { inflectionTypeId: inflectionType.id, featureNameToId };
 }
 
+function questionsMatch(
+    existing: Question,
+    imported: ExportQuestion,
+    inflectionTypeMap: Map<string, ResolvedInflectionType>,
+): boolean {
+    if ("inflectionType" in imported) {
+        if (!existing.inflectionTypeId) return false;
+
+        const resolved = inflectionTypeMap.get(imported.inflectionType);
+        if (
+            !resolved ||
+            existing.inflectionTypeId !== resolved.inflectionTypeId
+        )
+            return false;
+
+        const existingAnswers = existing.inflectionAnswers ?? [];
+        if (existingAnswers.length !== imported.inflectionAnswers.length)
+            return false;
+
+        for (const ia of imported.inflectionAnswers) {
+            const primaryFeatureId = resolved.featureNameToId.get(
+                ia.primaryFeature,
+            );
+            const secondaryFeatureId = ia.secondaryFeature
+                ? resolved.featureNameToId.get(ia.secondaryFeature)
+                : undefined;
+
+            const match = existingAnswers.find(
+                (ea) =>
+                    ea.primaryFeatureId === primaryFeatureId &&
+                    ea.secondaryFeatureId === secondaryFeatureId &&
+                    ea.answerText === ia.answerText,
+            );
+            if (!match) return false;
+        }
+        return true;
+    } else {
+        if (existing.inflectionTypeId) return false;
+
+        const existingAnswers = existing.answers ?? [];
+        const mainAnswer = existingAnswers.find((a) => a.isMainAnswer);
+        if (!mainAnswer || mainAnswer.answerText !== imported.mainAnswer)
+            return false;
+
+        const otherAnswers = existingAnswers
+            .filter((a) => !a.isMainAnswer)
+            .map((a) => a.answerText)
+            .sort();
+        const importedOthers = [...imported.otherAnswers].sort();
+
+        if (otherAnswers.length !== importedOthers.length) return false;
+        for (let i = 0; i < otherAnswers.length; i++) {
+            if (otherAnswers[i] !== importedOthers[i]) return false;
+        }
+        return true;
+    }
+}
+
 async function createQuestion(
     question: ExportQuestion,
     tonguePairId: number,
@@ -158,6 +216,29 @@ async function createQuestion(
     inflectionTypeMap: Map<string, ResolvedInflectionType>,
     transaction: import("sequelize").Transaction,
 ) {
+    const existing = await Question.findOne({
+        where: { tonguePairId, questionText: question.questionText },
+        include: [
+            { model: Answer, as: "answers" },
+            { model: InflectionAnswer, as: "inflectionAnswers" },
+        ],
+        transaction,
+    });
+
+    if (existing) {
+        if (!questionsMatch(existing, question, inflectionTypeMap)) {
+            throw new Error(
+                `Question "${question.questionText}" already exists with different answers.`,
+            );
+        }
+
+        await SheetQuestion.create(
+            { sheetId, questionId: existing.id },
+            { transaction },
+        );
+        return;
+    }
+
     if ("inflectionType" in question) {
         const resolved = inflectionTypeMap.get(question.inflectionType);
         if (!resolved) {

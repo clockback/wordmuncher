@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Transaction } from "sequelize";
+import { Op, Transaction } from "sequelize";
 
 import { Answer, InflectionAnswer, Question } from "@models";
 
@@ -10,6 +10,34 @@ import {
     UpdateQuestionResponseAPI,
 } from "./api";
 import sequelize from "src/db/models/db-connection";
+
+async function checkForDuplicateQuestion(
+    questionId: number,
+    proposedQuestionText: string,
+): Promise<string | null> {
+    const question = await Question.findByPk(questionId);
+    if (!question) {
+        return "Question not found.";
+    }
+
+    if (question.questionText === proposedQuestionText) {
+        return null;
+    }
+
+    const existing = await Question.findOne({
+        where: {
+            tonguePairId: question.tonguePairId,
+            questionText: proposedQuestionText,
+            id: { [Op.ne]: questionId },
+        },
+    });
+
+    if (existing) {
+        return `A question with the text "${proposedQuestionText}" already exists.`;
+    }
+
+    return null;
+}
 
 async function processPlainAnswers(
     questionId: number,
@@ -94,6 +122,14 @@ async function updateQuestionWithAnswers(
         proposedOtherAnswers,
     } = requestJSON;
 
+    const duplicateError = await checkForDuplicateQuestion(
+        id,
+        proposedQuestionText,
+    );
+    if (duplicateError) {
+        return { body: { error: duplicateError }, status: 409 };
+    }
+
     const createdAnswers: Answer[] = [];
 
     try {
@@ -150,6 +186,14 @@ async function updateQuestionWithInflectionAnswers(
         proposedInflectionType,
         proposedInflectionAnswers,
     } = requestJSON;
+
+    const duplicateError = await checkForDuplicateQuestion(
+        id,
+        proposedQuestionText,
+    );
+    if (duplicateError) {
+        return { body: { error: duplicateError }, status: 409 };
+    }
 
     const createdAnswers: InflectionAnswer[] = [];
 
