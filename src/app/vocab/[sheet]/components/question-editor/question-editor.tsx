@@ -1,7 +1,7 @@
 "use client";
 
 import { NextResponse } from "next/server";
-import { useContext } from "react";
+import { useCallback, useContext, useState } from "react";
 
 import Button from "@components/button/button";
 import EditableHeader from "@components/editable-header/editable-header";
@@ -13,8 +13,11 @@ import {
     AddQuestionResponseAPI,
 } from "../../add-question/api";
 import editSheetContext from "../../context";
+import { LinkQuestionResponseAPISuccess } from "../../link-question/api";
+import { SearchQuestionResult } from "../../search-questions/api";
 import AnswerSection from "../answer-section/answer-section";
 import CreateInvertedEntry from "../create-inverted-entry/create-inverted-entry";
+import QuestionAutocomplete from "../question-autocomplete/question-autocomplete";
 import styles from "./question-editor.module.css";
 import { DeleteQuestionRequestAPI } from "src/app/vocab/delete-question/api";
 import {
@@ -95,6 +98,72 @@ export default function QuestionEditor() {
         sheetId,
         studyingTongue,
     } = useContext(editSheetContext);
+
+    const [autocompleteText, setAutocompleteText] = useState("");
+    const [showAutocomplete, setShowAutocomplete] = useState(false);
+
+    const handleSelectSuggestion = useCallback(
+        async (suggestion: SearchQuestionResult) => {
+            setShowAutocomplete(false);
+            setPending(true);
+
+            const response = await fetch(`/vocab/${sheetId}/link-question`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ questionId: suggestion.id }),
+            });
+
+            if (response.ok) {
+                const data: LinkQuestionResponseAPISuccess =
+                    await response.json();
+                const updatedQuestions = structuredClone(allQuestions);
+                updatedQuestions.push(data as Question);
+                setAllQuestions(updatedQuestions);
+                setIsAddingNewQuestion(false);
+            }
+
+            setPending(false);
+        },
+        [
+            allQuestions,
+            setAllQuestions,
+            setIsAddingNewQuestion,
+            setPending,
+            sheetId,
+        ],
+    );
+
+    const handleInputChange = useCallback(
+        (text: string) => {
+            setAutocompleteText(text);
+            setShowAutocomplete(isAddingNewQuestion && text.length >= 2);
+        },
+        [isAddingNewQuestion],
+    );
+
+    const handleCloseAutocomplete = useCallback(() => {
+        setShowAutocomplete(false);
+    }, []);
+
+    const renderDropdown = useCallback(() => {
+        if (!isAddingNewQuestion) return null;
+        return (
+            <QuestionAutocomplete
+                searchText={autocompleteText}
+                sheetId={sheetId}
+                visible={showAutocomplete}
+                onSelect={handleSelectSuggestion}
+                onClose={handleCloseAutocomplete}
+            />
+        );
+    }, [
+        isAddingNewQuestion,
+        autocompleteText,
+        sheetId,
+        showAutocomplete,
+        handleSelectSuggestion,
+        handleCloseAutocomplete,
+    ]);
 
     if (selectedQuestion === null && !isAddingNewQuestion) {
         return <></>;
@@ -401,6 +470,8 @@ export default function QuestionEditor() {
                 onBlur={onBlur}
                 setIsEditing={setIsEditingQuestionText}
                 title="Question"
+                onInputChange={handleInputChange}
+                renderDropdown={renderDropdown}
             ></EditableHeader>
             <div className={styles.languagetoggle} title="Question language">
                 <span

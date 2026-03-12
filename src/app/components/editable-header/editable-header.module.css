@@ -7,6 +7,10 @@
     background-color: rgb(var(--colour-dark-charcoal));
 }
 
+.inputWrapper {
+    position: relative;
+}
+
 .input {
     font-size: 40px;
     width: 100%;
