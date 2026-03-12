@@ -210,7 +210,6 @@ export default function TestArea({
             }
 
             const responseJSON: SkipAnswerResponseAPI = await response.json();
-            setPending(false);
             setLastQuestions(responseJSON.lastQuestions);
             setExpectedAnswer(responseJSON.expectedAnswer);
             const newInflectionCorrections = Object.entries(
