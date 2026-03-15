@@ -65,7 +65,7 @@ async function processInflectionAnswers(
         answers.push({
             questionId,
             primaryFeatureId: inflectionAnswer.primaryFeature,
-            secondaryFeatureId: inflectionAnswer.secondaryFeature,
+            secondaryFeatureId: inflectionAnswer.secondaryFeature ?? null,
             answerText: inflectionAnswer.answer,
         });
     }
