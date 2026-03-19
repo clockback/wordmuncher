@@ -9,25 +9,24 @@ import TonguesPopup from "@components/tongues-popup/tongues-popup";
 import { ImportSheetResponseAPI } from "../../import-sheet/api";
 import SheetsList from "../sheetslist/sheetslist";
 import styles from "./tongueselector.module.css";
+import { FlatCategory } from "src/app/lib/category-tree";
+
+interface TongueData {
+    id: number;
+    tongueName: string;
+    flag: string;
+    sheets: { sheetId: number; sheetName: string; categoryId: number | null }[];
+    categories: FlatCategory[];
+}
 
 interface TongueSelectorProps {
-    onChangeTongue: (tongueId: number) => Promise<{
-        id: number;
-        tongueName: string;
-        flag: string;
-        sheets: { sheetId: number; sheetName: string }[];
-    }>;
+    onChangeTongue: (tongueId: number) => Promise<TongueData>;
     allTongues: {
         id: number;
         tongueName: string;
         flag: string;
     }[];
-    initialTongue: {
-        id: number;
-        tongueName: string;
-        flag: string;
-        sheets: { sheetId: number; sheetName: string }[];
-    } | null;
+    initialTongue: TongueData | null;
 }
 
 export default function TongueSelector({
@@ -35,12 +34,9 @@ export default function TongueSelector({
     allTongues,
     initialTongue,
 }: TongueSelectorProps) {
-    const [currentTongue, setCurrentTongue] = useState<{
-        id: number;
-        tongueName: string;
-        flag: string;
-        sheets: { sheetId: number; sheetName: string }[];
-    } | null>(initialTongue);
+    const [currentTongue, setCurrentTongue] = useState<TongueData | null>(
+        initialTongue,
+    );
     const [popupVisible, setPopupVisible] = useState<boolean>(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -125,8 +121,15 @@ export default function TongueSelector({
                 </Button>
             </div>
             <SheetsList
-                sheets={currentTongue ? currentTongue.sheets : []}
-            ></SheetsList>
+                initialCategories={currentTongue?.categories ?? []}
+                initialSheets={
+                    currentTongue?.sheets.map((s) => ({
+                        sheetId: s.sheetId,
+                        sheetName: s.sheetName,
+                        categoryId: s.categoryId,
+                    })) ?? []
+                }
+            />
             {tonguePairButtons}
             <input
                 type="file"

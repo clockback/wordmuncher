@@ -2,10 +2,17 @@ import { notFound } from "next/navigation";
 
 import Button from "@components/button/button";
 
-import { Question, Result, Sheet } from "@models";
+import { Category, Question, Result, Sheet } from "@models";
 
 import TestSheetTable from "./components/test-sheet-table/test-sheet-table";
 import styles from "./tests.module.css";
+import {
+    CategoryTreeData,
+    FlatCategory,
+    SheetNode,
+    buildCategoryTree,
+    pruneEmptyCategories,
+} from "src/app/lib/category-tree";
 import { getSettings } from "src/db/helpers/settings";
 
 async function getAllSheets(): Promise<Sheet[]> {
@@ -24,12 +31,31 @@ async function getAllSheets(): Promise<Sheet[]> {
     });
 }
 
-async function getSheetsByProgress(): Promise<
-    { id: number; sheetName: string; progress: number }[]
-> {
+async function getCategories(): Promise<FlatCategory[]> {
+    "use server";
+    const settings = await getSettings();
+
+    const categories = await Category.findAll({
+        where: { tonguePairId: settings.tonguePairId },
+        order: [
+            ["displayOrder", "ASC"],
+            ["categoryName", "ASC"],
+        ],
+    });
+
+    return categories.map((cat) => ({
+        id: cat.id,
+        categoryName: cat.categoryName,
+        parentCategoryId: cat.parentCategoryId,
+        depth: cat.depth,
+    }));
+}
+
+async function getSheetsByProgress(): Promise<SheetNode[]> {
     "use server";
     const sheetsWithoutProgress = await getAllSheets();
-    const sheets = [];
+    const sheets: SheetNode[] = [];
+
     for (const sheet of sheetsWithoutProgress) {
         let progressTotal = 0;
         const questionCount = sheet.questions.length;
@@ -52,26 +78,41 @@ async function getSheetsByProgress(): Promise<
         const progress = questionCount ? progressTotal / questionCount : 0;
 
         sheets.push({
-            id: sheet.id,
+            sheetId: sheet.id,
             sheetName: sheet.sheetName,
-            progress: progress,
+            categoryId: sheet.categoryId,
+            progress,
         });
     }
     return sheets;
 }
 
+async function getTreeData(): Promise<CategoryTreeData> {
+    "use server";
+    const [sheets, categories] = await Promise.all([
+        getSheetsByProgress(),
+        getCategories(),
+    ]);
+    const tree = buildCategoryTree(categories, sheets);
+    return {
+        roots: pruneEmptyCategories(tree.roots),
+        uncategorizedSheets: tree.uncategorizedSheets,
+    };
+}
+
 export default async function Tests() {
-    let allSheets: { id: number; sheetName: string; progress: number }[];
+    let treeData: CategoryTreeData;
     try {
-        allSheets = await getSheetsByProgress();
-    } catch {
+        treeData = await getTreeData();
+    } catch (error) {
+        console.error("Tests page error:", error);
         return notFound();
     }
 
     return (
         <div className={styles.centre}>
             <h1>Select a sheet</h1>
-            <TestSheetTable sheets={allSheets}></TestSheetTable>
+            <TestSheetTable treeData={treeData}></TestSheetTable>
             <div className={styles.buttonmargin}>
                 <Button href="/">Back</Button>
             </div>

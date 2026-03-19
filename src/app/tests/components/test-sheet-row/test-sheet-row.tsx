@@ -13,9 +13,10 @@ interface TestSheetRowProps {
         sheetName: string;
         progress: number;
     };
+    depth?: number;
 }
 
-export default function TestSheetRow({ sheet }: TestSheetRowProps) {
+export default function TestSheetRow({ sheet, depth = 0 }: TestSheetRowProps) {
     const { selectedRowId, setSelectedRowId } = useContext(testsContext);
 
     const clickSheet = () => {
@@ -28,10 +29,14 @@ export default function TestSheetRow({ sheet }: TestSheetRowProps) {
         <TestDurationRow sheetId={sheet.id}></TestDurationRow>
     ) : null;
 
+    const indentPx = depth * 20;
+
     return (
         <>
             <tr onClick={clickSheet} className={style}>
-                <td>{sheet.sheetName}</td>
+                <td style={{ paddingLeft: `${indentPx + 8}px` }}>
+                    {sheet.sheetName}
+                </td>
                 <td>{Math.floor(sheet.progress * 100)}%</td>
             </tr>
             {extraRow}

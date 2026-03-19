@@ -9,9 +9,13 @@ import SheetNameInput from "../sheet-name-input/sheet-name-input";
 
 interface AddSheetFormProps {
     validateSheetName: (sheetName: string) => Promise<boolean>;
+    categoryId?: number | null;
 }
 
-export default function AddSheetForm({ validateSheetName }: AddSheetFormProps) {
+export default function AddSheetForm({
+    validateSheetName,
+    categoryId,
+}: AddSheetFormProps) {
     const [pending, setPending] = useState<boolean>(false);
     const router = useRouter();
 
@@ -28,7 +32,7 @@ export default function AddSheetForm({ validateSheetName }: AddSheetFormProps) {
     function addSheet(formData: FormData) {
         setPending(true);
         const proposedName = formData.get("sheet-name") as string;
-        const body: AddSheetRequestAPI = { proposedName };
+        const body: AddSheetRequestAPI = { proposedName, categoryId };
         fetch("/vocab/add-sheet/add-sheet", {
             method: "POST",
             headers: { "Content-Type": "application/json" },

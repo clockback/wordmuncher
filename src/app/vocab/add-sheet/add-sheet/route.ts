@@ -10,6 +10,7 @@ export async function POST(request: NextRequest) {
     const settings = await getSettings();
     const requestJSON: AddSheetRequestAPI = await request.json();
     const proposedName = requestJSON.proposedName;
+    const categoryId = requestJSON.categoryId ?? null;
 
     let body: AddSheetResponseAPI;
     let status: number;
@@ -18,6 +19,7 @@ export async function POST(request: NextRequest) {
         const sheet = await Sheet.create({
             sheetName: proposedName,
             tonguePairId: settings.tonguePairId,
+            categoryId,
         });
         body = { success: true, sheetId: sheet.id };
         status = 200;

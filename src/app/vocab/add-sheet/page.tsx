@@ -22,7 +22,11 @@ async function validateSheetName(sheetName: string): Promise<boolean> {
     return sheet !== null;
 }
 
-export default async function Page() {
+export default async function Page({
+    searchParams,
+}: {
+    searchParams: Promise<{ categoryId?: string }>;
+}) {
     let settings: Settings;
     try {
         settings = await getSettings();
@@ -35,13 +39,19 @@ export default async function Page() {
     }
 
     const studying = await currentTonguePair.studyingTongue();
+    const { categoryId: categoryIdParam } = await searchParams;
+    const categoryId = categoryIdParam ? parseInt(categoryIdParam) : null;
+
     return (
         <div className={styles.centrecontent}>
             <div className={styles.centreheader}>
                 New sheet for {studying.tongueName}...
             </div>
             <Flag flag={studying.flag}></Flag>
-            <AddSheetForm validateSheetName={validateSheetName} />
+            <AddSheetForm
+                validateSheetName={validateSheetName}
+                categoryId={categoryId}
+            />
         </div>
     );
 }
