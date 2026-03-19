@@ -1,0 +1,39 @@
+.inputRow {
+    background-color: rgb(var(--colour-dark-charcoal));
+}
+
+.inputCell {
+    padding: 4px 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.input {
+    background-color: rgb(var(--colour-light-ash));
+    color: rgb(var(--colour-pearl));
+    border: 1px solid rgb(var(--colour-davys-grey));
+    border-radius: 4px;
+    padding: 6px 8px;
+    font-size: 16px;
+    font-family: inherit;
+    font-weight: bold;
+    width: 100%;
+    outline: none;
+}
+
+.input:focus {
+    border-color: rgb(var(--colour-word-muncher));
+}
+
+.hint {
+    font-size: 11px;
+    color: rgb(var(--colour-dim-grey));
+    white-space: nowrap;
+}
+
+.warning {
+    font-size: 12px;
+    color: rgb(var(--colour-word-muncher));
+    white-space: nowrap;
+}

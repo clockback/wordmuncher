@@ -2,10 +2,11 @@ import { notFound } from "next/navigation";
 
 import Button from "@components/button/button";
 
-import { Settings, Tongue, TonguePair } from "@models";
+import { Category, Settings, Tongue, TonguePair } from "@models";
 
 import TongueSelector from "./components/tongueselector/tongueselector";
 import styles from "./vocab.module.css";
+import { FlatCategory } from "src/app/lib/category-tree";
 import { getSettings, setSettings } from "src/db/helpers/settings";
 
 async function pickTongue(tongueId: number): Promise<TonguePair> {
@@ -27,30 +28,57 @@ async function pickTongue(tongueId: number): Promise<TonguePair> {
 
 async function getTonguePairSheetsAsJson(
     tonguePair: TonguePair,
-): Promise<{ sheetId: number; sheetName: string }[]> {
+): Promise<
+    { sheetId: number; sheetName: string; categoryId: number | null }[]
+> {
     const sheets = [];
     for (const sheet of await tonguePair.getSheets()) {
-        sheets.push({ sheetId: sheet.id, sheetName: sheet.sheetName });
+        sheets.push({
+            sheetId: sheet.id,
+            sheetName: sheet.sheetName,
+            categoryId: sheet.categoryId,
+        });
     }
     return sheets;
+}
+
+async function getTonguePairCategoriesAsJson(
+    tonguePair: TonguePair,
+): Promise<FlatCategory[]> {
+    const categories = await Category.findAll({
+        where: { tonguePairId: tonguePair.id },
+        order: [
+            ["displayOrder", "ASC"],
+            ["categoryName", "ASC"],
+        ],
+    });
+    return categories.map((cat) => ({
+        id: cat.id,
+        categoryName: cat.categoryName,
+        parentCategoryId: cat.parentCategoryId,
+        depth: cat.depth,
+    }));
 }
 
 async function pickTongueAndGetBack(tongueId: number): Promise<{
     id: number;
     tongueName: string;
     flag: string;
-    sheets: { sheetId: number; sheetName: string }[];
+    sheets: { sheetId: number; sheetName: string; categoryId: number | null }[];
+    categories: FlatCategory[];
 }> {
     "use server";
 
     const tonguePair = await pickTongue(tongueId);
     const studyingTongue = await tonguePair.studyingTongue();
     const sheets = await getTonguePairSheetsAsJson(tonguePair);
+    const categories = await getTonguePairCategoriesAsJson(tonguePair);
     return {
         id: studyingTongue.id,
         tongueName: studyingTongue.tongueName,
         flag: studyingTongue.flag,
-        sheets: sheets,
+        sheets,
+        categories,
     };
 }
 
@@ -73,13 +101,22 @@ export default async function Home() {
     let allTongues: { id: number; tongueName: string; flag: string }[];
     let settings: Settings;
     let tonguePair: TonguePair;
-    let sheets: { sheetName: string; sheetId: number }[];
+    let sheets: {
+        sheetId: number;
+        sheetName: string;
+        categoryId: number | null;
+    }[];
+    let categories: FlatCategory[];
     try {
         allTongues = await fetchAllTongues();
         settings = await getSettings();
         tonguePair = settings.tonguePair;
         sheets = tonguePair ? await getTonguePairSheetsAsJson(tonguePair) : [];
-    } catch {
+        categories = tonguePair
+            ? await getTonguePairCategoriesAsJson(tonguePair)
+            : [];
+    } catch (error) {
+        console.error("Vocab page error:", error);
         return notFound();
     }
     const initialTongueModel = tonguePair ? tonguePair.studying : null;
@@ -88,7 +125,8 @@ export default async function Home() {
               id: initialTongueModel.id,
               tongueName: initialTongueModel.tongueName,
               flag: initialTongueModel.flag,
-              sheets: sheets,
+              sheets,
+              categories,
           }
         : null;
 

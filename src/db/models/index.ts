@@ -1,4 +1,5 @@
 import { Answer } from "./answer";
+import { Category } from "./category";
 import { InflectionAnswer } from "./inflection-answer";
 import { InflectionCategory } from "./inflection-category";
 import { InflectionFeature } from "./inflection-feature";
@@ -21,6 +22,7 @@ for (const model of [
     Tongue,
     TonguePair,
     Settings,
+    Category,
     Sheet,
     Question,
     SheetQuestion,
@@ -29,6 +31,7 @@ for (const model of [
 }
 
 export { Answer } from "./answer";
+export { Category } from "./category";
 export { InflectionAnswer } from "./inflection-answer";
 export { InflectionCategory } from "./inflection-category";
 export { InflectionFeature } from "./inflection-feature";

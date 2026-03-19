@@ -10,6 +10,7 @@ import {
 
 import {
     Answer,
+    Category,
     InflectionAnswer,
     Question,
     SheetQuestion,
@@ -19,8 +20,8 @@ import {
 import sequelize from "./db-connection";
 
 export class Sheet extends Model<
-    InferAttributes<Sheet, { omit: "tonguePair" }>,
-    InferCreationAttributes<Sheet, { omit: "tonguePair" }>
+    InferAttributes<Sheet, { omit: "tonguePair" | "category" }>,
+    InferCreationAttributes<Sheet, { omit: "tonguePair" | "category" }>
 > {
     declare id: CreationOptional<number>;
 
@@ -28,6 +29,9 @@ export class Sheet extends Model<
 
     declare tonguePairId: ForeignKey<TonguePair["id"]>;
     declare tonguePair: NonAttribute<TonguePair>;
+
+    declare categoryId: ForeignKey<Category["id"]> | null;
+    declare category?: NonAttribute<Category>;
 
     declare questions?: NonAttribute<Question[]>;
 
@@ -61,6 +65,11 @@ export class Sheet extends Model<
             foreignKey: "tonguePairId",
         });
 
+        Sheet.belongsTo(Category, {
+            foreignKey: "categoryId",
+            as: "category",
+        });
+
         Sheet.belongsToMany(Question, {
             through: SheetQuestion,
             foreignKey: "sheetId",
@@ -90,6 +99,16 @@ Sheet.init(
             onDelete: "CASCADE",
             onUpdate: "CASCADE",
             allowNull: false,
+        },
+        categoryId: {
+            type: DataTypes.INTEGER,
+            references: {
+                model: "Categories",
+                key: "id",
+            },
+            onDelete: "SET NULL",
+            onUpdate: "CASCADE",
+            allowNull: true,
         },
         createdAt: DataTypes.DATE,
         updatedAt: DataTypes.DATE,

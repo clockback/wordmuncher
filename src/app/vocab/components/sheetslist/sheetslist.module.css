@@ -7,10 +7,28 @@
 
 .inlinetable {
     width: 100%;
-    overflow-y: auto;
+    table-layout: fixed;
     text-align: left;
     font-size: 22px;
     border-spacing: 0 3px;
     font-weight: bold;
     white-space: nowrap;
+}
+
+.addCategoryRow {
+    margin-top: 8px;
+}
+
+.addCategoryButton {
+    background: none;
+    border: none;
+    color: rgb(var(--colour-dim-grey));
+    font-size: 14px;
+    font-family: inherit;
+    cursor: pointer;
+    padding: 4px 8px;
+}
+
+.addCategoryButton:hover {
+    color: rgb(var(--colour-pearl));
 }
