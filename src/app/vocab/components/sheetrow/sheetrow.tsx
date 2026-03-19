@@ -8,9 +8,15 @@ interface SheetRowProps {
     children: React.ReactNode;
     href?: string;
     depth?: number;
+    onMove?: () => void;
 }
 
-export default function SheetRow({ children, href, depth = 0 }: SheetRowProps) {
+export default function SheetRow({
+    children,
+    href,
+    depth = 0,
+    onMove,
+}: SheetRowProps) {
     const router = useRouter();
 
     const goToSheet = () => {
@@ -27,7 +33,23 @@ export default function SheetRow({ children, href, depth = 0 }: SheetRowProps) {
                 style={{ paddingLeft: `${indentPx + 10}px` }}
                 onClick={goToSheet}
             >
-                {children}
+                <div className={styles.sheetCell}>
+                    <span>{children}</span>
+                    {onMove && (
+                        <span className={styles.actions}>
+                            <button
+                                className={styles.actionButton}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onMove();
+                                }}
+                                title="Move to category"
+                            >
+                                ↕
+                            </button>
+                        </span>
+                    )}
+                </div>
             </td>
         </tr>
     );

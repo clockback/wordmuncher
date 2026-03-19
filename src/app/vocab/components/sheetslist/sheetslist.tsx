@@ -14,6 +14,7 @@ import AddCategoryInput from "../add-category-input/add-category-input";
 import AddToCategoryDialog from "../add-to-category-dialog/add-to-category-dialog";
 import CategoryActions from "../category-actions/category-actions";
 import DeleteCategoryDialog from "../delete-category-dialog/delete-category-dialog";
+import MoveSheetDialog from "../move-sheet-dialog/move-sheet-dialog";
 import SheetRow from "../sheetrow/sheetrow";
 import styles from "./sheetslist.module.css";
 import {
@@ -38,7 +39,8 @@ export default function SheetsList({
     initialSheets,
 }: SheetsListProps) {
     const [categories, setCategories] = useState(initialCategories);
-    const [sheets] = useState(initialSheets);
+    const [sheets, setSheets] = useState(initialSheets);
+    const [movingSheet, setMovingSheet] = useState<SheetNode | null>(null);
     const [addingAt, setAddingAt] = useState<{
         parentId: number | null;
         depth: number;
@@ -174,11 +176,21 @@ export default function SheetsList({
         setDeletingCategory(null);
     };
 
+    const handleMoveSheet = (sheetId: number, newCategoryId: number | null) => {
+        setSheets((prev) =>
+            prev.map((s) =>
+                s.sheetId === sheetId ? { ...s, categoryId: newCategoryId } : s,
+            ),
+        );
+        setMovingSheet(null);
+    };
+
     const renderSheet = (sheet: SheetNode, depth: number) => (
         <SheetRow
             key={sheet.sheetId}
             href={`/vocab/${sheet.sheetId}`}
             depth={depth}
+            onMove={() => setMovingSheet(sheet)}
         >
             {sheet.sheetName}
         </SheetRow>
@@ -260,6 +272,14 @@ export default function SheetsList({
                         });
                     }}
                     onCancel={() => setAddingToCategory(null)}
+                />
+            )}
+            {movingSheet && (
+                <MoveSheetDialog
+                    sheet={movingSheet}
+                    categoryRoots={roots}
+                    onConfirm={handleMoveSheet}
+                    onCancel={() => setMovingSheet(null)}
                 />
             )}
             <div className={styles.addCategoryRow}>
