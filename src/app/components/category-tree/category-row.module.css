@@ -29,6 +29,10 @@
 
 .categoryName {
     font-weight: bold;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
 }
 
 .expanded {
@@ -37,6 +41,7 @@
 
 .actions {
     margin-left: auto;
+    flex-shrink: 0;
     opacity: 0;
     transition: opacity 0.15s;
 }

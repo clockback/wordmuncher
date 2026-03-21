@@ -11,10 +11,19 @@
 .sheetCell {
     display: flex;
     align-items: center;
+    min-width: 0;
+}
+
+.sheetCell > span:first-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
 }
 
 .actions {
     margin-left: auto;
+    flex-shrink: 0;
     opacity: 0;
     transition: opacity 0.15s;
 }
