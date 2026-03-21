@@ -47,7 +47,7 @@ export default function CategoryRow({
         }
     };
 
-    const chevron = hasChildren ? "▶" : "·";
+    const chevron = hasChildren ? "▶" : "•";
     const indentPx = depth * 20;
 
     return (
