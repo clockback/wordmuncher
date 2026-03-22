@@ -42,12 +42,11 @@
 .actions {
     margin-left: auto;
     flex-shrink: 0;
-    opacity: 0;
-    transition: opacity 0.15s;
+    display: none;
 }
 
 .categoryRow:hover .actions {
-    opacity: 1;
+    display: inline;
 }
 
 .renameInput {
