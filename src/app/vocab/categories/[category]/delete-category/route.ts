@@ -4,6 +4,7 @@ import { Op, Transaction } from "sequelize";
 import { Category, Sheet } from "@models";
 
 import { DeleteCategoryRequestAPI, DeleteCategoryResponseAPI } from "./api";
+import { updateCategoryDepthRecursively } from "src/app/lib/update-category-depth";
 import sequelize from "src/db/models/db-connection";
 
 export async function DELETE(
@@ -141,34 +142,4 @@ async function deleteRecursively(
         where: { id: categoryId },
         transaction,
     });
-}
-
-async function updateCategoryDepthRecursively(
-    categoryId: number,
-    depthDifference: number,
-    transaction: Transaction,
-): Promise<void> {
-    const category = await Category.findByPk(categoryId, { transaction });
-    if (!category) return;
-
-    await Category.update(
-        { depth: category.depth + depthDifference },
-        {
-            where: { id: categoryId },
-            transaction,
-        },
-    );
-
-    const childCategories = await Category.findAll({
-        where: { parentCategoryId: categoryId },
-        transaction,
-    });
-
-    for (const child of childCategories) {
-        await updateCategoryDepthRecursively(
-            child.id,
-            depthDifference,
-            transaction,
-        );
-    }
 }

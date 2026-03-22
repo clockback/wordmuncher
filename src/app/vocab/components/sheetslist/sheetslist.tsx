@@ -14,6 +14,7 @@ import AddCategoryInput from "../add-category-input/add-category-input";
 import AddToCategoryDialog from "../add-to-category-dialog/add-to-category-dialog";
 import CategoryActions from "../category-actions/category-actions";
 import DeleteCategoryDialog from "../delete-category-dialog/delete-category-dialog";
+import MoveCategoryDialog from "../move-category-dialog/move-category-dialog";
 import MoveSheetDialog from "../move-sheet-dialog/move-sheet-dialog";
 import SheetRow from "../sheetrow/sheetrow";
 import styles from "./sheetslist.module.css";
@@ -52,6 +53,9 @@ export default function SheetsList({
         useState<CategoryNode | null>(null);
     const [addingToCategory, setAddingToCategory] =
         useState<CategoryNode | null>(null);
+    const [movingCategory, setMovingCategory] = useState<CategoryNode | null>(
+        null,
+    );
 
     const treeData = useMemo(
         () => buildCategoryTree(categories, sheets),
@@ -185,6 +189,39 @@ export default function SheetsList({
         setMovingSheet(null);
     };
 
+    const handleMoveCategory = (
+        categoryId: number,
+        newParentId: number | null,
+    ) => {
+        const movedCategory = categories.find((c) => c.id === categoryId);
+        if (!movedCategory) return;
+
+        const newDepth =
+            newParentId !== null
+                ? (categories.find((c) => c.id === newParentId)?.depth ?? -1) +
+                  1
+                : 0;
+        const depthDiff = newDepth - movedCategory.depth;
+        const descendantIds = collectDescendantIds(categoryId, categories);
+
+        setCategories((prev) =>
+            prev.map((cat) => {
+                if (cat.id === categoryId) {
+                    return {
+                        ...cat,
+                        parentCategoryId: newParentId,
+                        depth: newDepth,
+                    };
+                }
+                if (descendantIds.has(cat.id)) {
+                    return { ...cat, depth: cat.depth + depthDiff };
+                }
+                return cat;
+            }),
+        );
+        setMovingCategory(null);
+    };
+
     const renderSheet = (sheet: SheetNode, depth: number) => (
         <SheetRow
             key={sheet.sheetId}
@@ -200,6 +237,7 @@ export default function SheetsList({
         <CategoryActions
             category={category}
             onAdd={(cat) => setAddingToCategory(cat)}
+            onMove={(cat) => setMovingCategory(cat)}
             onRename={(id) => setRenamingCategoryId(id)}
             onDelete={(cat) => setDeletingCategory(cat)}
         />
@@ -272,6 +310,14 @@ export default function SheetsList({
                         });
                     }}
                     onCancel={() => setAddingToCategory(null)}
+                />
+            )}
+            {movingCategory && (
+                <MoveCategoryDialog
+                    category={movingCategory}
+                    categoryRoots={roots}
+                    onConfirm={handleMoveCategory}
+                    onCancel={() => setMovingCategory(null)}
                 />
             )}
             {movingSheet && (

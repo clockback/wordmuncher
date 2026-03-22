@@ -6,6 +6,7 @@ import { CategoryNode } from "src/app/lib/category-tree";
 interface CategoryActionsProps {
     category: CategoryNode;
     onAdd: (category: CategoryNode) => void;
+    onMove: (category: CategoryNode) => void;
     onRename: (categoryId: number) => void;
     onDelete: (category: CategoryNode) => void;
 }
@@ -13,6 +14,7 @@ interface CategoryActionsProps {
 export default function CategoryActions({
     category,
     onAdd,
+    onMove,
     onRename,
     onDelete,
 }: CategoryActionsProps) {
@@ -24,6 +26,13 @@ export default function CategoryActions({
                 title="Add to category"
             >
                 +
+            </button>
+            <button
+                className={styles.actionButton}
+                onClick={() => onMove(category)}
+                title="Move category"
+            >
+                ↕
             </button>
             <button
                 className={styles.actionButton}
