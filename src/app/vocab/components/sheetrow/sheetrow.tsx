@@ -33,23 +33,21 @@ export default function SheetRow({
                 style={{ paddingLeft: `${indentPx + 10}px` }}
                 onClick={goToSheet}
             >
-                <div className={styles.sheetCell}>
-                    <span>{children}</span>
-                    {onMove && (
-                        <span className={styles.actions}>
-                            <button
-                                className={styles.actionButton}
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    onMove();
-                                }}
-                                title="Move to category"
-                            >
-                                ↕
-                            </button>
-                        </span>
-                    )}
-                </div>
+                {onMove && (
+                    <span className={styles.actions}>
+                        <button
+                            className={styles.actionButton}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onMove();
+                            }}
+                            title="Move to category"
+                        >
+                            ↕
+                        </button>
+                    </span>
+                )}
+                {children}
             </td>
         </tr>
     );
