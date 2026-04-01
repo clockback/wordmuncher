@@ -166,6 +166,7 @@ async function updateQuestionWithAnswers(
         body: {
             questionId: id,
             questionText: proposedQuestionText,
+            isStudyingLanguage,
             answers: createdAnswers,
             inflectionAnswers: [],
         },
@@ -230,6 +231,7 @@ async function updateQuestionWithInflectionAnswers(
         body: {
             questionId: id,
             questionText: proposedQuestionText,
+            isStudyingLanguage,
             answers: [],
             inflectionAnswers: createdAnswers,
         },

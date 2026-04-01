@@ -174,6 +174,7 @@ export default function QuestionEditor() {
         contents: UpdateQuestionResponseAPISuccess,
     ) {
         question.questionText = contents.questionText;
+        question.isStudyingLanguage = contents.isStudyingLanguage;
         question.answers = contents.answers.slice();
         question.inflectionAnswers = contents.inflectionAnswers.slice();
     }

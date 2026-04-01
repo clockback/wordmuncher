@@ -27,6 +27,7 @@ export type UpdateQuestionRequestAPI =
 export interface UpdateQuestionResponseAPISuccess {
     questionId: number;
     questionText: string;
+    isStudyingLanguage: boolean;
     answers: Answer[];
     inflectionAnswers: InflectionAnswer[];
 }
