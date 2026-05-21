@@ -204,15 +204,20 @@ async function submitInflectionAnswers(
     question: Question,
     normalize: (str: string) => string,
 ): Promise<{
-    body: SubmitAnswerResponseAPICorrectOrIncorrect;
+    body: SubmitAnswerResponseAPI;
     status: number;
 }> {
-    const { submittedInflectionAnswers, lastQuestions, retrieveNextAnswer } =
-        requestJSON;
-
-    let correct = true;
+    const {
+        submittedInflectionAnswers,
+        lastQuestions,
+        retrieveNextAnswer,
+        attemptedAlready,
+    } = requestJSON;
 
     const inflectionCorrections = {};
+    let typoCount = 0;
+    let wrongCount = 0;
+
     for (const answer of question.inflectionAnswers) {
         let featureKey: string;
         if (answer.secondaryFeatureId === null) {
@@ -220,13 +225,33 @@ async function submitInflectionAnswers(
         } else {
             featureKey = `${answer.primaryFeatureId},${answer.secondaryFeatureId}`;
         }
-        if (
-            normalize(answer.answerText) !==
-            normalize(submittedInflectionAnswers[featureKey])
-        ) {
-            inflectionCorrections[featureKey] = answer.answerText;
-            correct = false;
+
+        const normalizedAnswer = normalize(answer.answerText);
+        const normalizedSubmission = normalize(
+            submittedInflectionAnswers[featureKey],
+        );
+
+        if (normalizedSubmission === normalizedAnswer) {
+            continue;
         }
+
+        const score = stringSimilarity(normalizedSubmission, normalizedAnswer);
+        if (score >= minimumSimilarityScore) {
+            typoCount++;
+        } else {
+            wrongCount++;
+        }
+
+        inflectionCorrections[featureKey] = answer.answerText;
+    }
+
+    const correct = typoCount === 0 && wrongCount === 0;
+
+    if (typoCount === 1 && wrongCount === 0 && !attemptedAlready) {
+        return {
+            body: { correct: false, reattemptAvailable: true },
+            status: 202,
+        };
     }
 
     updateLastQuestions(lastQuestions, requestJSON.questionId);
